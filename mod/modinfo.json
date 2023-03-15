@@ -1,9 +1,9 @@
 ﻿{
-	"id": "author.slugtemplate",
-	"name": "Slugcat Template",
-	"version": "0.1.0",
-	"authors": "Author",
-	"description": "A template for making SlugBase mods.",
-	"requirements": [ "slime-cubed.slugbase" ],
-	"requirements_names": [ "SlugBase" ]
+	"id": "urufudoggo.theescort",
+	"name": "(PRERELEASE) Escort n Co",
+	"version": "0.0.11.2",
+	"authors": "Urufudoggo",
+	"description": "A mod that will add The Escort and their very special slugpup. <LINE><LINE>Currently implements The Escort and some of their abilities and movement tech. <LINE>Campaign doesn't work, there's no custom assets, and this may alter the behaviour of other slugcats by pure accident...<LINE><LINE><~CURRENTLY IMPLEMENTED~><LINE>- Slide Stun (sliding into creature)<LINE>- Drop Kick (pouncing into creature)<LINE>- Infinite roll<LINE>- half-implemented Parry Slide (slide into bites or stabby creatures... but not spears, not yet)<LINE><LINE><~TO BE IMPLEMENTED~> <LINE>- Stop rolling when letting go of button<LINE>- Parry Slide parrying spears<LINE>- grab thrown objects midair and hurl it back<LINE>- prioritize spears when picking up while doing Stun Slide or Drop Kick<LINE>- Remix menu to adjust multiple settings<LINE>- Code organization and comments for future me and y'all who want to use this code when I make the repository public...<LINE><LINE><~ROADMAP~><LINE>- Complete Escort's moveset for Arena and Jolly Coop<LINE>- Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)<LINE>- Add the special slugpup and their set AI<LINE>- Complete the campaign",
+	"requirements": [ "slime-cubed.slugbase", "moreslugcats" ],
+	"requirements_names": [ "SlugBase", "More Slugcats Expansion" ]
 }

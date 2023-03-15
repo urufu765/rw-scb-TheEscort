@@ -1,0 +1,48 @@
+{
+	"id": "EscortMe",
+	"name": "The Escort",
+	"description": "An enduring protector trained to traverse the unforgiving lands, they must seek sanctuary for the precious being.<LINE>My sleep-deprived brain isn't good at descriptions.",
+	"features": {
+		"color": "4169e1",
+		"weight": [1, 0.75],
+		"tunnel_speed": [1.25, 1.0],
+		"climb_speed": [1.5, 1.0],
+		"walk_speed": [1.1, 0.8],
+		"crouch_stealth": [0.6, 0.8],
+		"throw_skill": [1, 2],
+		"lung_capacity": [2.0, 0.7],
+		"loudness": [2, 1.5],
+		"alignments": {
+			"Lizards": { "like": -1, "locked": true },
+			"Cicadas": { "like": -1, "locked": true },
+			"GarbageWorms": { "like": -1, "locked": true },
+			"Jetfish": { "like": -1, "locked": true },
+			"Scavengers": { "like": 0.4, "strength": 0.2 }
+		},
+		"diet": {
+			"base": "Gourmand",
+			"corpses": 0.75,
+			"plants": 1
+		},
+		"karma": 2,
+		"karma_cap": 4,
+		"start_room": "CC_SUMP02",
+		"cycle_length_min": 7,
+		"cycle_length_max": 11,
+		"food_min": 9,
+		"food_max": 13,
+		"world_state": "Spear",
+		"guide_overseer": 4,
+
+
+		"select_menu_scene": "Slugcat_EscortMe",
+		"select_menu_scene_ascended": "Ghost_EscortMe",
+		"theescort/better_crawl": [3.5, 2],
+		"theescort/body_slam": [0.1, 50, 0.2, 25],
+		"theescort/dk_multiplier": 3,
+		"theescort/heavylifter": 3,
+		"theescort/exhausion": 90,
+		"theescort/mean_lizards": 1,
+		"theescort/parry_slide": true
+	}
+}
