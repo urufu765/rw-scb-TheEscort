@@ -3,9 +3,11 @@
 Y'all are free to adapt the code for your own usage as long as the original authors (who developed the Slugbase and Rain World and the DLC) are fine with it.
 
 # Version History (Newest to Oldest):
-## Version 0: The Beginning of Escort
+## Version 0: Escort's Beginning
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 ### 0.0 - Pre-release
+**(0.0.11.3)** Added some kind of roadmap (it's not much)
+
 **(0.0.11.2)** Added text to README and finally updated the github repository
 
 **(0.0.11.1)** Fixed Parry Slide to a certain degree. It will sometimes parry lizard bites, untested for noodlefly mother spearing, and does not work against thrown spears.
@@ -62,6 +64,28 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 - Grab thrown objects
 - Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
+
+
+# Roadmap (Subject to change)
+## Version 0: Escort's Beginning
+### 0.1: Upload to Steam Workshop
+### 0.2: Complete art placeholders
+### 0.3: Stabilize code?
+### 0.4: Give Escort a unique body feature
+## Version 1: Escort the Arena Slugcat (Goes on an ADVENTURE)
+### 1.1: Modify behaviour in thicc water and oneway water currents
+## Version 2: Escort armed and ready
+### 2.1: Centipede armor?
+### 2.2: Acquire such centipede armor?
+## Version 3: Escort and their special Slugpup
+## Version 4: Escort's Story
+### 4.1: Starting region
+### 4.2: Checkpoint 1
+### 4.3: Checkpoint 2
+### 4.4: Checkpoint 3
+### 4.5: Ending 1 (Intended Story)
+### 4.6: Ending 2 (Asc)
+### 4.7: Ending 3 (Special super SECRET (somewhere in Outskirts))
 
 
 Use this template on GitHub or [download the code](https://github.com/SlimeCubed/ExampleSlugBaseMod/archive/refs/heads/master.zip), whichever is easiest.
