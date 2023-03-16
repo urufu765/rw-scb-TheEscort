@@ -7,12 +7,12 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.11.3")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.12.2")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
 
-        public static readonly PlayerFeature<float> SuperJump = PlayerFloat("theescort/super_jump");
+        public static readonly PlayerFeature<bool> BetterPounce = PlayerBool("theescort/better_pounce");
         public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
         public static readonly GameFeature<float> MeanLizards = GameFloat("theescort/mean_lizards");
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
@@ -22,6 +22,7 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
         public static readonly PlayerFeature<float> DropKick = PlayerFloat("theescort/dk_multiplier");
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
+        public static readonly PlayerFeature<bool> Elevator = PlayerBool("theescort/elevator");
 
 
         // Add hooks
@@ -30,7 +31,7 @@ namespace SlugTemplate
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
 
             // Put your custom hooks here!
-            //On.Player.Jump += Player_Jump;
+            On.Player.Jump += Player_Jump;
             On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Player_UpdateBodyMode);
             On.Player.UpdateAnimation += new On.Player.hook_UpdateAnimation(this.Player_UpdateAnimation);
             On.Player.Collide += new On.Player.hook_Collide(this.Player_Collision);
@@ -73,9 +74,18 @@ namespace SlugTemplate
         {
             orig(self);
 
-            if (SuperJump.TryGet(self, out var power))
+            if (BetterPounce.TryGet(self, out var willPounce))
+            //Debug.Log("Meow");
             {
-                self.jumpBoost *= 1f + power;
+                if (self.slugcatStats.name.value == "EscortMe"){
+                    //Debug.Log("Escort Jumps!");
+
+                    // Replace chargepounce with a sick flip
+                    if (willPounce && (self.superLaunchJump >= 20 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0)){
+                        Debug.Log("FLIPERONI GO!");
+                        self.animation = Player.AnimationIndex.Flip;
+                    }
+                }
             }
         }
 
@@ -198,7 +208,7 @@ namespace SlugTemplate
 
             BodySlam.TryGet(self, out var bodySlam);
 
-            if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || !RWCustom.Custom.rainWorld.options.friendlyFire)){
+            if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || RWCustom.Custom.rainWorld.options.friendlyFire)){
                 float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline

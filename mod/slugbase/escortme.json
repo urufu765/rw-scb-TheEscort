@@ -4,7 +4,7 @@
 	"description": "An enduring protector trained to traverse the unforgiving lands, they must seek sanctuary for the precious being.<LINE>My sleep-deprived brain isn't good at descriptions.",
 	"features": {
 		"color": "4169e1",
-		"weight": [1, 0.75],
+		"weight": [1.2, 0.75],
 		"tunnel_speed": [1.25, 1.0],
 		"climb_speed": [1.5, 1.0],
 		"walk_speed": [1.1, 0.8],
@@ -17,7 +17,7 @@
 			"Cicadas": { "like": -1, "locked": true },
 			"GarbageWorms": { "like": -1, "locked": true },
 			"Jetfish": { "like": -1, "locked": true },
-			"Scavengers": { "like": 0.4, "strength": 0.2 }
+			"Scavengers": { "like": 0.5, "strength": 0.2 }
 		},
 		"diet": {
 			"base": "Gourmand",
@@ -38,11 +38,13 @@
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 		"theescort/better_crawl": [3.5, 2],
-		"theescort/body_slam": [0.1, 50, 0.2, 25],
+		"theescort/body_slam": [0.05, 40, 0.5, 25],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
-		"theescort/exhausion": 90,
+		"theescort/exhausion": 180,
 		"theescort/mean_lizards": 1,
-		"theescort/parry_slide": true
+		"theescort/parry_slide": true,
+		"theescort/better_pounce": true,
+		"theescort/elevator": false
 	}
 }

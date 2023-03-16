@@ -6,6 +6,12 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 ### 0.0 - Pre-release
+**(0.0.12.2)** Fixed friendly fire shenanigans, nerfed stun and damage of Stun Slide, buffed damage of drop kick, and acknowledge Escort's Elevator (ramping off of creature may cause the Escort to launch upwards)
+
+**(0.0.12.1)** Changed the translation to a flip since a rocket jump from a charge pounce is a bit too overpowered
+
+**(0.0.12)** Translated charge pounce to rocket jump
+
 **(0.0.11.3)** Added some kind of roadmap (it's not much)
 
 **(0.0.11.2)** Added text to README and finally updated the github repository
