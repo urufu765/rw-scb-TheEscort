@@ -7,19 +7,19 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.0.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
 
         public static readonly PlayerFeature<bool> BetterPounce = PlayerBool("theescort/better_pounce");
-        public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
+        //public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
         public static readonly GameFeature<float> MeanLizards = GameFloat("theescort/mean_lizards");
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
         public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
         public static readonly PlayerFeature<float> CarryHeavy = PlayerFloat("theescort/heavylifter");
-        public static readonly PlayerFeature<float> BetterSlide = PlayerFloat("theescort/better_slide");
+        //public static readonly PlayerFeature<float> BetterSlide = PlayerFloat("theescort/better_slide");
         public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
         public static readonly PlayerFeature<float> DropKick = PlayerFloat("theescort/dk_multiplier");
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
@@ -304,6 +304,7 @@ namespace SlugTemplate
 
 
         // Implement ExlodeOnDeath
+        /*
         private void Player_Die(On.Player.orig_Die orig, Player self)
         {
             bool wasDead = self.dead;
@@ -329,5 +330,6 @@ namespace SlugTemplate
                 room.InGameNoise(new Noise.InGameNoise(pos, 9000f, self, 1f));
             }
         }
+        */
     }
 }

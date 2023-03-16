@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.0.1)** Updated name to be a bit more suitable and a bit more code organizing.
+
 **(0.1)** Uploaded to steam workshop to see how others react to the slugcat.
 
 ### 0.0 - Pre-release
