@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.13.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -239,11 +239,16 @@ namespace SlugTemplate
                 float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
+                /*
+                Creature Trampoline is not consistent and may get you killed if you try to take advantage of it. Thus the intended use is to bounce away from the creature when running by or away.
+                */
                 if (self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead){
                     if (yeet){
                         self.jumpBoost += 4;
                     } else if (self.jumpBoost == 0) {
                         self.jumpBoost += bounce;
+                    } else if (self.jumpBoost >= bounce){
+                        self.jumpBoost--;  // not sure if this does anything...
                     }
                 }
 

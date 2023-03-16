@@ -5,6 +5,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 # Version History (Newest to Oldest):
 ## Version 0: Escort's Beginning
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
+
+### 0.1 - Steam Workshopped
+**(0.1)** Uploaded to steam workshop to see how others react to the slugcat.
+
 ### 0.0 - Pre-release
 **(0.0.13.1)** Added a changable value to trampoline to tune on the fly.
 
@@ -66,21 +70,22 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 
 **(0.0.1)** Imported the template, disabled some template features, and adjusted the slug stats
 
-**(0.0.0)** Cloned template.
+**(0.0)** Cloned template.
 
 
 # Near Future Planned Features:
+- Exhausion/stamina mechanic where being at full exhausion reduces Escort's power
 - Settings to adjust Escort's abilities
 - Reduce bite lethality
 - Implement parrying spears with slide
 - Grab thrown objects
 - Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
+- Ability to swim through thicc water
 
 
 # Roadmap (Subject to change)
 ## Version 0: Escort's Beginning
-### 0.1: Upload to Steam Workshop
 ### 0.2: Complete art placeholders
 ### 0.3: Stabilize code?
 ### 0.4: Give Escort a unique body feature

@@ -47,6 +47,6 @@
 		"theescort/better_pounce": true,
 		"theescort/better_polewalk": [4, 2],
 		"theescort/elevator": false,
-		"theescort/trampoline": 10
+		"theescort/trampoline": 13
 	}
 }
