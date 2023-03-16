@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.13")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.13.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -24,6 +24,7 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float> DropKick = PlayerFloat("theescort/dk_multiplier");
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
         public static readonly PlayerFeature<bool> Elevator = PlayerBool("theescort/elevator");
+        public static readonly PlayerFeature<float> Trampoline = PlayerFloat("theescort/trampoline");
 
 
         // Add hooks
@@ -232,14 +233,17 @@ namespace SlugTemplate
 
             BodySlam.TryGet(self, out var bodySlam);
             Elevator.TryGet(self, out var yeet);
+            Trampoline.TryGet(self, out var bounce);
 
             if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || RWCustom.Custom.rainWorld.options.friendlyFire)){
                 float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 if (self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead){
-                    if (self.jumpBoost == 0 || yeet){
+                    if (yeet){
                         self.jumpBoost += 4;
+                    } else if (self.jumpBoost == 0) {
+                        self.jumpBoost += bounce;
                     }
                 }
 

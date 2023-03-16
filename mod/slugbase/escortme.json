@@ -46,6 +46,7 @@
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
 		"theescort/better_polewalk": [4, 2],
-		"theescort/elevator": false
+		"theescort/elevator": false,
+		"theescort/trampoline": 10
 	}
 }

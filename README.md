@@ -6,6 +6,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 ### 0.0 - Pre-release
+**(0.0.13.1)** Added a changable value to trampoline to tune on the fly.
+
 **(0.0.13)** Gave Escort faster movement on pole walking or hanging, added a stop condition for the infiniroll (so it behaves more like how regular rolls work, as long as you're holding the right buttons it keeps rollin'), and attempted to patch out Escort's Elevator
 
 **(0.0.12.3)** Changed parry sound so it actually gives feedback properly
