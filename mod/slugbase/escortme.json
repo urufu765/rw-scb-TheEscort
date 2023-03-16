@@ -41,10 +41,11 @@
 		"theescort/body_slam": [0.05, 40, 0.5, 25],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
-		"theescort/exhausion": 180,
+		"theescort/exhausion": 90,
 		"theescort/mean_lizards": 1,
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
+		"theescort/better_polewalk": [4, 2],
 		"theescort/elevator": false
 	}
 }

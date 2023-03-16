@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.12.2")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.0.13")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -16,6 +16,7 @@ namespace SlugTemplate
         public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
         public static readonly GameFeature<float> MeanLizards = GameFloat("theescort/mean_lizards");
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
+        public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
         public static readonly PlayerFeature<float> CarryHeavy = PlayerFloat("theescort/heavylifter");
         public static readonly PlayerFeature<float> BetterSlide = PlayerFloat("theescort/better_slide");
@@ -132,13 +133,26 @@ namespace SlugTemplate
             orig(self);
 
             if (self.slugcatStats.name.value == "EscortMe"){
-            // Implement bettercrawl
             BetterCrawl.TryGet(self, out var crawlSpeed);
+            BetterPoleWalk.TryGet(self, out var poleMove);
 
 
+            // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
                 self.dynamicRunSpeed[0] = crawlSpeed[0] * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = crawlSpeed[1] * self.slugcatStats.runspeedFac;
+            }
+
+            // Implement betterpolewalk
+            /*
+            The hangfrombeam's speed does not get affected by dynamicrunspeed apparently so that's fun... 
+            still the standonbeam works but also at the same time not as I initially thought.
+            The slugcat apparently has a limit on how fast they can move on the beam while standing on it, leaning more and more foreward and getting more and more friction as a result...
+            or to that degree.
+            */
+            else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
+                self.dynamicRunSpeed[0] = poleMove[0] * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[1] = poleMove[1] * self.slugcatStats.runspeedFac;
             }
             }
         }
@@ -149,13 +163,22 @@ namespace SlugTemplate
             orig(self);
             if (self.slugcatStats.name.value == "EscortMe"){
                 float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
-                if (self.animation == Player.AnimationIndex.Roll){
+                // Infiniroll
+                if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
                     self.rollCounter = 0;
-                }
+                }/* else {  // Inspired from the decompiled code
+                    self.rollDirection = 0;
+                    self.room.PlaySound(SoundID.Slugcat_Roll_Finish, self.mainBodyChunk.pos, 1f, 1f);
+                    self.animation = Player.AnimationIndex.None;
+                    self.standing = (self.input[0].y > -1); 
+                    return;
+                }*/
+
+                // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
                 if (self.animation == Player.AnimationIndex.BellySlide){
+                    // TODO implement better slide
                 }
             }
-
         }
 
 
@@ -183,15 +206,16 @@ namespace SlugTemplate
                         damage = 0; stunBonus = 0; (self as Player).newToRoomInvinsibility = 100;
 
                         // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
-                        Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                        RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.black;
-                        self.room.PlaySound(SoundID.Lizard_Head_Shield_Deflect, self.mainBodyChunk);
-                        RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                        RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = playerColor;
+                        // Visual indicator doesn't work ;-;
+                        //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
+                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.black;
+                        self.room.PlaySound(SoundID.Spear_Bounce_Off_Creauture_Shell, self.mainBodyChunk);
+                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
+                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = playerColor;
                         Debug.Log("Parry successful!");
                     }
-                }  // After testing, the parry is successful, but nothing happens and the Escort just dies... maybe the "self" loses the pointer to the specific slugcat and thus doesn't affect it? Or maybe once the conversion is done it's done as read-only?
+                }
             }
 
             orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
@@ -207,13 +231,16 @@ namespace SlugTemplate
             if (self.slugcatStats.name.value == "EscortMe"){
 
             BodySlam.TryGet(self, out var bodySlam);
+            Elevator.TryGet(self, out var yeet);
 
             if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || RWCustom.Custom.rainWorld.options.friendlyFire)){
                 float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
-                // Creature Trampoline
+                // Creature Trampoline (or if enabled Escort's Elevator)
                 if (self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead){
-                    self.jumpBoost += 4;
+                    if (self.jumpBoost == 0 || yeet){
+                        self.jumpBoost += 4;
+                    }
                 }
 
                 // Parryslide (stun module)
