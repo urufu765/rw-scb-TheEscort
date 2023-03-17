@@ -14,7 +14,8 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [*] Drop Kick (roll/slide pouncing into creature)
 [*] Flip Pounce (charge pounce)
 [*] Infinite roll
-[*] half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
+[*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
+[*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]
 [list]

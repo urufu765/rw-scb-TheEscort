@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.1)** Implemented Escort's Battle-Hyped system, when they're tired to a certain degree, they become powerful! Maintaining the tiredness requires Escort to constantly be engaging in battles as the tired meter builds up much slower on Escort compared to everyone else. Also made the Escort's campaign's rain timer longer to help you get out of the gu'uh whilst I've yet to implement better wall jump. Also organized a bit of code and began development of the latter half of Parry Slide *(and tweaked the parry behaviour to improve its effectiveness... more on this once the full Parry Slide is implemented.)*.
+
 **(0.1.0.3)** Replaced the placeholder art *(by the same person thanks Walkfu!... though I did a wee bit of editing to it)*, added a dumb placeholder menu scene, and modified description for steam page and remix menu such that they're separate and properl.
 
 **(0.1.0.2)** Tweaked lizard aggression stat behaviour, got started with the remix menu interface, added an asset of Escort's death sound *(all I have to do now is find a way to actually import and use it)*, modified the readme and description a bit, and added a non-functioning code that is supposed to make garbage worms angy at Escort *(The Escort probably said something mean to them)*

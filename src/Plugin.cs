@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.0.3")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -26,7 +26,11 @@ namespace SlugTemplate
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
         public static readonly PlayerFeature<bool> Elevator = PlayerBool("theescort/elevator");
         public static readonly PlayerFeature<float> Trampoline = PlayerFloat("theescort/trampoline");
-
+        public static readonly PlayerFeature<bool> EscortSta = PlayerBool("theescort/adrenaline_system");
+        public static readonly PlayerFeature<float[]> MoveSpeeds = PlayerFloats("theescort/speed");
+        public static readonly PlayerFeature<float> SlowDown = PlayerFloat("theescort/movement_reduction");
+        public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
+        
 
         // Add hooks
         public void OnEnable()
@@ -44,7 +48,10 @@ namespace SlugTemplate
             On.GarbageWorm.ctor += new On.GarbageWorm.hook_ctor(this.GarbageWorm_ctor);
             On.Player.AerobicIncrease += Player_AerobicIncrease;
             On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
+            On.Player.Update += new On.Player.hook_Update(this.Player_Update);
+            //On.Player.SpearStick += new On.Player.hook_SpearStick(this.Player_SpearStick);
             }
+            
         
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
@@ -59,7 +66,7 @@ namespace SlugTemplate
 
             if(MeanLizards.TryGet(world.game, out bool meanness) && meanness)
             {
-                self.spawnDataEvil = 5f;
+                self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
         }
 
@@ -84,12 +91,41 @@ namespace SlugTemplate
         private void Player_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
             orig(self, f);
 
-            Exhausion.TryGet(self, out var stamina);
-            if (self.slugcatStats.name.value == "EscortMe"){
-                self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + (f / stamina));
+            if (Exhausion.TryGet(self, out var exhaust)){
+                if (!self.slugcatStats.malnourished){
+                    self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / exhaust));
+                } else {
+                    self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / (exhaust / 2)));
+                }
             } else {
                 self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + f / 9f);
             }
+        }
+
+        // Implement variable move speed
+        private void Player_Update(On.Player.orig_Update orig, Player self, bool eu){
+            orig(self, eu);
+
+            if(EscortSta.TryGet(self, out bool StaSysOn) && StaReq.TryGet(self, out float requirement) && StaSysOn){
+                if (self.aerobicLevel > requirement){
+                    Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                    playerColor.a = 0.7f;
+
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 8f, 15f, playerColor));
+                }
+
+            }
+
+
+            /*
+            if (EscortSta.TryGet(self, out bool StaSysOn) && MoveSpeeds.TryGet(self, out float[] runSpeed) && SlowDown.TryGet(self, out float slowing) && StaSysOn){
+                int whichOne = 0;
+                if (self.slugcatStats.malnourished){
+                    whichOne = 1;
+                }
+                self.slugcatStats.runspeedFac = Mathf.Lerp(runSpeed[whichOne] - slowing, runSpeed[whichOne], 1 - self.aerobicLevel);
+            }
+            */
         }
 
         // Implement SuperJump
@@ -101,6 +137,7 @@ namespace SlugTemplate
             //Debug.Log("Meow");
             {
                 if (self.slugcatStats.name.value == "EscortMe"){
+                    self.aerobicLevel -= 0.1f;
                     //Debug.Log("Escort Jumps!");
 
                     // Replace chargepounce with a sick flip
@@ -116,8 +153,7 @@ namespace SlugTemplate
         // Implement Heavylifter
         private bool Player_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
             orig(self, obj);
-            if (self.slugcatStats.name.value == "EscortMe"){
-                    CarryHeavy.TryGet(self, out var ratioed);
+            if (CarryHeavy.TryGet(self, out var ratioed)){
                     if (self.Grabability(obj) != Player.ObjectGrabability.TwoHands && obj.TotalMass <= self.TotalMass * ratioed){
                         if (ModManager.CoopAvailable){
                             Player player = obj as Player;
@@ -154,15 +190,13 @@ namespace SlugTemplate
         private void Player_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self){
             orig(self);
 
-            if (self.slugcatStats.name.value == "EscortMe"){
-            BetterCrawl.TryGet(self, out var crawlSpeed);
-            BetterPoleWalk.TryGet(self, out var poleMove);
-
+            if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && EscortSta.TryGet(self, out bool StaSysOn)){
 
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
-                self.dynamicRunSpeed[0] = crawlSpeed[0] * self.slugcatStats.runspeedFac;
-                self.dynamicRunSpeed[1] = crawlSpeed[1] * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[0] = (StaSysOn? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[1] = (StaSysOn? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
+                //Debug.Log("Escort's Speed:" + self.dynamicRunSpeed[0]);
             }
 
             // Implement betterpolewalk
@@ -173,8 +207,8 @@ namespace SlugTemplate
             or to that degree.
             */
             else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
-                self.dynamicRunSpeed[0] = poleMove[0] * self.slugcatStats.runspeedFac;
-                self.dynamicRunSpeed[1] = poleMove[1] * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[0] = (StaSysOn? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[1] = (StaSysOn? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
             }
             }
         }
@@ -184,7 +218,9 @@ namespace SlugTemplate
         private void Player_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self){
             orig(self);
             if (self.slugcatStats.name.value == "EscortMe"){
-                float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+                //self.canBeHitByWeapons = !(self.animation == Player.AnimationIndex.BellySlide);
+                //Debug.Log("Escort Invulnerable to Weapons: " + self.canBeHitByWeapons);
+                //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
                 // Infiniroll
                 if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
                     self.rollCounter = 0;
@@ -208,41 +244,63 @@ namespace SlugTemplate
         private void Player_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
 
             if (self is Player){  // Check if self is player such that when class is converted it does not cause an error
-                ParrySlide.TryGet((self as Player), out var enableParry);  // connects to the Escort's Parryslide option
 
-                if ((self as Player).slugcatStats.name.value == "EscortMe" && enableParry){
+                // connects to the Escort's Parryslide option
+                if (ParrySlide.TryGet((self as Player), out var enableParry) && enableParry && (self as Player).animation == Player.AnimationIndex.BellySlide){
                     // Parryslide (parry module)
                     Debug.Log("Escort attempted a Parryslide");
-                    if ((self as Player).animation == Player.AnimationIndex.BellySlide && (type == Creature.DamageType.Bite || type == Creature.DamageType.Stab)){  // When Escort is sliding, parry bites and stabs
-                        Debug.Log("Escort is being bit or stabbed");
-                        if (type == Creature.DamageType.Bite && source.owner is Creature){
+                    int direction;
+                    direction = (self as Player).slideDirection;
+
+                    // Creatures
+                    if (source.owner is Creature){
+                        if (type == Creature.DamageType.Bite || type == Creature.DamageType.Stab){
+                            // When Escort is sliding, parry bites and stabs
+                            Debug.Log("Escort is getting bit or stabbed");
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 20;
-                            int direction;
-                            direction = (self as Player).slideDirection;
                             (self as Player).WallJump(direction);
-                            Debug.Log("Apparently Escort got released and is fine");
+                            type = Creature.DamageType.Blunt;
+                            damage = 0; stunBonus = 0; (self as Player).aerobicLevel = 1f;
+                        } else if (type == Creature.DamageType.Explosion){
+                            Debug.Log("Escort is being blown up");
+                            (self as Player).Stun(20);
+                            damage = 0;
+                        } else if (type == Creature.DamageType.Electric){
+                            Debug.Log("Escort is deep frying");
+                            stunBonus = 0; 
+                            (self as Player).WallJump(-direction);
+                            (self as Player).aerobicLevel = 1f;
                         }
-                        type = Creature.DamageType.Blunt;
-                        Debug.Log("Escort gets hit by an invisible rock instead");
-                        damage = 0; stunBonus = 0; (self as Player).newToRoomInvinsibility = 100;
 
-                        // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
-                        // Visual indicator doesn't work ;-;
-                        //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.black;
-                        self.room.PlaySound(SoundID.Spear_Bounce_Off_Creauture_Shell, self.mainBodyChunk);
-                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                        //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = playerColor;
-                        Debug.Log("Parry successful!");
                     }
+                    // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
+                    // Visual indicator doesn't work ;-;
+                    //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
+                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.black;
+                    self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
+                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
+                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = playerColor;
+                    Debug.Log("Parry successful!");
                 }
             }
 
             orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
 
         }
+
+
+        /*
+        private bool Player_SpearStick(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos onAppendagePos, Vector2 direction){
+            if (ParrySlide.TryGet(self, out bool parryMode) && parryMode){
+                Debug.Log("Attempting to Parry");
+                return !(self.animation == Player.AnimationIndex.BellySlide);
+            }
+            orig(self, source, dmg, chunk, onAppendagePos, direction);
+            return true;
+        }
+        */
 
 
         // Implement Bodyslam
@@ -252,12 +310,14 @@ namespace SlugTemplate
 
             if (self.slugcatStats.name.value == "EscortMe"){
 
-            BodySlam.TryGet(self, out var bodySlam);
-            Elevator.TryGet(self, out var yeet);
-            Trampoline.TryGet(self, out var bounce);
+            BodySlam.TryGet(self, out float[] bodySlam);
+            Elevator.TryGet(self, out bool yeet);
+            Trampoline.TryGet(self, out float bounce);
+            EscortSta.TryGet(self, out bool StaSysOn);
+            StaReq.TryGet(self, out float requirement);
 
             if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || RWCustom.Custom.rainWorld.options.friendlyFire)){
-                float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+                //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 /*
@@ -277,10 +337,14 @@ namespace SlugTemplate
                 if (self.animation == Player.AnimationIndex.BellySlide){
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,self.mainBodyChunk);
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
+                    float normSlideStun = bodySlam[1];
+                    if (StaSysOn && self.aerobicLevel > requirement){
+                        normSlideStun = bodySlam[1] * 1.75f;
+                    }
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
-                        bodySlam[0], bodySlam[1]
+                        bodySlam[0], normSlideStun
                     );
                     int direction;
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -291,7 +355,7 @@ namespace SlugTemplate
                     self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 5f, 5.5f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     self.animation = Player.AnimationIndex.Flip;
-
+                    Debug.Log("Stunslided!");
                     }
 
                 // Dropkick
@@ -304,10 +368,12 @@ namespace SlugTemplate
                     }
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     (otherObject as Creature).LoseAllGrasps();
+                    float normSlamDamage = (StaSysOn ? bodySlam[2] - 0.1f : bodySlam[2]);
+                    if (StaSysOn && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 2f;}
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*multiplier, self.mainBodyChunk.vel.y*multiplier)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
-                        bodySlam[2], bodySlam[3]
+                        normSlamDamage, bodySlam[3]
                     );
                     int direction;
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
@@ -318,6 +384,7 @@ namespace SlugTemplate
                     self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
+                    Debug.Log("Dropkicked!");
                     }
                 }
             }
