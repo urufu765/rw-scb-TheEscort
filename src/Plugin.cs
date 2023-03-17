@@ -7,14 +7,15 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.0.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.0.2")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
 
         public static readonly PlayerFeature<bool> BetterPounce = PlayerBool("theescort/better_pounce");
         //public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
-        public static readonly GameFeature<float> MeanLizards = GameFloat("theescort/mean_lizards");
+        public static readonly GameFeature<bool> MeanLizards = GameBool("theescort/mean_lizards");
+        public static readonly GameFeature<bool> MeanGarbageWorms = GameBool("theescort/mean_garb_worms");
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
         public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
@@ -40,6 +41,7 @@ namespace SlugTemplate
             On.Player.HeavyCarry += new On.Player.hook_HeavyCarry(this.Player_HeavyCarry);
             //On.Player.Die += Player_Die;
             On.Lizard.ctor += Lizard_ctor;
+            On.GarbageWorm.ctor += new On.GarbageWorm.hook_ctor(this.GarbageWorm_ctor);
             On.Player.AerobicIncrease += Player_AerobicIncrease;
             On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
             }
@@ -47,6 +49,7 @@ namespace SlugTemplate
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
+            
         }
 
         // Implement MeanLizards
@@ -54,9 +57,27 @@ namespace SlugTemplate
         {
             orig(self, abstractCreature, world);
 
-            if(MeanLizards.TryGet(world.game, out float meanness))
+            if(MeanLizards.TryGet(world.game, out bool meanness) && meanness)
             {
-                self.spawnDataEvil = Mathf.Min(self.spawnDataEvil, meanness);
+                self.spawnDataEvil = 5f;
+            }
+        }
+
+        // Implement MeanGarbageWorms
+        private void GarbageWorm_ctor(On.GarbageWorm.orig_ctor orig, GarbageWorm self, AbstractCreature abstractCreature, World world){
+            orig(self, abstractCreature, world);
+
+            if(MeanGarbageWorms.TryGet(world.game, out bool meanness) && meanness){
+                Debug.Log("Angyable go BRRR");
+                for (int i=0; i<self.room.abstractRoom.creatures.Count; i++){
+                    if (self.room.abstractRoom.creatures[i].creatureTemplate.type == CreatureTemplate.Type.Slugcat && !self.State.angryAt.Contains(self.room.abstractRoom.creatures[i].ID)){
+                        Debug.Log("Angyable slugcat found!");
+                        if ((self.room.abstractRoom.creatures[i].realizedCreature as Player).slugcatStats.name.value == "EscortMe"){
+                            Debug.Log("Found an Escort to definitely be mad at");
+                            self.State.angryAt.Add(self.room.abstractRoom.creatures[i].ID);
+                        }
+                    }
+                }
             }
         }
 

@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.0.2)** Tweaked lizard aggression stat behaviour, gave the dev concole a run for its money, got started with the remix menu interface, added an asset of Escort's death sound *(all I have to do now is find a way to actually import and use it)*, modified the readme and description a bit, and added a non-functioning code that is supposed to make garbage worms angy at Escort *(The Escort probably said something mean to them)*
+
 **(0.1.0.1)** Updated name to be a bit more suitable and a bit more code organizing.
 
 **(0.1)** Uploaded to steam workshop to see how others react to the slugcat.
@@ -14,17 +16,17 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ### 0.0 - Pre-release
 **(0.0.13.1)** Added a changable value to trampoline to tune on the fly.
 
-**(0.0.13)** Gave Escort faster movement on pole walking or hanging, added a stop condition for the infiniroll (so it behaves more like how regular rolls work, as long as you're holding the right buttons it keeps rollin'), and attempted to patch out Escort's Elevator
+**(0.0.13)** Gave Escort faster movement on pole walking or hanging, added a stop condition for the infiniroll *(so it behaves more like how regular rolls work, as long as you're holding the right buttons it keeps rollin')*, and attempted to patch out Escort's Elevator
 
 **(0.0.12.3)** Changed parry sound so it actually gives feedback properly
 
-**(0.0.12.2)** Fixed friendly fire shenanigans, nerfed stun and damage of Stun Slide, buffed damage of drop kick, and acknowledge Escort's Elevator (ramping off of creature may cause the Escort to launch upwards)
+**(0.0.12.2)** Fixed friendly fire shenanigans, nerfed stun and damage of Stun Slide, buffed damage of drop kick, and acknowledge Escort's Elevator *(ramping off of creature may cause the Escort to launch upwards)*
 
 **(0.0.12.1)** Changed the translation to a flip since a rocket jump from a charge pounce is a bit too overpowered
 
 **(0.0.12)** Translated charge pounce to rocket jump
 
-**(0.0.11.3)** Added some kind of roadmap (it's not much)
+**(0.0.11.3)** Added some kind of roadmap *(it's not much)*
 
 **(0.0.11.2)** Added text to README and finally updated the github repository
 
@@ -50,17 +52,17 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 
 **(0.0.7)** Implemented Infiniroll
 
-**(0.0.6.1)** Converted Super Stun Pounce to Drop Kick (and removed knockback on Stun Slide)
+**(0.0.6.1)** Converted Super Stun Pounce to Drop Kick *(and removed knockback on Stun Slide)*
 
 **(0.0.6)** Converted Slam Slide to Stun Slide by giving it stun, and reduced stun on Super Stun Pounce and gave it a lot more knockback
 
 **(0.0.5)** Implemented CarryHeavy, allowing Escort to lug around things that are heavier than them
 
-**(0.0.4.2)** Added spear grab to Super Stun Pounce (alike the behaviour of whiplash)
+**(0.0.4.2)** Added spear grab to Super Stun Pounce *(alike the behaviour of whiplash)*
 
 **(0.0.4.1)** Adjusted Slam Slide to launch Escort forward instead of bouncing back, giving them a unique movement tech that allows them to cover more horizontal distance
 
-**(0.0.4)** Implemented BodySlam (Slam Slide and Super Stun Pounce), allowing Escort to slide into creatures to cause knockback. 
+**(0.0.4)** Implemented BodySlam *(Slam Slide and Super Stun Pounce)*, allowing Escort to slide into creatures to cause knockback. 
 
 **(0.0.3)** Implemented BetterCrawl, allowing Escort to crawl at different speeds.
 

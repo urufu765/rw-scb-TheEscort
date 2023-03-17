@@ -1,7 +1,7 @@
 {
 	"id": "EscortMe",
 	"name": "The Escort",
-	"description": "An enduring protector trained to traverse the unforgiving lands, they must seek sanctuary for the precious being.<LINE>My sleep-deprived brain isn't good at descriptions.",
+	"description": "WARNING: THIS CAMPAIGN DOESN'T EXIST (yet). This will bring you to Spearmaster's world and that's it.<LINE><LINE>An enduring protector trained to traverse the unforgiving lands, they must seek sanctuary for the precious being.<LINE>My sleep-deprived brain isn't good at descriptions.",
 	"features": {
 		"color": "4169e1",
 		"weight": [1.2, 0.75],
@@ -13,22 +13,22 @@
 		"lung_capacity": [2.0, 0.7],
 		"loudness": [2, 1.5],
 		"alignments": {
-			"Lizards": { "like": -0.5, "locked": true },
-			"Cicadas": { "like": -0.5, "locked": true },
-			"GarbageWorms": { "like": -0.5, "locked": true },
-			"Jetfish": { "like": -0.5, "locked": true },
+			"Lizards": { "like": -1, "locked": true },
+			"Cicadas": { "like": -1, "locked": true },
+			"GarbageWorms": { "like": -1, "locked": true },
+			"Jetfish": { "like": -1, "locked": true },
 			"Scavengers": { "like": 0.5, "strength": 0.2 }
 		},
 		"diet": {
 			"base": "Gourmand",
 			"corpses": 0.75,
-			"plants": 1
+			"plants": 0.75
 		},
 		"karma": 2,
 		"karma_cap": 4,
 		"start_room": "CC_SUMP02",
-		"cycle_length_min": 7,
-		"cycle_length_max": 11,
+		"cycle_length_min": 8,
+		"cycle_length_max": 15,
 		"food_min": 9,
 		"food_max": 13,
 		"world_state": "Spear",
@@ -42,11 +42,12 @@
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
 		"theescort/exhausion": 90,
-		"theescort/mean_lizards": 1,
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
 		"theescort/better_polewalk": [4, 2],
 		"theescort/elevator": false,
-		"theescort/trampoline": 13
+		"theescort/trampoline": 13,
+		"theescort/mean_lizards": true,
+		"theescort/mean_garb_worms": true
 	}
 }
