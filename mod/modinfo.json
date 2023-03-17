@@ -1,9 +1,9 @@
 ﻿{
 	"id": "urufudoggo.theescort",
 	"name": "[WIP] The Escort",
-	"version": "0.1.0.2",
+	"version": "0.1.0.3",
 	"authors": "Urufudoggo",
-	"description": "A mod that will add The Escort and their very special slugpup.<LINE>[i]Thank you Walkfu for the placeholder headshot art (the design is not yet finalized)[/i]<LINE><LINE>Currently implements The Escort and some of their abilities and movement tech. <LINE>[i]Should[/i] be fully compatible for playing in other campaigns or arena.<LINE><LINE>[b]Feedback of any sort is HIGHLY appreciated![/b]<LINE><LINE><LINE><LINE>[u][b]<~DISCLAIMER~>[/b][/u]<LINE>Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...<LINE><LINE>[u][b]<~CURRENTLY IMPLEMENTED~>[/b][/u]<LINE>- Slide Stun (sliding into creature)<LINE>- Drop Kick (roll/slide pouncing into creature)<LINE>- Flip Pounce (charge pounce)<LINE>- Infinite roll<LINE>- half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)<LINE><LINE>[u][b]<~TO BE IMPLEMENTED~>[/b][/u] <LINE>- Parry Slide parrying spears<LINE>- grab thrown objects midair and hurl it back<LINE>- prioritize spears when picking up while doing Stun Slide or Drop Kick<LINE>- Remix menu to adjust multiple settings<LINE>- Code organization and comments for future me and y'all who want to use this code when I make the repository public...<LINE><LINE>[u][b]<~ROADMAP~>[/b][/u]<LINE>- Complete Escort's moveset<LINE>- Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)<LINE>- Add the special slugpup and their set AI<LINE>- Complete the campaign",
+	"description": "A mod that will add The Escort and their very special slugpup.<LINE>Thank you Walkfu for the placeholder headshot art (the design is not yet finalized)<LINE><LINE>Currently implements The Escort and some of their abilities and movement tech. <LINE>SHOULD be fully compatible for playing in other campaigns or arena.<LINE><LINE>Feedback of any sort is HIGHLY appreciated!",
 	"requirements": [ "slime-cubed.slugbase", "moreslugcats" ],
 	"requirements_names": [ "SlugBase", "More Slugcats Expansion" ]
 }

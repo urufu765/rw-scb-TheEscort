@@ -1,0 +1,34 @@
+A mod that will add The Escort and their very special slugpup.
+[i]Thank you Walkfu for the placeholder headshot art (the design is not yet finalized)[/i]
+
+Currently implements The Escort and some of their abilities and movement tech. 
+[i]Should[/i] be fully compatible for playing in other campaigns or arena.
+
+[b]Feedback of any sort is HIGHLY appreciated![/b]
+
+[hr][/hr][h2]<~DISCLAIMER~>[/h2]
+Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
+[hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
+[list]
+[*] Slide Stun (sliding into creature)
+[*] Drop Kick (roll/slide pouncing into creature)
+[*] Flip Pounce (charge pounce)
+[*] Infinite roll
+[*] half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
+[/list]
+[hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]
+[list]
+[*] Some creatures hate Escort's guts (and some will actively search for them)
+[*] Parry Slide parrying spears
+[*] grab thrown objects midair and hurl it back
+[*] prioritize spears when picking up while doing Stun Slide or Drop Kick
+[*] Remix menu to adjust multiple settings
+[*] Code organization and comments for future me and y'all who want to use this code when I make the repository public...
+[/list]
+[hr][/hr][h2]<~GOALS~>[/h2]
+[list]
+[*] Complete Escort's moveset
+[*] Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)
+[*] Add the special slugpup and their set AI
+[*] Complete the campaign
+[/list]
