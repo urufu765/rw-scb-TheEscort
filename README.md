@@ -7,7 +7,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
-**(0.1.0.2)** Tweaked lizard aggression stat behaviour, gave the dev concole a run for its money, got started with the remix menu interface, added an asset of Escort's death sound *(all I have to do now is find a way to actually import and use it)*, modified the readme and description a bit, and added a non-functioning code that is supposed to make garbage worms angy at Escort *(The Escort probably said something mean to them)*
+**(0.1.0.2)** Tweaked lizard aggression stat behaviour, got started with the remix menu interface, added an asset of Escort's death sound *(all I have to do now is find a way to actually import and use it)*, modified the readme and description a bit, and added a non-functioning code that is supposed to make garbage worms angy at Escort *(The Escort probably said something mean to them)*
 
 **(0.1.0.1)** Updated name to be a bit more suitable and a bit more code organizing.
 
