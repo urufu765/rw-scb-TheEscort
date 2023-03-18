@@ -7,9 +7,11 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.1.4)** Reduced the Hyped dropkick damage multiplier from 2x to 1.5x and reduced the base damage to 0.7 (hyped: 1.05). Also incrased the opacity of the Battle-Hyped visual indicator
+
 **(0.1.1.3)** An attempt was made at completing Parry Slide, but the current implementation doesn't work fully... so here's a small bump of an update that may or may not have improved the parry that's already existing. (Next update will be Headbutt or better wall jump)
 
-**(0.1.1.2)** Raised the regular dropkick damage to 0.75 and the hyped damage to 1.5, and added Batflies and slugpups (if friendly fire is off) to *"can't Stun Slide/Drop Kick"*
+**(0.1.1.2)** Raised the regular dropkick damage to 0.75 and the hyped damage to 1.6, and added Batflies and slugpups (if friendly fire is off) to *"can't Stun Slide/Drop Kick"*
 
 **(0.1.1.1)** Disabled Garbage Worm auto aggression which may have caused some soft locks...*(it didn't work anyways)*
 

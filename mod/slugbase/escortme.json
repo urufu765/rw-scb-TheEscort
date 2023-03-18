@@ -39,7 +39,7 @@
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 		"theescort/better_crawl": [3, 5, 2, 3.5, 4, 2.5],
-		"theescort/body_slam": [0.05, 35, 0.75, 15],
+		"theescort/body_slam": [0.05, 35, 0.7, 15],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
 		"theescort/exhausion": 90,

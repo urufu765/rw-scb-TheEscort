@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.3")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.4")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -116,7 +116,7 @@ namespace SlugTemplate
             if(EscortSta.TryGet(self, out bool StaSysOn) && StaReq.TryGet(self, out float requirement) && StaSysOn){
                 if (self.aerobicLevel > requirement){
                     Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                    playerColor.a = 0.7f;
+                    playerColor.a = 0.8f;
 
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 8f, 15f, playerColor));
                 }
@@ -273,7 +273,7 @@ namespace SlugTemplate
                             // When Escort is sliding, parry bites and stabs
                             Debug.Log("Escort is getting bit or stabbed");
                             (source.owner as Creature).LoseAllGrasps();
-                            (source.owner as Creature).stun = 20;
+                            (source.owner as Creature).stun = 25;
                             (self as Player).WallJump(direction);
                             type = Creature.DamageType.Blunt;
                             damage = 0; stunBonus = 0; (self as Player).aerobicLevel = 1f;
@@ -396,8 +396,8 @@ namespace SlugTemplate
                     }
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     (otherObject as Creature).LoseAllGrasps();
-                    float normSlamDamage = (StaSysOn ? bodySlam[2] : bodySlam[2] + 0.2f);
-                    if (StaSysOn && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 2f;}
+                    float normSlamDamage = (StaSysOn ? bodySlam[2] : bodySlam[2] + 0.15f);
+                    if (StaSysOn && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*multiplier, self.mainBodyChunk.vel.y*multiplier)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
