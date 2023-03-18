@@ -10,7 +10,7 @@
 		"walk_speed": [1.1, 1.0],
 		"theescort/speed": [1.1, 1.0],
 		"crouch_stealth": [0.6, 0.8],
-		"throw_skill": [1, 2],
+		"throw_skill": [0, 1],
 		"lung_capacity": [3.0, 1.5],
 		"loudness": [2, 1.7],
 		"alignments": {
@@ -45,7 +45,7 @@
 		"theescort/exhausion": 90,
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
-		"theescort/better_polewalk": [2.7, 4.5, 2, 3.3, 3.7, 2],
+		"theescort/better_polewalk": [3.2, 6, 2, 3.7, 4.2, 2.8],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
 		"theescort/mean_lizards": true,
@@ -54,6 +54,7 @@
 		"theescort/movement_reduction": 0.25,
 		"theescort/stamina_req": 0.75,
 		"theescort/reset_rate": 60,
-		"theescort/parry_test": false
+		"theescort/parry_test": false,
+		"theescort/spear_damage": [1.75, 1.0]
 	}
 }

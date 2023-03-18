@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.4")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -32,6 +32,7 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
         public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
+        public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
         private int slowDownDevConsole = 0;
         
 
@@ -52,6 +53,7 @@ namespace SlugTemplate
             On.Player.AerobicIncrease += Player_AerobicIncrease;
             On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
             On.Player.Update += new On.Player.hook_Update(this.Player_Update);
+            On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Player_ThrownSpear);
             //On.Player.SpearStick += new On.Player.hook_SpearStick(this.Player_SpearStick);
             }
             
@@ -415,6 +417,36 @@ namespace SlugTemplate
                     Debug.Log("Dropkicked!");
                     }
                 }
+            }
+        }
+
+
+        // Implement unique spearskill
+        private void Player_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear){
+            orig(self, spear);
+            if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && EscortSta.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && !self.Malnourished){
+                float thrust = 7f;
+                if (hypedMode){
+                    if (self.aerobicLevel > requirement){
+                        spear.spearDamageBonus = spearDmgBonuses[0];
+                        self.animation = Player.AnimationIndex.Flip;
+                        thrust = 10f;
+                    } else {
+                        spear.spearDamageBonus = spearDmgBonuses[1];
+                        thrust = 5f;
+                    }
+                } else {
+                    spear.spearDamageBonus = 1.25f;
+                }
+                if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
+                    self.firstChunk.vel += spear.firstChunk.vel.normalized * 5f;
+                } else {
+                    self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
+                    BodyChunk firstChunker = self.firstChunk;
+                    firstChunker.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
+                }
+
+
             }
         }
 
