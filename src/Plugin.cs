@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.2")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -335,7 +335,12 @@ namespace SlugTemplate
             EscortSta.TryGet(self, out bool StaSysOn);
             StaReq.TryGet(self, out float requirement);
 
-            if (otherObject is Creature && (!ModManager.CoopAvailable || !(otherObject is Player) || RWCustom.Custom.rainWorld.options.friendlyFire)){
+            if (otherObject is Creature && 
+                (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly &&
+                (!ModManager.CoopAvailable || 
+                !(otherObject is Player) || 
+                (otherObject as Creature).abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC ||
+                RWCustom.Custom.rainWorld.options.friendlyFire)){
                 //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
@@ -387,7 +392,7 @@ namespace SlugTemplate
                     }
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     (otherObject as Creature).LoseAllGrasps();
-                    float normSlamDamage = (StaSysOn ? bodySlam[2] - 0.1f : bodySlam[2]);
+                    float normSlamDamage = (StaSysOn ? bodySlam[2] : bodySlam[2] + 0.2f);
                     if (StaSysOn && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 2f;}
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*multiplier, self.mainBodyChunk.vel.y*multiplier)),
