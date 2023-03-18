@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.2.1)** Took away the option to friendly fire to players straight up (while ).
+
 **(0.1.2)** Remember when I said I was going to do Headbutt or better wall jump? I lied. Have a specialized spear throwing mechanic. Also buffed Escort's polewalking speed
 
 **(0.1.1.4)** Reduced the Hyped dropkick damage multiplier from 2x to 1.6x and reduced the base damage to 0.7 (hyped: 1.12). Also increased the opacity of the Battle-Hyped visual indicator

@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -342,11 +342,11 @@ namespace SlugTemplate
             StaReq.TryGet(self, out float requirement);
 
             if (otherObject is Creature && 
-                (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly &&
+                (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && (otherObject as Creature).abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Slugcat){
+                /*
+                RWCustom.Custom.rainWorld.options.friendlyFire || 
                 (!ModManager.CoopAvailable || 
-                !(otherObject is Player) || 
-                (otherObject as Creature).abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC ||
-                RWCustom.Custom.rainWorld.options.friendlyFire)){
+                 || ))*/
                 //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
