@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.2")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.3")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -31,6 +31,7 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float> SlowDown = PlayerFloat("theescort/movement_reduction");
         public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
+        public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
         private int slowDownDevConsole = 0;
         
 
@@ -257,12 +258,14 @@ namespace SlugTemplate
             if (self is Player){  // Check if self is player such that when class is converted it does not cause an error
 
                 // connects to the Escort's Parryslide option
-                if (ParrySlide.TryGet((self as Player), out var enableParry) && enableParry && (self as Player).animation == Player.AnimationIndex.BellySlide){
+                if (ParrySlide.TryGet((self as Player), out bool enableParry) && enableParry && 
+                ParryTest.TryGet((self as Player), out bool standParry) &&
+                (standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide)){
                     // Parryslide (parry module)
                     Debug.Log("Escort attempted a Parryslide");
                     int direction;
                     direction = (self as Player).slideDirection;
-                    Debug.Log("Escort is being assaulted by: " + source.GetType());
+                    Debug.Log("Escort is being assaulted by: " + source.owner.GetType());
 
                     // Creatures
                     if (source.owner is Creature){
@@ -274,8 +277,8 @@ namespace SlugTemplate
                             (self as Player).WallJump(direction);
                             type = Creature.DamageType.Blunt;
                             damage = 0; stunBonus = 0; (self as Player).aerobicLevel = 1f;
-                            //(self as Player).abstractPhysicalObject.LoseAllStuckObjects();
-                            //(self as Player).abstractCreature.LoseAllStuckObjects();
+                            (self as Player).abstractPhysicalObject.LoseAllStuckObjects();
+                            (self as Player).abstractCreature.LoseAllStuckObjects();
 
                         } else if (type == Creature.DamageType.Explosion){
                             Debug.Log("Escort is being blown up");
@@ -288,11 +291,12 @@ namespace SlugTemplate
                             (self as Player).aerobicLevel = 1f;
                         }
 
-                    } /*
-                    else if (source.owner is Weapon) {
+                    }
+                    if (source.owner is Weapon) {
                         Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
-                        (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, vector, source.owner.firstChunk.vel.magnitude);
-                    }*/
+                        (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, -vector, source.owner.firstChunk.vel.magnitude);
+                        damage = 0;
+                    }
                     // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
                     // Visual indicator doesn't work ;-;
                     //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);

@@ -53,6 +53,7 @@
 		"theescort/adrenaline_system": true,
 		"theescort/movement_reduction": 0.25,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 60
+		"theescort/reset_rate": 60,
+		"theescort/parry_test": false
 	}
 }
