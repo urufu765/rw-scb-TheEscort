@@ -1,4 +1,4 @@
-A mod that will add The Escort and their very special slugpup.
+A mod that will add The Escort and (eventually) their very special slugpup.
 [i]Thank you Walkfu for the placeholder headshot art (the design is not yet finalized)[/i]
 
 Currently implements The Escort and some of their abilities and movement tech. 
@@ -19,6 +19,8 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]
 [list]
+[*] Escort Headbutt (when you speed out of a pipe)
+[*] Escort's wall jumps are actually useful (juuuust enough to get out of the gu'uh 'n' into Chimney without the use of spears)
 [*] Some creatures hate Escort's guts (and some will actively search for them)
 [*] Parry Slide parrying spears
 [*] grab thrown objects midair and hurl it back

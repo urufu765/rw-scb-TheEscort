@@ -49,9 +49,10 @@
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
 		"theescort/mean_lizards": true,
-		"theescort/mean_garb_worms": true,
+		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/movement_reduction": 0.25,
-		"theescort/stamina_req": 0.75
+		"theescort/stamina_req": 0.75,
+		"theescort/reset_rate": 60
 	}
 }

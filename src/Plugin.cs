@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.1.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -30,6 +30,8 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float[]> MoveSpeeds = PlayerFloats("theescort/speed");
         public static readonly PlayerFeature<float> SlowDown = PlayerFloat("theescort/movement_reduction");
         public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
+        public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
+        private int slowDownDevConsole = 0;
         
 
         // Add hooks
@@ -45,7 +47,7 @@ namespace SlugTemplate
             On.Player.HeavyCarry += new On.Player.hook_HeavyCarry(this.Player_HeavyCarry);
             //On.Player.Die += Player_Die;
             On.Lizard.ctor += Lizard_ctor;
-            On.GarbageWorm.ctor += new On.GarbageWorm.hook_ctor(this.GarbageWorm_ctor);
+            //On.GarbageWorm.ctor += new On.GarbageWorm.hook_ctor(this.GarbageWorm_ctor);
             On.Player.AerobicIncrease += Player_AerobicIncrease;
             On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
             On.Player.Update += new On.Player.hook_Update(this.Player_Update);
@@ -70,7 +72,9 @@ namespace SlugTemplate
             }
         }
 
-        // Implement MeanGarbageWorms
+        // Implement MeanGarbageWorms (Doesn't work!)
+
+        /*
         private void GarbageWorm_ctor(On.GarbageWorm.orig_ctor orig, GarbageWorm self, AbstractCreature abstractCreature, World world){
             orig(self, abstractCreature, world);
 
@@ -86,7 +90,7 @@ namespace SlugTemplate
                     }
                 }
             }
-        }
+        }*/
 
         private void Player_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
             orig(self, f);
@@ -105,6 +109,8 @@ namespace SlugTemplate
         // Implement variable move speed
         private void Player_Update(On.Player.orig_Update orig, Player self, bool eu){
             orig(self, eu);
+
+            slowDownDevConsole++;
 
             if(EscortSta.TryGet(self, out bool StaSysOn) && StaReq.TryGet(self, out float requirement) && StaSysOn){
                 if (self.aerobicLevel > requirement){
@@ -219,8 +225,13 @@ namespace SlugTemplate
             orig(self);
             if (self.slugcatStats.name.value == "EscortMe"){
                 //self.canBeHitByWeapons = !(self.animation == Player.AnimationIndex.BellySlide);
-                //Debug.Log("Escort Invulnerable to Weapons: " + self.canBeHitByWeapons);
+                //if (RR.TryGet(self, out int r) && slowDownDevConsole > r){
+                //    Debug.Log("Escort Vulnerable to Weapons: " + self.canBeHitByWeapons);
+                //    slowDownDevConsole = 0;
+                //}
                 //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+
+
                 // Infiniroll
                 if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
                     self.rollCounter = 0;
@@ -251,6 +262,7 @@ namespace SlugTemplate
                     Debug.Log("Escort attempted a Parryslide");
                     int direction;
                     direction = (self as Player).slideDirection;
+                    Debug.Log("Escort is being assaulted by: " + source.GetType());
 
                     // Creatures
                     if (source.owner is Creature){
@@ -262,6 +274,9 @@ namespace SlugTemplate
                             (self as Player).WallJump(direction);
                             type = Creature.DamageType.Blunt;
                             damage = 0; stunBonus = 0; (self as Player).aerobicLevel = 1f;
+                            //(self as Player).abstractPhysicalObject.LoseAllStuckObjects();
+                            //(self as Player).abstractCreature.LoseAllStuckObjects();
+
                         } else if (type == Creature.DamageType.Explosion){
                             Debug.Log("Escort is being blown up");
                             (self as Player).Stun(20);
@@ -273,7 +288,11 @@ namespace SlugTemplate
                             (self as Player).aerobicLevel = 1f;
                         }
 
-                    }
+                    } /*
+                    else if (source.owner is Weapon) {
+                        Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
+                        (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, vector, source.owner.firstChunk.vel.magnitude);
+                    }*/
                     // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
                     // Visual indicator doesn't work ;-;
                     //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
