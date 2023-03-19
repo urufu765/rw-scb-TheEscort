@@ -7,7 +7,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
-**(0.1.2.1)** Took away the option to friendly fire to players straight up (while ).
+**(0.1.2.2)** Code organization (a little), fixed softlocks caused by Parry Slide, and a bit more debug output.
+
+**(0.1.2.1)** Took away the option to friendly fire to players straight up (while I fix the option anyways).
 
 **(0.1.2)** Remember when I said I was going to do Headbutt or better wall jump? I lied. Have a specialized spear throwing mechanic. Also buffed Escort's polewalking speed
 
