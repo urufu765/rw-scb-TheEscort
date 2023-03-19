@@ -29,6 +29,10 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [*] Remix menu to adjust multiple settings
 [*] Code organization and comments for future me and y'all who want to use this code when I make the repository public...
 [/list]
+[hr][/hr][h2]<~KNOWN ISSUES~>[/h2]
+[list]
+[*] Rotund World: When eating to full, the game softcrashes
+[/list]
 [hr][/hr][h2]<~GOALS~>[/h2]
 [list]
 [*] Complete Escort's moveset

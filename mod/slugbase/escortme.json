@@ -44,7 +44,7 @@
 		"theescort/exhausion": 90,
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
-		"theescort/better_polewalk": [3.2, 6, 2, 3.7, 4.2, 2.8],
+		"theescort/better_polewalk": [3.6, 6, 2, 3.7, 4.2, 2.8],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
 		"theescort/mean_lizards": true,

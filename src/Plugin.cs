@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2.2")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2.3")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -190,24 +190,12 @@ namespace SlugTemplate
         private void Player_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self){
             orig(self);
             if (self.slugcatStats.name.value == "EscortMe"){
-                //self.canBeHitByWeapons = !(self.animation == Player.AnimationIndex.BellySlide);
-                //if (RR.TryGet(self, out int r) && slowDownDevConsole > r){
-                //    Debug.Log("Escort Vulnerable to Weapons: " + self.canBeHitByWeapons);
-                //    slowDownDevConsole = 0;
-                //}
-                //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
 
 
                 // Infiniroll
                 if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
                     self.rollCounter = 0;
-                }/* else {  // Inspired from the decompiled code
-                    self.rollDirection = 0;
-                    self.room.PlaySound(SoundID.Slugcat_Roll_Finish, self.mainBodyChunk.pos, 1f, 1f);
-                    self.animation = Player.AnimationIndex.None;
-                    self.standing = (self.input[0].y > -1); 
-                    return;
-                }*/
+                }
 
                 // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
                 if (self.animation == Player.AnimationIndex.BellySlide){
@@ -367,49 +355,9 @@ namespace SlugTemplate
                         }
                     }
                     }
-                    /*
-                    // Creatures
-                    if (source != null && source.owner is Creature){
-                        if (type == Creature.DamageType.Bite || type == Creature.DamageType.Stab){
-                            // When Escort is sliding, parry bites and stabs
-                            Debug.Log("Escort is getting bit or stabbed");
-                            (source.owner as Creature).LoseAllGrasps();
-                            (source.owner as Creature).stun = 25;
-                            (self as Player).WallJump(direction);
-                            type = Creature.DamageType.Blunt;
-                            damage = 0; stunBonus = 0; (self as Player).aerobicLevel = 1f;
-                            (self as Player).abstractPhysicalObject.LoseAllStuckObjects();
-                            (self as Player).abstractCreature.LoseAllStuckObjects();
-                            parrySuccess = true;
 
-                        } else if (type == Creature.DamageType.Explosion){
-                            Debug.Log("Escort is being blown up");
-                            (self as Player).Stun(100);
-                            damage = 0;
-                            parrySuccess = true;
-
-                        } else if (type == Creature.DamageType.Electric){
-                            Debug.Log("Escort is deep frying");
-                            stunBonus = 0; 
-                            (self as Player).WallJump(-direction);
-                            (self as Player).aerobicLevel = 1f;
-                        }
-
-                    }
-
-                    Debug.Log("Escort didn't get hurt by a creature...");
-                    if (source != null && source.owner is Weapon) {
-                        Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
-                        (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, -vector, source.owner.firstChunk.vel.magnitude);
-                        damage = 0;
-                        parrySuccess = true;
-
-                    } */
                     // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
                     // Visual indicator doesn't work ;-;
-                    //Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.black;
                     if (parrySuccess){
 
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
@@ -419,8 +367,6 @@ namespace SlugTemplate
                         Debug.Log("... nor an object");
 
                     }
-                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = Color.white;
-                    //RainWorld.PlayerObjectBodyColors[(self.State as PlayerState).playerNumber] = playerColor;
                     Debug.Log("Parry Check end");
 
                 }
@@ -428,18 +374,6 @@ namespace SlugTemplate
             orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
 
         }
-
-
-        /*
-        private bool Player_SpearStick(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos onAppendagePos, Vector2 direction){
-            if (ParrySlide.TryGet(self, out bool parryMode) && parryMode){
-                Debug.Log("Attempting to Parry");
-                return !(self.animation == Player.AnimationIndex.BellySlide);
-            }
-            orig(self, source, dmg, chunk, onAppendagePos, direction);
-            return true;
-        }
-        */
 
 
         // Implement Bodyslam
@@ -465,11 +399,7 @@ namespace SlugTemplate
 
             if (otherObject is Creature && 
                 (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && (otherObject as Creature).abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Slugcat){
-                /*
-                RWCustom.Custom.rainWorld.options.friendlyFire || 
-                (!ModManager.CoopAvailable || 
-                 || ))*/
-                //float num = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 /*
@@ -503,11 +433,22 @@ namespace SlugTemplate
                         self.PickupPressed();
                     }
 
-                    direction = self.flipDirection;
-                    self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 5f, 5.5f, 40f, new Color(0f, 0.35f, 1f, 0f)));
-                    self.animation = Player.AnimationIndex.Flip;
-                    Debug.Log("Stunslided!");
+                    if (self.longBellySlide) {
+                        direction = self.rollDirection;
+                        self.animation = Player.AnimationIndex.Flip;
+                        self.WallJump(direction);
+                        self.animation = Player.AnimationIndex.BellySlide;
+                        self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
+                        self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
+                        self.longBellySlide = true;
+                        Debug.Log("Greatdadstance stunslide!");
+                    } else {
+                        direction = self.flipDirection;
+                        self.WallJump(direction);
+                        self.animation = Player.AnimationIndex.Flip;
+                        Debug.Log("Stunslided!");
+                    }
                     }
 
                 // Dropkick
@@ -551,108 +492,30 @@ namespace SlugTemplate
                 if (hypedMode){
                     if (self.aerobicLevel > requirement){
                         spear.spearDamageBonus = spearDmgBonuses[0];
-                        self.animation = Player.AnimationIndex.Flip;
-                        thrust = 10f;
+                        if (self.canJump != 0){
+                            self.animation = Player.AnimationIndex.Flip;
+                            thrust = 12f;
+                        } else {
+                            self.animation = Player.AnimationIndex.BellySlide;
+                            self.longBellySlide = true;
+                            thrust = 9f;
+                        }
                     } else {
                         spear.spearDamageBonus = spearDmgBonuses[1];
+                        self.animation = Player.AnimationIndex.Flip;
                         thrust = 5f;
                     }
                 } else {
                     spear.spearDamageBonus = 1.25f;
                 }
                 if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
-                    self.firstChunk.vel += spear.firstChunk.vel.normalized * 5f;
+                    self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
                 } else {
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
                     BodyChunk firstChunker = self.firstChunk;
                     firstChunker.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
                 }
-
-
             }
         }
-
-
-        // Implement ExlodeOnDeath
-        /*
-        private void Player_Die(On.Player.orig_Die orig, Player self)
-        {
-            bool wasDead = self.dead;
-
-            orig(self);
-
-            if(!wasDead && self.dead
-                && ExplodeOnDeath.TryGet(self, out bool explode)
-                && explode)
-            {
-                // Adapted from ScavengerBomb.Explode
-                var room = self.room;
-                var pos = self.mainBodyChunk.pos;
-                var color = self.ShortCutColor();
-                room.AddObject(new Explosion(room, self, pos, 7, 250f, 6.2f, 2f, 280f, 0.25f, self, 0.7f, 160f, 1f));
-                room.AddObject(new Explosion.ExplosionLight(pos, 280f, 1f, 7, color));
-                room.AddObject(new Explosion.ExplosionLight(pos, 230f, 1f, 3, new Color(1f, 1f, 1f)));
-                room.AddObject(new ExplosionSpikes(room, pos, 14, 30f, 9f, 7f, 170f, color));
-                room.AddObject(new ShockWave(pos, 330f, 0.045f, 5, false));
-
-                room.ScreenMovement(pos, default, 1.3f);
-                room.PlaySound(SoundID.Bomb_Explode, pos);
-                room.InGameNoise(new Noise.InGameNoise(pos, 9000f, self, 1f));
-            }
-        }
-        */
     }
-
-    // Unused bits (Archive)
-
-    /*
-    class Plugin : BaseUnityPlugin{
-        public static readonly PlayerFeature<bool> ExplodeOnDeath = PlayerBool("theescort/explode_on_death");
-        public static readonly PlayerFeature<float> BetterSlide = PlayerFloat("theescort/better_slide");
-        public static readonly PlayerFeature<float[]> MoveSpeeds = PlayerFloats("theescort/speed");
-        public static readonly PlayerFeature<float> SlowDown = PlayerFloat("theescort/movement_reduction");
-    }
-    */
-
-
-    /*
-    public void OnEnable(){
-        On.Player.Die += Player_Die;
-        On.GarbageWorm.ctor += new On.GarbageWorm.hook_ctor(this.GarbageWorm_ctor);
-        On.Player.SpearStick += new On.Player.hook_SpearStick(this.Player_SpearStick);
-    }
-    */
-
-
-    /*
-    // Implement MeanGarbageWorms (Doesn't work!)
-    private void GarbageWorm_ctor(On.GarbageWorm.orig_ctor orig, GarbageWorm self, AbstractCreature abstractCreature, World world){
-        orig(self, abstractCreature, world);
-
-        if(MeanGarbageWorms.TryGet(world.game, out bool meanness) && meanness){
-            Debug.Log("Angyable go BRRR");
-            for (int i=0; i<self.room.abstractRoom.creatures.Count; i++){
-                if (self.room.abstractRoom.creatures[i].creatureTemplate.type == CreatureTemplate.Type.Slugcat && !self.State.angryAt.Contains(self.room.abstractRoom.creatures[i].ID)){
-                    Debug.Log("Angyable slugcat found!");
-                    if ((self.room.abstractRoom.creatures[i].realizedCreature as Player).slugcatStats.name.value == "EscortMe"){
-                        Debug.Log("Found an Escort to definitely be mad at");
-                        self.State.angryAt.Add(self.room.abstractRoom.creatures[i].ID);
-                    }
-                }
-            }
-        }
-    }*/
-
-
-    /*
-    private void Player_Update(On.Player.orig_Update orig, Player self, bool eu){
-        if (EscortSta.TryGet(self, out bool StaSysOn) && MoveSpeeds.TryGet(self, out float[] runSpeed) && SlowDown.TryGet(self, out float slowing) && StaSysOn){
-            int whichOne = 0;
-            if (self.slugcatStats.malnourished){
-                whichOne = 1;
-            }
-            self.slugcatStats.runspeedFac = Mathf.Lerp(runSpeed[whichOne] - slowing, runSpeed[whichOne], 1 - self.aerobicLevel);
-        }
-    }
-    */
 }
