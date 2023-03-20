@@ -8,12 +8,17 @@ Currently implements The Escort and some of their abilities and movement tech.
 
 [hr][/hr][h2]<~DISCLAIMER~>[/h2]
 Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
+[hr][/hr][h2]<~KNOWN ISSUES~>[/h2]
+[list]
+[*] Rotund World: The game softlocks due to reasons that have yet to be uncovered
+[/list]
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
 [*] Slide Stun (sliding into creature)
 [*] Drop Kick (roll/slide pouncing into creature)
 [*] Flip Pounce (charge pounce)
 [*] Infinite roll
+[*] Dual wield spears (and dead lizards)
 [*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
 [*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), Gourmand thrust)
@@ -29,14 +34,14 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [*] Remix menu to adjust multiple settings
 [*] Code organization and comments for future me and y'all who want to use this code when I make the repository public...
 [/list]
-[hr][/hr][h2]<~KNOWN ISSUES~>[/h2]
-[list]
-[*] Rotund World: When eating to full, the game softcrashes
-[/list]
 [hr][/hr][h2]<~GOALS~>[/h2]
 [list]
 [*] Complete Escort's moveset
 [*] Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)
 [*] Add the special slugpup and their set AI
 [*] Complete the campaign
+[/list]
+[hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
+[list]
+[*]
 [/list]

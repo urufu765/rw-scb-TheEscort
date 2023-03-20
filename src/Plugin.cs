@@ -7,14 +7,14 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.2.3")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.3.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
 
         public static readonly PlayerFeature<bool> BetterPounce = PlayerBool("theescort/better_pounce");
-        public static readonly GameFeature<bool> MeanLizards = GameBool("theescort/mean_lizards");
-        public static readonly GameFeature<bool> MeanGarbageWorms = GameBool("theescort/mean_garb_worms");
+        public static readonly GameFeature<bool> SuperMeanLizards = GameBool("theescort/mean_lizards");
+        public static readonly GameFeature<bool> SuperMeanGarbageWorms = GameBool("theescort/mean_garb_worms");
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
         public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
@@ -23,12 +23,13 @@ namespace SlugTemplate
         public static readonly PlayerFeature<float> DropKick = PlayerFloat("theescort/dk_multiplier");
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
         public static readonly PlayerFeature<bool> Elevator = PlayerBool("theescort/elevator");
-        public static readonly PlayerFeature<float> Trampoline = PlayerFloat("theescort/trampoline");
+        public static readonly PlayerFeature<float> TrampOhLean = PlayerFloat("theescort/trampoline");
         public static readonly PlayerFeature<bool> EscortSta = PlayerBool("theescort/adrenaline_system");
         public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
         public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
+        public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
         private int slowDownDevConsole = 0;
         
 
@@ -47,6 +48,7 @@ namespace SlugTemplate
             On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
             On.Player.Update += new On.Player.hook_Update(this.Player_Update);
             On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Player_ThrownSpear);
+            On.Player.Grabability += new On.Player.hook_Grabability(this.Player_Grabability);
             }
             
         
@@ -61,7 +63,7 @@ namespace SlugTemplate
         {
             orig(self, abstractCreature, world);
 
-            if(MeanLizards.TryGet(world.game, out bool meanness) && meanness)
+            if(SuperMeanLizards.TryGet(world.game, out bool meanness) && meanness)
             {
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
@@ -107,7 +109,9 @@ namespace SlugTemplate
             if (BetterPounce.TryGet(self, out var willPounce))
             {
                 if (self.slugcatStats.name.value == "EscortMe"){
-                    self.aerobicLevel -= 0.1f;
+                    if (self.aerobicLevel > 0.1f){
+                        self.aerobicLevel -= 0.1f;
+                    }
 
                     // Replace chargepounce with a sick flip
                     if (willPounce && (self.superLaunchJump >= 20 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0)){
@@ -121,22 +125,22 @@ namespace SlugTemplate
 
         // Implement Heavylifter
         private bool Player_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
-            orig(self, obj);
             if (CarryHeavy.TryGet(self, out var ratioed)){
-                    if (self.Grabability(obj) != Player.ObjectGrabability.TwoHands && obj.TotalMass <= self.TotalMass * ratioed){
-                        if (ModManager.CoopAvailable){
-                            Player player = obj as Player;
-                            if (player != null){
-                                return !player.isSlugpup;
-                            }
+                if (self.Grabability(obj) != Player.ObjectGrabability.TwoHands && obj.TotalMass <= self.TotalMass * ratioed){
+                    if (ModManager.CoopAvailable){
+                        Player player = obj as Player;
+                        if (player != null){
+                            return !player.isSlugpup;
                         }
-                        return false;
                     }
-                    return true;
+                    return false;
+                }
+                return orig(self, obj);
             } 
             
             // for some reason if I don't copy and paste the thing, the other scugs get affected...
             else {
+                /*
                 if (self.Grabability(obj) == Player.ObjectGrabability.Drag)
             {
                 return true;
@@ -152,8 +156,8 @@ namespace SlugTemplate
                         }
                     }
                     return false;
-                }
-                return true;
+                }*/
+                return orig(self, obj);
             }
         }
 
@@ -393,7 +397,7 @@ namespace SlugTemplate
 
             BodySlam.TryGet(self, out float[] bodySlam);
             Elevator.TryGet(self, out bool yeet);
-            Trampoline.TryGet(self, out float bounce);
+            TrampOhLean.TryGet(self, out float bounce);
             EscortSta.TryGet(self, out bool StaSysOn);
             StaReq.TryGet(self, out float requirement);
 
@@ -408,9 +412,9 @@ namespace SlugTemplate
                 if (self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead){
                     if (yeet){
                         self.jumpBoost += 4;
-                    } else if (self.jumpBoost == 0) {
-                        self.jumpBoost += bounce;
-                    } else if (self.jumpBoost >= bounce){
+                    } else if (self.jumpBoost <= 0) {
+                        self.jumpBoost = bounce;
+                    } else if (self.jumpBoost >= bounce && self.jumpBoost >= 1f){
                         self.jumpBoost--;  // not sure if this does anything...
                     }
                 }
@@ -441,7 +445,6 @@ namespace SlugTemplate
                         self.animation = Player.AnimationIndex.BellySlide;
                         self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
                         self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
-                        self.longBellySlide = true;
                         Debug.Log("Greatdadstance stunslide!");
                     } else {
                         direction = self.flipDirection;
@@ -496,8 +499,8 @@ namespace SlugTemplate
                             self.animation = Player.AnimationIndex.Flip;
                             thrust = 12f;
                         } else {
-                            self.animation = Player.AnimationIndex.BellySlide;
                             self.longBellySlide = true;
+                            self.animation = Player.AnimationIndex.BellySlide;
                             thrust = 9f;
                         }
                     } else {
@@ -517,5 +520,20 @@ namespace SlugTemplate
                 }
             }
         }
+
+        private Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
+        if (dualWielding.TryGet(self, out bool dW) && dW){
+            if (obj is Weapon){
+                return Player.ObjectGrabability.OneHand;
+            } else if (obj is Lizard && (obj as Lizard).dead){
+                return Player.ObjectGrabability.OneHand;
+            } else {
+                return orig(self, obj);
+            }
+        } else {
+            return orig(self, obj);
+        }
     }
+    }
+
 }

@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.3.1)** Released a patch that fixes Rotund mod! Also nerfed weight and sneak ability to balance out the dual spears.
+
+**(0.1.3)** Now you can dual-wield spears!... and also lizards :P
+
 **(0.1.2.3)** More code organization *(you should see little gameplay impact... if at all)*, made pole walk faster, and changed the behaviours of spear throws *(Hyped allows you to follow-up a spear throw with a stun-slide in certain conditions! Or if you miss the stun slide, a long slide!)*
 
 **(0.1.2.2)** Code organization (a little), fixed softlocks caused by Parry Slide, and a bit more debug output.
