@@ -20,7 +20,7 @@
 			"Scavengers": { "like": 0.5, "strength": 0.2 }
 		},
 		"diet": {
-			"base": "Gourmand",
+			"base": "Red",
 			"corpses": 0.75,
 			"plants": 0.75
 		},

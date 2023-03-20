@@ -8,10 +8,29 @@ Currently implements The Escort and some of their abilities and movement tech.
 
 [hr][/hr][h2]<~DISCLAIMER~>[/h2]
 Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
-[hr][/hr][h2]<~KNOWN ISSUES~>[/h2]
+[hr][/hr][h2]<~CONFLICTING MODS~>[/h2]
 [list]
-[*] Rotund World: The game softlocks due to reasons that have yet to be uncovered
+[*] [i]to be added[/i]
 [/list]
+[hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
+These mods have been tested in isolation, so there's a chance having multiple may still result in a bug/crash. If so, please report it in the discussions!
+[list]
+[*] [u]Jolly Coop[/u]: [b]Works[/b] (support may depend on other mods)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920903670]BeastMaster 1.4.1[/url]: [b]Lightly Tested[/b] (Requires further testing)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2943737047]BeastMasterPupExtras 1.0.1[/url]: [b]Lightly Tested[/b] (Requires further testing)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920640816]Deathcount 1.3.1[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920439125]Health Bar 1.0.0.0[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2922334539]Input Display 2.1.0[/url]: [b]Works[/b] (Can look glitched when other mods glitch)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933088640]Move Testing Rooms[/url]: [b]Barely Tested[/b] (Should work)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934808032]Movement Marker[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.6[/url]: [b]Lightly Tested[/b] (further & more in-depth testing required).
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933196558]SlugBase 2.1.1[/url]: [b]Obviously.[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929613038]Testing Arena 1.0.0.0[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929665635]Thicc Spearmaster[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID 0205[/url]: [b]Works[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920446893]Warp Menu 1.81[/url]: [b]Lightly Tested[/b] (Requires further testing)
+[/list]
+[*] [url=][/url]: [b][/b] ()
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
 [*] Slide Stun (sliding into creature)
@@ -40,8 +59,4 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [*] Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)
 [*] Add the special slugpup and their set AI
 [*] Complete the campaign
-[/list]
-[hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
-[list]
-[*]
 [/list]

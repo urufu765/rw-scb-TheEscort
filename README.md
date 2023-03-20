@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.3.2)** Friendly fire is back... properly this time I promise. Friendly fire is only activated when you activate it.
+
 **(0.1.3.1)** Released a patch that fixes Rotund mod! Also nerfed weight and sneak ability to balance out the dual spears.
 
 **(0.1.3)** Now you can dual-wield spears!... and also lizards :P
