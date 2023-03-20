@@ -1,0 +1,2 @@
+[ADD]Escort_Failure : escortfailure/vol=0.5/minPitch=0.9/maxPitch=1.1
+[ADD]Escort_Flip : escortflip/vol=0.3/pitch=1

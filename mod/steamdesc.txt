@@ -41,6 +41,7 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
 [*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), Gourmand thrust)
+[*] Custom SFX!
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]
 [list]

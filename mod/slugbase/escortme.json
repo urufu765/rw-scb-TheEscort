@@ -47,13 +47,14 @@
 		"theescort/better_polewalk": [3.6, 6, 2, 3.7, 4.2, 2.8],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
-		"theescort/mean_lizards": true,
+		"theescort/mean_lizards": false,
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
 		"theescort/reset_rate": 60,
 		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.75, 1.0],
-		"theescort/dual_wield": true
+		"theescort/dual_wield": true,
+		"theescort/sounds_ahoy": true
 	}
 }

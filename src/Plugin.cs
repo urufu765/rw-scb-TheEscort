@@ -7,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace SlugTemplate
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.3.2")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "urufudoggo.theescort";
@@ -24,12 +24,19 @@ namespace SlugTemplate
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
         public static readonly PlayerFeature<bool> Elevator = PlayerBool("theescort/elevator");
         public static readonly PlayerFeature<float> TrampOhLean = PlayerFloat("theescort/trampoline");
-        public static readonly PlayerFeature<bool> EscortSta = PlayerBool("theescort/adrenaline_system");
+        public static readonly PlayerFeature<bool> Hyped = PlayerBool("theescort/adrenaline_system");
         public static readonly PlayerFeature<float> StaReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
         public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
         public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
+        public static readonly PlayerFeature<bool> soundsAhoy = PlayerBool("theescort/sounds_ahoy");
+
+        private static readonly String dMe = "<EscortMe> ";
+
+        public static SoundID Escort_Death;
+        public static SoundID Escort_Flip;
+
         private int slowDownDevConsole = 0;
         
 
@@ -49,13 +56,15 @@ namespace SlugTemplate
             On.Player.Update += new On.Player.hook_Update(this.Player_Update);
             On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Player_ThrownSpear);
             On.Player.Grabability += new On.Player.hook_Grabability(this.Player_Grabability);
+            On.Player.Die += new On.Player.hook_Die(this.Player_Die);
             }
             
         
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
-            
+            Escort_Death = new SoundID("Escort_Failure", true);
+            Escort_Flip = new SoundID("Escort_Flip", true);
         }
 
         // Implement lizard aggression (edited from template)
@@ -91,8 +100,8 @@ namespace SlugTemplate
             // For slowed down dev console output
             slowDownDevConsole++;
 
-            if(EscortSta.TryGet(self, out bool StaSysOn) && StaReq.TryGet(self, out float requirement) && StaSysOn){
-                if (self.aerobicLevel > requirement){
+            if(Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement)){
+                if (hypedMode && self.aerobicLevel > requirement){
                     Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     playerColor.a = 0.8f;
 
@@ -114,8 +123,12 @@ namespace SlugTemplate
                     }
 
                     // Replace chargepounce with a sick flip
-                    if (willPounce && (self.superLaunchJump >= 20 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0)){
-                        Debug.Log("FLIPERONI GO!");
+                    if (
+                        willPounce && (self.superLaunchJump >= 20 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0)
+                        ){
+                        Debug.Log(dMe + "FLIPERONI GO!");
+                        Room room = self.room;
+                        room.PlaySound(Escort_Flip, self.mainBodyChunk.pos);
                         self.animation = Player.AnimationIndex.Flip;
                     }
                 }
@@ -166,12 +179,12 @@ namespace SlugTemplate
         private void Player_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self){
             orig(self);
 
-            if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && EscortSta.TryGet(self, out bool StaSysOn)){
+            if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && Hyped.TryGet(self, out bool hypedMode)){
 
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
-                self.dynamicRunSpeed[0] = (StaSysOn? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
-                self.dynamicRunSpeed[1] = (StaSysOn? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
                 //Debug.Log("Escort's Speed:" + self.dynamicRunSpeed[0]);
             }
 
@@ -183,8 +196,8 @@ namespace SlugTemplate
             or to that degree.
             */
             else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
-                self.dynamicRunSpeed[0] = (StaSysOn? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
-                self.dynamicRunSpeed[1] = (StaSysOn? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
+                self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
             }
             }
         }
@@ -221,7 +234,7 @@ namespace SlugTemplate
 
                     // Parryslide (parry module)
                     bool parrySuccess = false;
-                    Debug.Log("Escort attempted a Parryslide");
+                    Debug.Log(dMe + "Escort attempted a Parryslide");
                     int direction;
                     if (self is Player){
                         direction = (self as Player).slideDirection;
@@ -229,25 +242,25 @@ namespace SlugTemplate
                         direction = 0;
                         throw new Exception("Self is not player!");
                     }
-                    Debug.Log("Is there an instance? " + (self != null));
-                    Debug.Log("Is there a source? " + (source != null));
-                    Debug.Log("Is there a direction & Momentum? " + (directionAndMomentum != null));
-                    Debug.Log("Is there a hitChunk? " + (hitChunk != null));
-                    Debug.Log("Is there a hitAppendage? " + (hitAppendage != null));
-                    Debug.Log("Is there a type? " + (type != null));
-                    Debug.Log("Is there damage? " + (damage > 0f));
-                    Debug.Log("Is there stunBonus? " + (stunBonus > 0f));
+                    Debug.Log(dMe + "Is there an instance? " + (self != null));
+                    Debug.Log(dMe + "Is there a source? " + (source != null));
+                    Debug.Log(dMe + "Is there a direction & Momentum? " + (directionAndMomentum != null));
+                    Debug.Log(dMe + "Is there a hitChunk? " + (hitChunk != null));
+                    Debug.Log(dMe + "Is there a hitAppendage? " + (hitAppendage != null));
+                    Debug.Log(dMe + "Is there a type? " + (type != null));
+                    Debug.Log(dMe + "Is there damage? " + (damage > 0f));
+                    Debug.Log(dMe + "Is there stunBonus? " + (stunBonus > 0f));
 
                     if (source != null) {
-                        Debug.Log("Escort is being assaulted by: " + source.owner.GetType());
+                        Debug.Log(dMe + "Escort is being assaulted by: " + source.owner.GetType());
                     } if (type != null) {
-                        Debug.Log("Escort gets hurt by: " + type.value);
+                        Debug.Log(dMe + "Escort gets hurt by: " + type.value);
                     }
 
-                    Debug.Log("Escort parry is being checked");
+                    Debug.Log(dMe + "Escort parry is being checked");
                     if (type != null){
                     if (type == Creature.DamageType.Bite){
-                        Debug.Log("Escort is getting BIT?!");
+                        Debug.Log(dMe + "Escort is getting BIT?!");
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 35;
@@ -256,14 +269,14 @@ namespace SlugTemplate
                             damage = damage / 5f;
                             stunBonus = 0f;
                             parrySuccess = true;
-                            Debug.Log("Escort got out of a creature's mouth!");
+                            Debug.Log(dMe + "Escort got out of a creature's mouth!");
                         } else if (source != null && source.owner is Weapon){
-                            Debug.Log("Weapons can BITE?!");
+                            Debug.Log(dMe + "Weapons can BITE?!");
                         } else {
-                            Debug.Log("Where is Escort getting bit from?!");
+                            Debug.Log(dMe + "Where is Escort getting bit from?!");
                         }
                     } else if (type == Creature.DamageType.Stab) {
-                        Debug.Log("Escort is getting STABBED?!");
+                        Debug.Log(dMe + "Escort is getting STABBED?!");
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 20;
@@ -271,50 +284,50 @@ namespace SlugTemplate
                             stunBonus = 0f;
                             type = Creature.DamageType.Blunt;
                             parrySuccess = true;
-                            Debug.Log("Escort parried a stabby creature?");
+                            Debug.Log(dMe + "Escort parried a stabby creature?");
                         } else if (source != null && source.owner is Weapon) {
                             Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
                             (source.owner as Weapon).WeaponDeflect(-source.owner.firstChunk.lastPos, vector, source.owner.firstChunk.vel.magnitude);
                             damage = 0f;
                             type = Creature.DamageType.Blunt;
                             parrySuccess = true;
-                            Debug.Log("Escort parried a stabby weapon");
+                            Debug.Log(dMe + "Escort parried a stabby weapon");
                         } else {
                             damage = damage / 5f;
                             type = Creature.DamageType.Blunt;
                             parrySuccess = true;
-                            Debug.Log("Escort parried a generic stabby thing");
+                            Debug.Log(dMe + "Escort parried a generic stabby thing");
                         }
                     } else if (type == Creature.DamageType.Blunt) {
-                        Debug.Log("Escort is getting ROCC'ED?!");
+                        Debug.Log(dMe + "Escort is getting ROCC'ED?!");
                         if (source != null && source.owner is Creature){
-                            Debug.Log("Creatures aren't rocks...");
+                            Debug.Log(dMe + "Creatures aren't rocks...");
                         } else if (source != null && source.owner is Weapon){
                             Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
                             (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, -vector, source.owner.firstChunk.vel.magnitude);
                             damage = damage / 7f;
                             stunBonus = stunBonus / 5f;
                             parrySuccess = true;
-                            Debug.Log("Escort bounces a blunt thing.");
+                            Debug.Log(dMe + "Escort bounces a blunt thing.");
                         } else {
                             damage = damage / 4f;
                             stunBonus = 0f;
                             parrySuccess = true;
-                            Debug.Log("Escort parried something blunt.");
+                            Debug.Log(dMe + "Escort parried something blunt.");
                         }
                     } else if (type == Creature.DamageType.Water) {
-                        Debug.Log("Escort is getting Wo'oh'ed?!");
+                        Debug.Log(dMe + "Escort is getting Wo'oh'ed?!");
                     } else if (type == Creature.DamageType.Explosion) {
-                        Debug.Log("Escort is getting BLOWN UP?!");
+                        Debug.Log(dMe + "Escort is getting BLOWN UP?!");
                         if (source != null && source.owner is Creature){
-                            Debug.Log("Wait... creatures explode?!");
+                            Debug.Log(dMe + "Wait... creatures explode?!");
                         } else if (source != null && source.owner is Weapon){
                             (self as Player).animation = Player.AnimationIndex.Roll;
                             type = Creature.DamageType.Blunt;
                             damage = damage / 15f;
                             stunBonus = stunBonus / 2f;
                             parrySuccess = true;
-                            Debug.Log("Escort parries an explosion from weapon?!");
+                            Debug.Log(dMe + "Escort parries an explosion from weapon?!");
                         } else {
                             (self as Player).WallJump(direction);
                             (self as Player).animation = Player.AnimationIndex.Roll;
@@ -322,10 +335,10 @@ namespace SlugTemplate
                             damage = 0f;
                             stunBonus = stunBonus / 2f;
                             parrySuccess = true;
-                            Debug.Log("Escort parries an explosion");
+                            Debug.Log(dMe + "Escort parries an explosion");
                         }
                     } else if (type == Creature.DamageType.Electric) {
-                        Debug.Log("Escort is getting DEEP FRIED?!");
+                        Debug.Log(dMe + "Escort is getting DEEP FRIED?!");
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 20;
@@ -336,7 +349,7 @@ namespace SlugTemplate
                             stunBonus = stunBonus / 2f;
                             (self as Player).LoseAllGrasps();
                             parrySuccess = true;
-                            Debug.Log("Escort somehow parried a shock from creature?!");
+                            Debug.Log(dMe + "Escort somehow parried a shock from creature?!");
                         } else if (source != null && source.owner is Weapon){
                             (self as Player).WallJump(direction);
                             (self as Player).animation = Player.AnimationIndex.Flip;
@@ -344,18 +357,18 @@ namespace SlugTemplate
                             damage = damage / 10f;
                             stunBonus = stunBonus / 2f;
                             parrySuccess = true;
-                            Debug.Log("Escort somehow parried a shock object?!");
+                            Debug.Log(dMe + "Escort somehow parried a shock object?!");
                         } else {
-                            Debug.Log("Escort attempted to parry a shock but why?!");
+                            Debug.Log(dMe + "Escort attempted to parry a shock but why?!");
                         }
                     } else {
-                        Debug.Log("Escort is getting UNKNOWNED!!! RUNNN");
+                        Debug.Log(dMe + "Escort is getting UNKNOWNED!!! RUNNN");
                         if (source != null && source.owner is Creature){
-                            Debug.Log("IT'S ALSO AN UNKNOWN CREATURE!!");
+                            Debug.Log(dMe + "IT'S ALSO AN UNKNOWN CREATURE!!");
                         } else if (source != null && source.owner is Weapon){
-                            Debug.Log("IT'S ALSO AN UNKNOWN WEAPON!!");
+                            Debug.Log(dMe + "IT'S ALSO AN UNKNOWN WEAPON!!");
                         } else {
-                            Debug.Log("WHO THE HECK KNOWS WHAT IT IS?!");
+                            Debug.Log(dMe + "WHO THE HECK KNOWS WHAT IT IS?!");
                         }
                     }
                     }
@@ -365,13 +378,13 @@ namespace SlugTemplate
                     if (parrySuccess){
 
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
-                        Debug.Log("Parry successful!");
+                        Debug.Log(dMe + "Parry successful!");
 
                     } else {
-                        Debug.Log("... nor an object");
+                        Debug.Log(dMe + "... nor an object");
 
                     }
-                    Debug.Log("Parry Check end");
+                    Debug.Log(dMe + "Parry Check end");
 
                 }
             }
@@ -387,10 +400,10 @@ namespace SlugTemplate
 
             if (self.slugcatStats.name.value == "EscortMe"){
             if (RR.TryGet(self, out int resetRate) && slowDownDevConsole > resetRate){
-                Debug.Log("Escort collides!");
-                Debug.Log("Has physical object? " + otherObject != null);
+                Debug.Log(dMe + "Escort collides!");
+                Debug.Log(dMe + "Has physical object? " + otherObject != null);
                 if (otherObject != null){
-                    Debug.Log("What is it? " + otherObject.GetType());
+                    Debug.Log(dMe + "What is it? " + otherObject.GetType());
                 }
                 slowDownDevConsole = 0;
             }
@@ -398,7 +411,7 @@ namespace SlugTemplate
             BodySlam.TryGet(self, out float[] bodySlam);
             Elevator.TryGet(self, out bool yeet);
             TrampOhLean.TryGet(self, out float bounce);
-            EscortSta.TryGet(self, out bool StaSysOn);
+            Hyped.TryGet(self, out bool hypedMode);
             StaReq.TryGet(self, out float requirement);
 
             if (otherObject is Creature && 
@@ -424,7 +437,7 @@ namespace SlugTemplate
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,self.mainBodyChunk);
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     float normSlideStun = bodySlam[1];
-                    if (StaSysOn && self.aerobicLevel > requirement){
+                    if (hypedMode && self.aerobicLevel > requirement){
                         normSlideStun = bodySlam[1] * 1.75f;
                     }
                     (otherObject as Creature).Violence(
@@ -445,12 +458,12 @@ namespace SlugTemplate
                         self.animation = Player.AnimationIndex.BellySlide;
                         self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
                         self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
-                        Debug.Log("Greatdadstance stunslide!");
+                        Debug.Log(dMe + "Greatdadstance stunslide!");
                     } else {
                         direction = self.flipDirection;
                         self.WallJump(direction);
                         self.animation = Player.AnimationIndex.Flip;
-                        Debug.Log("Stunslided!");
+                        Debug.Log(dMe + "Stunslided!");
                     }
                     }
 
@@ -464,8 +477,8 @@ namespace SlugTemplate
                     }
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     (otherObject as Creature).LoseAllGrasps();
-                    float normSlamDamage = (StaSysOn ? bodySlam[2] : bodySlam[2] + 0.15f);
-                    if (StaSysOn && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
+                    float normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + 0.15f);
+                    if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*multiplier, self.mainBodyChunk.vel.y*multiplier)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
@@ -480,7 +493,7 @@ namespace SlugTemplate
                     self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
-                    Debug.Log("Dropkicked!");
+                    Debug.Log(dMe + "Dropkicked!");
                     }
                 }
             }
@@ -490,7 +503,7 @@ namespace SlugTemplate
         // Implement unique spearskill
         private void Player_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear){
             orig(self, spear);
-            if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && EscortSta.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && !self.Malnourished){
+            if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && !self.Malnourished){
                 float thrust = 7f;
                 if (hypedMode){
                     if (self.aerobicLevel > requirement){
@@ -522,18 +535,30 @@ namespace SlugTemplate
         }
 
         private Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
-        if (dualWielding.TryGet(self, out bool dW) && dW){
-            if (obj is Weapon){
-                return Player.ObjectGrabability.OneHand;
-            } else if (obj is Lizard && (obj as Lizard).dead){
-                return Player.ObjectGrabability.OneHand;
+            if (dualWielding.TryGet(self, out bool dW) && dW){
+                if (obj is Weapon){
+                    return Player.ObjectGrabability.OneHand;
+                } else if (obj is Lizard && (obj as Lizard).dead){
+                    return Player.ObjectGrabability.OneHand;
+                } else {
+                    return orig(self, obj);
+                }
             } else {
                 return orig(self, obj);
             }
-        } else {
-            return orig(self, obj);
         }
-    }
+
+        private void Player_Die(On.Player.orig_Die orig, Player self){
+            bool prevState = self.dead;
+            orig(self);
+            Room room = self.room;
+            if (!prevState && self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
+                room.PlaySound(Escort_Death, self.mainBodyChunk.pos);
+                //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
+            }
+            Debug.Log(dMe + "Failure.");
+
+        }
     }
 
 }
