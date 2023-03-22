@@ -2,15 +2,24 @@
 using BepInEx;
 using UnityEngine;
 using SlugBase.Features;
-
 using static SlugBase.Features.FeatureTypes;
 
-namespace SlugTemplate
+namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4.1")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4.3")]
     class Plugin : BaseUnityPlugin
     {
+        public static Plugin instance;
+        public EscOptions config;
         private const string MOD_ID = "urufudoggo.theescort";
+        public Plugin(){
+            try{
+                this.config = new EscOptions(this, base.Logger);
+                Plugin.instance = this;
+            } catch (Exception e){
+                base.Logger.LogError(e);
+            }
+        }
 
         public static readonly PlayerFeature<bool> BetterPounce = PlayerBool("theescort/better_pounce");
         public static readonly GameFeature<bool> SuperMeanLizards = GameBool("theescort/mean_lizards");
@@ -44,6 +53,7 @@ namespace SlugTemplate
         public void OnEnable()
         {
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
+            On.RainWorld.OnModsInit += new On.RainWorld.hook_OnModsInit(this.RainWorld_OnModsInit);
 
             On.Player.Jump += Player_Jump;
             On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Player_UpdateBodyMode);
@@ -65,6 +75,23 @@ namespace SlugTemplate
         {
             Escort_Death = new SoundID("Escort_Failure", true);
             Escort_Flip = new SoundID("Escort_Flip", true);
+        }
+
+
+        private void Update_Refresher(Player self){
+            if (RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
+                slowDownDevConsole = 0;
+            } else {
+                slowDownDevConsole++;
+            }
+        }
+
+
+        private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self){
+            orig(self);
+            EscEnums.RegisterValues();
+            MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
+            
         }
 
         // Implement lizard aggression (edited from template)
@@ -98,7 +125,13 @@ namespace SlugTemplate
             orig(self, eu);
 
             // For slowed down dev console output
-            slowDownDevConsole++;
+            Update_Refresher(self);
+            
+            // Just for seeing what a variable does.
+            if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
+                Debug.Log(dMe + "Clocked.");
+            }
+
 
             if(Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement)){
                 if (hypedMode && self.aerobicLevel > requirement){
@@ -120,6 +153,10 @@ namespace SlugTemplate
                 if (self.slugcatStats.name.value == "EscortMe"){
                     if (self.aerobicLevel > 0.1f){
                         self.aerobicLevel -= 0.1f;
+                    }
+                    
+                    if (self.animation != Player.AnimationIndex.BellySlide && self.longBellySlide){
+                        self.longBellySlide = false;
                     }
 
                     // Replace chargepounce with a sick flip
@@ -215,9 +252,9 @@ namespace SlugTemplate
                 }
 
                 // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
-                if (self.animation == Player.AnimationIndex.BellySlide){
+                //if (self.animation == Player.AnimationIndex.BellySlide){
                     // TODO implement better slide
-                }
+                //}
             }
         }
 
@@ -405,7 +442,6 @@ namespace SlugTemplate
                 if (otherObject != null){
                     Debug.Log(dMe + "What is it? " + otherObject.GetType());
                 }
-                slowDownDevConsole = 0;
             }
 
             BodySlam.TryGet(self, out float[] bodySlam);
@@ -446,9 +482,10 @@ namespace SlugTemplate
                         bodySlam[0], normSlideStun
                     );
                     int direction;
+                    /*
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
                         self.PickupPressed();
-                    }
+                    }*/
 
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 5f, 5.5f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     if (self.longBellySlide) {
@@ -486,9 +523,10 @@ namespace SlugTemplate
                     );
                     int direction;
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
+                    /*
                     if (self.pickUpCandidate is Spear){
                         self.PickupPressed();
-                    }
+                    }*/
                     direction = -self.flipDirection;
                     self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
@@ -505,24 +543,45 @@ namespace SlugTemplate
             orig(self, spear);
             if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && !self.Malnourished){
                 float thrust = 7f;
+                bool doNotYeet = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
                 if (hypedMode){
                     if (self.aerobicLevel > requirement){
                         spear.spearDamageBonus = spearDmgBonuses[0];
-                        if (self.canJump != 0){
-                            self.animation = Player.AnimationIndex.Flip;
+                        if (self.canJump != 0 && !self.longBellySlide){
+                            if (!doNotYeet){
+                                self.rollCounter = 0;
+                                self.animation = Player.AnimationIndex.Roll;
+                                self.standing = false;
+                            }
                             thrust = 12f;
                         } else {
                             self.longBellySlide = true;
-                            self.animation = Player.AnimationIndex.BellySlide;
+                            if (!doNotYeet){
+                                self.exitBellySlideCounter = 0;
+                                self.rollCounter = 0;
+                                self.animation = Player.AnimationIndex.BellySlide;
+                            }
                             thrust = 9f;
                         }
                     } else {
+                        if (!doNotYeet){
+                            if (self.canJump != 0){
+                                self.rollCounter = 0;
+                                self.whiplashJump = true;
+                                self.animation = Player.AnimationIndex.BellySlide;
+                            } else {
+                                self.rollCounter = 0;
+                                self.animation = Player.AnimationIndex.Flip;
+                            }
+                        }
                         spear.spearDamageBonus = spearDmgBonuses[1];
-                        self.animation = Player.AnimationIndex.Flip;
                         thrust = 5f;
                     }
                 } else {
                     spear.spearDamageBonus = 1.25f;
+                }
+                if (doNotYeet) {
+                    thrust = 1f;
                 }
                 if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
                     self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
@@ -537,10 +596,13 @@ namespace SlugTemplate
         private Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
             if (dualWielding.TryGet(self, out bool dW) && dW){
                 if (obj is Weapon){
+                    // Any weapon is dual-wieldable, including spears
                     return Player.ObjectGrabability.OneHand;
                 } else if (obj is Lizard && (obj as Lizard).dead){
+                    // Any lizards that are haulable are dual-wieldable
                     return Player.ObjectGrabability.OneHand;
                 } else {
+                    // Do default behaviour
                     return orig(self, obj);
                 }
             } else {
@@ -549,10 +611,9 @@ namespace SlugTemplate
         }
 
         private void Player_Die(On.Player.orig_Die orig, Player self){
-            bool prevState = self.dead;
             orig(self);
             Room room = self.room;
-            if (!prevState && self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
+            if (self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
                 room.PlaySound(Escort_Death, self.mainBodyChunk.pos);
                 //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
             }

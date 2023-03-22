@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.4.2)** Began work on options (not working yet) and 
+
 **(0.1.4.1)** Adjusted the audio level
 
 **(0.1.4)** Custom sounds! New death sound and new flip sound!

@@ -33,10 +33,10 @@
 		"food_max": 13,
 		"world_state": "Spear",
 		"guide_overseer": 4,
-
-
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
+
+
 		"theescort/better_crawl": [3.3, 5, 2, 3.5, 4, 2.5],
 		"theescort/body_slam": [0.05, 35, 0.7, 15],
 		"theescort/dk_multiplier": 3,
@@ -47,7 +47,7 @@
 		"theescort/better_polewalk": [3.6, 6, 2, 3.7, 4.2, 2.8],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
-		"theescort/mean_lizards": false,
+		"theescort/mean_lizards": true,
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
@@ -55,6 +55,6 @@
 		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.75, 1.0],
 		"theescort/dual_wield": true,
-		"theescort/sounds_ahoy": true
+		"theescort/sounds_ahoy": false
 	}
 }
