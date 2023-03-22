@@ -6,8 +6,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
-### 0.1 - Steam Workshopped
-**(0.1.4.2)** Began work on options (not working yet) and 
+### 0.1 - Steam 
+**(0.1.4.3)** Tweaked the behaviours of combat and how spears work (also you will no longer accidentally throw yourself off a pole simply by throwing something), turned off audio for now (but know the option of turning it on will soon be added, and chaos be there)
+
+**(0.1.4.2)** Began work on options (not working yet)
 
 **(0.1.4.1)** Adjusted the audio level
 
