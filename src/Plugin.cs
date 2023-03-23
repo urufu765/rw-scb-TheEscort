@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4.3")]
+    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4.4")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -40,41 +40,59 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
         public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
         public static readonly PlayerFeature<bool> soundsAhoy = PlayerBool("theescort/sounds_ahoy");
+        public static readonly PlayerFeature<float[]> guuhWuuh = PlayerFloats("theescort/guuh_wuuh");
 
         private static readonly String dMe = "<EscortMe> ";
 
-        public static SoundID Escort_Death;
-        public static SoundID Escort_Flip;
+        public static SoundID EscortDeath;
+        public static SoundID EscortFlip;
+        public static SoundID EscortRoll;
+        //public DynamicSoundLoop escortRollin;
 
         private int slowDownDevConsole = 0;
+
+
+        private bool escPatch_revivify = false;
         
 
         // Add hooks
         public void OnEnable()
         {
-            On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
             On.RainWorld.OnModsInit += new On.RainWorld.hook_OnModsInit(this.RainWorld_OnModsInit);
+            On.RainWorld.PostModsInit += Escort_PostInit;
 
-            On.Player.Jump += Player_Jump;
-            On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Player_UpdateBodyMode);
-            On.Player.UpdateAnimation += new On.Player.hook_UpdateAnimation(this.Player_UpdateAnimation);
-            On.Player.Collide += new On.Player.hook_Collide(this.Player_Collision);
-            On.Player.HeavyCarry += new On.Player.hook_HeavyCarry(this.Player_HeavyCarry);
+            On.Player.Jump += Escort_Jump;
+            On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Escort_UpdateBodyMode);
+            On.Player.UpdateAnimation += new On.Player.hook_UpdateAnimation(this.Escort_UpdateAnimation);
+            On.Player.Collide += new On.Player.hook_Collide(this.Escort_Collision);
+            On.Player.HeavyCarry += new On.Player.hook_HeavyCarry(this.Escort_HeavyCarry);
             On.Lizard.ctor += new On.Lizard.hook_ctor(this.Escort_Lizard_ctor);
-            On.Player.AerobicIncrease += Player_AerobicIncrease;
-            On.Creature.Violence += new On.Creature.hook_Violence(this.Player_Violence);
-            On.Player.Update += new On.Player.hook_Update(this.Player_Update);
-            On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Player_ThrownSpear);
-            On.Player.Grabability += new On.Player.hook_Grabability(this.Player_Grabability);
-            On.Player.Die += new On.Player.hook_Die(this.Player_Die);
+            //On.Player.ctor += new On.Player.hook_ctor(this.Escort_ctor);
+            On.Player.AerobicIncrease += Escort_AerobicIncrease;
+            On.Creature.Violence += new On.Creature.hook_Violence(this.Escort_Violence);
+            On.Player.Update += new On.Player.hook_Update(this.Escort_Update);
+            On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Escort_ThrownSpear);
+            On.Player.Grabability += new On.Player.hook_Grabability(this.Escort_Grabability);
+            On.Player.Die += new On.Player.hook_Die(this.Escort_Die);
+            //On.Water.Update += new On.Water.hook_Update(this.Escort_Water_Update);
             }
             
         
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
-            Escort_Death = new SoundID("Escort_Failure", true);
-            Escort_Flip = new SoundID("Escort_Flip", true);
+            EscortDeath = new SoundID("Escort_Failure", true);
+            EscortFlip = new SoundID("Escort_Flip", true);
+            EscortRoll = new SoundID("Escort_Roll", true);
+        }
+
+
+        private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self){
+            orig(self);
+            if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
+                Debug.Log(dMe + "Found Revivify! Applying patch...");
+                escPatch_revivify = true;
+            }
         }
 
 
@@ -89,10 +107,12 @@ namespace TheEscort
 
         private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self){
             orig(self);
+            Extras.WrapInit(LoadResources);
             EscEnums.RegisterValues();
             MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
             
         }
+
 
         // Implement lizard aggression (edited from template)
         private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
@@ -104,9 +124,14 @@ namespace TheEscort
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
         }
-
+/*
+        private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
+            escort = new Escort(self);
+            orig(self, abstractCreature, world);
+        }
+*/
         // Implement Escort's slowed stamina increase
-        private void Player_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
+        private void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
             orig(self, f);
 
             if (Exhausion.TryGet(self, out var exhaust)){
@@ -121,7 +146,7 @@ namespace TheEscort
         }
 
         // Implement visual effect for Battle-Hyped mode
-        private void Player_Update(On.Player.orig_Update orig, Player self, bool eu){
+        private void Escort_Update(On.Player.orig_Update orig, Player self, bool eu){
             orig(self, eu);
 
             // For slowed down dev console output
@@ -141,10 +166,40 @@ namespace TheEscort
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, playerColor));
                 }
             }
+
+            // Implement guuh wuuh
+            if(guuhWuuh.TryGet(self, out var theGut) && self.bodyMode == Player.BodyModeIndex.Swimming){
+                float superSwim = Mathf.Lerp(theGut[0], theGut[1], self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity));
+                if (self.animation == Player.AnimationIndex.DeepSwim){
+                    self.mainBodyChunk.vel *= new Vector2(
+                        theGut[2] * superSwim, theGut[3] * superSwim);
+                } else if (self.animation == Player.AnimationIndex.SurfaceSwim) {
+                    self.mainBodyChunk.vel *= new Vector2(
+                        theGut[4] * superSwim, theGut[5] * superSwim);
+                }
+            }
+
+            /*
+            if (soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
+                if (this.escortRollin == null){
+                    this.escortRollin = new ChunkDynamicSoundLoop(self.mainBodyChunk);
+                    this.escortRollin.sound = EscortRoll;
+                    Debug.Log(dMe + "Sound Initialized.");
+                } else {
+                    if (self.animation == Player.AnimationIndex.Roll){
+                        this.escortRollin.Update();
+                    }
+                    if(limiter < slowDownDevConsole){
+                        Debug.Log(dMe + "Updated... with: " + EscortRoll != null);
+                        Debug.Log(dMe + "Updated... with: " + EscortRoll != null);
+                        Debug.Log(dMe + "Updated... with: " + escortRollin.sound != null);
+                    }
+                }
+            }*/
         }
 
         // Implement Flip jump and less tired from jumping
-        private void Player_Jump(On.Player.orig_Jump orig, Player self)
+        private void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
             orig(self);
 
@@ -165,7 +220,7 @@ namespace TheEscort
                         ){
                         Debug.Log(dMe + "FLIPERONI GO!");
                         Room room = self.room;
-                        room.PlaySound(Escort_Flip, self.mainBodyChunk.pos);
+                        room.PlaySound(EscortFlip, self.mainBodyChunk.pos);
                         self.animation = Player.AnimationIndex.Flip;
                     }
                 }
@@ -174,9 +229,12 @@ namespace TheEscort
 
 
         // Implement Heavylifter
-        private bool Player_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
+        private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
             if (CarryHeavy.TryGet(self, out var ratioed)){
                 if (self.Grabability(obj) != Player.ObjectGrabability.TwoHands && obj.TotalMass <= self.TotalMass * ratioed){
+                    if (escPatch_revivify && obj is Creature && (obj as Creature).abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (obj as Creature).dead) {
+                        return orig(self, obj);
+                    }
                     if (ModManager.CoopAvailable){
                         Player player = obj as Player;
                         if (player != null){
@@ -213,7 +271,7 @@ namespace TheEscort
 
 
         // Implement Movementthings
-        private void Player_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self){
+        private void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self){
             orig(self);
 
             if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && Hyped.TryGet(self, out bool hypedMode)){
@@ -241,14 +299,23 @@ namespace TheEscort
 
 
         // Implement Movementtech
-        private void Player_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self){
+        private void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self){
             orig(self);
             if (self.slugcatStats.name.value == "EscortMe"){
-
-
                 // Infiniroll
-                if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
-                    self.rollCounter = 0;
+                if (self.animation == Player.AnimationIndex.Roll){
+                    if (!((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
+                        EscEnums.rollin++;
+                        if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
+                            Debug.Log(dMe + "ROLLIN at:" + EscEnums.rollin++);
+                        }
+
+                        //this.escortRollin.Volume = Mathf.InverseLerp(120f, 360f, EscEnums.rollin);
+                        self.rollCounter = 0;
+                    } else {
+                        //this.escortRollin.Volume = 0f;
+                        EscEnums.rollin = 0f;
+                    }
                 }
 
                 // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
@@ -260,7 +327,7 @@ namespace TheEscort
 
 
         // Implement Parryslide/midair projectile grab
-        private void Player_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
+        private void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
 
             if (self is Player){  // Check if self is player such that when class is converted it does not cause an error
 
@@ -431,7 +498,7 @@ namespace TheEscort
 
 
         // Implement Bodyslam
-        private void Player_Collision(On.Player.orig_Collide orig, Player self, PhysicalObject otherObject, int myChunk, int otherChunk){
+        private void Escort_Collision(On.Player.orig_Collide orig, Player self, PhysicalObject otherObject, int myChunk, int otherChunk){
             orig(self, otherObject, myChunk, otherChunk);
 
 
@@ -539,7 +606,7 @@ namespace TheEscort
 
 
         // Implement unique spearskill
-        private void Player_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear){
+        private void Escort_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear){
             orig(self, spear);
             if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && !self.Malnourished){
                 float thrust = 7f;
@@ -593,7 +660,7 @@ namespace TheEscort
             }
         }
 
-        private Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
+        private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
             if (dualWielding.TryGet(self, out bool dW) && dW){
                 if (obj is Weapon){
                     // Any weapon is dual-wieldable, including spears
@@ -601,6 +668,8 @@ namespace TheEscort
                 } else if (obj is Lizard && (obj as Lizard).dead){
                     // Any lizards that are haulable are dual-wieldable
                     return Player.ObjectGrabability.OneHand;
+                } else if (escPatch_revivify && obj is Creature && (obj as Creature).abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (obj as Creature).dead) {
+                    return orig(self, obj);
                 } else {
                     // Do default behaviour
                     return orig(self, obj);
@@ -610,11 +679,11 @@ namespace TheEscort
             }
         }
 
-        private void Player_Die(On.Player.orig_Die orig, Player self){
+        private void Escort_Die(On.Player.orig_Die orig, Player self){
             orig(self);
             Room room = self.room;
             if (self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
-                room.PlaySound(Escort_Death, self.mainBodyChunk.pos);
+                room.PlaySound(EscortDeath, self.mainBodyChunk.pos);
                 //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
             }
             Debug.Log(dMe + "Failure.");

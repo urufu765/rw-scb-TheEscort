@@ -1,0 +1,14 @@
+using System;
+
+
+namespace TheEscort{
+    public class Escort{
+        public DynamicSoundLoop escortRollin;
+        public Escort(Player player){
+            this.escortRollin = new ChunkDynamicSoundLoop(player.bodyChunks[0]);
+            this.escortRollin.sound = Plugin.EscortRoll;
+            this.escortRollin.Pitch = 1f;
+            this.escortRollin.Volume = 0f;
+        }
+    }
+}

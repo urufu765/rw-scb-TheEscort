@@ -10,7 +10,7 @@ Currently implements The Escort and some of their abilities and movement tech.
 Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
 [hr][/hr][h2]<~CONFLICTING MODS~>[/h2]
 [list]
-[*] [i]to be added[/i]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.7[/url]: [b]Error on Rotund's side, white screen upon starting any campaign[/b] (Has nothing to do with whether you have Escort mod or not).
 [/list]
 [hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
 These mods have been tested in isolation, so there's a chance having multiple may still result in a bug/crash. If so, please report it in the discussions!
@@ -23,7 +23,7 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2922334539]Input Display 2.1.0[/url]: [b]Works[/b] (Can look glitched when other mods glitch)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933088640]Move Testing Rooms[/url]: [b]Barely Tested[/b] (Should work)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934808032]Movement Marker[/url]: [b]Works[/b]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.6[/url]: [b]Lightly Tested[/b] (further & more in-depth testing required).
+[*] [url=https://steamcommunity.com/workshop/filedetails/?id=2950327774]Revivify 1.0.0[/url]: [b]Works somewhat[/b] (Works normally with dead slugcats, a little bit janky on slugpups (a way around which is to do the input a bit slower so you don't switch hands)).
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933196558]SlugBase 2.1.1[/url]: [b]Obviously.[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929613038]Testing Arena 1.0.0.0[/url]: [b]Works[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929665635]Thicc Spearmaster[/url]: [b]Works[/b]
@@ -40,7 +40,7 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] Dual wield spears (and dead lizards)
 [*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
-[*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), Gourmand thrust)
+[*] Arc'd Spear (Monk throwing trajectory, Hunter damage (and way more when hyped!), (lesser) Gourmand forward thrust)
 [*] Custom SFX!
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]

@@ -18,6 +18,40 @@
     }
     */
 
+        // Implement Gu'uh Wu'uh
+        private void Escort_Water_Update(On.Water.orig_Update orig, Water self){
+            orig(self);
+            if (guuhWuuh.TryGet(self.room.game, out bool gW) && gW){
+                self.viscosity = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity);
+                for (int i = 0; i < self.room.physicalObjects.Length; i++){
+                    foreach(PhysicalObject physicalObject in self.room.physicalObjects[i]){
+                        foreach(BodyChunk bodyChunk in physicalObject.bodyChunks){
+                            if (bodyChunk != null && bodyChunk.owner is Player && (bodyChunk.owner as Player).slugcatStats.name.value == "EscortMe"){
+                                if (RR.TryGet((bodyChunk.owner as Player), out int Req) && slowDownDevConsole > Req){
+                                    Debug.Log(dMe + "FOUND YOU");
+                                }
+                                if (bodyChunk.submersion < 1f){
+                                    bodyChunk.vel.x = bodyChunk.vel.x * (1f - 0.75f * (self.viscosity/10f));
+                                    if (bodyChunk.vel.y > 0f){
+                                        bodyChunk.vel.y = bodyChunk.vel.y * (1f - 0.075f * (self.viscosity/10f));
+                                    } else {
+                                        bodyChunk.vel.y = bodyChunk.vel.y * (1f - 0.15f * (self.viscosity/10f));
+                                    }
+                                } else {
+                                    bodyChunk.vel.x = bodyChunk.vel.x * (1f - 0.225f * (self.viscosity/10f));
+                                     if (bodyChunk.vel.y > 0f){
+                                        bodyChunk.vel.y = bodyChunk.vel.y * (1f - 0.1f * (self.viscosity/10f));
+                                    } else {
+                                        bodyChunk.vel.y = bodyChunk.vel.y * (1f - 0.15f * (self.viscosity/10f));
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     /*
     // Implement MeanGarbageWorms (Doesn't work!)

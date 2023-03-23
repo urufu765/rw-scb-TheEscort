@@ -28,7 +28,7 @@ namespace TheEscort{
             this.cfgDKMult = this.config.Bind<float>("cfg_Drop_Kick_Multiplier", 3f, new ConfigAcceptableRange<float>(0.5f, 100f));
             this.cfgElevator = this.config.Bind<bool>("cfg_Elevator", false);
             this.cfgHypable = this.config.Bind<bool>("cfg_Hypable", true);
-            this.cfgHypeReq = this.config.Bind<int>("cfg_Hype_Requirement", 3, new ConfigAcceptableRange<float>(0f, 1f));
+            this.cfgHypeReq = this.config.Bind<int>("cfg_Hype_Requirement", 3, new ConfigAcceptableRange<int>(0, 6));
             this.cfgSFX = this.config.Bind<bool>("cfg_SFX", true);
         }
 

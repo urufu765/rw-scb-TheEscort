@@ -17,7 +17,7 @@
 			"Cicadas": { "like": -1, "locked": true },
 			"GarbageWorms": { "like": -1, "locked": true },
 			"Jetfish": { "like": -1, "locked": true },
-			"Scavengers": { "like": 0.5, "strength": 0.2 }
+			"Scavengers": { "like": 0.8, "strength": 0.2 }
 		},
 		"diet": {
 			"base": "Red",
@@ -55,6 +55,7 @@
 		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.75, 1.0],
 		"theescort/dual_wield": true,
-		"theescort/sounds_ahoy": false
+		"theescort/sounds_ahoy": false,
+		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1]
 	}
 }
