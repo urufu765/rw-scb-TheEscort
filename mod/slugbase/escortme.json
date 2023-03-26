@@ -44,7 +44,7 @@
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
 		"theescort/better_polewalk": [3.6, 6, 2, 3.7, 4.2, 2.8],
-		"theescort/long_wall_jump": true,
+		"theescort/long_wall_jump": false,
 		"theescort/wall_jump_val": [14, 13, 3, 2, 20, 50, 3, 6],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
@@ -57,6 +57,6 @@
 		"theescort/spear_damage": [1.75, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
-		"theescort/guuh_wuuh": [0.95, 1.5, 1, 1, 1.1, 1]
+		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1]
 	}
 }

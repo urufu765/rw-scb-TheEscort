@@ -7,7 +7,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam 
-**(0.1.6)** Walljump mechanics changed a wee bit and also has new stuff on top of it!
+**(0.1.6.1)** Long wall jumps will be an option and the option for flip wall jump will also be handled with an option (but handled by flip jumps)
+
+**(0.1.6)** Walljump mechanics changed a wee (alot) bit and also has new stuff on top of it!
 
 **(0.1.5.1)** May or may not be a patch for revivify (haven't found a proper solution yet), dropkicking while in hyped mode sends you up!
 
@@ -127,6 +129,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 - Increase grab radius of spears
 - Escort shoot out of pipes
 - Escort turns faster in pipes
+- Escort can get out of centipede grasps (but has a steep cooldown)
 
 
 # Roadmap (Subject to change)

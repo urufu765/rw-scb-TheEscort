@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.6.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -133,6 +133,7 @@ namespace TheEscort
             orig(self);
             if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
                 Debug.Log(dMe + "Found Revivify! Applying patch...");
+                Ebug("... just kidding, there's no proper patch yet...");
                 escPatch_revivify = true;
             }
         }
@@ -205,8 +206,8 @@ namespace TheEscort
             if (escort.EscortDropKickCooldown > 0){
                 escort.EscortDropKickCooldown--;
             }
-            if (escort.EscortStunSlideCooldown > 0){
-                escort.EscortStunSlideCooldown--;
+            if (escort.EscortCentipedeCooldown > 0){
+                escort.EscortCentipedeCooldown--;
             }
             
             // Just for seeing what a variable does.
@@ -311,12 +312,12 @@ namespace TheEscort
         private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
         {
             if (self.bodyMode == Player.BodyModeIndex.WallClimb){
-            if (LongWallJump.TryGet(self, out bool wallJumper) && WallJumpVal.TryGet(self, out var WJV) && soundsAhoy.TryGet(self, out bool sfxOn) && wallJumper){
-                if (self.canWallJump != 0) {
+            if (LongWallJump.TryGet(self, out bool wallJumper) && WallJumpVal.TryGet(self, out var WJV) && soundsAhoy.TryGet(self, out bool sfxOn) && BetterPounce.TryGet(self, out bool willPounce)){
+                if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
                     orig(self, direction);
                     float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
                     String[] toPrint = new String[3];
-                    bool superFlip = wallJumper && self.allowRoll == 15;
+                    bool superFlip = self.allowRoll == 15 && willPounce;
                     toPrint.SetValue("Walls the Jump", 0);
                     if (
                         self.IsTileSolid(1, 0, -1) ||
@@ -338,8 +339,8 @@ namespace TheEscort
 
 
                     } else {
-                        self.bodyChunks[0].vel.y = ((self.superLaunchJump > 19)? WJV[0] : 8f) * n;
-                        self.bodyChunks[1].vel.y = ((self.superLaunchJump > 19)? WJV[1] : 7f) * n;
+                        self.bodyChunks[0].vel.y = ((self.superLaunchJump > 19 || self.consistentDownDiagonal > (int)WJV[4])? WJV[0] : 8f) * n;
+                        self.bodyChunks[1].vel.y = ((self.superLaunchJump > 19 || self.consistentDownDiagonal > (int)WJV[4])? WJV[1] : 7f) * n;
                         self.bodyChunks[0].vel.x = ((superFlip && self.consistentDownDiagonal >= (int)WJV[4])? WJV[2] : 7f) * n * (float)direction;
                         self.bodyChunks[1].vel.x = ((superFlip && self.consistentDownDiagonal >= (int)WJV[4])? WJV[3] : 6f) * n * (float)direction;
                         self.standing = true;
@@ -353,26 +354,22 @@ namespace TheEscort
                         Ebug("X Velocity" + self.bodyChunks[0].vel.x);
                         Ebug("X Velocity" + self.bodyChunks[1].vel.x);
                     }
-                    if (wallJumper){
-                        self.jumpBoost = 0f;
-                        if (superFlip && self.consistentDownDiagonal >= (int)WJV[4]){
-                            self.animation = Player.AnimationIndex.Flip;
-                            self.room.PlaySound((sfxOn? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), escort.EscortSoundBodyChunk, false, 1f, 0.9f);
-                            self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
-                            toPrint.SetValue("SUPERFLIP", 2);
-                        } else {
-                            toPrint.SetValue("not so flip", 2);
-                        }
-                        Ebug("Jumpboost" + self.jumpBoost);
-                        Ebug("CDownDir" + self.consistentDownDiagonal);
-                        Ebug("SLaunchJump" + self.superLaunchJump);
-                        if (self.superLaunchJump > 19){
-                            self.superLaunchJump = 0;
-                        }
+                    self.jumpBoost = 0f;
+                    if (superFlip && self.consistentDownDiagonal >= (int)WJV[4]){
+                        self.animation = Player.AnimationIndex.Flip;
+                        self.room.PlaySound((sfxOn? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), escort.EscortSoundBodyChunk, false, 1f, 0.9f);
+                        self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
+                        toPrint.SetValue("SUPERFLIP", 2);
                     } else {
-                        self.jumpBoost = n;
-                        toPrint.SetValue("Noteven", 2);
+                        toPrint.SetValue("not so flip", 2);
                     }
+                    Ebug("Jumpboost" + self.jumpBoost);
+                    Ebug("CDownDir" + self.consistentDownDiagonal);
+                    Ebug("SLaunchJump" + self.superLaunchJump);
+                    if (self.superLaunchJump > 19){
+                        self.superLaunchJump = 0;
+                    }
+
 
                     self.canWallJump = 0;
                     Ebug(toPrint);
@@ -416,15 +413,18 @@ namespace TheEscort
 
         private void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
         {
-            int previously = self.input[0].x;
-            orig(self);
+            if(LongWallJump.TryGet(self, out bool wallJumper) && wallJumper){
+                int previously = self.input[0].x;
+                orig(self);
 
             // Undoes the input cancellation
-            if(LongWallJump.TryGet(self, out bool wallJumper) && wallJumper && self.bodyMode == Player.BodyModeIndex.WallClimb && self.superLaunchJump > 5 && self.input[0].jmp && self.input[1].jmp && self.input[0].y < 1){
-                if (self.input[0].x == 0){
-                    self.input[0].x = previously;
+                if(self.bodyMode == Player.BodyModeIndex.WallClimb && self.superLaunchJump > 5 && self.input[0].jmp && self.input[1].jmp && self.input[0].y < 1){
+                    if (self.input[0].x == 0){
+                        self.input[0].x = previously;
+                    }
                 }
-
+            } else {
+                orig(self);
             }
         }
 
@@ -900,7 +900,7 @@ namespace TheEscort
         private float Escort_DeathBiteMult(On.Player.orig_DeathByBiteMultiplier orig, Player self)
         {
             if (self.slugcatStats.name.value == "EscortMe"){
-                return 0.4f;
+                return 0.3f;
             } else {
                 return orig(self);
             }
