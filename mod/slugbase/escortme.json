@@ -29,15 +29,14 @@
 		"start_room": "CC_SUMP02",
 		"cycle_length_min": 12,
 		"cycle_length_max": 20,
-		"food_min": 8,
-		"food_max": 13,
+		"food_min": 9,
+		"food_max": 14,
 		"world_state": "Spear",
 		"guide_overseer": 4,
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 
-
-		"theescort/better_crawl": [3.3, 5, 2, 3.5, 4, 2.5],
+		"theescort/better_crawl": [3.5, 5, 2, 3.5, 4.2, 2.5],
 		"theescort/body_slam": [0.05, 35, 0.7, 15],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
@@ -45,17 +44,19 @@
 		"theescort/parry_slide": true,
 		"theescort/better_pounce": true,
 		"theescort/better_polewalk": [3.6, 6, 2, 3.7, 4.2, 2.8],
+		"theescort/long_wall_jump": true,
+		"theescort/wall_jump_val": [14, 13, 3, 2, 20, 50, 3, 6],
 		"theescort/elevator": false,
 		"theescort/trampoline": 14,
 		"theescort/mean_lizards": true,
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 60,
+		"theescort/reset_rate": 10,
 		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.75, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
-		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1]
+		"theescort/guuh_wuuh": [0.95, 1.5, 1, 1, 1.1, 1]
 	}
 }

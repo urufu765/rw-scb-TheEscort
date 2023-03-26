@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "Escort n Co", "0.1.4.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.6")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -40,28 +40,55 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
         public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
         public static readonly PlayerFeature<bool> soundsAhoy = PlayerBool("theescort/sounds_ahoy");
-        public static readonly PlayerFeature<float[]> guuhWuuh = PlayerFloats("theescort/guuh_wuuh");
+        public static readonly PlayerFeature<float[]> NoMoreGutterWater = PlayerFloats("theescort/guuh_wuuh");
+        public static readonly PlayerFeature<bool> LongWallJump = PlayerBool("theescort/long_wall_jump");
+        public static readonly PlayerFeature<float[]>
+        WallJumpVal = PlayerFloats("theescort/wall_jump_val");
 
         private static readonly String dMe = "<EscortMe> ";
 
-        public static SoundID EscortDeath;
-        public static SoundID EscortFlip;
-        public static SoundID EscortRoll;
+        public static SoundID Escort_SFX_Death;
+        public static SoundID Escort_SFX_Flip;
+        public static SoundID Escort_SFX_Roll;
         //public DynamicSoundLoop escortRollin;
+        public Escort escort;
 
         private int slowDownDevConsole = 0;
 
 
         private bool escPatch_revivify = false;
+
+
+        private static void Ebug(String message){
+            Debug.Log("-> Escort: " + message);
+        }
+        private static void Ebug(System.Object message){
+            Debug.Log("-> Escort: " + message.ToString());
+        }
+        private static void Ebug(String[] messages){
+            String message = "";
+            foreach(String msg in messages){
+                message += ", " + msg;
+            }
+            Debug.Log("-> Escort: " + message);
+        }
+        private static void Ebug(System.Object[] messages){
+            String message = "";
+            foreach(System.Object[] msg in messages){
+                message += ", " + msg.ToString();
+            }
+            Debug.Log("-> Escort: " + message);
+        }
         
 
         // Add hooks
         public void OnEnable()
         {
-            On.RainWorld.OnModsInit += new On.RainWorld.hook_OnModsInit(this.RainWorld_OnModsInit);
-            On.RainWorld.PostModsInit += Escort_PostInit;
+            
+            On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
+            On.RainWorld.PostModsInit += new On.RainWorld.hook_PostModsInit(this.Escort_PostInit);
 
-            On.Player.Jump += Escort_Jump;
+            On.Player.Jump += new On.Player.hook_Jump(this.Escort_Jump);
             On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Escort_UpdateBodyMode);
             On.Player.UpdateAnimation += new On.Player.hook_UpdateAnimation(this.Escort_UpdateAnimation);
             On.Player.Collide += new On.Player.hook_Collide(this.Escort_Collision);
@@ -74,16 +101,31 @@ namespace TheEscort
             On.Player.ThrownSpear += new On.Player.hook_ThrownSpear(this.Escort_ThrownSpear);
             On.Player.Grabability += new On.Player.hook_Grabability(this.Escort_Grabability);
             On.Player.Die += new On.Player.hook_Die(this.Escort_Die);
+            On.Player.WallJump += new On.Player.hook_WallJump(this.Escort_WallJump);
+            On.Player.MovementUpdate += new On.Player.hook_MovementUpdate(this.Escort_MovementUpdate);
+            On.Player.checkInput += new On.Player.hook_checkInput(this.Escort_checkInput);
+            On.Player.ctor += new On.Player.hook_ctor(this.Escort_ctor);
+            On.Player.DeathByBiteMultiplier += new On.Player.hook_DeathByBiteMultiplier(this.Escort_DeathBiteMult);
+
+            On.SlugcatStats.SpearSpawnModifier += Escort_SpearSpawnMod;
+            On.SlugcatStats.SpearSpawnElectricRandomChance += Escort_EleSpearSpawnChance;
+            On.SlugcatStats.SpearSpawnExplosiveRandomChance += Escort_ExpSpearSpawnChance;
+            On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
+
             //On.Water.Update += new On.Water.hook_Update(this.Escort_Water_Update);
             }
-            
-        
+
+
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
-            EscortDeath = new SoundID("Escort_Failure", true);
-            EscortFlip = new SoundID("Escort_Flip", true);
-            EscortRoll = new SoundID("Escort_Roll", true);
+            Escort_SFX_Death = new SoundID("Escort_Failure", true);
+            Escort_SFX_Flip = new SoundID("Escort_Flip", true);
+            Escort_SFX_Roll = new SoundID("Escort_Roll", true);
+            Ebug("All SFX loaded!");
+            EscEnums.RegisterValues();
+            //MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
+            Ebug("All loaded!");
         }
 
 
@@ -105,15 +147,6 @@ namespace TheEscort
         }
 
 
-        private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self){
-            orig(self);
-            Extras.WrapInit(LoadResources);
-            EscEnums.RegisterValues();
-            MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
-            
-        }
-
-
         // Implement lizard aggression (edited from template)
         private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
         {
@@ -124,6 +157,21 @@ namespace TheEscort
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
         }
+        private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
+        {
+            orig(self, abstractCreature, world);
+            escort = new Escort(self);
+            try {
+                escort.Escort_set_roller(Escort_SFX_Roll);
+                Ebug("Setting roll sound");
+            } catch (Exception e){
+                throw new Exception(e.Message);
+            } finally {
+                Ebug("All ctor'd");
+            }
+        }
+
+
 /*
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
             escort = new Escort(self);
@@ -151,24 +199,49 @@ namespace TheEscort
 
             // For slowed down dev console output
             Update_Refresher(self);
+
+
+            // Cooldown Refresh
+            if (escort.EscortDropKickCooldown > 0){
+                escort.EscortDropKickCooldown--;
+            }
+            if (escort.EscortStunSlideCooldown > 0){
+                escort.EscortStunSlideCooldown--;
+            }
             
             // Just for seeing what a variable does.
             if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
-                Debug.Log(dMe + "Clocked.");
-            }
+                //Debug.Log(dMe + "Clocked.");
+                //Ebug(" Roll Direction: " + self.rollDirection);
+                //Ebug("Slide Direction:" + self.slideDirection);
+                //Ebug(" Flip Direction: " + self.flipDirection);
+                //Ebug("Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
+                //Ebug("Normalized direction: " + self.bodyChunks[0].vel.normalized);
+                }
 
-
-            if(Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement)){
+            // vfx
+            if(Hyped.TryGet(self, out bool hypedMode) && StaReq.TryGet(self, out float requirement) && LongWallJump.TryGet(self, out bool wallJumper) && WallJumpVal.TryGet(self, out var WJV)){
                 if (hypedMode && self.aerobicLevel > requirement){
-                    Color playerColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                    playerColor.a = 0.8f;
+                    Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                    hypedColor.a = 0.8f;
 
-                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, playerColor));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
+                }
+                if (wallJumper){
+                    if (self.superLaunchJump > 19){
+                        Color superColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 9f, 4f, 4f, 11f, superColor));
+                    }
+                    if (self.bodyMode == Player.BodyModeIndex.WallClimb && self.consistentDownDiagonal >= (int)WJV[4]){
+                        Color flipColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 10f, 4f, 11f, 4f, flipColor));
+                    }
+                    
                 }
             }
 
             // Implement guuh wuuh
-            if(guuhWuuh.TryGet(self, out var theGut) && self.bodyMode == Player.BodyModeIndex.Swimming){
+            if(NoMoreGutterWater.TryGet(self, out var theGut) && self.bodyMode == Player.BodyModeIndex.Swimming){
                 float superSwim = Mathf.Lerp(theGut[0], theGut[1], self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity));
                 if (self.animation == Player.AnimationIndex.DeepSwim){
                     self.mainBodyChunk.vel *= new Vector2(
@@ -179,23 +252,27 @@ namespace TheEscort
                 }
             }
 
-            /*
             if (soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
+                /*
                 if (this.escortRollin == null){
                     this.escortRollin = new ChunkDynamicSoundLoop(self.mainBodyChunk);
-                    this.escortRollin.sound = EscortRoll;
+                    this.escortRollin.sound = Escort_SFX_Roll;
+                    this.escortRollin.Volume = 0f;
                     Debug.Log(dMe + "Sound Initialized.");
                 } else {
                     if (self.animation == Player.AnimationIndex.Roll){
                         this.escortRollin.Update();
+                    } else {
+                        escort.EscortRollinCounter = 0f;
                     }
-                    if(limiter < slowDownDevConsole){
-                        Debug.Log(dMe + "Updated... with: " + EscortRoll != null);
-                        Debug.Log(dMe + "Updated... with: " + EscortRoll != null);
-                        Debug.Log(dMe + "Updated... with: " + escortRollin.sound != null);
-                    }
+                }*/
+                if (self.animation == Player.AnimationIndex.Roll){
+                    escort.EscortRoller.Update();
+                } else {
+                    escort.EscortRollinCounter = 0f;
                 }
-            }*/
+
+            }
         }
 
         // Implement Flip jump and less tired from jumping
@@ -216,16 +293,142 @@ namespace TheEscort
 
                     // Replace chargepounce with a sick flip
                     if (
-                        willPounce && (self.superLaunchJump >= 20 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0)
+                        willPounce && (self.superLaunchJump >= 19 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0) && self.bodyMode == Player.BodyModeIndex.Crawl
                         ){
                         Debug.Log(dMe + "FLIPERONI GO!");
-                        Room room = self.room;
-                        room.PlaySound(EscortFlip, self.mainBodyChunk.pos);
+                        if (soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
+                            self.room.PlaySound(Escort_SFX_Flip, escort.EscortSoundBodyChunk);
+                        }
                         self.animation = Player.AnimationIndex.Flip;
                     }
+
+                    self.consistentDownDiagonal = 0;
                 }
             }
         }
+
+
+        private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
+        {
+            if (self.bodyMode == Player.BodyModeIndex.WallClimb){
+            if (LongWallJump.TryGet(self, out bool wallJumper) && WallJumpVal.TryGet(self, out var WJV) && soundsAhoy.TryGet(self, out bool sfxOn) && wallJumper){
+                if (self.canWallJump != 0) {
+                    orig(self, direction);
+                    float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+                    String[] toPrint = new String[3];
+                    bool superFlip = wallJumper && self.allowRoll == 15;
+                    toPrint.SetValue("Walls the Jump", 0);
+                    if (
+                        self.IsTileSolid(1, 0, -1) ||
+                        self.IsTileSolid(0, 0, -1) ||
+                        self.bodyChunks[1].submersion > 0.1f ||
+                        (
+                            self.input[0].x != 0 && 
+                            self.bodyChunks[0].ContactPoint.x == self.input[0].x &&
+                            self.IsTileSolid(0, self.input[0].x, 0) &&
+                            !self.IsTileSolid(0, self.input[0].x, 1)
+                        )
+                    ){
+                        self.bodyChunks[0].vel.y = 8f * n;
+                        self.bodyChunks[1].vel.y = 7f * n;
+                        self.bodyChunks[0].pos.y += 10f * Mathf.Min(1f, n);
+                        self.bodyChunks[1].pos.y += 10f * Mathf.Min(1f, n);
+                        toPrint.SetValue("Water", 1);
+                        self.room.PlaySound(SoundID.Slugcat_Normal_Jump, escort.EscortSoundBodyChunk, false, 1f, 0.7f);
+
+
+                    } else {
+                        self.bodyChunks[0].vel.y = ((self.superLaunchJump > 19)? WJV[0] : 8f) * n;
+                        self.bodyChunks[1].vel.y = ((self.superLaunchJump > 19)? WJV[1] : 7f) * n;
+                        self.bodyChunks[0].vel.x = ((superFlip && self.consistentDownDiagonal >= (int)WJV[4])? WJV[2] : 7f) * n * (float)direction;
+                        self.bodyChunks[1].vel.x = ((superFlip && self.consistentDownDiagonal >= (int)WJV[4])? WJV[3] : 6f) * n * (float)direction;
+                        self.standing = true;
+                        self.jumpStun = 8 * direction;
+                        if (self.consistentDownDiagonal < (float)WJV[4]){
+                            self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), escort.EscortSoundBodyChunk, false, 1f, 0.7f);
+                        }
+                        toPrint.SetValue("Not Water", 1);
+                        Ebug("Y Velocity" + self.bodyChunks[0].vel.y);
+                        Ebug("Y Velocity" + self.bodyChunks[1].vel.y);
+                        Ebug("X Velocity" + self.bodyChunks[0].vel.x);
+                        Ebug("X Velocity" + self.bodyChunks[1].vel.x);
+                    }
+                    if (wallJumper){
+                        self.jumpBoost = 0f;
+                        if (superFlip && self.consistentDownDiagonal >= (int)WJV[4]){
+                            self.animation = Player.AnimationIndex.Flip;
+                            self.room.PlaySound((sfxOn? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), escort.EscortSoundBodyChunk, false, 1f, 0.9f);
+                            self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
+                            toPrint.SetValue("SUPERFLIP", 2);
+                        } else {
+                            toPrint.SetValue("not so flip", 2);
+                        }
+                        Ebug("Jumpboost" + self.jumpBoost);
+                        Ebug("CDownDir" + self.consistentDownDiagonal);
+                        Ebug("SLaunchJump" + self.superLaunchJump);
+                        if (self.superLaunchJump > 19){
+                            self.superLaunchJump = 0;
+                        }
+                    } else {
+                        self.jumpBoost = n;
+                        toPrint.SetValue("Noteven", 2);
+                    }
+
+                    self.canWallJump = 0;
+                    Ebug(toPrint);
+                }
+                }
+            } else {
+                orig(self, direction);
+                Ebug("Default behaviour");
+            }
+        }
+
+        private void Escort_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
+        {
+            orig(self, eu);
+
+            if (LongWallJump.TryGet(self, out bool wallJumper) && wallJumper && self.bodyMode == Player.BodyModeIndex.WallClimb && self.bodyChunks[0].ContactPoint.x != 0 && self.bodyChunks[1].ContactPoint.x != 0){
+                String msg = "Nothing New";
+                self.canWallJump = 0;
+                if (self.input[0].jmp){
+                    msg = "Is touching the jump button";
+                    if (self.superLaunchJump < 20){
+                        self.superLaunchJump += 2;
+                        if (self.Adrenaline == 1f && self.superLaunchJump < 6){
+                            self.superLaunchJump = 6;
+                        }
+                    } else {
+                        self.killSuperLaunchJumpCounter = 15;
+                    }
+                }
+                if (!self.input[0].jmp && self.input[1].jmp){
+                    msg = "Lets go of the jump button";
+                    self.wantToJump = 1;
+                }
+                if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
+                Ebug(msg);
+            }
+
+            }
+
+        }
+
+        private void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
+        {
+            int previously = self.input[0].x;
+            orig(self);
+
+            // Undoes the input cancellation
+            if(LongWallJump.TryGet(self, out bool wallJumper) && wallJumper && self.bodyMode == Player.BodyModeIndex.WallClimb && self.superLaunchJump > 5 && self.input[0].jmp && self.input[1].jmp && self.input[0].y < 1){
+                if (self.input[0].x == 0){
+                    self.input[0].x = previously;
+                }
+
+            }
+        }
+
+
 
 
         // Implement Heavylifter
@@ -305,17 +508,23 @@ namespace TheEscort
                 // Infiniroll
                 if (self.animation == Player.AnimationIndex.Roll){
                     if (!((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
-                        EscEnums.rollin++;
+                        escort.EscortRollinCounter++;
                         if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
-                            Debug.Log(dMe + "ROLLIN at:" + EscEnums.rollin++);
+                            Debug.Log(dMe + "ROLLIN at:" + escort.EscortRollinCounter);
                         }
-
-                        //this.escortRollin.Volume = Mathf.InverseLerp(120f, 360f, EscEnums.rollin);
+                        if(soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn && escort.EscortRoller != null){
+                            escort.EscortRoller.Volume = Mathf.InverseLerp(100f, 300f, escort.EscortRollinCounter);
+                        }
                         self.rollCounter = 0;
-                    } else {
-                        //this.escortRollin.Volume = 0f;
-                        EscEnums.rollin = 0f;
                     }
+                } /*else if (self.animation == Player.AnimationIndex.RocketJump) {
+                    self.bodyMode = Player.BodyModeIndex.Default;
+                    self.standing = false;
+                    self.bodyChunks[1].vel
+                }*/
+
+                if (self.animation != Player.AnimationIndex.Roll){
+                    escort.EscortRollinCounter = 0f;
                 }
 
                 // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
@@ -537,7 +746,7 @@ namespace TheEscort
 
                 // Parryslide (stun module)
                 if (self.animation == Player.AnimationIndex.BellySlide){
-                    self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,self.mainBodyChunk);
+                    self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,escort.EscortSoundBodyChunk);
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
                     float normSlideStun = bodySlam[1];
                     if (hypedMode && self.aerobicLevel > requirement){
@@ -573,6 +782,7 @@ namespace TheEscort
 
                 // Dropkick
                 else if (self.animation == Player.AnimationIndex.RocketJump){
+                    String message = "Dropkicked!";
                     self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk);
                     
                     DropKick.TryGet(self, out var multiplier);
@@ -580,9 +790,15 @@ namespace TheEscort
                         multiplier *= (otherObject as Creature).TotalMass;
                     }
                     (otherObject as Creature).SetKillTag(self.abstractCreature);
-                    (otherObject as Creature).LoseAllGrasps();
-                    float normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + 0.15f);
-                    if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
+                    float normSlamDamage = 0.1f;
+                    if (escort.EscortDropKickCooldown <= 30){
+                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + 0.15f);
+                        (otherObject as Creature).LoseAllGrasps();
+                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
+                        Ebug("Powerdropkicked!");
+                    } else {
+                        multiplier *= 0.5f;
+                    }
                     (otherObject as Creature).Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*multiplier, self.mainBodyChunk.vel.y*multiplier)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
@@ -598,7 +814,8 @@ namespace TheEscort
                     self.WallJump(direction);
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
-                    Debug.Log(dMe + "Dropkicked!");
+                    escort.EscortDropKickCooldown = (self.longBellySlide? 90 : 45);
+                    Ebug(message);
                     }
                 }
             }
@@ -679,16 +896,79 @@ namespace TheEscort
             }
         }
 
+
+        private float Escort_DeathBiteMult(On.Player.orig_DeathByBiteMultiplier orig, Player self)
+        {
+            if (self.slugcatStats.name.value == "EscortMe"){
+                return 0.4f;
+            } else {
+                return orig(self);
+            }
+        }
+
+
         private void Escort_Die(On.Player.orig_Die orig, Player self){
             orig(self);
-            Room room = self.room;
             if (self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
-                room.PlaySound(EscortDeath, self.mainBodyChunk.pos);
+                self.room.PlaySound(Escort_SFX_Death, escort.EscortSoundBodyChunk);
                 //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
             }
             Debug.Log(dMe + "Failure.");
 
         }
+
+        private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
+        {
+            if (i.value == "EscortMe"){
+                return new string[]{
+                    "SU",
+                    "HI",
+                    "DS",
+                    "CC",
+                    "GW",
+                    "SH",
+                    "VS",
+                    "LM",
+                    "SI",
+                    "LF",
+                    "UW",
+                    "SS",
+                    "SB",
+                    "DM"
+                };
+            } else {
+                return orig(i);
+            }
+        }
+
+        private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
+        {
+            if (index.value == "EscortMe"){
+                return 0.012f;
+            } else {
+                return orig(index);
+            }
+        }
+
+        private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
+        {
+            if (index.value == "EscortMe"){
+                return 0.078f;
+            } else {
+                return orig(index);
+            }
+        }
+
+        private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
+        {
+            if (index.value == "EscortMe"){
+			    return Mathf.Pow(originalSpearChance, 1.3f);
+            } else {
+                return orig(index, originalSpearChance);
+            }
+        }
+
+
     }
 
 }

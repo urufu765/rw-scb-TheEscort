@@ -10,7 +10,7 @@ Currently implements The Escort and some of their abilities and movement tech.
 Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
 [hr][/hr][h2]<~CONFLICTING MODS~>[/h2]
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.7[/url]: [b]Error on Rotund's side, white screen upon starting any campaign[/b] (Has nothing to do with whether you have Escort mod or not).
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.7[/url]: [b]White screen upon starting any campaign[/b] (May have nothing to do with whether you have Escort mod or not. May be fixed by reinstalling Rotund World).
 [/list]
 [hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
 These mods have been tested in isolation, so there's a chance having multiple may still result in a bug/crash. If so, please report it in the discussions!

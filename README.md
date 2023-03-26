@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam 
+**(0.1.6)** Walljump mechanics changed a wee bit and also has new stuff on top of it!
+
+**(0.1.5.1)** May or may not be a patch for revivify (haven't found a proper solution yet), dropkicking while in hyped mode sends you up!
+
 **(0.1.5)** Made scavs more friendly at the start, gutter water is no more ;) Also began development on all kinds of stuff, such as another funny thing, and a patch for revivify.
 
 **(0.1.4.3)** Tweaked the behaviours of combat and how spears work (also you will no longer accidentally throw yourself off a pole simply by throwing something), turned off audio for now (but know the option of turning it on will soon be added, and chaos be there)
@@ -121,7 +125,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 - Grab thrown objects
 - Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
-- Ability to swim through thicc water
+- Escort shoot out of pipes
+- Escort turns faster in pipes
 
 
 # Roadmap (Subject to change)
