@@ -7,9 +7,11 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam 
-**(0.1.6.1)** Long wall jumps will be an option and the option for flip wall jump will also be handled with an option (but handled by flip jumps)
+**(0.1.6.2)** Grabbing lizards are a thing, and "throwing" them initiates a dropkick almost immediately. Also attempted to patch some issues I guess
 
-**(0.1.6)** Walljump mechanics changed a wee (alot) bit and also has new stuff on top of it!
+**(0.1.6.1)** Long wall jumps will be an option and the option for flip wall jump will also be handled with an option (but handled by flip jumps). For now long wall jumps are disabled because they change the behaviour of regular wall jumping a little
+
+**(0.1.6)** Walljump mechanics changed a wee (alot) bit and also has new stuff on top of it! Also finally fixed Garbage Waste map (not that that changes the sheer difficulty of navigating through it)
 
 **(0.1.5.1)** May or may not be a patch for revivify (haven't found a proper solution yet), dropkicking while in hyped mode sends you up!
 
@@ -128,8 +130,12 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 - Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
 - Escort shoot out of pipes
-- Escort turns faster in pipes
+- Escort turns faster in 
+- Escort slide throw doesn't interrupt slide
+- Escort throw spear while sliding causes ricochet effect (like regular tosses)
+- Escort's spear speeds up after arc
 - Escort can get out of centipede grasps (but has a steep cooldown)
+- Gamr Mode (if I ever finish the damn mod): Double spawns, reduced spear spawns, pipejukes don't work now (lizards can grab you if they pass by you in the pipe), hunted by lizard event occurs always, pursued by a silver ghost lizard (that spawns every 2.5 minutes in the pipe closest to you, despawned by gates, warded off by shelters) that can manuver like a full-speed white (but doesn't have a tongue), but can also pass through walls, cannot be hit, and the sole intent of their movement is to bite you and kill you.
 
 
 # Roadmap (Subject to change)

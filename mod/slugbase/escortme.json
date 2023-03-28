@@ -37,7 +37,7 @@
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 
 		"theescort/better_crawl": [3.5, 5, 2, 3.5, 4.2, 2.5],
-		"theescort/body_slam": [0.05, 35, 0.7, 15],
+		"theescort/body_slam": [0.05, 45, 0.7, 15],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
 		"theescort/exhausion": 90,
@@ -47,7 +47,7 @@
 		"theescort/long_wall_jump": false,
 		"theescort/wall_jump_val": [14, 13, 3, 2, 20, 50, 3, 6],
 		"theescort/elevator": false,
-		"theescort/trampoline": 14,
+		"theescort/trampoline": 13,
 		"theescort/mean_lizards": true,
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
