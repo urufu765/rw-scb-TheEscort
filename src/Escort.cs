@@ -1,27 +1,36 @@
 using System;
+using UnityEngine;
+
 
 
 namespace TheEscort{
     public class Escort{
-        public int EscortDropKickCooldown;
-        public int EscortCentipedeCooldown;
-        public float EscortRollinCounter;
-        public BodyChunk EscortSoundBodyChunk;
-        public DynamicSoundLoop EscortRoller;
+        public int DropKickCD;
+        public int CentiCD;
+        public float RollinCount;
+        public int iFrames;
+        public BodyChunk RollinSFXChunk;
+        public DynamicSoundLoop Rollin;
         public bool LizardDunk;
         public bool ParrySuccess;
         public Escort(Player player){
-            this.EscortDropKickCooldown = 0;
-            this.EscortCentipedeCooldown = 0;
-            this.EscortRollinCounter = 0f;
+            this.DropKickCD = 0;
+            this.CentiCD = 0;
+            this.iFrames = 0;
+            this.RollinCount = 0f;
             this.LizardDunk = false;
             this.ParrySuccess = false;
-            this.EscortSoundBodyChunk = player.bodyChunks[0];
+            this.RollinSFXChunk = player.bodyChunks[0];
         }
 
         public void Escort_set_roller(SoundID sound){
-            this.EscortRoller = new ChunkDynamicSoundLoop(EscortSoundBodyChunk);
-            this.EscortRoller.sound = sound;
+            try{
+                this.Rollin = new ChunkDynamicSoundLoop(RollinSFXChunk);
+                this.Rollin.sound = sound;
+            } catch (Exception e){
+                Debug.Log("Something went horribly wrong when setting up the rolling sound!");
+                Debug.Log(e.Message);
+            }
         }
     }
 }
