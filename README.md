@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
         Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam 
+**(0.1.6.5)** Spears go faster when you do whiplashes at the same time! It's a bit precise, but you'll get it. Hyped spear damage has been reduced from 1.75 to 1.5. Also tweaked the parry slide to be more consistent.
+
+**(0.1.6.4)** Fixed some parry behaviours and also added a few more trycatches to prevent potential problems
+
 **(0.1.6.3)** Code cleanup a bit, made it such that Escort deals damage again, parry slide will ignore lizard bite rng now, and adjusted some mechanics that have yet to be fully implemented (you'll see ;))
 
 **(0.1.6.2)** Grabbing lizards are a thing, and "throwing" them initiates a dropkick almost immediately. Also attempted to patch some issues I guess
@@ -123,7 +127,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 **(0.0)** Cloned template.
 
 
-# Near Future Planned Features:
+# NFuture Planned Features:
 - Exhausion/stamina mechanic where being at full exhausion reduces Escort's power
 - Settings to adjust Escort's abilities
 - Reduce bite lethality
@@ -132,7 +136,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 - Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
 - Escort shoot out of pipes
-- Escort turns faster in 
+- Escort turns faster in enclosed spaces
 - Escort slide throw doesn't interrupt slide
 - Escort throw spear while sliding causes ricochet effect (like regular tosses)
 - Escort's spear speeds up after arc

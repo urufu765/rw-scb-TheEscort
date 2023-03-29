@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.6.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.6.5")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -221,6 +221,7 @@ namespace TheEscort
             }
             if (escort.iFrames > 0){
                 self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
+                Ebug("IFrames: " + escort.iFrames);
                 escort.iFrames--;
             } else {
                 //self.canBeHitByWeapons = true;
@@ -572,7 +573,7 @@ namespace TheEscort
                 if (ParrySlide.TryGet((self as Player), out bool enableParry) && enableParry && 
                 ParryTest.TryGet((self as Player), out bool standParry)){
                 escort.ParrySuccess = false;
-                if (standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide){
+                if (standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide && (self as Player).canJump != 0){
                     // Parryslide (parry module)
                     Ebug("Escort attempted a Parryslide");
                     int direction;
@@ -898,20 +899,28 @@ namespace TheEscort
                 bool doNotYeet = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
                 if (hypedMode){
                     if (self.aerobicLevel > requirement){
+                        spear.throwModeFrames = -1;
                         spear.spearDamageBonus = spearDmgBonuses[0];
                         if (self.canJump != 0 && !self.longBellySlide){
                             if (!doNotYeet){
                                 self.rollCounter = 0;
-                                self.animation = Player.AnimationIndex.Roll;
-                                self.standing = false;
+                                if (self.input[0].jmp && self.input[0].thrw){
+                                    self.animation = Player.AnimationIndex.BellySlide;
+                                    self.whiplashJump = true;
+                                    spear.firstChunk.vel.x *= 1.8f;
+                                    Ebug("Spear Go!?");
+                                } else {
+                                    self.animation = Player.AnimationIndex.Roll;
+                                    self.standing = false;
+                                }
                             }
                             thrust = 12f;
                         } else {
                             self.longBellySlide = true;
                             if (!doNotYeet){
                                 self.exitBellySlideCounter = 0;
-                                self.flipFromSlide = true;
                                 self.rollCounter = 0;
+                                self.flipFromSlide = true;
                                 self.animation = Player.AnimationIndex.BellySlide;
                             }
                             thrust = 9f;
@@ -921,36 +930,17 @@ namespace TheEscort
                             if (self.canJump != 0){
                                 self.rollCounter = 0;
                                 self.whiplashJump = true;
-                                self.animation = Player.AnimationIndex.BellySlide;
-                                bool alpha = false; bool beta = false; foreach (Player.InputPackage x in self.input)
-                                {
-                                    if (x.jmp){
-                                        alpha = true;
-                                    } else if (x.thrw){
-                                        beta = true;
-                                    }
-                                    if (alpha && beta){
-                                        spear.firstChunk.vel.x *= 3f;
-                                        Ebug("Spear GO");
-                                        break;
-                                    }
+                                if (self.animation != Player.AnimationIndex.BellySlide){
+                                    self.animation = Player.AnimationIndex.BellySlide;
+                                }
+                                if (self.input[0].jmp && self.input[0].thrw){
+                                    spear.firstChunk.vel.x *= 1.7f;
+                                    Ebug("Spear Go!");
                                 }
                             } else {
                                 self.rollCounter = 0;
                                 self.animation = Player.AnimationIndex.Flip;
-                                bool alpha = false; bool beta = false; foreach (Player.InputPackage x in self.input)
-                                {
-                                    if (x.jmp){
-                                        alpha = true;
-                                    } else if (x.thrw){
-                                        beta = true;
-                                    }
-                                    if (alpha && beta){
-                                        spear.firstChunk.vel.x *= 3f;
-                                        Ebug("Spear GO");
-                                        break;
-                                    }
-                                }
+                                self.standing = false;
                             }
                         }
                         spear.spearDamageBonus = spearDmgBonuses[1];
@@ -980,14 +970,18 @@ namespace TheEscort
                 if (obj is Weapon){
                     // Any weapon is dual-wieldable, including spears
                     return Player.ObjectGrabability.OneHand;
-                } else if (obj is Lizard && (obj as Lizard).Stunned){
+                } else if (obj is Lizard){
                     // Any lizards that are haulable (while dead) or stunned are dual-wieldable
-                    if (!(obj as Lizard).dead){
+
+                    if ((obj as Lizard).dead){
+                        return Player.ObjectGrabability.OneHand;
+                    } else if ((obj as Lizard).Stunned){
                         (obj as Lizard).Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 35f);
                         escort.LizardDunk = true;
                         return Player.ObjectGrabability.TwoHands;
+                    } else {
+                        return orig(self, obj);
                     }
-                    return Player.ObjectGrabability.OneHand;
                 } else if (escPatch_revivify && obj is Creature && (obj as Creature).abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (obj as Creature).dead) {
                     return orig(self, obj);
                 } else {
@@ -1020,7 +1014,7 @@ namespace TheEscort
             try{
                 if (self.slugcatStats.name.value == "EscortMe"){
                     Ebug("Die Triggered!");
-                    if (!escort.ParrySuccess || escort.iFrames == 0){
+                    if (!escort.ParrySuccess && escort.iFrames == 0){
                         orig(self);
                         if (self.dead && soundsAhoy.TryGet(self, out bool sfxOn) && sfxOn){
                             self.room.PlaySound(Escort_SFX_Death, escort.RollinSFXChunk);
