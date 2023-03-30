@@ -8,16 +8,21 @@ Currently implements The Escort and some of their abilities and movement tech.
 
 [hr][/hr][h2]<~DISCLAIMER~>[/h2]
 Escort's campaign doesn't exist, there's no custom assets, and this may or may not alter the behaviour of other slugcats by pure accident (it's unlikely for this to happen)...
-[hr][/hr][h2]<~CONFLICTING MODS~>[/h2]
-These mods may or may not cause issues with the Escort mod.
+[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~>[/h2]
+These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
-[*] [url=][/url]: [b][/b] ()
+[*] Gutter water is still super buoyant... but I won't be messing around with gutter water no more.
+[*] Garbage Waste doesn't work properly
+[*] When playing COOP in Escort's Campaign, the food intake doesn't work properly (gives you too much food actually)
+[*] Escort starts in water... that'll be fixed once I make a custom room.
+[*] Spearthrowing mechanics are still a wee bit janky and needs cleanup.
+[*] And probably more, there are way too many mods to test this character with...
 [/list]
 [hr][/hr][h2]<~SUPPORTED MODS~>[/h2]
 These mods have been tested in isolation, so there's a chance having multiple may still result in a bug/crash. If so, please report it in the discussions!
 [list]
 [*] [u]Jolly Coop[/u]: [b]Works[/b] (support may depend on other mods)
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920903670]BeastMaster 1.4.1[/url]: [b]Lightly Tested[/b] (Requires further testing)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920903670]BeastMaster 1.4.2[/url]: [b]Lightly Tested[/b] (Requires further testing)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2943737047]BeastMasterPupExtras 1.0.1[/url]: [b]Lightly Tested[/b] (Requires further testing)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920640816]Deathcount 1.3.1[/url]: [b]Works[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2920528044]Dev Console 1.3.0[/url]: [b]Lightly tested[/b]
@@ -27,10 +32,10 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2924212543]Keep That Away From Me 1.0.1.3[/url]: [b]Works[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933088640]Move Testing Rooms[/url]: [b]Barely Tested[/b] (Should work)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934808032]Movement Marker[/url]: [b]Works[/b]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify 1.0.0[/url]: [b]Works somewhat[/b] (Works normally with dead slugcats, a little bit janky on slugpups (a way around which is to do the input a bit slower so you don't switch hands)). Revivify on arena mode slugpups may not work at all with Escort.
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World[/url]: [b]Lightly Tested[/b] (Needs further testing)
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928752589]SBCameraScroll[/url]: [b]Works[/b] (May need further testing in GW)
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933196558]SlugBase 2.1.3[/url]: [b]Obviously.[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify 1.2.0[/url]: [b]Works somewhat[/b] (Works normally with dead slugcats, a little bit janky on slugpups (a way around which is to do the input a bit slower so you don't switch hands)). Revivify on arena mode slugpups may not work at all with Escort.
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.4.10[/url]: [b]Lightly Tested[/b] (Needs further testing)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928752589]SBCameraScroll 2.4.8[/url]: [b]Works[/b] (May need further testing in GW)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2933196558]SlugBase 2.1.3[/url]: [b]Obviously.[/b] (though the custom map is not working properly apparently... maybe that's why GW is so borked in Escort's campaign)
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929613038]Testing Arena 1.0.0.0[/url]: [b]Works[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2929665635]Thicc Spearmaster[/url]: [b]Works[/b]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID 0206[/url]: [b]Works[/b]
@@ -39,6 +44,7 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] [url=][/url]: [b][/b] ()
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
+[*] REMIX MENU to tweak some features and enable optional gimmicks
 [*] Slide Stun (sliding into creature)
 [*] Drop Kick (roll/slide pouncing into creature)
 [*] Flip Pounce (charge pounce)
@@ -50,16 +56,15 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
 [*] Custom SFX!
 [/list]
-[hr][/hr][h2]<~TO BE IMPLEMENTED (in the near future)~>[/h2]
+[hr][/hr][h2]<~TO BE IMPLEMENTED (when i feel liek it)~>[/h2]
 [list]
+[*] Sliding while hyped will be more lenient (slide success occurs in fewer frames alike how rivulet works)
 [*] Escort Headbutt (when you speed out of a pipe)
 [*] Escort shooting out of pipes
 [*] Pull out of centipede grasps with STRENGTH (don't worry it'll have a cooldown)
 [*] Some creatures hate Escort's guts (and some will actively search for them)
-[*] Parry Slide parrying spears
 [*] grab thrown objects midair and hurl it back
 [*] prioritize spears when picking up while doing Stun Slide or Drop Kick
-[*] Remix menu to adjust multiple settings
 [*] Code organization and comments for future me and y'all who want to use this code when I make the repository public...
 [/list]
 [hr][/hr][h2]<~GOALS~>[/h2]
@@ -70,4 +75,4 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] Complete the campaign
 [/list]
 [hr][/hr][h3]<~REPOSITORY~>[/h3]
-[url=https://github.com/urufu765/rw-scb-TheEscort]Enjoy! It's on Github![/url]
+[url=https://github.com/urufu765/rw-scb-TheEscort]Enjoy! It's on Github! Free for you to do whatever (as long as it follows the original licenses and whatever)[/url]

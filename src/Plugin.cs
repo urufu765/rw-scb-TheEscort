@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.7")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.7.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -27,8 +27,20 @@ namespace TheEscort
         public static readonly PlayerFeature<bool> BtrPounce = PlayerBool("theescort/better_pounce");
         public static readonly GameFeature<bool> SupahMeanLizards = GameBool("theescort/mean_lizards");
         public static readonly GameFeature<bool> SuperMeanGarbageWorms = GameBool("theescort/mean_garb_worms");
+
+        /* JSON VALUES
+        ["Unhyped speed", "Hyped speed", "Malnourished unhyped", "Malnourished hyped", "Malnourished unhyped", "hype-disabled", "Malnourished hype-disabled"]
+        */
         public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
+
+        /* JSON VALUES
+        ["Unhyped speed", "Hyped speed", "Malnourished unhyped", "Malnourished hyped", "Malnourished unhyped", "hype-disabled", "Malnourished hype-disabled"]
+        */
         public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
+
+        /* JSON VALUES
+        ["Stun Slide damage", "Stun Slide base stun duration", "Drop Kick base damage", "Drop Kick stun duration"]
+        */
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
         public static readonly PlayerFeature<float> LiftHeavy = PlayerFloat("theescort/heavylifter");
         public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
@@ -40,13 +52,26 @@ namespace TheEscort
         public static readonly PlayerFeature<float> HypeReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
         public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
+
+        /* JSON VALUES
+        ["Hyped spear damage", "Base spear damage"]
+        */
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
         public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
         public static readonly PlayerFeature<bool> soundAhoy = PlayerBool("theescort/sounds_ahoy");
+
+        /* JSON VALUES
+        ["Min swim power (affected by viscosity of water)", "Max swim power", "deepswim X velocity", "deepswim Y velocity", "surfaceswim X velocity", "surfaceswim Y velocity"]
+        */
         public static readonly PlayerFeature<float[]> NoMoreGutterWater = PlayerFloats("theescort/guuh_wuuh");
         public static readonly PlayerFeature<bool> LWallJump = PlayerBool("theescort/long_wall_jump");
+
+        /* JSON VALUES
+        ["Head Y velocity", "Body Y velocity", "Head X velocity", "Body X velocity", "ConstantDownDiagnoal floor value", "ConstantDownDiagonal ceiling value", "min JumpBoost", "max JumpBoost"]
+        */
         public static readonly PlayerFeature<float[]>
         WallJumpVal = PlayerFloats("theescort/wall_jump_val");
+        public static readonly PlayerFeature<bool> getOFFme = PlayerBool("theescort/switchsolutions");
 
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
@@ -85,7 +110,7 @@ namespace TheEscort
             }
             Debug.Log("-> Escort: " + message);
         }
-        
+
 
         // Add hooks
         public void OnEnable()
@@ -288,6 +313,7 @@ namespace TheEscort
                 slowDownDevConsole++;
             }
         }
+
 
         /*
         Escort code!
@@ -713,7 +739,6 @@ namespace TheEscort
                         direction = 0;
                         throw new Exception("Self is not player!");
                     }
-                    Ebug("Is there an instance? " + (self != null));
                     Ebug("Is there a source? " + (source != null));
                     Ebug("Is there a direction & Momentum? " + (directionAndMomentum != null));
                     Ebug("Is there a hitChunk? " + (hitChunk != null));
@@ -765,6 +790,26 @@ namespace TheEscort
                         } else {
                             damage = 0f;
                             type = Creature.DamageType.Blunt;
+                            bool keepLooping = true;
+                            for (int a = 0; a < self.room.physicalObjects.Length; a++){
+                                for (int b = 0; b < self.room.physicalObjects[a].Count; b++){
+                                    if (self.room.physicalObjects[a][b] is Vulture vulture && vulture.IsKing){
+                                        if (vulture.kingTusks.tusks[0].impaleChunk != null && vulture.kingTusks.tusks[0].impaleChunk.owner == self){
+                                            vulture.kingTusks.tusks[0].impaleChunk = null;
+                                            keepLooping = false;
+                                            break;
+                                        } else if (vulture.kingTusks.tusks[1].impaleChunk != null && vulture.kingTusks.tusks[1].impaleChunk.owner == self){
+                                            vulture.kingTusks.tusks[1].impaleChunk = null;
+                                            keepLooping = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!keepLooping){
+                                    Ebug("Tusk unimpaled!");
+                                    break;
+                                }
+                            }
                             e.ParrySuccess = true;
                             Ebug("Escort parried a generic stabby thing");
                         }
@@ -847,7 +892,6 @@ namespace TheEscort
                     // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
                     // Visual indicator doesn't work ;-;
                     if (e.ParrySuccess){
-                        //self.AllGraspsLetGoOfThisObject(true);
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
                         Ebug("Parry successful!");
                         e.iFrames = 6;
