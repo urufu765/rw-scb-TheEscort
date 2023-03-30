@@ -4,9 +4,11 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 
 # Version History (Newest to Oldest):
 ## Version 0: Escort's Beginning
-        Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
+Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
-### 0.1 - Steam 
+### 0.1 - Steam Workshopped
+**(0.1.7)** Settings?! SETTINGS!!! Also fixed wall jump behaviour, and reimplemented Escort's Elevator the way it was when it was first featured... and also added friendly fire back to arena mode (it'll behave like gourmand, who can slam into others regardless of whether spears hit or not.)... oh and one more thing: Fixed the category name *(how did it even get deleted in the first place)*
+
 **(0.1.6.5)** Spears go faster when you do whiplashes at the same time! It's a bit precise, but you'll get it. Hyped spear damage has been reduced from 1.75 to 1.5. Also tweaked the parry slide to be more consistent.
 
 **(0.1.6.4)** Fixed some parry behaviours and also added a few more trycatches to prevent potential problems

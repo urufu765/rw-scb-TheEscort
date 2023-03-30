@@ -36,6 +36,9 @@
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 
+		"playescort/realtime_edits": false,
+		"gameescort/realtime_edits": false,
+
 		"theescort/better_crawl": [3.5, 5, 2, 3.5, 4.2, 2.5],
 		"theescort/body_slam": [0.05, 45, 0.7, 15],
 		"theescort/dk_multiplier": 3,
@@ -52,7 +55,7 @@
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 60,
+		"theescort/reset_rate": 240,
 		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
