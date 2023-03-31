@@ -9,6 +9,8 @@ namespace TheEscort{
         public int CentiCD;
         public float RollinCount;
         public int iFrames;
+        public bool Cometted;
+        public int CometFrames;
         public BodyChunk RollinSFXChunk;
         public DynamicSoundLoop Rollin;
         public bool LizardDunk;
@@ -17,6 +19,8 @@ namespace TheEscort{
             this.DropKickCD = 0;
             this.CentiCD = 0;
             this.iFrames = 0;
+            this.Cometted = false;
+            this.CometFrames = 0;
             this.RollinCount = 0f;
             this.LizardDunk = false;
             this.ParrySuccess = false;

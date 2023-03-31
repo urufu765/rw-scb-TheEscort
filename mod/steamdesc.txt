@@ -47,6 +47,7 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [*] REMIX MENU to tweak some features and enable optional gimmicks
 [*] Slide Stun (sliding into creature)
 [*] Drop Kick (roll/slide pouncing into creature)
+[*] Pipe Headbutt (when you speed out of a pipe)
 [*] Flip Pounce (charge pounce)
 [*] Flip wall jump (holding down and direction (towards the wall) while on the wall, then pressing jump)
 [*] Infinite roll
@@ -59,7 +60,6 @@ These mods have been tested in isolation, so there's a chance having multiple ma
 [hr][/hr][h2]<~TO BE IMPLEMENTED (when i feel liek it)~>[/h2]
 [list]
 [*] Sliding while hyped will be more lenient (slide success occurs in fewer frames alike how rivulet works)
-[*] Escort Headbutt (when you speed out of a pipe)
 [*] Escort shooting out of pipes
 [*] Pull out of centipede grasps with STRENGTH (don't worry it'll have a cooldown)
 [*] Some creatures hate Escort's guts (and some will actively search for them)

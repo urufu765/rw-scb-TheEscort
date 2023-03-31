@@ -50,7 +50,7 @@
 		"theescort/long_wall_jump": false,
 		"theescort/wall_jump_val": [14, 13, 3, 2, 20, 50, 3, 6],
 		"theescort/elevator": false,
-		"theescort/trampoline": 13,
+		"theescort/trampoline": 8,
 		"theescort/mean_lizards": true,
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
@@ -61,6 +61,7 @@
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
 		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1],
-		"theescort/switchsolutions": true
+		"theescort/switchsolutions": true,
+		"theescort/headbutt": 15
 		}
 }

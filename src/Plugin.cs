@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.7.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.8")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -46,6 +46,7 @@ namespace TheEscort
         public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
         public static readonly PlayerFeature<float> DKM = PlayerFloat("theescort/dk_multiplier");
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
+        public static readonly PlayerFeature<int> Escomet = PlayerInt("theescort/headbutt");
         public static readonly PlayerFeature<bool> Elvator = PlayerBool("theescort/elevator");
         public static readonly PlayerFeature<float> TrampOhLean = PlayerFloat("theescort/trampoline");
         public static readonly PlayerFeature<bool> HypeSys = PlayerBool("theescort/adrenaline_system");
@@ -115,7 +116,6 @@ namespace TheEscort
         // Add hooks
         public void OnEnable()
         {
-            
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
             On.RainWorld.PostModsInit += new On.RainWorld.hook_PostModsInit(this.Escort_PostInit);
 
@@ -372,12 +372,17 @@ namespace TheEscort
             Update_Refresher(self);
 
 
-            // Cooldown Refresh
+            // Cooldown/Frames Tick
             if (e.DropKickCD > 0){
                 e.DropKickCD--;
             }
             if (e.CentiCD > 0){
                 e.CentiCD--;
+            }
+            if (e.CometFrames > 0){
+                e.CometFrames--;
+            } else {
+                e.Cometted = false;
             }
             if (e.iFrames > 0){
                 self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
@@ -663,7 +668,7 @@ namespace TheEscort
             if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && self.slugcatStats.name.value == "EscortMe"){
                 bool hypedMode = Esconfig_Hypable(self);
                 //Ebug("UpdateBodyMode Triggered!");
-
+            Escomet.TryGet(self, out int SetComet);
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
@@ -681,8 +686,12 @@ namespace TheEscort
             else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
+            } else if (self.bodyMode == Player.BodyModeIndex.CorridorClimb){
+                if (self.slowMovementStun > 0){
+                    e.CometFrames = SetComet;
+                }
             }
-            }
+            } 
         }
 
         // Implement Movementtech
@@ -952,31 +961,30 @@ namespace TheEscort
             }
 
 
-            if (otherObject is Creature && 
-                (otherObject as Creature).abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && (otherObject as Creature).abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !RWCustom.Custom.rainWorld.options.friendlyFire)){
+            if (otherObject is Creature creature && 
+                creature.abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !RWCustom.Custom.rainWorld.options.friendlyFire)){
+                Esconfig_DKMulti(self);
 
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 /*
                 Creature Trampoline is not consistent and may get you killed if you try to take advantage of it. Thus the intended use is to bounce away from the creature when running by or away.
                 */
-                if (self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead){
+                if (self.animation == Player.AnimationIndex.Flip && self.bodyMode == Player.BodyModeIndex.Default && (!creature.dead || creature is Lizard)){
                     if (self.jumpBoost <= 0) {
                         self.jumpBoost = bounce;
-                    } else if (self.jumpBoost >= bounce && self.jumpBoost >= 1f){
-                        self.jumpBoost--;  // not sure if this does anything...
                     }
                 }
 
                 // Parryslide (stun module)
                 if (self.animation == Player.AnimationIndex.BellySlide){
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.RollinSFXChunk);
-                    (otherObject as Creature).SetKillTag(self.abstractCreature);
+                    creature.SetKillTag(self.abstractCreature);
                     float normSlideStun = bodySlam[1];
                     if (hypedMode && self.aerobicLevel > requirement){
                         normSlideStun = bodySlam[1] * 1.75f;
                     }
-                    (otherObject as Creature).Violence(
+                    creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
                         bodySlam[0], normSlideStun
@@ -1009,21 +1017,20 @@ namespace TheEscort
                     String message = "Dropkicked!";
                     self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk);
                     
-                    Esconfig_DKMulti(self);
-                    if (!(otherObject as Creature).dead) {
-                        DKMultiplier *= (otherObject as Creature).TotalMass;
+                    if (!creature.dead) {
+                        DKMultiplier *= creature.TotalMass;
                     }
-                    (otherObject as Creature).SetKillTag(self.abstractCreature);
+                    creature.SetKillTag(self.abstractCreature);
                     float normSlamDamage = 0.1f;
                     if (e.DropKickCD <= 5){
                         normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + 0.15f);
-                        (otherObject as Creature).LoseAllGrasps();
+                        creature.LoseAllGrasps();
                         if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
                         message = "Powerdropkicked!";
                     } else {
                         //multiplier *= 0.5f;
                     }
-                    (otherObject as Creature).Violence(
+                    creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*DKMultiplier, self.mainBodyChunk.vel.y*DKMultiplier*(e.LizardDunk?0.2f:1f))),
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
                         normSlamDamage, bodySlam[3]
@@ -1044,6 +1051,19 @@ namespace TheEscort
                     //self.animation = Player.AnimationIndex.None;
                     Ebug(message);
                     }
+
+                else if (e.CometFrames > 0 && !e.Cometted){
+                    creature.Violence(
+                        self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x*DKMultiplier, self.bodyChunks[0].vel.y*DKMultiplier)),
+                        creature.mainBodyChunk, null, Creature.DamageType.Blunt,
+                        0f, 15f
+                    );
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x*(DKMultiplier/2);
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y*(DKMultiplier/2);
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
+                    Ebug("Headbutted!");
+                    e.Cometted = true;
+                }
                 }
             }
         }
