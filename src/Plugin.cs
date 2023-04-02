@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.14")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.15")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -1235,74 +1235,87 @@ namespace TheEscort
         // Implement unique spearskill
         private void Escort_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear){
             orig(self, spear);
-            if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && Esconfig_HypeReq(self) && !self.Malnourished && self.slugcatStats.name.value == "EscortMe"){
-                Ebug("ThrownSpear Triggered!");
-                float thrust = 7f;
-                bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-                bool doNotYeet = onPole || !e.combatTech;
-                if (Esconfig_Hypable(self)){
-                    if (self.aerobicLevel > requirement){
-                        spear.throwModeFrames = -1;
-                        spear.spearDamageBonus = spearDmgBonuses[0];
-                        if (self.canJump != 0 && !self.longBellySlide){
-                            if (!doNotYeet){
-                                self.rollCounter = 0;
-                                if (self.input[0].jmp && self.input[0].thrw){
-                                    self.animation = Player.AnimationIndex.BellySlide;
-                                    self.whiplashJump = true;
-                                    spear.firstChunk.vel.x *= 1.8f;
-                                    Ebug("Spear Go!?");
-                                } else {
-                                    self.animation = Player.AnimationIndex.Roll;
-                                    self.standing = false;
-                                }
-                            }
-                            thrust = 12f;
-                        } else {
-                            self.longBellySlide = true;
-                            if (!doNotYeet){
-                                self.exitBellySlideCounter = 0;
-                                self.rollCounter = 0;
-                                self.flipFromSlide = true;
-                                self.animation = Player.AnimationIndex.BellySlide;
-                            }
-                            thrust = 9f;
-                        }
-                    } else {
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
+            }
+            if(
+                !bonusSpear.TryGet(self, out float[] spearDmgBonuses) ||
+                !Esconfig_HypeReq(self) ||
+                !self.Malnourished
+                ){
+                return;
+            }
+
+            Ebug("ThrownSpear Triggered!");
+            float thrust = 7f;
+            bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
+            bool doNotYeet = onPole || !e.combatTech;
+            if (Esconfig_Hypable(self)){
+                if (self.aerobicLevel > requirement){
+                    spear.throwModeFrames = -1;
+                    spear.spearDamageBonus = spearDmgBonuses[0];
+                    if (self.canJump != 0 && !self.longBellySlide){
                         if (!doNotYeet){
-                            if (self.canJump != 0){
-                                self.rollCounter = 0;
+                            self.rollCounter = 0;
+                            if (self.input[0].jmp && self.input[0].thrw){
+                                self.animation = Player.AnimationIndex.BellySlide;
                                 self.whiplashJump = true;
-                                if (self.animation != Player.AnimationIndex.BellySlide){
-                                    self.animation = Player.AnimationIndex.BellySlide;
-                                }
-                                if (self.input[0].jmp && self.input[0].thrw){
-                                    spear.firstChunk.vel.x *= 1.7f;
-                                    Ebug("Spear Go!");
-                                }
+                                spear.firstChunk.vel.x *= 1.8f;
+                                Ebug("Spear Go!?");
                             } else {
-                                self.rollCounter = 0;
-                                self.animation = Player.AnimationIndex.Flip;
+                                self.animation = Player.AnimationIndex.Roll;
                                 self.standing = false;
                             }
                         }
-                        spear.spearDamageBonus = spearDmgBonuses[1];
-                        thrust = 5f;
+                        thrust = 12f;
+                    } else {
+                        self.longBellySlide = true;
+                        if (!doNotYeet){
+                            self.exitBellySlideCounter = 0;
+                            self.rollCounter = 0;
+                            self.flipFromSlide = true;
+                            self.animation = Player.AnimationIndex.BellySlide;
+                        }
+                        thrust = 9f;
                     }
                 } else {
-                    spear.spearDamageBonus = 1.25f;
+                    if (!doNotYeet){
+                        self.rollCounter = 0;
+                        if (self.canJump != 0){
+                            self.whiplashJump = true;
+                            if (self.animation != Player.AnimationIndex.BellySlide){
+                                self.animation = Player.AnimationIndex.BellySlide;
+                            }
+                            if (self.input[0].jmp && self.input[0].thrw){
+                                spear.firstChunk.vel.x *= 1.7f;
+                                Ebug("Spear Go!");
+                            }
+                        } else {
+                            self.animation = Player.AnimationIndex.Flip;
+                            self.standing = false;
+                        }
+                    }
+                    spear.spearDamageBonus = spearDmgBonuses[1];
+                    thrust = 5f;
                 }
-                if (onPole) {
-                    thrust = 1f;
-                }
-                if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
-                    self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
-                } else {
-                    self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
-                    BodyChunk firstChunker = self.firstChunk;
-                    if (self.animation != Player.AnimationIndex.BellySlide){
+            } else {
+                spear.spearDamageBonus = 1.25f;
+            }
+            if (onPole) {
+                thrust = 1f;
+            }
+            if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
+                self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+            } else {
+                self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
+                BodyChunk firstChunker = self.firstChunk;
+                if (self.animation != Player.AnimationIndex.BellySlide){
                     firstChunker.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
-                    }
                 }
             }
         }

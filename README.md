@@ -11,7 +11,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.1.9.16)** Clean up Escort_Collision()
 
-**(0.1.9.15)** Clean up Escort_ThrownSpear()
+**(0.1.9.15)** Sorta cleaned up Escort_ThrownSpear()... will return to this again later.
 
 **(0.1.9.14)** Cleaned up Escort_Die()
 
