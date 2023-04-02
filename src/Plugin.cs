@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.7")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -689,19 +689,30 @@ namespace TheEscort
 
         private void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
         {
-            if(Esconfig_WallJumps(self) && self.slugcatStats.name.value == "EscortMe"){
-                //Ebug("CheckInput Triggered!");
-                int previously = self.input[0].x;
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    orig(self);
+                    return;
+                }
+            } catch (Exception err){
                 orig(self);
+                Ebug(err.Message);
+                return;
+            }
+            if(!Esconfig_WallJumps(self)){
+                orig(self);
+                return;
+            }
+
+            //Ebug("CheckInput Triggered!");
+            int previously = self.input[0].x;
+            orig(self);
 
             // Undoes the input cancellation
-                if(self.bodyMode == Player.BodyModeIndex.WallClimb && self.superLaunchJump > 5 && self.input[0].jmp && self.input[1].jmp && self.input[0].y < 1){
-                    if (self.input[0].x == 0){
-                        self.input[0].x = previously;
-                    }
+            if(self.bodyMode == Player.BodyModeIndex.WallClimb && self.superLaunchJump > 5 && self.input[0].jmp && self.input[1].jmp && self.input[0].y < 1){
+                if (self.input[0].x == 0){
+                    self.input[0].x = previously;
                 }
-            } else {
-                orig(self);
             }
         }
 
