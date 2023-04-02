@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.3")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -420,6 +420,8 @@ namespace TheEscort
                 return;
             }
             if (self.slugcatStats.name.value == "EscortMe"){
+                orig(self, f);
+
                 //Ebug("Aerobic Increase Triggered!");
                 if (!self.slugcatStats.malnourished){
                     self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / exhaust));
