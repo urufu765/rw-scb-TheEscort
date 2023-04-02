@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.2")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -337,6 +337,44 @@ namespace TheEscort
             }
         }
 
+        private void Tick_Escort(Player self){
+            // Dropkick damage cooldown
+            if (e.DropKickCD > 0){
+                e.DropKickCD--;
+            }
+
+            // Get out of centipede grasp cooldown
+            // TODO: IMPLEMENT
+            if (e.CentiCD > 0){
+                e.CentiCD--;
+            }
+
+            // Parry leniency when triggering stunslide first (may not actually occur)
+            if (e.parryLean > 0){
+                e.parryLean--;
+            }
+
+            // Headbutt cooldown
+            if (e.CometFrames > 0){
+                e.CometFrames--;
+            } else {
+                e.Cometted = false;
+            }
+
+            // Invincibility Frames
+            if (e.iFrames > 0){
+                self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
+                if (e.ElectroParry) {
+                    self.abstractCreature.creatureTemplate.baseStunResistance = 3f;                
+                }
+                Ebug("IFrames: " + e.iFrames);
+                e.iFrames--;
+            } else {
+                self.abstractCreature.creatureTemplate.baseDamageResistance = 1f;
+                self.abstractCreature.creatureTemplate.baseStunResistance = 1f;
+                e.ElectroParry = false;
+            }
+        }
 
         /*
         Escort code!
@@ -400,35 +438,8 @@ namespace TheEscort
             // For slowed down dev console output
             Update_Refresher(self);
 
-
             // Cooldown/Frames Tick
-            if (e.DropKickCD > 0){
-                e.DropKickCD--;
-            }
-            if (e.CentiCD > 0){
-                e.CentiCD--;
-            }
-            if (e.parryLean > 0){
-                e.parryLean--;
-            }
-            if (e.CometFrames > 0){
-                e.CometFrames--;
-            } else {
-                e.Cometted = false;
-            }
-            if (e.iFrames > 0){
-                self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
-                if (e.ElectroParry) {
-                    self.abstractCreature.creatureTemplate.baseStunResistance = 3f;                
-                }
-                Ebug("IFrames: " + e.iFrames);
-                e.iFrames--;
-            } else {
-                //self.canBeHitByWeapons = true;
-                self.abstractCreature.creatureTemplate.baseDamageResistance = 1f;
-                self.abstractCreature.creatureTemplate.baseStunResistance = 1f;
-                e.ElectroParry = false;
-                }
+            Tick_Escort(self);
             
             // Just for seeing what a variable does.
             if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
@@ -439,31 +450,27 @@ namespace TheEscort
                 Ebug(self.abstractCreature.creatureTemplate.baseDamageResistance);;
                 //Ebug("Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
                 //Ebug("Normalized direction: " + self.bodyChunks[0].vel.normalized);
-                }
+            }
 
             // vfx
-            if(Esconfig_HypeReq(self) && WallJumpVal.TryGet(self, out var WJV)){
+            if(WallJumpVal.TryGet(self, out var WJV) && self != null && self.room != null){
+                // Battle-hyped visual effect
                 if (Esconfig_Hypable(self) && self.aerobicLevel > requirement){
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
-                    if (self != null && self.room != null){
-                        self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
-                    }
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
                 }
-                if (Esconfig_WallJumps(self)){
+
+                // Charged pounces Visual Effect
+                if (Esconfig_Pouncing(self)){
+                    Color pounceColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
+
                     if (self.superLaunchJump > 19){
-                        Color superColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        if (self != null && self.room != null){
-                            self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 9f, 4f, 4f, 11f, superColor));
-                        }
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 9f, 4f, 4f, 11f, pounceColor));
                     }
                     if (self.bodyMode == Player.BodyModeIndex.WallClimb && self.consistentDownDiagonal >= (int)WJV[4]){
-                        Color flipColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        if (self != null && self.room != null){
-                            self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 10f, 4f, 11f, 4f, flipColor));
-                        }
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 10f, 4f, 11f, 4f, pounceColor));
                     }
-                    
                 }
             }
 
@@ -479,29 +486,15 @@ namespace TheEscort
                 }
             }
 
+            // Implement rolling SFX
             if (Esconfig_SFX(self)){
-                /*
-                if (this.escortRollin == null){
-                    this.escortRollin = new ChunkDynamicSoundLoop(self.mainBodyChunk);
-                    this.escortRollin.sound = Escort_SFX_Roll;
-                    this.escortRollin.Volume = 0f;
-                    Ebug("Sound Initialized.");
-                } else {
-                    if (self.animation == Player.AnimationIndex.Roll){
-                        this.escortRollin.Update();
-                    } else {
-                        escort.EscortRollinCounter = 0f;
-                    }
-                }*/
                 if (self.animation == Player.AnimationIndex.Roll){
                     e.Rollin.Update();
                 } else {
                     e.RollinCount = 0f;
                 }
-
-            }            
             }
-
+            }
         }
 
         // Implement Flip jump and less tired from jumping
