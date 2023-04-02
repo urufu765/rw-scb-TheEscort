@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -301,6 +301,7 @@ namespace TheEscort
                 return config.cfgPounce.Value;
             }
         }
+
         private bool Esconfig_Dunkin(Player self){
             return config.cfgDunkin.Value;
         }
@@ -352,6 +353,7 @@ namespace TheEscort
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
         }
+
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
             Ebug("Ctor Triggered!");
@@ -375,9 +377,11 @@ namespace TheEscort
 
         // Implement Escort's slowed stamina increase
         private void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
-            orig(self, f);
+            if (!Exhausion.TryGet(self, out float exhaust)){
+                orig(self, f);
+                return;
+            }
             if (self.slugcatStats.name.value == "EscortMe"){
-            if (Exhausion.TryGet(self, out var exhaust)){
                 //Ebug("Aerobic Increase Triggered!");
                 if (!self.slugcatStats.malnourished){
                     self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / exhaust));
@@ -385,8 +389,7 @@ namespace TheEscort
                     self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / (exhaust / 2)));
                 }
             } else {
-                self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + f / 9f);
-            }
+                orig(self, f);
             }
         }
 

@@ -21,12 +21,13 @@ These mods may or may not cause issues with the Escort mod, or these are issues 
 [hr][/hr][h2]<~PATCHED MODS~>[/h2]
 This mod will apply a patch to work better with the following mods. How they change the behaviour of the Escort mod is as detailed (Any mods not listed in either conflicts or patched may be assumed to be working):
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Working on a patch for 1.2.0[/b] Grabbing dead slugpups/players will default to base game behaviour (overrides tweaks done in this mod)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Working on a patch for 1.2.0[/b]
 [/list]
 [*] [url=][/url]: [b][/b] ()
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
 [*] REMIX MENU to tweak some features and enable optional gimmicks
+[*] Builds that alter how the character plays
 [*] Slide Stun (sliding into creature)
 [*] Drop Kick (roll/slide pouncing into creature)
 [*] Flip Pounce (charge pounce)
@@ -35,7 +36,7 @@ This mod will apply a patch to work better with the following mods. How they cha
 [*] Dual wield spears (and dead lizards)
 [*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
-[*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
+[*] Custom Spear mechanics (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
 [*] Custom SFX!
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (when i feel liek it)~>[/h2]
