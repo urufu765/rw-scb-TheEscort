@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.7")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.8")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -718,30 +718,38 @@ namespace TheEscort
 
         // Implement Heavylifter
         private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
-            if (Esconfig_Heavylift(self) && self.slugcatStats.name.value == "EscortMe"){
-                if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
-                    if (RR.TryGet(self, out int resetRate) && slowDownDevConsole > resetRate){
-                        Ebug("Revivify skip!");
-                        Ebug("Creature: " + creature.GetType());
-                        Ebug("Player: " + self.GetOwnerType());
-                    }
-                    return orig(self, creature);
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return orig(self, obj);
                 }
-
-                //Ebug("Heavycarry Triggered!");
-                if (obj.TotalMass <= self.TotalMass * ratioed){
-                    if (ModManager.CoopAvailable){
-                        Player player = obj as Player;
-                        if (player != null){
-                            return !player.isSlugpup;
-                        }
-                    }
-                    return false;
-                }
-                return orig(self, obj);
-            } else {
+            } catch (Exception err){
+                Ebug(err.Message);
                 return orig(self, obj);
             }
+            if (!Esconfig_Heavylift(self)){
+                return orig(self, obj);
+            }
+            if (!RR.TryGet(self, out int resetRate)){
+                return orig(self, obj);
+            }
+
+            if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
+                if (slowDownDevConsole > resetRate){
+                    Ebug("Revivify skip!");
+                    Ebug("Creature: " + creature.GetType());
+                    Ebug("Player: " + self.GetOwnerType());
+                }
+                return orig(self, creature);
+            }
+
+            //Ebug("Heavycarry Triggered!");
+            if (obj.TotalMass <= self.TotalMass * ratioed){
+                if (ModManager.CoopAvailable && obj is Player player && player != null){
+                    return !player.isSlugpup;
+                }
+                return false;
+            }
+            return orig(self, obj);
         }
 
         // Implement Movementthings
