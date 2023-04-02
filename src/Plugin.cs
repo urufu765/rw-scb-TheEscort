@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.17")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.18")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -311,11 +311,14 @@ namespace TheEscort
                     case -1:  // Brawler build
                         e.combatTech = false;
                         self.slugcatStats.runspeedFac += 0.1f;
+                        Ebug("Brawler Build selected!");
                         break;
                     default:  // Default build
+                        Ebug("Default Build selected!");
                         break;
                 }
                 Ebug("Set build complete!");
+                Ebug("Movement Speed: " + self.slugcatStats.runspeedFac);
                 return true;
             } catch (Exception e){
                 Ebug("Something went wrong when setting an Escort build!");
@@ -397,10 +400,10 @@ namespace TheEscort
             orig(self, abstractCreature, world);
             if (self.slugcatStats.name.value == "EscortMe"){
                 e = new Escort(self);
+                Esconfig_Build(self);
                 try {
                     e.Escort_set_roller(Escort_SFX_Roll);
                     Ebug("Setting roll sound");
-                    Esconfig_Build(self);
                     // April fools!
                     //self.setPupStatus(set: true);
                     //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
@@ -1279,7 +1282,7 @@ namespace TheEscort
             if(
                 !bonusSpear.TryGet(self, out float[] spearDmgBonuses) ||
                 !Esconfig_HypeReq(self) ||
-                !self.Malnourished
+                self.Malnourished
                 ){
                 return;
             }
