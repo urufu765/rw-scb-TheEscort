@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.12")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.13")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -1308,33 +1308,37 @@ namespace TheEscort
         }
 
         private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return orig(self, obj);
+                }
+            } catch (Exception err){
+                Ebug(err.Message);
+                return orig(self, obj);
+            }
             if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
                 return orig(self, obj);
             }
+            if (!dualWielding.TryGet(self, out bool dW)){
+                return orig(self, obj);
+            }
 
-            if (dualWielding.TryGet(self, out bool dW) && dW && self.slugcatStats.name.value == "EscortMe"){
-                //Ebug("Grabability Triggered!");
+            if (dW){
                 if (obj is Weapon){
                     // Any weapon is dual-wieldable, including spears
                     return Player.ObjectGrabability.OneHand;
-                } else if (obj is Lizard){
+                } else if (obj is Lizard lizzie){
                     // Any lizards that are haulable (while dead) or stunned are dual-wieldable
-                    if ((obj as Lizard).dead){
+                    if (lizzie.dead){
                         return Player.ObjectGrabability.OneHand;
-                    } else if ((obj as Lizard).Stunned && Esconfig_Dunkin(self)){
-                        (obj as Lizard).Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 25f);
+                    } else if (lizzie.Stunned && Esconfig_Dunkin(self)){
+                        lizzie.Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 25f);
                         e.LizardDunk = true;
                         return Player.ObjectGrabability.TwoHands;
-                    } else {
-                        return orig(self, obj);
                     }
-                } else {
-                    // Do default behaviour
-                    return orig(self, obj);
                 }
-            } else {
-                return orig(self, obj);
             }
+            return orig(self, obj);
         }
 
         private float Escort_DeathBiteMult(On.Player.orig_DeathByBiteMultiplier orig, Player self)
