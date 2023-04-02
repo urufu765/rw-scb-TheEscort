@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.10")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.11")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -1046,15 +1046,23 @@ namespace TheEscort
         // Parryslide spears?!
         private bool Escort_StickySpear(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos appPos, Vector2 direction)
         {
-            if (ParrySlide.TryGet(self, out bool parrier) && parrier && self.slugcatStats.name.value == "EscortMe") {
-                Ebug("Sticky Triggered!");
-                if (ModManager.CoopAvailable && source.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire){
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
                     return orig(self, source, dmg, chunk, appPos, direction);
                 }
-                return !(self.animation == Player.AnimationIndex.BellySlide);
-            } else{
+            } catch (Exception err){
+                Ebug(err.Message);
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
+            if (!ParrySlide.TryGet(self, out bool parrier)){
+                return orig(self, source, dmg, chunk, appPos, direction);
+            }
+            if (!parrier || (ModManager.CoopAvailable && source.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire)){
+                return orig(self, source, dmg, chunk, appPos, direction);
+            }
+
+            Ebug("Sticky Triggered!");
+            return !(self.animation == Player.AnimationIndex.BellySlide);
         }
 
 
