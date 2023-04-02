@@ -56,7 +56,6 @@
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
 		"theescort/reset_rate": 240,
-		"theescort/parry_test": false,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,

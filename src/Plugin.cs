@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.16")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.17")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -52,7 +52,6 @@ namespace TheEscort
         public static readonly PlayerFeature<bool> HypeSys = PlayerBool("theescort/adrenaline_system");
         public static readonly PlayerFeature<float> HypeReq = PlayerFloat("theescort/stamina_req");
         public static readonly PlayerFeature<int> RR = PlayerInt("theescort/reset_rate");
-        public static readonly PlayerFeature<bool> ParryTest = PlayerBool("theescort/parry_test");
 
         /* JSON VALUES
         ["Hyped spear damage", "Base spear damage"]
@@ -554,7 +553,6 @@ namespace TheEscort
             self.consistentDownDiagonal = 0;
         }
 
-
         private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
         {
             if (self.bodyMode != Player.BodyModeIndex.WallClimb){
@@ -571,9 +569,7 @@ namespace TheEscort
                 Ebug(err.Message);
                 return;
             }
-            if (
-                !WallJumpVal.TryGet(self, out var WJV)
-            ){
+            if (!WallJumpVal.TryGet(self, out var WJV)){
                 orig(self, direction);
                 return;
             }
@@ -582,12 +578,13 @@ namespace TheEscort
             bool wallJumper = Esconfig_WallJumps(self);
             bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
             bool superWall = (Esconfig_Pouncing(self) && self.consistentDownDiagonal > (int)WJV[4]);
+            bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
 
+            // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
             if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
                 orig(self, direction);
                 float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
                 String[] toPrint = new String[3];
-                bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
                 toPrint.SetValue("Walls the Jump", 0);
                 if (
                     self.IsTileSolid(1, 0, -1) ||
@@ -840,205 +837,229 @@ namespace TheEscort
 
         // Implement Parryslide/midair projectile grab
         private void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
-
-            if (self is Player && (self as Player).slugcatStats.name.value == "EscortMe"){  // Check if self is player such that when class is converted it does not cause an error
-                Ebug("Violence Triggered!");
-                // connects to the Escort's Parryslide option
-                if (ParrySlide.TryGet((self as Player), out bool enableParry) && enableParry && 
-                ParryTest.TryGet((self as Player), out bool standParry)){
-                e.ParrySuccess = false;
-                if ((standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide && (self as Player).canJump != 0) || e.parryLean > 0){
-                    // Parryslide (parry module)
-                    Ebug("Escort attempted a Parryslide");
-                    int direction;
-                    if (self is Player){
-                        direction = (self as Player).slideDirection;
-                    } else {
-                        direction = 0;
-                        throw new Exception("Self is not player!");
-                    }
-                    Ebug("Is there a source? " + (source != null));
-                    Ebug("Is there a direction & Momentum? " + (directionAndMomentum != null));
-                    Ebug("Is there a hitChunk? " + (hitChunk != null));
-                    Ebug("Is there a hitAppendage? " + (hitAppendage != null));
-                    Ebug("Is there a type? " + (type != null));
-                    Ebug("Is there damage? " + (damage > 0f));
-                    Ebug("Is there stunBonus? " + (stunBonus > 0f));
-
-                    if (source != null) {
-                        Ebug("Escort is being assaulted by: " + source.owner.GetType());
-                    } if (type != null) {
-                        Ebug("Escort gets hurt by: " + type.value);
-                    }
-                    Ebug("Escort parry is being checked");
-                    if (type != null){
-                    if (type == Creature.DamageType.Bite){
-                        Ebug("Escort is getting BIT?!");
-                        if (source != null && source.owner is Creature){
-                            (source.owner as Creature).LoseAllGrasps();
-                            (source.owner as Creature).stun = 35;
-                            //(self as Player).WallJump(direction);
-                            type = Creature.DamageType.Blunt;
-                            damage = 0f;
-                            stunBonus = 0f;
-                            e.ParrySuccess = true;
-                            Ebug("Escort got out of a creature's mouth!");
-                        } else if (source != null && source.owner is Weapon){
-                            Ebug("Weapons can BITE?!");
-                        } else {
-                            Ebug("Where is Escort getting bit from?!");
-                        }
-                    } 
-                    else if (type == Creature.DamageType.Stab) {
-                        Ebug("Escort is getting STABBED?!");
-                        if (source != null && source.owner is Creature){
-                            (source.owner as Creature).LoseAllGrasps();
-                            (source.owner as Creature).stun = 20;
-                            damage = 0f;
-                            stunBonus = stunBonus * 1.5f;
-                            type = Creature.DamageType.Blunt;
-                            e.ParrySuccess = true;
-                            Ebug("Escort parried a stabby creature?");
-                        } else if (source != null && source.owner is Weapon) {
-                            Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
-                            (source.owner as Weapon).WeaponDeflect(-source.owner.firstChunk.lastPos, vector, source.owner.firstChunk.vel.magnitude);
-                            damage = 0f;
-                            type = Creature.DamageType.Blunt;
-                            e.ParrySuccess = true;
-                            Ebug("Escort parried a stabby weapon");
-                        } else {
-                            damage = 0f;
-                            type = Creature.DamageType.Blunt;
-                            bool keepLooping = true;
-                            for (int a = 0; a < self.room.physicalObjects.Length; a++){
-                                for (int b = 0; b < self.room.physicalObjects[a].Count; b++){
-                                    if (self.room.physicalObjects[a][b] is Vulture vulture && vulture.IsKing){
-                                        if (vulture.kingTusks.tusks[0].impaleChunk != null && vulture.kingTusks.tusks[0].impaleChunk.owner == self){
-                                            vulture.kingTusks.tusks[0].impaleChunk = null;
-                                            keepLooping = false;
-                                            break;
-                                        } else if (vulture.kingTusks.tusks[1].impaleChunk != null && vulture.kingTusks.tusks[1].impaleChunk.owner == self){
-                                            vulture.kingTusks.tusks[1].impaleChunk = null;
-                                            keepLooping = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (!keepLooping){
-                                    Ebug("Tusk unimpaled!");
-                                    break;
-                                }
-                            }
-                            e.ParrySuccess = true;
-                            Ebug("Escort parried a generic stabby thing");
-                        }
-                    } 
-                    else if (type == Creature.DamageType.Blunt) {
-                        Ebug("Escort is getting ROCC'ED?!");
-                        if (source != null && source.owner is Creature){
-                            Ebug("Creatures aren't rocks...");
-                        } else if (source != null && source.owner is Weapon){
-                            Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
-                            (source.owner as Weapon).WeaponDeflect(source.owner.firstChunk.lastPos, -vector, source.owner.firstChunk.vel.magnitude);
-                            damage = 0f;
-                            stunBonus = stunBonus / 5f;
-                            e.ParrySuccess = true;
-                            Ebug("Escort bounces a blunt thing.");
-                        } else {
-                            damage = 0f;
-                            stunBonus = 0f;
-                            e.ParrySuccess = true;
-                            Ebug("Escort parried something blunt.");
-                        }
-                    } 
-                    else if (type == Creature.DamageType.Water) {
-                        Ebug("Escort is getting Wo'oh'ed?!");
-                    } 
-                    else if (type == Creature.DamageType.Explosion) {
-                        Ebug("Escort is getting BLOWN UP?!");
-                        if (source != null && source.owner is Creature){
-                            Ebug("Wait... creatures explode?!");
-                        } else if (source != null && source.owner is Weapon){
-                            (self as Player).animation = Player.AnimationIndex.Flip;
-                            type = Creature.DamageType.Blunt;
-                            damage = 0f;
-                            stunBonus = stunBonus * 1.5f;
-                            e.ParrySuccess = true;
-                            Ebug("Escort parries an explosion from weapon?!");
-                        } else {
-                            (self as Player).WallJump(direction);
-                            (self as Player).animation = Player.AnimationIndex.Flip;
-                            type = Creature.DamageType.Blunt;
-                            damage = 0f;
-                            stunBonus = stunBonus * 1.5f;
-                            e.ParrySuccess = true;
-                            Ebug("Escort parries an explosion");
-                        }
-                    } 
-                    else if (type == Creature.DamageType.Electric) {
-                        Ebug("Escort is getting DEEP FRIED?!");
-                        if (source != null && source.owner is Creature){
-                            (source.owner as Creature).LoseAllGrasps();
-                            (source.owner as Creature).stun = 20;
-                            //(self as Player).WallJump(direction);
-                            (self as Player).animation = Player.AnimationIndex.Flip;
-                            (self as Player).Jump();
-                            type = Creature.DamageType.Blunt;
-                            damage = 0f;
-                            //(self as Player).LoseAllGrasps();
-                            e.ParrySuccess = true;
-                            e.ElectroParry = true;
-                            Ebug("Escort somehow parried a shock from creature?!");
-                        } else if (source != null && source.owner is Weapon){
-                            //(self as Player).WallJump(direction);
-                            (self as Player).animation = Player.AnimationIndex.Flip;
-                            (self as Player).Jump();
-                            type = Creature.DamageType.Blunt;
-                            damage = 0f;
-                            e.ParrySuccess = true;
-                            e.ElectroParry = true;
-                            Ebug("Escort somehow parried a shock object?!");
-                        } else {
-                            (self as Player).animation = Player.AnimationIndex.Flip;
-                            (self as Player).Jump();
-                            damage = 0f;
-                            e.ParrySuccess = true;
-                            e.ElectroParry = true;
-                            Ebug("Escort attempted to parry a shock but why?!");
-                        }
-                    } 
-                    else {
-                        Ebug("Escort is getting UNKNOWNED!!! RUNNN");
-                        if (source != null && source.owner is Creature){
-                            Ebug("IT'S ALSO AN UNKNOWN CREATURE!!");
-                        } else if (source != null && source.owner is Weapon){
-                            Ebug("IT'S ALSO AN UNKNOWN WEAPON!!");
-                        } else {
-                            Ebug("WHO THE HECK KNOWS WHAT IT IS?!");
-                        }
-                    }
-                    }
-                    }
-
-                    // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
-                    // Visual indicator doesn't work ;-;
-                    if (e.ParrySuccess){
-                        self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
-                        Ebug("Parry successful!");
-                        e.iFrames = 6;
-                        e.parryLean = 0;
-                    }
-                    // else if (e.iFrames > 0) {Ebug("Immunity frame tick");} 
-                    else {
-                        orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
-                        Ebug("Nothing or not possible to parry!");
-                    }
-                    Ebug("Parry Check end");
+            try{
+                if (self is Player && (self as Player).slugcatStats.name.value != "EscortMe"){
+                    orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                     return;
                 }
-            } else {
+            } catch (Exception err){
+                Ebug(err.Message);
                 orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                return;
             }
+            if(self is not Player player){
+                orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                return;
+            }
+            if(
+                !ParrySlide.TryGet(player, out bool enableParry)
+            ){
+                orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                return;
+            }
+            if (!enableParry){
+                orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                return;
+            }
+
+
+
+            Ebug("Violence Triggered!");
+            // connects to the Escort's Parryslide option
+            e.ParrySuccess = false;
+            if ((player.animation == Player.AnimationIndex.BellySlide && player.canJump != 0) || e.parryLean > 0){
+                // Parryslide (parry module)
+                Ebug("Escort attempted a Parryslide");
+                int direction;
+                direction = player.slideDirection;
+
+                Ebug("Is there a source? " + (source != null));
+                Ebug("Is there a direction & Momentum? " + (directionAndMomentum != null));
+                Ebug("Is there a hitChunk? " + (hitChunk != null));
+                Ebug("Is there a hitAppendage? " + (hitAppendage != null));
+                Ebug("Is there a type? " + (type != null));
+                Ebug("Is there damage? " + (damage > 0f));
+                Ebug("Is there stunBonus? " + (stunBonus > 0f));
+
+                if (source != null) {
+                    Ebug("Escort is being assaulted by: " + source.owner.GetType());
+                }
+                Ebug("Escort parry is being checked");
+                if (type != null){
+                    Ebug("Escort gets hurt by: " + type.value);
+                if (type == Creature.DamageType.Bite){
+                    Ebug("Escort is getting BIT?!");
+                    if (source != null && source.owner is Creature creature){
+                        creature.LoseAllGrasps();
+                        creature.stun = 35;
+                        //(self as Player).WallJump(direction);
+                        type = Creature.DamageType.Blunt;
+                        damage = 0f;
+                        stunBonus = 0f;
+                        e.ParrySuccess = true;
+                        Ebug("Escort got out of a creature's mouth!");
+                    } 
+                    else if (source != null && source.owner is Weapon){
+                        Ebug("Weapons can BITE?!");
+                    } 
+                    else {
+                        Ebug("Where is Escort getting bit from?!");
+                    }
+                } 
+                else if (type == Creature.DamageType.Stab) {
+                    Ebug("Escort is getting STABBED?!");
+                    if (source != null && source.owner is Creature creature){
+                        creature.LoseAllGrasps();
+                        creature.stun = 20;
+                        damage = 0f;
+                        stunBonus = stunBonus * 1.5f;
+                        type = Creature.DamageType.Blunt;
+                        e.ParrySuccess = true;
+                        Ebug("Escort parried a stabby creature?");
+                    } 
+                    else if (source != null && source.owner is Weapon weapon) {
+                        Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
+                        weapon.WeaponDeflect(-source.owner.firstChunk.lastPos, vector, source.owner.firstChunk.vel.magnitude);
+                        damage = 0f;
+                        type = Creature.DamageType.Blunt;
+                        e.ParrySuccess = true;
+                        Ebug("Escort parried a stabby weapon");
+                    } 
+                    else {
+                        damage = 0f;
+                        type = Creature.DamageType.Blunt;
+                        bool keepLooping = true;
+                        for (int a = 0; a < self.room.physicalObjects.Length; a++){
+                            for (int b = 0; b < self.room.physicalObjects[a].Count; b++){
+                                if (self.room.physicalObjects[a][b] is Vulture vulture && vulture.IsKing){
+                                    if (vulture.kingTusks.tusks[0].impaleChunk != null && vulture.kingTusks.tusks[0].impaleChunk.owner == self){
+                                        vulture.kingTusks.tusks[0].impaleChunk = null;
+                                        keepLooping = false;
+                                        break;
+                                    } else if (vulture.kingTusks.tusks[1].impaleChunk != null && vulture.kingTusks.tusks[1].impaleChunk.owner == self){
+                                        vulture.kingTusks.tusks[1].impaleChunk = null;
+                                        keepLooping = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!keepLooping){
+                                Ebug("Tusk unimpaled!");
+                                break;
+                            }
+                        }
+                        e.ParrySuccess = true;
+                        Ebug("Escort parried a generic stabby thing");
+                    }
+                } 
+                else if (type == Creature.DamageType.Blunt) {
+                    Ebug("Escort is getting ROCC'ED?!");
+                    if (source != null && source.owner is Creature){
+                        Ebug("Creatures aren't rocks...");
+                    } 
+                    else if (source != null && source.owner is Weapon weapon){
+                        Vector2 vector = RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f);
+                        weapon.WeaponDeflect(weapon.firstChunk.lastPos, -vector, weapon.firstChunk.vel.magnitude);
+                        damage = 0f;
+                        stunBonus = stunBonus / 5f;
+                        e.ParrySuccess = true;
+                        Ebug("Escort bounces a blunt thing.");
+                    } 
+                    else {
+                        damage = 0f;
+                        stunBonus = 0f;
+                        e.ParrySuccess = true;
+                        Ebug("Escort parried something blunt.");
+                    }
+                } 
+                else if (type == Creature.DamageType.Water) {
+                    Ebug("Escort is getting Wo'oh'ed?!");
+                } 
+                else if (type == Creature.DamageType.Explosion) {
+                    Ebug("Escort is getting BLOWN UP?!");
+                    if (source != null && source.owner is Creature){
+                        Ebug("Wait... creatures explode?!");
+                    } 
+                    else if (source != null && source.owner is Weapon){
+                        player.animation = Player.AnimationIndex.Flip;
+                        type = Creature.DamageType.Blunt;
+                        damage = 0f;
+                        stunBonus = stunBonus * 1.5f;
+                        e.ParrySuccess = true;
+                        Ebug("Escort parries an explosion from weapon?!");
+                    } 
+                    else {
+                        player.WallJump(direction);
+                        player.animation = Player.AnimationIndex.Flip;
+                        type = Creature.DamageType.Blunt;
+                        damage = 0f;
+                        stunBonus = stunBonus * 1.5f;
+                        e.ParrySuccess = true;
+                        Ebug("Escort parries an explosion");
+                    }
+                } 
+                else if (type == Creature.DamageType.Electric) {
+                    Ebug("Escort is getting DEEP FRIED?!");
+                    if (source != null && source.owner is Creature creature){
+                        creature.LoseAllGrasps();
+                        creature.stun = 20;
+                        //(self as Player).WallJump(direction);
+                        player.animation = Player.AnimationIndex.Flip;
+                        player.Jump();
+                        type = Creature.DamageType.Blunt;
+                        damage = 0f;
+                        //(self as Player).LoseAllGrasps();
+                        e.ParrySuccess = true;
+                        e.ElectroParry = true;
+                        Ebug("Escort somehow parried a shock from creature?!");
+                    } 
+                    else if (source != null && source.owner is Weapon){
+                        //(self as Player).WallJump(direction);
+                        player.animation = Player.AnimationIndex.Flip;
+                        player.Jump();
+                        type = Creature.DamageType.Blunt;
+                        damage = 0f;
+                        e.ParrySuccess = true;
+                        e.ElectroParry = true;
+                        Ebug("Escort somehow parried a shock object?!");
+                    } 
+                    else {
+                        player.animation = Player.AnimationIndex.Flip;
+                        player.Jump();
+                        damage = 0f;
+                        e.ParrySuccess = true;
+                        e.ElectroParry = true;
+                        Ebug("Escort attempted to parry a shock but why?!");
+                    }
+                } 
+                else {
+                    Ebug("Escort is getting UNKNOWNED!!! RUNNN");
+                    if (source != null && source.owner is Creature){
+                        Ebug("IT'S ALSO AN UNKNOWN CREATURE!!");
+                    } else if (source != null && source.owner is Weapon){
+                        Ebug("IT'S ALSO AN UNKNOWN WEAPON!!");
+                    } else {
+                        Ebug("WHO THE HECK KNOWS WHAT IT IS?!");
+                    }
+                }
+                }
+            }
+
+            // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
+            // Visual indicator doesn't work ;-;
+            if (e.ParrySuccess){
+                self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
+                Ebug("Parry successful!");
+                e.iFrames = 6;
+                e.parryLean = 0;
+            }
+            // else if (e.iFrames > 0) {Ebug("Immunity frame tick");} 
+            else {
+                orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                Ebug("Nothing or not possible to parry!");
+            }
+            Ebug("Parry Check end");
+            return;
 
         }
 
