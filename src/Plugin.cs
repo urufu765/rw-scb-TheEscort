@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.18")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.10")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -308,6 +308,8 @@ namespace TheEscort
         private bool Esconfig_Build(Player self){
             try {
                 switch (config.cfgBuildNum.Value){
+                    // Full Melee build
+
                     case -1:  // Brawler build
                         e.combatTech = false;
                         self.slugcatStats.runspeedFac += 0.1f;

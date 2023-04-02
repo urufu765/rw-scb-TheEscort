@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.10)** New Escort portraits!
+
 **(0.1.9.18)** Fixed spear throw (had the malnourish stat inverted)
 
 **(0.1.9.17)** Sorta cleaned up Escort_Violence()... will return to this later.
