@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.9.9)** Cleaned up Escort_UpdateBodyMode()
+
 **(0.1.9.8)** Cleaned up Escort_HeavyCarry()
 
 **(0.1.9.7)** Cleaned up Escort_CheckInput()

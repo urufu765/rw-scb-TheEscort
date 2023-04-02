@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.8")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.9")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -755,16 +755,28 @@ namespace TheEscort
         // Implement Movementthings
         private void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self){
             orig(self);
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
+            }
+            if (
+                !BetterCrawl.TryGet(self, out var crawlSpeed) ||
+                !BetterPoleWalk.TryGet(self, out var poleMove) ||
+                !Escomet.TryGet(self, out int SetComet)
+            ){
+                return;
+            }
 
-            if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && self.slugcatStats.name.value == "EscortMe"){
             bool hypedMode = Esconfig_Hypable(self);
-            //Ebug("UpdateBodyMode Triggered!");
-            Escomet.TryGet(self, out int SetComet);
+
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
-                //Debug.Log("Escort's Speed:" + self.dynamicRunSpeed[0]);
             }
 
             // Implement betterpolewalk
@@ -777,12 +789,14 @@ namespace TheEscort
             else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
-            } else if (self.bodyMode == Player.BodyModeIndex.CorridorClimb){
+            } 
+            
+            // Set headbutt condition
+            else if (self.bodyMode == Player.BodyModeIndex.CorridorClimb){
                 if (self.slowMovementStun > 0){
                     e.CometFrames = SetComet;
                 }
             }
-            } 
         }
 
         // Implement Movementtech
