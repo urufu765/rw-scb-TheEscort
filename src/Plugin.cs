@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.5")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.6")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -474,7 +474,7 @@ namespace TheEscort
             // vfx
             if(self != null && self.room != null){
                 // Battle-hyped visual effect
-                if (Esconfig_Hypable(self) && self.aerobicLevel > requirement){
+                if (Esconfig_Hypable(self) && Esconfig_HypeReq(self) && self.aerobicLevel > requirement){
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
@@ -647,9 +647,22 @@ namespace TheEscort
         private void Escort_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
         {
             orig(self, eu);
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
+            }
+            if (!Esconfig_WallJumps(self)){
+                return;
+            }
+            if (!RR.TryGet(self, out int limiter)){
+                return;
+            }
 
-            if (Esconfig_WallJumps(self) && self.bodyMode == Player.BodyModeIndex.WallClimb && self.bodyChunks[0].ContactPoint.x != 0 && self.bodyChunks[1].ContactPoint.x != 0 && self.slugcatStats.name.value == "EscortMe"){
-                //Ebug("MovementUpdate Triggered!");
+            if (self.bodyMode == Player.BodyModeIndex.WallClimb && self.bodyChunks[0].ContactPoint.x != 0 && self.bodyChunks[1].ContactPoint.x != 0){
                 String msg = "Nothing New";
                 self.canWallJump = 0;
                 if (self.input[0].jmp){
@@ -663,16 +676,15 @@ namespace TheEscort
                         self.killSuperLaunchJumpCounter = 15;
                     }
                 }
+
                 if (!self.input[0].jmp && self.input[1].jmp){
                     msg = "Lets go of the jump button";
                     self.wantToJump = 1;
                 }
-                if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
-                Ebug(msg);
+                if(limiter < slowDownDevConsole){
+                    Ebug(msg);
+                }
             }
-
-            }
-
         }
 
         private void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
