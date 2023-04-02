@@ -9,7 +9,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 ### 0.1 - Steam Workshopped
 **(0.1.9.17)** Clean up Escort_Violence()
 
-**(0.1.9.16)** Clean up Escort_Collision()
+**(0.1.9.16)** Sorta cleaned up Escort_Collision()... will return to this again later.
 
 **(0.1.9.15)** Sorta cleaned up Escort_ThrownSpear()... will return to this again later.
 
