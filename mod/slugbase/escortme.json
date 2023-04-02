@@ -61,7 +61,6 @@
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
 		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1],
-		"theescort/switchsolutions": true,
 		"theescort/headbutt": 15
 		}
 }

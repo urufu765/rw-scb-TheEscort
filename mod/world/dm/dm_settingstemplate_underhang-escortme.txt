@@ -1,0 +1,21 @@
+DangerType: Rain
+CeilingDrips: 0.1086956
+RainIntensity: 1
+RumbleIntensity: 1
+WaveSpeed: 0.75
+WaveLength: 0.5
+WaveAmplitude: 0
+SecondWaveLength: 0.1666667
+SecondWaveAmplitude: 0
+Clouds: 0.05434782
+Grime: 0.2934783
+BkgDroneVolume: 0.30
+BkgDroneNoThreatVolume: 1
+RandomItemDensity: 0.5
+RandomItemSpearChance: 0.7
+WaterReflectionAlpha: 1
+Palette: 13
+EffectColorA: 12
+EffectColorB: 6
+Effects: Lightning-1-17-68, ExtraLoudThunder-0.7065217-270-67, GreenSparks-0.5652174-21-125, BrokenZeroG-0.02173913-17-14, ElectricDeath-1-270-11, 
+AmbientSounds: OMNI><AM_IND-SuperStructure.ogg><831.4434><642.5508><0.3478261><1, OMNI><AM_RAIN-RollingThunder.ogg><834.726><498.6985><0.5><1, OMNI><AM_RAIN-Rumbles.ogg><833.8663><568.0873><0.5><1, 

@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.9)** Revivify patches!... sorta kinda. Also fixed potential crashes... Also split the tabs and added a new feature called: Builds! And also also, made parryslides a bit more consistent (so stunslides don't make parryslides not work and it works much better on lizards)... and also you can parry jellyfishes properly now.
+
+**(0.1.8.0)** aPrIl FoOlS!
+
 **(0.1.8)** Escort headbutt. This will be the last feature added before preparation of the code cleanup. Oh one last thing, switched trampoline to requiring you to flip instead of just jumping on stuff to prevent accidental activations (and more physics accurate since it'll seem like they're pushing themselves off a creature.) Another change is that you can trampoline on dead lizards now! HUZZAH! (Elevator behaviour is unchanged.)
 
 **(0.1.7.1)** King tusks finally fall out when parried! HUZZAH HUZZAH
@@ -133,18 +137,19 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 **(0.0)** Cloned template.
 
 
-# NFuture Planned Features:
-- Exhausion/stamina mechanic where being at full exhausion reduces Escort's power
-- Settings to adjust Escort's abilities
-- Reduce bite lethality
-- Implement parrying spears with slide
+# Future Planned Features:
+- Kinder scavs (taking spears don't reduce reputation)
+- *[CUT CONTENT]* Exhausion/stamina mechanic where being at full exhausion reduces Escort's power
+- Settings to adjust Escort's abilities (and have different presets that enable and disable bunch of hidden values for different "builds")
+- *[COMPLETE!]* Reduce bite lethality
+- *[SEMI-IMPLEMENTED]* Implement parrying spears with slide (make it less lenient)
 - Grab thrown objects
-- Actually prioritize spears when doing Stun Slide or Drop Kick
+- *[CUT CONTENT]* Actually prioritize spears when doing Stun Slide or Drop Kick
 - Increase grab radius of spears
 - Escort shoot out of pipes
 - Escort turns faster in enclosed spaces
 - Escort slide throw doesn't interrupt slide
-- Escort throw spear while sliding causes ricochet effect (like regular tosses)
+- *[CUT CONTENT]* Escort throw spear while sliding causes ricochet effect (like regular tosses)
 - Escort's spear speeds up after arc
 - Escort can get out of centipede grasps (but has a steep cooldown)
 - Gamr Mode (if I ever finish the damn mod): Double spawns, reduced spear spawns, pipejukes don't work now (lizards can grab you if they pass by you in the pipe), hunted by lizard event occurs always, pursued by a silver ghost lizard (that spawns every 2.5 minutes in the pipe closest to you, despawned by gates, warded off by shelters) that can manuver like a full-speed white (but doesn't have a tongue), but can also pass through walls, cannot be hit, and the sole intent of their movement is to bite you and kill you.

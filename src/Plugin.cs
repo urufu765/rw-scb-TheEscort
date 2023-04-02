@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.8")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -72,11 +72,12 @@ namespace TheEscort
         */
         public static readonly PlayerFeature<float[]>
         WallJumpVal = PlayerFloats("theescort/wall_jump_val");
-        public static readonly PlayerFeature<bool> getOFFme = PlayerBool("theescort/switchsolutions");
 
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Roll;
+        //public static SoundID Escort_SFX_Spawn;
+
         //public DynamicSoundLoop escortRollin;
         public Escort e;
 
@@ -155,6 +156,7 @@ namespace TheEscort
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
+            //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
             Ebug("All SFX loaded!");
             EscEnums.RegisterValues();
             MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
@@ -167,7 +169,6 @@ namespace TheEscort
             try{
             if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
                 Ebug("Found Revivify! Applying patch...");
-                Ebug("... just kidding, there's no proper patch yet...");
                 escPatch_revivify = true;
             }
             } catch (Exception e){
@@ -300,7 +301,28 @@ namespace TheEscort
                 return config.cfgPounce.Value;
             }
         }
+        private bool Esconfig_Dunkin(Player self){
+            return config.cfgDunkin.Value;
+        }
 
+        private bool Esconfig_Build(Player self){
+            try {
+                switch (config.cfgBuildNum.Value){
+                    case -1:  // Brawler build
+                        e.combatTech = false;
+                        self.slugcatStats.runspeedFac += 0.1f;
+                        break;
+                    default:  // Default build
+                        break;
+                }
+                Ebug("Set build complete!");
+                return true;
+            } catch (Exception e){
+                Ebug("Something went wrong when setting an Escort build!");
+                Ebug(e.Message);
+                return false;
+            }
+        }
 
 
         /*
@@ -339,6 +361,10 @@ namespace TheEscort
                 try {
                     e.Escort_set_roller(Escort_SFX_Roll);
                     Ebug("Setting roll sound");
+                    Esconfig_Build(self);
+                    // April fools!
+                    //self.setPupStatus(set: true);
+                    //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
                 } catch (Exception e){
                     throw new Exception(e.Message);
                 } finally {
@@ -379,6 +405,9 @@ namespace TheEscort
             if (e.CentiCD > 0){
                 e.CentiCD--;
             }
+            if (e.parryLean > 0){
+                e.parryLean--;
+            }
             if (e.CometFrames > 0){
                 e.CometFrames--;
             } else {
@@ -386,12 +415,17 @@ namespace TheEscort
             }
             if (e.iFrames > 0){
                 self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
+                if (e.ElectroParry) {
+                    self.abstractCreature.creatureTemplate.baseStunResistance = 3f;                
+                }
                 Ebug("IFrames: " + e.iFrames);
                 e.iFrames--;
             } else {
                 //self.canBeHitByWeapons = true;
                 self.abstractCreature.creatureTemplate.baseDamageResistance = 1f;
-            }
+                self.abstractCreature.creatureTemplate.baseStunResistance = 1f;
+                e.ElectroParry = false;
+                }
             
             // Just for seeing what a variable does.
             if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
@@ -409,17 +443,22 @@ namespace TheEscort
                 if (Esconfig_Hypable(self) && self.aerobicLevel > requirement){
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
-
-                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
+                    if (self != null && self.room != null){
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
+                    }
                 }
                 if (Esconfig_WallJumps(self)){
                     if (self.superLaunchJump > 19){
                         Color superColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 9f, 4f, 4f, 11f, superColor));
+                        if (self != null && self.room != null){
+                            self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 9f, 4f, 4f, 11f, superColor));
+                        }
                     }
                     if (self.bodyMode == Player.BodyModeIndex.WallClimb && self.consistentDownDiagonal >= (int)WJV[4]){
                         Color flipColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
-                        self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 10f, 4f, 11f, 4f, flipColor));
+                        if (self != null && self.room != null){
+                            self.room.AddObject(new ExplosionSpikes(self.room, self.mainBodyChunk.pos, 2, 10f, 4f, 11f, 4f, flipColor));
+                        }
                     }
                     
                 }
@@ -622,11 +661,17 @@ namespace TheEscort
         // Implement Heavylifter
         private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
             if (Esconfig_Heavylift(self) && self.slugcatStats.name.value == "EscortMe"){
+                if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
+                    if (RR.TryGet(self, out int resetRate) && slowDownDevConsole > resetRate){
+                        Ebug("Revivify skip!");
+                        Ebug("Creature: " + creature.GetType());
+                        Ebug("Player: " + self.GetOwnerType());
+                    }
+                    return orig(self, creature);
+                }
+
                 //Ebug("Heavycarry Triggered!");
                 if (obj.TotalMass <= self.TotalMass * ratioed){
-                    if (escPatch_revivify && obj is Creature && (obj as Creature).abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (obj as Creature).dead) {
-                        return orig(self, obj);
-                    }
                     if (ModManager.CoopAvailable){
                         Player player = obj as Player;
                         if (player != null){
@@ -636,27 +681,7 @@ namespace TheEscort
                     return false;
                 }
                 return orig(self, obj);
-            } 
-            
-            // for some reason if I don't copy and paste the thing, the other scugs get affected...
-            else {
-                /*
-                if (self.Grabability(obj) == Player.ObjectGrabability.Drag)
-            {
-                return true;
-            }
-                if (self.Grabability(obj) != Player.ObjectGrabability.TwoHands && obj.TotalMass <= self.TotalMass * 0.6f)
-                {
-                    if (ModManager.CoopAvailable)
-                    {
-                        Player player = obj as Player;
-                        if (player != null)
-                        {
-                            return !player.isSlugpup;
-                        }
-                    }
-                    return false;
-                }*/
+            } else {
                 return orig(self, obj);
             }
         }
@@ -666,8 +691,8 @@ namespace TheEscort
             orig(self);
 
             if (BetterCrawl.TryGet(self, out var crawlSpeed) && BetterPoleWalk.TryGet(self, out var poleMove) && self.slugcatStats.name.value == "EscortMe"){
-                bool hypedMode = Esconfig_Hypable(self);
-                //Ebug("UpdateBodyMode Triggered!");
+            bool hypedMode = Esconfig_Hypable(self);
+            //Ebug("UpdateBodyMode Triggered!");
             Escomet.TryGet(self, out int SetComet);
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
@@ -738,7 +763,7 @@ namespace TheEscort
                 if (ParrySlide.TryGet((self as Player), out bool enableParry) && enableParry && 
                 ParryTest.TryGet((self as Player), out bool standParry)){
                 e.ParrySuccess = false;
-                if (standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide && (self as Player).canJump != 0){
+                if ((standParry? (self as Player).bodyMode == Player.BodyModeIndex.Crawl : (self as Player).animation == Player.AnimationIndex.BellySlide && (self as Player).canJump != 0) || e.parryLean > 0){
                     // Parryslide (parry module)
                     Ebug("Escort attempted a Parryslide");
                     int direction;
@@ -768,7 +793,7 @@ namespace TheEscort
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 35;
-                            (self as Player).WallJump(direction);
+                            //(self as Player).WallJump(direction);
                             type = Creature.DamageType.Blunt;
                             damage = 0f;
                             stunBonus = 0f;
@@ -779,7 +804,8 @@ namespace TheEscort
                         } else {
                             Ebug("Where is Escort getting bit from?!");
                         }
-                    } else if (type == Creature.DamageType.Stab) {
+                    } 
+                    else if (type == Creature.DamageType.Stab) {
                         Ebug("Escort is getting STABBED?!");
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
@@ -822,7 +848,8 @@ namespace TheEscort
                             e.ParrySuccess = true;
                             Ebug("Escort parried a generic stabby thing");
                         }
-                    } else if (type == Creature.DamageType.Blunt) {
+                    } 
+                    else if (type == Creature.DamageType.Blunt) {
                         Ebug("Escort is getting ROCC'ED?!");
                         if (source != null && source.owner is Creature){
                             Ebug("Creatures aren't rocks...");
@@ -839,14 +866,16 @@ namespace TheEscort
                             e.ParrySuccess = true;
                             Ebug("Escort parried something blunt.");
                         }
-                    } else if (type == Creature.DamageType.Water) {
+                    } 
+                    else if (type == Creature.DamageType.Water) {
                         Ebug("Escort is getting Wo'oh'ed?!");
-                    } else if (type == Creature.DamageType.Explosion) {
+                    } 
+                    else if (type == Creature.DamageType.Explosion) {
                         Ebug("Escort is getting BLOWN UP?!");
                         if (source != null && source.owner is Creature){
                             Ebug("Wait... creatures explode?!");
                         } else if (source != null && source.owner is Weapon){
-                            (self as Player).animation = Player.AnimationIndex.Roll;
+                            (self as Player).animation = Player.AnimationIndex.Flip;
                             type = Creature.DamageType.Blunt;
                             damage = 0f;
                             stunBonus = stunBonus * 1.5f;
@@ -854,38 +883,47 @@ namespace TheEscort
                             Ebug("Escort parries an explosion from weapon?!");
                         } else {
                             (self as Player).WallJump(direction);
-                            (self as Player).animation = Player.AnimationIndex.Roll;
+                            (self as Player).animation = Player.AnimationIndex.Flip;
                             type = Creature.DamageType.Blunt;
                             damage = 0f;
                             stunBonus = stunBonus * 1.5f;
                             e.ParrySuccess = true;
                             Ebug("Escort parries an explosion");
                         }
-                    } else if (type == Creature.DamageType.Electric) {
+                    } 
+                    else if (type == Creature.DamageType.Electric) {
                         Ebug("Escort is getting DEEP FRIED?!");
                         if (source != null && source.owner is Creature){
                             (source.owner as Creature).LoseAllGrasps();
                             (source.owner as Creature).stun = 20;
-                            (self as Player).WallJump(direction);
+                            //(self as Player).WallJump(direction);
                             (self as Player).animation = Player.AnimationIndex.Flip;
+                            (self as Player).Jump();
                             type = Creature.DamageType.Blunt;
                             damage = 0f;
-                            stunBonus = stunBonus * 1.5f;
-                            (self as Player).LoseAllGrasps();
+                            //(self as Player).LoseAllGrasps();
                             e.ParrySuccess = true;
+                            e.ElectroParry = true;
                             Ebug("Escort somehow parried a shock from creature?!");
                         } else if (source != null && source.owner is Weapon){
-                            (self as Player).WallJump(direction);
+                            //(self as Player).WallJump(direction);
                             (self as Player).animation = Player.AnimationIndex.Flip;
+                            (self as Player).Jump();
                             type = Creature.DamageType.Blunt;
                             damage = 0f;
-                            stunBonus = stunBonus * 1.5f;
                             e.ParrySuccess = true;
+                            e.ElectroParry = true;
                             Ebug("Escort somehow parried a shock object?!");
                         } else {
+                            (self as Player).animation = Player.AnimationIndex.Flip;
+                            (self as Player).Jump();
+                            damage = 0f;
+                            e.ParrySuccess = true;
+                            e.ElectroParry = true;
                             Ebug("Escort attempted to parry a shock but why?!");
                         }
-                    } else {
+                    } 
+                    else {
                         Ebug("Escort is getting UNKNOWNED!!! RUNNN");
                         if (source != null && source.owner is Creature){
                             Ebug("IT'S ALSO AN UNKNOWN CREATURE!!");
@@ -904,7 +942,10 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
                         Ebug("Parry successful!");
                         e.iFrames = 6;
-                    } else {
+                        e.parryLean = 0;
+                    }
+                    // else if (e.iFrames > 0) {Ebug("Immunity frame tick");} 
+                    else {
                         orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                         Ebug("Nothing or not possible to parry!");
                     }
@@ -978,11 +1019,14 @@ namespace TheEscort
 
                 // Parryslide (stun module)
                 if (self.animation == Player.AnimationIndex.BellySlide){
+                    if (e.parryLean <= 0){
+                        e.parryLean = 4;
+                    }
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.RollinSFXChunk);
                     creature.SetKillTag(self.abstractCreature);
-                    float normSlideStun = bodySlam[1];
+                    float normSlideStun = (hypedMode || e.combatTech? bodySlam[1] : bodySlam[1] * 1.5f);
                     if (hypedMode && self.aerobicLevel > requirement){
-                        normSlideStun = bodySlam[1] * 1.75f;
+                        normSlideStun = bodySlam[1] * (e.combatTech? 1.75f : 2f);
                     }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
@@ -1000,9 +1044,13 @@ namespace TheEscort
                         direction = self.rollDirection;
                         self.animation = Player.AnimationIndex.Flip;
                         self.WallJump(direction);
-                        self.animation = Player.AnimationIndex.BellySlide;
-                        self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
-                        self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
+                        if (e.combatTech){
+                            self.animation = Player.AnimationIndex.BellySlide;
+                            self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
+                            self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
+                        } else {
+                            self.animation = Player.AnimationIndex.Flip;
+                        }
                         Ebug("Greatdadstance stunslide!");
                     } else {
                         direction = self.flipDirection;
@@ -1023,9 +1071,9 @@ namespace TheEscort
                     creature.SetKillTag(self.abstractCreature);
                     float normSlamDamage = 0.1f;
                     if (e.DropKickCD <= 5){
-                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + 0.15f);
+                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.combatTech? 0.15f : 0.27f));
                         creature.LoseAllGrasps();
-                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * 1.6f;}
+                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.combatTech? 1.6f : 2f);}
                         message = "Powerdropkicked!";
                     } else {
                         //multiplier *= 0.5f;
@@ -1035,10 +1083,11 @@ namespace TheEscort
                         otherObject.firstChunk, null, Creature.DamageType.Blunt,
                         normSlamDamage, bodySlam[3]
                     );
-                    Ebug(e.LizardDunk);
-
+                    Ebug("Dunk the lizard: " + e.LizardDunk);
+                    if (e.DropKickCD == 0){
+                        e.LizardDunk = false;
+                    }
                     e.DropKickCD = (self.longBellySlide? 30 : 15);
-                    e.LizardDunk = false;
                     int direction;
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
                     /*
@@ -1093,7 +1142,8 @@ namespace TheEscort
             if (bonusSpear.TryGet(self, out float[] spearDmgBonuses) && Esconfig_HypeReq(self) && !self.Malnourished && self.slugcatStats.name.value == "EscortMe"){
                 Ebug("ThrownSpear Triggered!");
                 float thrust = 7f;
-                bool doNotYeet = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
+                bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
+                bool doNotYeet = onPole || !e.combatTech;
                 if (Esconfig_Hypable(self)){
                     if (self.aerobicLevel > requirement){
                         spear.throwModeFrames = -1;
@@ -1146,7 +1196,7 @@ namespace TheEscort
                 } else {
                     spear.spearDamageBonus = 1.25f;
                 }
-                if (doNotYeet) {
+                if (onPole) {
                     thrust = 1f;
                 }
                 if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
@@ -1162,6 +1212,10 @@ namespace TheEscort
         }
 
         private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
+            if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
+                return orig(self, obj);
+            }
+
             if (dualWielding.TryGet(self, out bool dW) && dW && self.slugcatStats.name.value == "EscortMe"){
                 //Ebug("Grabability Triggered!");
                 if (obj is Weapon){
@@ -1169,18 +1223,15 @@ namespace TheEscort
                     return Player.ObjectGrabability.OneHand;
                 } else if (obj is Lizard){
                     // Any lizards that are haulable (while dead) or stunned are dual-wieldable
-
                     if ((obj as Lizard).dead){
                         return Player.ObjectGrabability.OneHand;
-                    } else if ((obj as Lizard).Stunned){
-                        (obj as Lizard).Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 35f);
+                    } else if ((obj as Lizard).Stunned && Esconfig_Dunkin(self)){
+                        (obj as Lizard).Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 25f);
                         e.LizardDunk = true;
                         return Player.ObjectGrabability.TwoHands;
                     } else {
                         return orig(self, obj);
                     }
-                } else if (escPatch_revivify && obj is Creature && (obj as Creature).abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && (obj as Creature).dead) {
-                    return orig(self, obj);
                 } else {
                     // Do default behaviour
                     return orig(self, obj);
@@ -1194,7 +1245,8 @@ namespace TheEscort
         {
             try{
                 if (self.slugcatStats.name.value == "EscortMe"){
-                    return (self.animation == Player.AnimationIndex.BellySlide? 0f : 0.5f);
+                    float biteMult = e.combatTech? 0.5f : 0.15f;
+                    return ((self.animation == Player.AnimationIndex.BellySlide && self.canJump != 0) || e.parryLean > 0? 5f : biteMult);
                 } else {
                     return orig(self);
                 }
