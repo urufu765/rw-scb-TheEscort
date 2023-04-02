@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.9")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.10")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -802,35 +802,39 @@ namespace TheEscort
         // Implement Movementtech
         private void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self){
             orig(self);
-            if (self.slugcatStats.name.value == "EscortMe"){
-                //Ebug("UpdateAnimation Triggered!");
-                // Infiniroll
-                if (self.animation == Player.AnimationIndex.Roll){
-                    if (!((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
-                        e.RollinCount++;
-                        if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
-                            Ebug("Rollin at: " + e.RollinCount);
-                        }
-                        if(Esconfig_SFX(self) && e.Rollin != null){
-                            e.Rollin.Volume = Mathf.InverseLerp(100f, 300f, e.RollinCount);
-                        }
-                        self.rollCounter = 0;
-                    }
-                } /*else if (self.animation == Player.AnimationIndex.RocketJump) {
-                    self.bodyMode = Player.BodyModeIndex.Default;
-                    self.standing = false;
-                    self.bodyChunks[1].vel
-                }*/
-
-                if (self.animation != Player.AnimationIndex.Roll){
-                    e.RollinCount = 0f;
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
                 }
-
-                // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
-                //if (self.animation == Player.AnimationIndex.BellySlide){
-                    // TODO implement better slide
-                //}
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
             }
+            if (!RR.TryGet(self, out int limiter)){
+                return;
+            }
+
+            //Ebug("UpdateAnimation Triggered!");
+            // Infiniroll
+            if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection)){
+                e.RollinCount++;
+                if(limiter < slowDownDevConsole){
+                    Ebug("Rollin at: " + e.RollinCount);
+                }
+                if(Esconfig_SFX(self) && e.Rollin != null){
+                    e.Rollin.Volume = Mathf.InverseLerp(100f, 300f, e.RollinCount);
+                }
+                self.rollCounter = 0;
+            }
+
+            if (self.animation != Player.AnimationIndex.Roll){
+                e.RollinCount = 0f;
+            }
+
+            // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
+            //if (self.animation == Player.AnimationIndex.BellySlide){
+                // TODO implement better slide
+            //}
         }
 
 
