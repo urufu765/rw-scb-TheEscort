@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.13")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.14")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -1359,24 +1359,22 @@ namespace TheEscort
 
         private void Escort_Die(On.Player.orig_Die orig, Player self){
             try{
-                if (self.slugcatStats.name.value == "EscortMe"){
-                    Ebug("Die Triggered!");
-                    if (!e.ParrySuccess && e.iFrames == 0){
-                        orig(self);
-                        if (self.dead && Esconfig_SFX(self)){
-                            self.room.PlaySound(Escort_SFX_Death, e.RollinSFXChunk);
-                            //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
-                        }
-                        Ebug("Failure.");
-                        Ebug("Death by: " + ((self.killTag!=null)? self.killTag.ToString():"Unknown reasons"));
-                    } else {
-                        self.dead = false;
-                        Ebug("Player didn't die?");
-                        e.ParrySuccess = false;
-                    }
-                    return;
-                } else {
+                if (self.slugcatStats.name.value != "EscortMe"){
                     orig(self);
+                    return;
+                }
+                Ebug("Die Triggered!");
+                if (!e.ParrySuccess && e.iFrames == 0){
+                    orig(self);
+                    if (self.dead && Esconfig_SFX(self)){
+                        self.room.PlaySound(Escort_SFX_Death, e.RollinSFXChunk);
+                        //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
+                    }
+                    Ebug("Failure.");
+                } else {
+                    self.dead = false;
+                    Ebug("Player didn't die?");
+                    e.ParrySuccess = false;
                 }
             } catch (Exception e){
                 Ebug("Something happened while trying to die!");
