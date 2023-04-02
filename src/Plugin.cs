@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.4")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -420,6 +420,7 @@ namespace TheEscort
                 return;
             }
             if (self.slugcatStats.name.value == "EscortMe"){
+                // Due to the aerobic decrease found in some movements implemented in Escort, the AerobicIncrease actually does the original, and on top of that the additional to balance things out.
                 orig(self, f);
 
                 //Ebug("Aerobic Increase Triggered!");
@@ -507,17 +508,20 @@ namespace TheEscort
             if (self.slugcatStats.name.value == "EscortMe"){
                 Ebug("Jump Triggered!");
                 
+                // Decreases aerobiclevel gained from jumping
                 if (self.aerobicLevel > 0.1f){
                     self.aerobicLevel -= 0.1f;
-                }
-                
-                if (self.animation != Player.AnimationIndex.BellySlide && self.longBellySlide){
-                    self.longBellySlide = false;
                 }
 
                 // Replace chargepounce with a sick flip
                 if (
-                    Esconfig_Pouncing(self) && (self.superLaunchJump >= 19 || self.simulateHoldJumpButton == 6 || self.killSuperLaunchJumpCounter > 0) && self.bodyMode == Player.BodyModeIndex.Crawl
+                    Esconfig_Pouncing(self) && 
+                    (
+                        self.superLaunchJump >= 19 || 
+                        self.simulateHoldJumpButton == 6 || 
+                        self.killSuperLaunchJumpCounter > 0
+                        ) && 
+                    self.bodyMode == Player.BodyModeIndex.Crawl
                     ){
                     Ebug("FLIPERONI GO!");
                     if (Esconfig_SFX(self)){
@@ -525,7 +529,6 @@ namespace TheEscort
                     }
                     self.animation = Player.AnimationIndex.Flip;
                 }
-
                 self.consistentDownDiagonal = 0;
             }
         }

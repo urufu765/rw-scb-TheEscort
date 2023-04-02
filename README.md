@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.9.4)** Cleaned up Jump()
+
+**(0.1.9.3)** Undid some changes in AerobicIncrease() that messed up the aerobic gain
+
 **(0.1.9.2)** Cleaned up Escort_Update()
 
 **(0.1.9.1)** Cleaned up Escort_AerobicIncrease()
