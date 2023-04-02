@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.5")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -437,7 +437,23 @@ namespace TheEscort
         // Implement visual effect for Battle-Hyped mode
         private void Escort_Update(On.Player.orig_Update orig, Player self, bool eu){
             orig(self, eu);
-            if (self.slugcatStats.name.value == "EscortMe"){
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
+            }
+
+            if (
+                !RR.TryGet(self, out int limiter) ||
+                !WallJumpVal.TryGet(self, out var WJV) ||
+                !NoMoreGutterWater.TryGet(self, out var theGut)
+                ){
+                return;
+            }
+
             // For slowed down dev console output
             Update_Refresher(self);
 
@@ -445,7 +461,7 @@ namespace TheEscort
             Tick_Escort(self);
             
             // Just for seeing what a variable does.
-            if(RR.TryGet(self, out int limiter) && limiter < slowDownDevConsole){
+            if(limiter < slowDownDevConsole){
                 Ebug("Clocked.");
                 Ebug(" Roll Direction: " + self.rollDirection);
                 Ebug("Slide Direction:" + self.slideDirection);
@@ -456,7 +472,7 @@ namespace TheEscort
             }
 
             // vfx
-            if(WallJumpVal.TryGet(self, out var WJV) && self != null && self.room != null){
+            if(self != null && self.room != null){
                 // Battle-hyped visual effect
                 if (Esconfig_Hypable(self) && self.aerobicLevel > requirement){
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
@@ -478,7 +494,7 @@ namespace TheEscort
             }
 
             // Implement guuh wuuh
-            if(NoMoreGutterWater.TryGet(self, out var theGut) && self.bodyMode == Player.BodyModeIndex.Swimming){
+            if(self.bodyMode == Player.BodyModeIndex.Swimming){
                 float superSwim = Mathf.Lerp(theGut[0], theGut[1], self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity));
                 if (self.animation == Player.AnimationIndex.DeepSwim){
                     self.mainBodyChunk.vel *= new Vector2(
@@ -497,116 +513,134 @@ namespace TheEscort
                     e.RollinCount = 0f;
                 }
             }
-            }
         }
 
         // Implement Flip jump and less tired from jumping
         private void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
             orig(self);
-
-            if (self.slugcatStats.name.value == "EscortMe"){
-                Ebug("Jump Triggered!");
-                
-                // Decreases aerobiclevel gained from jumping
-                if (self.aerobicLevel > 0.1f){
-                    self.aerobicLevel -= 0.1f;
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
                 }
-
-                // Replace chargepounce with a sick flip
-                if (
-                    Esconfig_Pouncing(self) && 
-                    (
-                        self.superLaunchJump >= 19 || 
-                        self.simulateHoldJumpButton == 6 || 
-                        self.killSuperLaunchJumpCounter > 0
-                        ) && 
-                    self.bodyMode == Player.BodyModeIndex.Crawl
-                    ){
-                    Ebug("FLIPERONI GO!");
-                    if (Esconfig_SFX(self)){
-                        self.room.PlaySound(Escort_SFX_Flip, e.RollinSFXChunk);
-                    }
-                    self.animation = Player.AnimationIndex.Flip;
-                }
-                self.consistentDownDiagonal = 0;
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
             }
+
+            Ebug("Jump Triggered!");
+            // Decreases aerobiclevel gained from jumping
+            if (self.aerobicLevel > 0.1f){
+                self.aerobicLevel -= 0.1f;
+            }
+
+            // Replace chargepounce with a sick flip
+            if (
+                Esconfig_Pouncing(self) && 
+                (
+                    self.superLaunchJump >= 19 || 
+                    self.simulateHoldJumpButton == 6 || 
+                    self.killSuperLaunchJumpCounter > 0
+                    ) && 
+                self.bodyMode == Player.BodyModeIndex.Crawl
+                ){
+                Ebug("FLIPERONI GO!");
+
+                if (Esconfig_SFX(self)){
+                    self.room.PlaySound(Escort_SFX_Flip, e.RollinSFXChunk);
+                }
+                self.animation = Player.AnimationIndex.Flip;
+            }
+            self.consistentDownDiagonal = 0;
         }
 
 
         private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
         {
-            if (self.bodyMode == Player.BodyModeIndex.WallClimb && self.slugcatStats.name.value == "EscortMe"){
-                Ebug("Walljump Triggered!");
-                bool wallJumper = Esconfig_WallJumps(self);
-                bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
-            if (WallJumpVal.TryGet(self, out var WJV)){
-                bool superWall = (Esconfig_Pouncing(self) && self.consistentDownDiagonal > (int)WJV[4]);
-                if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
-                    orig(self, direction);
-                    float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
-                    String[] toPrint = new String[3];
-                    bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
-                    toPrint.SetValue("Walls the Jump", 0);
-                    if (
-                        self.IsTileSolid(1, 0, -1) ||
-                        self.IsTileSolid(0, 0, -1) ||
-                        self.bodyChunks[1].submersion > 0.1f ||
-                        (
-                            self.input[0].x != 0 && 
-                            self.bodyChunks[0].ContactPoint.x == self.input[0].x &&
-                            self.IsTileSolid(0, self.input[0].x, 0) &&
-                            !self.IsTileSolid(0, self.input[0].x, 1)
-                        )
-                    ){
-                        self.bodyChunks[0].vel.y = 8f * n;
-                        self.bodyChunks[1].vel.y = 7f * n;
-                        self.bodyChunks[0].pos.y += 10f * Mathf.Min(1f, n);
-                        self.bodyChunks[1].pos.y += 10f * Mathf.Min(1f, n);
-                        toPrint.SetValue("Water", 1);
-                        self.room.PlaySound(SoundID.Slugcat_Normal_Jump, e.RollinSFXChunk, false, 1f, 0.7f);
-
-
-                    } else {
-                        self.bodyChunks[0].vel.y = ((longWallJump || (superFlip && superWall))? WJV[0] : 8f) * n;
-                        self.bodyChunks[1].vel.y = ((longWallJump || (superFlip && superWall))? WJV[1] : 7f) * n;
-                        self.bodyChunks[0].vel.x = ((superFlip && superWall)? WJV[2] : 7f) * n * (float)direction;
-                        self.bodyChunks[1].vel.x = ((superFlip && superWall)? WJV[3] : 6f) * n * (float)direction;
-                        self.standing = true;
-                        self.jumpStun = 8 * direction;
-                        if (superWall){
-                            self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.7f);
-                        }
-                        toPrint.SetValue("Not Water", 1);
-                        Ebug("Y Velocity" + self.bodyChunks[0].vel.y);
-                        Ebug("Y Velocity" + self.bodyChunks[1].vel.y);
-                        Ebug("X Velocity" + self.bodyChunks[0].vel.x);
-                        Ebug("X Velocity" + self.bodyChunks[1].vel.x);
-                    }
-                    self.jumpBoost = 0f;
-                    if (superFlip && superWall){
-                        self.animation = Player.AnimationIndex.Flip;
-                        self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.9f);
-                        self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
-                        toPrint.SetValue("SUPERFLIP", 2);
-                    } else {
-                        toPrint.SetValue("not so flip", 2);
-                    }
-                    Ebug("Jumpboost" + self.jumpBoost);
-                    Ebug("CDownDir" + self.consistentDownDiagonal);
-                    Ebug("SLaunchJump" + self.superLaunchJump);
-                    if (self.superLaunchJump > 19){
-                        self.superLaunchJump = 0;
-                    }
-
-
-                    self.canWallJump = 0;
-                    Ebug(toPrint);
-                }
-                }
-            } else {
+            if (self.bodyMode != Player.BodyModeIndex.WallClimb){
                 orig(self, direction);
-                Ebug("Default behaviour");
+                return;
+            }
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    orig(self, direction);
+                    return;
+                }
+            } catch (Exception err){
+                orig(self, direction);
+                Ebug(err.Message);
+                return;
+            }
+            if (
+                !WallJumpVal.TryGet(self, out var WJV)
+            ){
+                orig(self, direction);
+                return;
+            }
+
+            Ebug("Walljump Triggered!");
+            bool wallJumper = Esconfig_WallJumps(self);
+            bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
+            bool superWall = (Esconfig_Pouncing(self) && self.consistentDownDiagonal > (int)WJV[4]);
+
+            if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
+                orig(self, direction);
+                float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+                String[] toPrint = new String[3];
+                bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
+                toPrint.SetValue("Walls the Jump", 0);
+                if (
+                    self.IsTileSolid(1, 0, -1) ||
+                    self.IsTileSolid(0, 0, -1) ||
+                    self.bodyChunks[1].submersion > 0.1f ||
+                    (
+                        self.input[0].x != 0 && 
+                        self.bodyChunks[0].ContactPoint.x == self.input[0].x &&
+                        self.IsTileSolid(0, self.input[0].x, 0) &&
+                        !self.IsTileSolid(0, self.input[0].x, 1)
+                    )
+                ){
+                    self.bodyChunks[0].vel.y = 8f * n;
+                    self.bodyChunks[1].vel.y = 7f * n;
+                    self.bodyChunks[0].pos.y += 10f * Mathf.Min(1f, n);
+                    self.bodyChunks[1].pos.y += 10f * Mathf.Min(1f, n);
+                    toPrint.SetValue("Water", 1);
+                    self.room.PlaySound(SoundID.Slugcat_Normal_Jump, e.RollinSFXChunk, false, 1f, 0.7f);
+                } 
+                else {
+                    self.bodyChunks[0].vel.y = ((longWallJump || (superFlip && superWall))? WJV[0] : 8f) * n;
+                    self.bodyChunks[1].vel.y = ((longWallJump || (superFlip && superWall))? WJV[1] : 7f) * n;
+                    self.bodyChunks[0].vel.x = ((superFlip && superWall)? WJV[2] : 7f) * n * (float)direction;
+                    self.bodyChunks[1].vel.x = ((superFlip && superWall)? WJV[3] : 6f) * n * (float)direction;
+                    self.standing = true;
+                    self.jumpStun = 8 * direction;
+                    if (superWall){
+                        self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.7f);
+                    }
+                    toPrint.SetValue("Not Water", 1);
+                    Ebug("Y Velocity" + self.bodyChunks[0].vel.y);
+                    Ebug("Y Velocity" + self.bodyChunks[1].vel.y);
+                    Ebug("X Velocity" + self.bodyChunks[0].vel.x);
+                    Ebug("X Velocity" + self.bodyChunks[1].vel.x);
+                }
+                self.jumpBoost = 0f;
+
+                if (superFlip && superWall){
+                    self.animation = Player.AnimationIndex.Flip;
+                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.9f);
+                    self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
+                    toPrint.SetValue("SUPERFLIP", 2);
+                } else {
+                    toPrint.SetValue("not so flip", 2);
+                }
+                Ebug("Jumpboost" + self.jumpBoost);
+                Ebug("CDownDir" + self.consistentDownDiagonal);
+                Ebug("SLaunchJump" + self.superLaunchJump);
+                if (self.superLaunchJump > 19){
+                    self.superLaunchJump = 0;
+                }
+                self.canWallJump = 0;
+                Ebug(toPrint);
             }
         }
 
