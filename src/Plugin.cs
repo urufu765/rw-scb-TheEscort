@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.11")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.9.12")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -1213,19 +1213,23 @@ namespace TheEscort
         // Implement a different type of dropkick
         private void Escort_TossObject(On.Player.orig_TossObject orig, Player self, int grasp, bool eu){
             orig(self, grasp, eu);
-            if (BodySlam.TryGet(self, out var bodySlam) && self.slugcatStats.name.value == "EscortMe")
-            {            
-                Ebug("Toss Object Triggered!");
-                if (self.grasps[grasp].grabbed is Lizard && !(self.grasps[grasp].grabbed as Lizard).dead && self.bodyMode == Player.BodyModeIndex.Default){
-                    /*(self.grasps[grasp].grabbed as Creature).Violence(
-                        self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
-                        self.grasps[grasp].grabbed.firstChunk, null, Creature.DamageType.Blunt,
-                        bodySlam[2], bodySlam[3]
-                    );*/
-                    self.animation = Player.AnimationIndex.RocketJump;
-                    self.bodyChunks[1].vel.x += self.slideDirection;
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
                 }
-            }        
+            } catch (Exception err){
+                Ebug(err.Message);
+                return;
+            }
+            if (!BodySlam.TryGet(self, out var bodySlam)){
+                return;
+            }
+
+            Ebug("Toss Object Triggered!");
+            if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead && self.bodyMode == Player.BodyModeIndex.Default){
+                self.animation = Player.AnimationIndex.RocketJump;
+                self.bodyChunks[1].vel.x += self.slideDirection;
+            }
         }
 
         // Implement unique spearskill

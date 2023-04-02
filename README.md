@@ -9,19 +9,19 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 ### 0.1 - Steam Workshopped
 **(0.1.9.19)** Clean up Escort_Violence()
 
-**(0.1.9.18)** Clean up Escort_getStoryRegions()
+**(0.1.9.18)** Clean up Escort_Collision()
 
-**(0.1.9.17)** Clean up Escort_Die()
+**(0.1.9.17)** Clean up Escort_getStoryRegions()
 
-**(0.1.9.16)** Clean up Escort_DeathBiteMult()
+**(0.1.9.16)** Clean up Escort_Die()
 
-**(0.1.9.15)** Clean up Escort_Grabability()
+**(0.1.9.15)** Clean up Escort_DeathBiteMult()
 
-**(0.1.9.14)** Clean up Escort_ThrownSpear()
+**(0.1.9.14)** Clean up Escort_Grabability()
 
-**(0.1.9.13)** Clean up Escort_TossObject()
+**(0.1.9.13)** Clean up Escort_ThrownSpear()
 
-**(0.1.9.12)** Clean up Escort_Collision()
+**(0.1.9.12)** Cleaned up Escort_TossObject()
 
 **(0.1.9.11)** Cleaned up Escort_StickySpear()
 
