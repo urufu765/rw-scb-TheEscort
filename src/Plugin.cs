@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -85,9 +85,13 @@ namespace TheEscort
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
-        public Escort e;
 
+        // Miscellanious things
         private int slowDownDevConsole = 0;
+        private bool nonArena = false;
+
+        // Escort instance stuff
+        public Escort e;
         private float requirement;
         private float DKMultiplier;
         float ratioed;
@@ -323,8 +327,26 @@ namespace TheEscort
 
         private bool Esconfig_Build(Player self){
             try {
-                switch (config.cfgBuildNum.Value){
+                int pal = 0;
+                switch (self.playerState.playerNumber){
+                    case 0:
+                        pal = config.cfgBuildP1.Value;
+                        break;
+                    case 1:
+                        pal = config.cfgBuildP2.Value;
+                        break;
+                    case 2:
+                        pal = config.cfgBuildP3.Value;
+                        break;
+                    case 3:
+                        pal = config.cfgBuildP4.Value;
+                        break;
+                }
+                switch (pal){
                     // Full Melee build
+                    // Beginner build
+                    // Acrobatic build
+                    // Speedstar build
 
                     case -1:  // Brawler build
                         e.combatTech = false;
@@ -499,7 +521,7 @@ namespace TheEscort
                         if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors){
                             switch(self.player.playerState.playerNumber){
                                 case 0:
-                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge){
+                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && !nonArena){
                                         setC = new Color(0.25f, 0.65f, 0.82f);
                                     }
                                     break;

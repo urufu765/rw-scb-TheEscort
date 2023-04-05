@@ -21,13 +21,15 @@ These mods may or may not cause issues with the Escort mod, or these are issues 
 [hr][/hr][h2]<~PATCHED MODS~>[/h2]
 This mod will apply a patch to work better with the following mods. How they change the behaviour of the Escort mod is as detailed (Any mods not listed in either conflicts or patched may be assumed to be working):
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Working on a patch for 1.2.0[/b]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Somewhat patched for 1.2.0[/b] (Doesn't work as well on slugpups...)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2948971756]Dress My Slugcat[/url]: [b]Working on a patch[/b] (May work perfectly fine, but the marking may not apply correctly...)
 [/list]
 [*] [url=][/url]: [b][/b] ()
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
 [*] REMIX MENU to tweak some features and enable optional gimmicks
 [*] Builds that alter how the character plays
+[*] Custom sprites
 [*] Slide Stun (sliding into creature)
 [*] Drop Kick (roll/slide pouncing into creature)
 [*] Flip Pounce (charge pounce)
@@ -36,13 +38,12 @@ This mod will apply a patch to work better with the following mods. How they cha
 [*] Dual wield spears (and dead lizards)
 [*] Half-implemented Parry Slide (slide into bites or stabby creatures and get away most of the time (bite lethality will still kill you)... but not spears, not yet)
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
-[*] Custom Spear mechanics (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
+[*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
 [*] Custom SFX!
 [/list]
 [hr][/hr][h2]<~TO BE IMPLEMENTED (when i feel liek it)~>[/h2]
 [list]
 [*] Sliding while hyped will be more lenient (slide success occurs in fewer frames alike how rivulet works)
-[*] Escort Headbutt (when you speed out of a pipe)
 [*] Escort shooting out of pipes
 [*] Pull out of centipede grasps with STRENGTH (don't worry it'll have a cooldown)
 [*] Some creatures hate Escort's guts (and some will actively search for them)
@@ -52,7 +53,6 @@ This mod will apply a patch to work better with the following mods. How they cha
 [/list]
 [hr][/hr][h2]<~GOALS~>[/h2]
 [list]
-[*] Complete Escort's moveset
 [*] Add some fun gimmicks for Escort (All hostile creatures know what room you're in, harvest armor from centipedes, etc.)
 [*] Add the special slugpup and their set AI
 [*] Complete the campaign

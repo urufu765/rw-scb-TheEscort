@@ -21,6 +21,10 @@ namespace TheEscort{
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
         public Configurable<int> cfgBuildNum;
+        public Configurable<int> cfgBuildP1;
+        public Configurable<int> cfgBuildP2;
+        public Configurable<int> cfgBuildP3;
+        public Configurable<int> cfgBuildP4;
         public Configurable<bool> cfgDunkin;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
@@ -45,6 +49,10 @@ namespace TheEscort{
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
             this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
         }
 
@@ -59,10 +67,13 @@ namespace TheEscort{
             String mainText = "These options change Escort's main abilities and how they play.";
             String buildText = "These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.";
             String gimmickText = "These optional gimmicks will add features that may alter the gameplay of Escort significantly (and usually in hilarous ways)";
+            String buildP = "Player<LINE>(1)   (2)   (3)   (4)";
             hypeReqText = hypeReqText.Replace("<LINE>", "" + System.Environment.NewLine);
             mainText = mainText.Replace("<LINE>", "" + System.Environment.NewLine);
             buildText = buildText.Replace("<LINE>", "" + System.Environment.NewLine);
+            buildP = buildP.Replace("<LINE>", "" + System.Environment.NewLine);
             gimmickText = gimmickText.Replace("<LINE>", "" + System.Environment.NewLine);
+            Color descColor = new Color(0.49f, 0.44f, 0.55f);
             base.Initialize();
             OpTab mainTab = new OpTab(this, "Main");
             OpTab buildTab = new OpTab(this, "Builds");
@@ -122,13 +133,35 @@ namespace TheEscort{
             this.buildSet = new UIelement[]{
                 new OpLabel(xo, yo, "Builds", true),
                 new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), buildText),
+                new OpLabel(xo - (tp * 3.8f), yo - (yp * 1.5f), buildP){
+                    color = new Color(0.5f, 0.5f, 0.5f)
+                },
 
-                new OpSliderTick(this.cfgBuildNum, new Vector2(xo - tp, (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
                     min = this.buildDiv,
                     max = 0
                 },
-                new OpLabel(xo + xp - tp, yo - (yp * 2), "Default: The intended way of playing Escort"),
-                new OpLabel(xo + xp - tp, yo - (yp * 3), "Brawler: Trade some movement tech for a more consistent and powerful combat phase")
+                new OpSliderTick(this.cfgBuildP2, new Vector2(xo - (tp * 1), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    min = this.buildDiv,
+                    max = 0
+                },
+                new OpSliderTick(this.cfgBuildP3, new Vector2(xo + (tp * 3), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    min = this.buildDiv,
+                    max = 0
+                },
+                new OpSliderTick(this.cfgBuildP4, new Vector2(xo + (tp * 7), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    min = this.buildDiv,
+                    max = 0
+                },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 2), "Default"),
+                new OpLabel(xo + (xp * 2), yo - (yp * 2) - (tp * 2), " The intended way of playing Escort"){
+                    color = descColor
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 3), "Brawler"),
+                new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Trade some movement tech for a more consistent and powerful combat phase"){
+                    color = descColor
+                }
 
             };
             this.gimmickSet = new UIelement[]{
