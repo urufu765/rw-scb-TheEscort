@@ -1,6 +1,6 @@
 {"frames": {
 
-"escortBodyT.png":
+"escortHipT.png":
 {
 	"frame": {"x":2,"y":2,"w":18,"h":23},
 	"rotated": false,
@@ -11,10 +11,10 @@
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "escortbody.png",
+	"image": "escorthip.png",
 	"format": "RGBA8888",
 	"size": {"w":22,"h":27},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:a975ec95799286334418ab41d637eeba:b79d37562a024ca17a1e981b00bc59f6:a47a5f04563f84cf0b500e5a34805851$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b9153290741367f66198228e3bef8442:7674a99933910c3f85a7b030539afb8b:aad1dfe704942f193b5066ab69cc267e$"
 }
 }

@@ -34,7 +34,7 @@ namespace TheEscort{
             this.ParrySuccess = false;
             this.ElectroParry = false;
             this.RollinSFXChunk = player.bodyChunks[0];
-            this.spriteQueue = 0;
+            this.spriteQueue = -1;
 
             // Build stuff
             this.combatTech = true;

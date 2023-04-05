@@ -1,12 +1,12 @@
 {
 	"id": "EscortMe",
 	"name": "The Escort",
-	"description": "WARNING: THIS CAMPAIGN DOESN'T EXIST (yet). This will bring you to Spearmaster's world and that's it.<LINE><LINE>An enduring protector trained to traverse the unforgiving lands, they must seek sanctuary for the precious being.<LINE>My sleep-deprived brain isn't good at descriptions.",
+	"description": "WARNING: THIS CAMPAIGN DOESN'T EXIST (yet). This will bring you to Spearmaster's world and that's it. The slugpup is not implemented yet.<LINE><LINE>A guardian from a faraway land, entrusted to bring a special creature through the thick and thin.",
 	"features": {
 		"color" : "4169e1",
 		"custom_colors" : [
-			{"name": "Body", "story": "4169e1"},
-			{"name": "Eyes", "story": "030000"},
+			{"name": "Body", "story": "4169e1", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
+			{"name": "Eyes", "story": "030000", "arena": ["030000", "030000", "030000", "ffffff"]},
 			{"name": "Markings", "story": "cb8c47"}
 		],
 		"weight": [1.3, 1],

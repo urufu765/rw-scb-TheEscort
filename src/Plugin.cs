@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.1.10")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -166,7 +166,7 @@ namespace TheEscort
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
             FAtlas aB, aH;
-            aB = Futile.atlasManager.LoadAtlas("atlases/escortbody");
+            aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             if (aB == null || aH == null){
                 Ebug("Oh no.");
@@ -447,7 +447,7 @@ namespace TheEscort
                 Array.Resize(ref s.sprites, s.sprites.Length + 2);
                 Ebug("Resized array");
                 s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
-                s.sprites[e.spriteQueue + 1] = new FSprite("escortBodyT");
+                s.sprites[e.spriteQueue + 1] = new FSprite("escortHipT");
                 if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
                     Ebug("Oh geez.");
                 }
@@ -470,10 +470,14 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
-                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
+                if (e.spriteQueue == -1){
+                    return;
+                }
+                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
                     Ebug("Oh dear.");
                     return;
                 }
+                // Applying colors?
                 if (s.sprites.Length > e.spriteQueue){
                     Ebug("Gone in");
                     if (ModManager.CoopAvailable && self.useJollyColor){
@@ -512,7 +516,6 @@ namespace TheEscort
                         }
                         s.sprites[e.spriteQueue].color = setC;
                         s.sprites[e.spriteQueue + 1].color = setC;
-
                         Ebug("Arena end.");
                     }
                 }
@@ -536,7 +539,10 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
-                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
+                if (e.spriteQueue == -1){
+                    return;
+                }
+                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
                     Ebug("Oh shoot.");
                     return;
                 }
@@ -568,7 +574,10 @@ namespace TheEscort
                 if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD)){
                     return;
                 }
-                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
+                if (e.spriteQueue == -1){
+                    return;
+                }
+                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
                     Ebug("Oh crap.");
                     return;
                 }

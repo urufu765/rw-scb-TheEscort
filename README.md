@@ -6,6 +6,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
+### 0.2 - The Escort
+**(0.2)** Here marks the spot where I begin working on the appearance and art of Escort. For now there is no compatibility with DMS so your results may vary when using such mod.
+
 ### 0.1 - Steam Workshopped
 **(0.1.10.1)** Sprites?! 
 
