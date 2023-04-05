@@ -17,6 +17,7 @@ namespace TheEscort{
         public bool LizardDunk;
         public bool ParrySuccess;
         public bool ElectroParry;
+        public int spriteQueue;
         
         // Build stuff
         public bool combatTech;
@@ -33,6 +34,7 @@ namespace TheEscort{
             this.ParrySuccess = false;
             this.ElectroParry = false;
             this.RollinSFXChunk = player.bodyChunks[0];
+            this.spriteQueue = 0;
 
             // Build stuff
             this.combatTech = true;

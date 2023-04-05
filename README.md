@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.1 - Steam Workshopped
+**(0.1.10.1)** Sprites?! 
+
 **(0.1.10)** New Escort portraits!
 
 **(0.1.9.18)** Fixed spear throw (had the malnourish stat inverted)
@@ -193,6 +195,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 - Gamr Mode (if I ever finish the damn mod): Double spawns, reduced spear spawns, pipejukes don't work now (lizards can grab you if they pass by you in the pipe), hunted by lizard event occurs always, pursued by a silver ghost lizard (that spawns every 2.5 minutes in the pipe closest to you, despawned by gates, warded off by shelters) that can manuver like a full-speed white (but doesn't have a tongue), but can also pass through walls, cannot be hit, and the sole intent of their movement is to bite you and kill you.
 - Taming lizards is much more difficult
 - Escort Combo System
+- Escort lizard grabbing noise ("Lizard, Get! Lizard, Get!")
+- Add more spears to garbage waste
 
 
 # Roadmap (Subject to change)

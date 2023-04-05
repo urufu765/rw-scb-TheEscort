@@ -72,6 +72,13 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]>
         WallJumpVal = PlayerFloats("theescort/wall_jump_val");
 
+        /* JSON VALUES
+        [Rotation val, X val, Y val]
+        */
+        public static readonly PlayerFeature<float[]>headDraw = PlayerFloats("theescort/headthing");
+        public static readonly PlayerFeature<float[]>bodyDraw = PlayerFloats("theescort/bodything");
+
+
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Roll;
@@ -121,6 +128,11 @@ namespace TheEscort
 
             On.Lizard.ctor += new On.Lizard.hook_ctor(this.Escort_Lizard_ctor);
 
+            On.PlayerGraphics.InitiateSprites += new On.PlayerGraphics.hook_InitiateSprites(this.Escort_InitiateSprites);
+            On.PlayerGraphics.ApplyPalette += new On.PlayerGraphics.hook_ApplyPalette(this.Escort_ApplyPalette);
+            On.PlayerGraphics.AddToContainer += new On.PlayerGraphics.hook_AddToContainer(this.Escort_AddGFXContainer);
+            On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
+
             On.Player.Jump += new On.Player.hook_Jump(this.Escort_Jump);
             On.Player.UpdateBodyMode += new On.Player.hook_UpdateBodyMode(this.Escort_UpdateBodyMode);
             On.Player.UpdateAnimation += new On.Player.hook_UpdateAnimation(this.Escort_UpdateAnimation);
@@ -147,14 +159,18 @@ namespace TheEscort
             }
 
 
-
-
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
+            FAtlas aB, aH;
+            aB = Futile.atlasManager.LoadAtlas("atlases/escortbody");
+            aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
+            if (aB == null || aH == null){
+                Ebug("Oh no.");
+            }
             //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
             Ebug("All SFX loaded!");
             EscEnums.RegisterValues();
@@ -416,6 +432,171 @@ namespace TheEscort
                 }
             }
         }
+
+        private void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
+        {
+            orig(self, s, rCam);
+            try{
+                if (!(self != null && self.player != null)){
+                    return;
+                }
+                if (self.player.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+                e.spriteQueue = s.sprites.Length;
+                Array.Resize(ref s.sprites, s.sprites.Length + 2);
+                Ebug("Resized array");
+                s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
+                s.sprites[e.spriteQueue + 1] = new FSprite("escortBodyT");
+                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
+                    Ebug("Oh geez.");
+                }
+                Ebug("Set the sprites");
+                self.AddToContainer(s, rCam, null);
+                Ebug("Sprite init complete!");
+            } catch(Exception err){
+                Ebug("Something went wrong when initiating sprites!");
+                Ebug(err.Message);
+                return;
+            }
+        }
+
+        private void Escort_ApplyPalette(On.PlayerGraphics.orig_ApplyPalette orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, RoomPalette palette){
+            orig(self, s, rCam, palette);
+            try{
+                if (!(self != null && self.player != null)){
+                    return;
+                }
+                if (self.player.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
+                    Ebug("Oh dear.");
+                    return;
+                }
+                if (s.sprites.Length > e.spriteQueue){
+                    Ebug("Gone in");
+                    if (ModManager.CoopAvailable && self.useJollyColor){
+                        Ebug("Jollymachine");
+                        s.sprites[e.spriteQueue].color = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
+                        s.sprites[e.spriteQueue + 1].color = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
+                        Ebug("Jollymachine end");
+                    }
+                    else if (PlayerGraphics.CustomColorsEnabled()){
+                        Ebug("Custom color go brr");
+                        s.sprites[e.spriteQueue].color = PlayerGraphics.CustomColorSafety(2);
+                        s.sprites[e.spriteQueue + 1].color = PlayerGraphics.CustomColorSafety(2);
+                        Ebug("Custom color end");
+                    }
+                    else{
+                        Ebug("Arenasession");
+
+                        Color setC = new Color(0.796f, 0.549f, 0.27843f);
+                        if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors){
+                            switch(self.player.playerState.playerNumber){
+                                case 0:
+                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge){
+                                        setC = new Color(0.25f, 0.65f, 0.82f);
+                                    }
+                                    break;
+                                case 1:
+                                    setC = new Color(0.31f, 0.73f, 0.26f);
+                                    break;
+                                case 2:
+                                    setC = new Color(0.6f, 0.16f, 0.6f);
+                                    break;
+                                case 3:
+                                    setC = new Color(0.96f, 0.75f, 0.95f);
+                                    break;
+                            }
+                        }
+                        s.sprites[e.spriteQueue].color = setC;
+                        s.sprites[e.spriteQueue + 1].color = setC;
+
+                        Ebug("Arena end.");
+                    }
+                }
+
+                if (self.gown != null){
+                    self.gown.ApplyPalette(self.gownIndex, s, rCam, palette);
+                }
+            } catch(Exception err){
+                Ebug("Something went wrong when coloring in the palette!");
+                Ebug(err.Message);
+                return;
+            }
+        }
+
+        private void Escort_AddGFXContainer(On.PlayerGraphics.orig_AddToContainer orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, FContainer newContainer){
+            orig(self, s, rCam, newContainer);
+            try{
+                if (!(self != null && self.player != null)){
+                    return;
+                }
+                if (self.player.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
+                    Ebug("Oh shoot.");
+                    return;
+                }
+                if (e.spriteQueue < s.sprites.Length){
+                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue]);
+                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue + 1]);
+                    Ebug("Removal success.");
+                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue]);
+                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue + 1]);
+                    Ebug("Addition success.");
+                }
+            } catch(Exception err){
+                Ebug("Something went wrong when adding graphics to container!");
+                Ebug(err.Message);
+                return;
+            }
+        }
+
+
+        private void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP){
+            orig(self, s, rCam, t, camP);
+            try{
+                if (!(self != null && self.player != null)){
+                    return;
+                }
+                if (self.player.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+                if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD)){
+                    return;
+                }
+                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
+                    Ebug("Oh crap.");
+                    return;
+                }
+                if (s.sprites.Length > e.spriteQueue){
+                    s.sprites[e.spriteQueue].rotation = s.sprites[9].rotation;
+                    s.sprites[e.spriteQueue + 1].rotation = s.sprites[1].rotation;
+                    s.sprites[e.spriteQueue].scaleX = hD[0];
+                    s.sprites[e.spriteQueue + 1].scaleX = bD[0];
+                    if (self.player.animation == Player.AnimationIndex.Flip || self.player.animation == Player.AnimationIndex.Roll){
+                        Vector2 vectoria = RWCustom.Custom.DegToVec(s.sprites[9].rotation) * hD[1];
+                        Vector2 vectorib = RWCustom.Custom.DegToVec(s.sprites[1].rotation) * bD[1];
+                        s.sprites[e.spriteQueue].x = s.sprites[9].x + vectoria.x;
+                        s.sprites[e.spriteQueue].y = s.sprites[9].y + vectoria.y;
+                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + vectorib.x;
+                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + vectorib.y;
+                    } else {
+                        s.sprites[e.spriteQueue].x = s.sprites[9].x + hD[2];
+                        s.sprites[e.spriteQueue].y = s.sprites[9].y + hD[3];
+                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + bD[2];
+                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + bD[3];
+                    }
+                }
+            } catch (Exception err){
+                Ebug("Something happened while trying to draw sprites!");
+                Ebug(err.Message);
+            }
+        }
+
 
         // Implement Escort's slowed stamina increase
         private void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f){
