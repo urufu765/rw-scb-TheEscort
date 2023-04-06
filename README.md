@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
+**(0.2.1.2)** Dress My Slugcat patch... patching is not ready yet but it's ready for the update
+
 **(0.2.1.1)** Altered how parry is applied. You can now kill other players by sliding and throwing a grenade in their face!
 
 **(0.2.1)** The builds apply for each player separately now!

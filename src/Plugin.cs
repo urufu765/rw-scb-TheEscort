@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BepInEx;
 using UnityEngine;
 using SlugBase.Features;
@@ -6,7 +7,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.1.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.1.2")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -98,7 +99,8 @@ namespace TheEscort
 
 
         // Patches
-        private bool escPatch_revivify = false;
+        private static bool escPatch_revivify = false;
+        //private static bool escPatch_DMS = false;
         //private bool escPatch_emeraldTweaks = false;
 
 
@@ -185,17 +187,39 @@ namespace TheEscort
 
         private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self){
             orig(self);
+
+            // Look for mods...
             try{
             if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
                 Ebug("Found Revivify! Applying patch...");
                 escPatch_revivify = true;
             }
-            } catch (Exception e){
-                throw new Exception(e.Message);
+            if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
+                Ebug("Found Dress My Slugcat! Applying patch...");
+                //escPatch_DMS = true;
+                EscPat_DMS();
+            }
+            } catch (Exception err){
+                Ebug("Something happened while searching for mods!");
+                Ebug(err.Message);
             }
         }
 
-
+        private static void EscPat_DMS(){
+            try{// Dress My Slugcat Patch
+                DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                    Name = "MARKINGS",
+                    Description = "Markings",
+                    GallerySprite = "escortHipT",
+                    RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                    Slugcats = new List<string>{"EscortMe"}
+                });
+            } catch (Exception merr){
+                //escPatch_DMS = false;
+                Ebug("Couldn't patch Dress Me Sluggie because...");
+                Ebug(merr.Message);
+            }
+        }
         
 
         /*
