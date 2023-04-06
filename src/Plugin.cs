@@ -6,7 +6,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.1.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -405,15 +405,17 @@ namespace TheEscort
 
             // Invincibility Frames
             if (e.iFrames > 0){
+                /*
                 self.abstractCreature.creatureTemplate.baseDamageResistance = 2f;
+
                 if (e.ElectroParry) {
                     self.abstractCreature.creatureTemplate.baseStunResistance = 3f;                
-                }
+                }*/
                 Ebug("IFrames: " + e.iFrames);
                 e.iFrames--;
             } else {
-                self.abstractCreature.creatureTemplate.baseDamageResistance = 1f;
-                self.abstractCreature.creatureTemplate.baseStunResistance = 1f;
+                //self.abstractCreature.creatureTemplate.baseDamageResistance = 1f;
+                //self.abstractCreature.creatureTemplate.baseStunResistance = 1f;
                 e.ElectroParry = false;
             }
         }
@@ -1223,7 +1225,7 @@ namespace TheEscort
                         //(self as Player).WallJump(direction);
                         player.animation = Player.AnimationIndex.Flip;
                         player.Jump();
-                        type = Creature.DamageType.Blunt;
+                        //type = Creature.DamageType.Blunt;
                         damage = 0f;
                         //(self as Player).LoseAllGrasps();
                         e.ParrySuccess = true;
@@ -1234,7 +1236,8 @@ namespace TheEscort
                         //(self as Player).WallJump(direction);
                         player.animation = Player.AnimationIndex.Flip;
                         player.Jump();
-                        type = Creature.DamageType.Blunt;
+                        
+                        //type = Creature.DamageType.Blunt;
                         damage = 0f;
                         e.ParrySuccess = true;
                         e.ElectroParry = true;
@@ -1243,6 +1246,7 @@ namespace TheEscort
                     else {
                         player.animation = Player.AnimationIndex.Flip;
                         player.Jump();
+                        
                         damage = 0f;
                         e.ParrySuccess = true;
                         e.ElectroParry = true;
@@ -1270,7 +1274,16 @@ namespace TheEscort
                 e.iFrames = 6;
                 e.parryLean = 0;
             }
-            // else if (e.iFrames > 0) {Ebug("Immunity frame tick");} 
+            else if (e.iFrames > 0) {
+                if (e.ElectroParry){
+                    damage = 0f;
+                    stunBonus = stunBonus / 2f;
+                    orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
+                    Ebug("Stun Resistance frame tick");
+                } else {
+                    Ebug("Immunity frame tick");
+                }
+            } 
             else {
                 orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                 Ebug("Nothing or not possible to parry!");
