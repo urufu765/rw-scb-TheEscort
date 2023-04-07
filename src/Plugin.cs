@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.2")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -102,8 +102,8 @@ namespace TheEscort
         private int logImportance = 3;
 
         // Escort instance stuff
-        //public static ConditionalWeakTable<Player, Escort> eCon = new();
-        public Escort e;
+        public static ConditionalWeakTable<Player, Escort> eCon = new();
+        //private Escort e;
         private float requirement;
         private float DKMultiplier;
         float ratioed;
@@ -403,6 +403,9 @@ namespace TheEscort
 
         private bool Esconfig_Build(Player self){
             try {
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    return false;
+                }
                 int pal = 0;
                 switch (self.playerState.playerNumber){
                     case 0:
@@ -462,6 +465,10 @@ namespace TheEscort
         }
 
         private void Eshelp_Tick(Player self){
+            if (!eCon.TryGetValue(self, out Escort e)){
+                return;
+            }
+
             // Dropkick damage cooldown
             if (e.DropKickCD > 0){
                 e.DropKickCD--;
@@ -534,8 +541,13 @@ namespace TheEscort
         {
             Ebug("Ctor Triggered!");
             orig(self, abstractCreature, world);
+
             if (self.slugcatStats.name.value == "EscortMe"){
-                e = new Escort(self);
+                eCon.Add(self, new Escort(self));
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    Ebug("Something happened while initializing Escort instance!", 0);
+                    return;
+                }
                 Esconfig_Build(self);
                 try {
                     e.Esclass_set_roller(Escort_SFX_Roll);
@@ -549,8 +561,8 @@ namespace TheEscort
                     // April fools!
                     //self.setPupStatus(set: true);
                     //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
-                } catch (Exception e){
-                    throw new Exception(e.Message);
+                } catch (Exception err){
+                    Ebug(err, "Error while constructing!");
                 } finally {
                     Ebug("All ctor'd", 1);
                 }
@@ -565,6 +577,9 @@ namespace TheEscort
                     return;
                 }
                 if (self.player.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+                if (!eCon.TryGetValue(self.player, out Escort e)){
                     return;
                 }
                 e.Esclass_set_sprite_cue(s.sprites.Length);
@@ -593,6 +608,10 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
+                if (!eCon.TryGetValue(self.player, out Escort e)){
+                    return;
+                }
+
                 if (e.spriteQueue == -1){
                     return;
                 }
@@ -670,6 +689,9 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
+                if (!eCon.TryGetValue(self.player, out Escort e)){
+                    return;
+                }
                 if (e.spriteQueue == -1){
                     return;
                 }
@@ -704,7 +726,7 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
-                if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD)){
+                if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD) || !eCon.TryGetValue(self.player, out Escort e)){
                     return;
                 }
                 if (e.spriteQueue == -1){
@@ -816,7 +838,8 @@ namespace TheEscort
             if (
                 !RR.TryGet(self, out int limiter) ||
                 !WallJumpVal.TryGet(self, out var WJV) ||
-                !NoMoreGutterWater.TryGet(self, out var theGut)
+                !NoMoreGutterWater.TryGet(self, out var theGut) ||
+                !eCon.TryGetValue(self, out Escort e)
                 ){
                 return;
             }
@@ -905,6 +928,9 @@ namespace TheEscort
                 Ebug(err);
                 return;
             }
+            if (!eCon.TryGetValue(self, out Escort e)){
+                return;
+            }
 
             Ebug("Jump Triggered!");
             // Decreases aerobiclevel gained from jumping
@@ -948,7 +974,8 @@ namespace TheEscort
                 Ebug(err);
                 return;
             }
-            if (!WallJumpVal.TryGet(self, out var WJV)){
+            if (!WallJumpVal.TryGet(self, out var WJV) ||
+                !eCon.TryGetValue(self, out Escort e)){
                 orig(self, direction);
                 return;
             }
@@ -1142,7 +1169,8 @@ namespace TheEscort
             if (
                 !BetterCrawl.TryGet(self, out var crawlSpeed) ||
                 !BetterPoleWalk.TryGet(self, out var poleMove) ||
-                !Escomet.TryGet(self, out int SetComet)
+                !Escomet.TryGet(self, out int SetComet) ||
+                !eCon.TryGetValue(self, out Escort e)
             ){
                 return;
             }
@@ -1186,7 +1214,8 @@ namespace TheEscort
                 Ebug(err);
                 return;
             }
-            if (!RR.TryGet(self, out int limiter)){
+            if (!RR.TryGet(self, out int limiter) ||
+                !eCon.TryGetValue(self, out Escort e)){
                 return;
             }
 
@@ -1216,6 +1245,9 @@ namespace TheEscort
 
         public bool Eshelp_ParryCondition(Creature self){
             if (self is Player player){
+                if (!eCon.TryGetValue(player, out Escort e)){
+                    return false;
+                }
                 if (e.parryTech && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll)){
                     Ebug("Parryteched condition!", 2);
                     return true;
@@ -1233,6 +1265,9 @@ namespace TheEscort
             return false;
         }
         public bool Eshelp_ParryCondition(Player self){ 
+            if (!eCon.TryGetValue(self, out Escort e)){
+                return false;
+            }
             if (e.parryTech && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll)){
                 Ebug("Parryteched condition!", 2);
                 return true;
@@ -1265,7 +1300,8 @@ namespace TheEscort
                 return;
             }
             if(
-                !ParrySlide.TryGet(player, out bool enableParry)
+                !ParrySlide.TryGet(player, out bool enableParry) ||
+                !eCon.TryGetValue(player, out Escort e)
             ){
                 orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                 return;
@@ -1548,7 +1584,8 @@ namespace TheEscort
                 !BodySlam.TryGet(self, out float[] bodySlam) ||
                 !TrampOhLean.TryGet(self, out float bounce) ||
                 !Esconfig_HypeReq(self) ||
-                !Esconfig_DKMulti(self)
+                !Esconfig_DKMulti(self) ||
+                !eCon.TryGetValue(self, out Escort e)
                 ){
                 return;
             }
@@ -1747,7 +1784,7 @@ namespace TheEscort
             if(
                 !bonusSpear.TryGet(self, out float[] spearDmgBonuses) ||
                 !Esconfig_HypeReq(self) ||
-                self.Malnourished
+                !eCon.TryGetValue(self, out Escort e)
                 ){
                 return;
             }
@@ -1846,7 +1883,8 @@ namespace TheEscort
             if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
                 return orig(self, obj);
             }
-            if (!dualWielding.TryGet(self, out bool dW)){
+            if (!dualWielding.TryGet(self, out bool dW) ||
+                !eCon.TryGetValue(self, out Escort e)){
                 return orig(self, obj);
             }
 
@@ -1871,6 +1909,9 @@ namespace TheEscort
         private float Escort_DeathBiteMult(On.Player.orig_DeathByBiteMultiplier orig, Player self)
         {
             try{
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    return orig(self);
+                }
                 if (self.slugcatStats.name.value == "EscortMe"){
                     float biteMult = e.combatTech? 0.5f : 0.15f;
                     return (Eshelp_ParryCondition(self)? 5f : biteMult);
@@ -1889,6 +1930,11 @@ namespace TheEscort
                     orig(self);
                     return;
                 }
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    orig(self);
+                    return;
+                }
+
                 Ebug("Die Triggered!");
                 if (!e.ParrySuccess && e.iFrames == 0){
                     orig(self);
