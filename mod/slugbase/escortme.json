@@ -22,7 +22,7 @@
 			"Cicadas": { "like": -1, "locked": true },
 			"GarbageWorms": { "like": -1, "locked": true },
 			"Jetfish": { "like": -1, "locked": true },
-			"Scavengers": { "like": 0.8, "strength": 0.2 }
+			"Scavengers": { "like": 0.2, "strength": 0.5 }
 		},
 		"diet": {
 			"base": "Red",

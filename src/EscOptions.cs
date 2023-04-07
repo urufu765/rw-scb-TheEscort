@@ -34,7 +34,7 @@ namespace TheEscort{
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        private readonly int buildDiv = -1;
+        private readonly int buildDiv = -2;
     
         public EscOptions(Plugin instance, ManualLogSource loggerSource){
             this.instance = instance;
@@ -161,8 +161,11 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 2), yo - (yp * 3), "Brawler"),
                 new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Trade some movement tech for a more consistent and powerful combat phase"){
                     color = descColor
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 4), "Deflector"),
+                new OpLabel(xo + (xp * 2), yo - (yp * 4) - (tp * 2), " Easier to parry, with empowered damage on success!... at the cost of some base stats."){
+                    color = descColor
                 }
-
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, "Gimmicks", true),
