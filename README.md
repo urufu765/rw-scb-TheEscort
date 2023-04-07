@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
+**(0.2.2.2)** Fixed Escort instance separation.
+
+**(0.2.2.1)** Implemented a glow that applies when at full hype! Replaces the original spike graphics. (also secret RGB Marking mode)
+
 **(0.2.2)** Cleaned up the hooks (visually) and implemented a new build: Deflector!
 
 **(0.2.1.2)** Dress My Slugcat patch... patching is not ready yet but it's ready for the update

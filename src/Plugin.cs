@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using BepInEx;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -101,6 +102,7 @@ namespace TheEscort
         private int logImportance = 3;
 
         // Escort instance stuff
+        //public static ConditionalWeakTable<Player, Escort> eCon = new();
         public Escort e;
         private float requirement;
         private float DKMultiplier;
@@ -502,6 +504,14 @@ namespace TheEscort
             } else {
                 e.ElectroParry = false;
             }
+
+            // Smooth color/brightness transition
+            if (requirement <= self.aerobicLevel && e.smoothTrans < 15){
+                e.smoothTrans++;
+            }
+            else if (requirement > self.aerobicLevel && e.smoothTrans > 0){
+                e.smoothTrans--;
+            }
         }
 
         /*
@@ -528,8 +538,14 @@ namespace TheEscort
                 e = new Escort(self);
                 Esconfig_Build(self);
                 try {
-                    e.Escort_set_roller(Escort_SFX_Roll);
+                    e.Esclass_set_roller(Escort_SFX_Roll);
                     Ebug("Setting roll sound", 2);
+                    
+                    /*
+                    Color col = new Color(0.796f, 0.549f, 0.27843f);
+                    e.Esclass_set_hypeLight(self, col);
+                    Ebug("Setting hyped light", 2);
+                    */
                     // April fools!
                     //self.setPupStatus(set: true);
                     //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
@@ -551,7 +567,7 @@ namespace TheEscort
                 if (self.player.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
-                e.spriteQueue = s.sprites.Length;
+                e.Esclass_set_sprite_cue(s.sprites.Length);
                 Array.Resize(ref s.sprites, s.sprites.Length + 2);
                 Ebug("Resized array", 1);
                 s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
@@ -580,55 +596,64 @@ namespace TheEscort
                 if (e.spriteQueue == -1){
                     return;
                 }
-                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
+                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
                     Ebug("Oh dear. Null sprites!!", 0);
                     return;
                 }
+                Color c = new Color(0.796f, 0.549f, 0.27843f);
                 // Applying colors?
                 if (s.sprites.Length > e.spriteQueue){
                     Ebug("Gone in", 2);
                     if (ModManager.CoopAvailable && self.useJollyColor){
                         Ebug("Jollymachine", 2);
-                        s.sprites[e.spriteQueue].color = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
-                        s.sprites[e.spriteQueue + 1].color = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
+                        c = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
+                        Ebug("R: " + c.r + " G: " + c.g + " B: " + c.b);
                         Ebug("Jollymachine end", 2);
                     }
                     else if (PlayerGraphics.CustomColorsEnabled()){
                         Ebug("Custom color go brr", 2);
-                        s.sprites[e.spriteQueue].color = PlayerGraphics.CustomColorSafety(2);
-                        s.sprites[e.spriteQueue + 1].color = PlayerGraphics.CustomColorSafety(2);
+                        c = PlayerGraphics.CustomColorSafety(2);
                         Ebug("Custom color end", 2);
                     }
                     else{
-                        Ebug("Arenasession", 2);
+                        Ebug("Arenasession or Singleplayer", 2);
 
-                        Color setC = new Color(0.796f, 0.549f, 0.27843f);
                         if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors){
                             switch(self.player.playerState.playerNumber){
                                 case 0:
                                     if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && !nonArena){
-                                        setC = new Color(0.25f, 0.65f, 0.82f);
+                                        c = new Color(0.2f, 0.6f, 0.77f);
                                     }
                                     break;
                                 case 1:
-                                    setC = new Color(0.31f, 0.73f, 0.26f);
+                                    c = new Color(0.26f, 0.68f, 0.21f);
                                     break;
                                 case 2:
-                                    setC = new Color(0.6f, 0.16f, 0.6f);
+                                    c = new Color(0.55f, 0.11f, 0.55f);
                                     break;
                                 case 3:
-                                    setC = new Color(0.96f, 0.75f, 0.95f);
+                                    c = new Color(0.91f, 0.7f, 0.9f);
                                     break;
                             }
                         }
-                        s.sprites[e.spriteQueue].color = setC;
-                        s.sprites[e.spriteQueue + 1].color = setC;
-                        Ebug("Arena end.", 2);
+                        Ebug("Arena/Single end.", 2);
                     }
                 }
-
-                if (self.gown != null){
-                    self.gown.ApplyPalette(self.gownIndex, s, rCam, palette);
+                if (c.r <= 0.02f && c.g <= 0.02f && c.b <= 0.02f){
+                    e.secretRGB = true;
+                }
+                for (int i = e.spriteQueue; i < s.sprites.Length; i++){
+                    s.sprites[i].color = e.Esclass_runit_thru_RGB(c);
+                }
+                if (!e.secretRGB){
+                    e.hypeColor = c;
+                }
+                if (e.hypeLight == null || e.hypeSurround == null){
+                    e.Esclass_set_hypeLight(self.player, e.hypeColor);
+                }
+                else{
+                    e.hypeLight.color = c;
+                    e.hypeSurround.color = c;
                 }
             } catch(Exception err){
                 Ebug(err, "Something went wrong when coloring in the palette!");
@@ -659,6 +684,9 @@ namespace TheEscort
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue]);
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue + 1]);
                     Ebug("Addition success.", 1);
+                    s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[3]);
+                    s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[9]);
+                    Ebug("Restructure success.", 1);
                 }
             } catch(Exception err){
                 Ebug(err, "Something went wrong when adding graphics to container!");
@@ -682,15 +710,47 @@ namespace TheEscort
                 if (e.spriteQueue == -1){
                     return;
                 }
-                if (e.spriteQueue >= s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
+                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
                     Ebug("Oh crap. Sprites? Hello?!", 0);
                     return;
                 }
                 if (s.sprites.Length > e.spriteQueue){
+                    // Hypelevel visual fx
                     try{
-                        if (self.player != null){
+                        if (self.player != null && Esconfig_Hypable(self.player)){
+                            float alphya = 1f;
+                            if (requirement > self.player.aerobicLevel){
+                                alphya = Mathf.Lerp((self.player.dead? 0f : 0.5f), 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                            }
                             for (int a = e.spriteQueue; a < s.sprites.Length; a++){
-                                s.sprites[a].alpha = Mathf.Lerp(0.4f, 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                s.sprites[a].alpha = alphya;
+                                s.sprites[a].color = e.Esclass_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                            }
+                            if (e.hypeLight != null && e.hypeSurround != null){
+                                float alpine = 0f;
+                                float alpite = 0f;
+
+                                if (requirement > self.player.aerobicLevel){
+                                    alpine = Mathf.Lerp(0f, 0.09f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                    alpite = Mathf.Lerp(0f, 0.25f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                }
+                                else {
+                                    alpine = 0.12f;
+                                    alpite = 0.4f;
+                                }
+                                e.hypeLight.stayAlive = true;
+                                e.hypeSurround.stayAlive = true;
+                                e.hypeLight.setPos = self.player.mainBodyChunk.pos;
+                                e.hypeSurround.setPos = self.player.bodyChunks[0].pos;
+                                e.hypeLight.setAlpha = alpine;
+                                e.hypeSurround.setAlpha = alpite;
+                                if (e.secretRGB){
+                                    e.hypeLight.color = e.hypeColor * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                                    e.hypeSurround.color = e.hypeColor * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                                }
+                            }
+                            else {
+                                e.Esclass_set_hypeLight(self.player, e.hypeColor);
                             }
                         }
                     } catch (Exception err){
@@ -780,12 +840,15 @@ namespace TheEscort
 
             // vfx
             if(self != null && self.room != null){
+                Esconfig_HypeReq(self);
+
+                /*
                 // Battle-hyped visual effect
                 if (Esconfig_Hypable(self) && Esconfig_HypeReq(self) && self.aerobicLevel > requirement){
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 1, 11f, 8f, 11f, 15f, hypedColor));
-                }
+                }*/
 
                 // Charged pounces Visual Effect
                 if (Esconfig_Pouncing(self)){

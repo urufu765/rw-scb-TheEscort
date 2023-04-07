@@ -11,11 +11,13 @@ Escort's campaign doesn't exist, there's no custom assets, and this may or may n
 [hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~>[/h2]
 These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
-[*] Gutter water is still super buoyant... but I won't be messing around with gutter water no more.
-[*] Garbage Waste doesn't work properly
-[*] When playing COOP in Escort's Campaign, the food intake doesn't work properly (gives you too much food actually)
-[*] Escort starts in water... that'll be fixed once I make a custom room.
-[*] Spearthrowing mechanics are still a wee bit janky and needs cleanup.
+[*] [b]General:[/b] Gutter water is still super buoyant... but I won't be messing around with gutter water no more.
+[*] [b]Campaign:[/b] Garbage Waste doesn't work properly
+[*] [b]Campaign:[/b] When playing COOP in Escort's Campaign, the food intake doesn't work properly (gives you too much food actually)
+[*] [b]Campaign:[/b] Escort starts in water... that'll be fixed once I make a custom room.
+[*] [b]General:[/b] Spearthrowing mechanics are still a wee bit janky and needs cleanup.
+[*] [b]Campaign:[/b] Upon entering Moon's chamber, the game will soft-crash (this is recoverable by using warp mod to warp to a different room)
+[*] [b]Campaign:[/b] Moon's structure's physics are borken
 [*] And probably more, there are way too many mods to test this character with...
 [/list]
 [hr][/hr][h2]<~PATCHED MODS~>[/h2]
