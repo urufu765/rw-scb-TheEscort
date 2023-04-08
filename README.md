@@ -7,7 +7,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
-**(0.2.2.5)** Batflies are eaten in one bite and Escort just eats things twice as fast!
+**(0.2.2.6)** Batflies are eaten in one bite and Escort just eats things twice as fast!
+
+**(0.2.2.5)** Fixed infinite flight that was possible by certain movements
 
 **(0.2.2.4)** In Escort's story, spearmaster's spears may spawn! Also increased the spear spawn rates for a lot of regions (And calmed down on the exception log when checking for spears to prevent nullables.)
 

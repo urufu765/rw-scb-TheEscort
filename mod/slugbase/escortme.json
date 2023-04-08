@@ -64,7 +64,7 @@
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
-		"theescort/guuh_wuuh": [0.95, 1.4, 1, 1, 1.1, 1],
+		"theescort/guuh_wuuh": [1.05, 1.4, 1, 1, 1.12, 1],
 		"theescort/headbutt": 15,
 		"theescort/headthing": [1, 3, 0, 2.5],
 		"theescort/bodything": [1, 0, 0, 0]

@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.5")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -442,7 +442,6 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac -= 0.1f;
                         self.slugcatStats.corridorClimbSpeedFac -= 0.15f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.15f;
-                        self.slugcatStats.throwingSkill = 1;
                         Ebug("Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
@@ -500,7 +499,7 @@ namespace TheEscort
             if (e.parryAirLean > 0 && self.canJump == 0){
                 e.parryAirLean--;
             } else if (self.canJump != 0){
-                e.parryAirLean = 9;
+                e.parryAirLean = 20;
             }
 
             // Increased damage when parry tick
@@ -1865,7 +1864,7 @@ namespace TheEscort
                             if (self.input[0].jmp && self.input[0].thrw){
                                 self.animation = Player.AnimationIndex.BellySlide;
                                 self.whiplashJump = true;
-                                spear.firstChunk.vel.x *= 1.8f;
+                                spear.firstChunk.vel.x *= 1.7f;
                                 Ebug("Spear Go!?", 2);
                             } else {
                                 self.animation = Player.AnimationIndex.Roll;
@@ -1892,7 +1891,7 @@ namespace TheEscort
                                 self.animation = Player.AnimationIndex.BellySlide;
                             }
                             if (self.input[0].jmp && self.input[0].thrw){
-                                spear.firstChunk.vel.x *= 1.7f;
+                                spear.firstChunk.vel.x *= 1.6f;
                                 Ebug("Spear Go!", 2);
                             }
                         } else {
@@ -1909,12 +1908,12 @@ namespace TheEscort
             if (e.parryTech){
                 if (e.parryExtras > 0){
                     spear.spearDamageBonus *= 3f;
-                    spear.firstChunk.vel *= 1.5f;
+                    spear.firstChunk.vel *= 2f;
                     e.parryExtras = 0;
                 }
                 else {
-                    spear.spearDamageBonus *= 0.5f;
-                    spear.firstChunk.vel *= 0.75f;
+                    spear.spearDamageBonus = 0.5f;
+                    spear.firstChunk.vel *= 1.2f;
                 }
             }
 
@@ -1922,13 +1921,13 @@ namespace TheEscort
                 thrust = 1f;
             }
 
-            if ((self.room != null && self.room.gravity == 0f) || Mathf.Abs(spear.firstChunk.vel.x) < 1f){
+            BodyChunk firstChunker = self.firstChunk;
+            if ((self.room != null && self.room.gravity == 0f) || (Mathf.Abs(spear.firstChunk.vel.x) < 1f && Mathf.Abs(spear.firstChunk.vel.y) < 1f)){
                 self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
             } else {
                 self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
-                BodyChunk firstChunker = self.firstChunk;
                 if (self.animation != Player.AnimationIndex.BellySlide){
-                    firstChunker.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
+                    self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
                 }
             }
             Ebug("Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, 2);
@@ -2122,6 +2121,7 @@ namespace TheEscort
                 }
                 if (self.abstractRoom.shelter){
                     Ebug("Spear swap ignores shelters!", 1);
+                    return;
                 }
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++){
