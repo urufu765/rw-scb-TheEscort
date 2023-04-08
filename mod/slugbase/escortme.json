@@ -21,8 +21,8 @@
 			"Lizards": { "like": -1, "locked": true },
 			"Cicadas": { "like": -1, "locked": true },
 			"GarbageWorms": { "like": -1, "locked": true },
-			"Jetfish": { "like": -1, "locked": true },
-			"Scavengers": { "like": 0.2, "strength": 0.5 }
+			"Jetfish": { "like": -1, "strength": 0.7 },
+			"Scavengers": { "like": 1, "strength": 0.85 }
 		},
 		"diet": {
 			"base": "Red",
@@ -30,7 +30,7 @@
 			"plants": 0.75
 		},
 		"karma": 2,
-		"karma_cap": 4,
+		"karma_cap": 3,
 		"start_room": "CC_SUMP02",
 		"cycle_length_min": 12,
 		"cycle_length_max": 20,
@@ -60,7 +60,7 @@
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 240,
+		"theescort/reset_rate": 1000,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,

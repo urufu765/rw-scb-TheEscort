@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.4")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -92,6 +92,7 @@ namespace TheEscort
         // Miscellanious things
         private int slowDownDevConsole = 0;
         private bool nonArena = false;
+        //public static readonly String EscName = "EscortMe";
         /*
         Log Priority:
         -1: No logs
@@ -171,12 +172,18 @@ namespace TheEscort
         }
         private static void Ebug(Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
             if (logPrio <= instance.logImportance){
-                if(!asregular){
-                    Debug.LogError("-> ERcORt: " + message);
-                    Debug.LogException(exception);
+                if(asregular){
+                    Debug.LogWarning("-> ERcORt: " + message + " => " + exception.Message);
+                    if (exception.Source != null){
+                        Debug.LogWarning("->       : " + exception.Source);
+                    }
                 }
                 else{
-                    Debug.LogError("-> ERcORt: " + message + " => " + exception.Message);
+                    Debug.LogError("-> ERcORt: " + message);
+                    if (exception.Source != null){
+                        Debug.LogError("->       : " + exception.Source);
+                    }
+                    Debug.LogException(exception);
                 }
             }
         }
@@ -189,6 +196,8 @@ namespace TheEscort
             On.RainWorld.PostModsInit += Escort_PostInit;
 
             On.Lizard.ctor += Escort_Lizard_ctor;
+
+            On.Room.Loaded += Escort_Hip_Replacement;
 
             On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -219,7 +228,6 @@ namespace TheEscort
             On.SlugcatStats.SpearSpawnExplosiveRandomChance += Escort_ExpSpearSpawnChance;
             On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
             }
-
 
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
@@ -767,19 +775,19 @@ namespace TheEscort
                             }
                             for (int a = e.spriteQueue; a < s.sprites.Length; a++){
                                 s.sprites[a].alpha = alphya;
-                                s.sprites[a].color = e.Esclass_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                                s.sprites[a].color = e.Esclass_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
                             if (e.hypeLight != null && e.hypeSurround != null){
                                 float alpine = 0f;
                                 float alpite = 0f;
 
                                 if (requirement > self.player.aerobicLevel){
-                                    alpine = Mathf.Lerp(0f, 0.09f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
-                                    alpite = Mathf.Lerp(0f, 0.25f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
                                 }
                                 else {
-                                    alpine = 0.12f;
-                                    alpite = 0.4f;
+                                    alpine = 0.1f;
+                                    alpite = 0.3f;
                                 }
                                 e.hypeLight.stayAlive = true;
                                 e.hypeSurround.stayAlive = true;
@@ -848,6 +856,10 @@ namespace TheEscort
         private void Escort_Update(On.Player.orig_Update orig, Player self, bool eu){
             orig(self, eu);
             try{
+                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null && self.slugcatStats.name.value != null)){
+                    Ebug("Attempted to access a nulled player when updating!", 0);
+                    return;
+                }
                 if (self.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
@@ -877,7 +889,7 @@ namespace TheEscort
                 Ebug(" Roll Direction: " + self.rollDirection);
                 Ebug("Slide Direction:" + self.slideDirection);
                 Ebug(" Flip Direction: " + self.flipDirection);
-                Ebug(self.abstractCreature.creatureTemplate.baseDamageResistance);
+                //Ebug(self.abstractCreature.creatureTemplate.baseDamageResistance);
                 //Ebug("Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
                 //Ebug("Normalized direction: " + self.bodyChunks[0].vel.normalized);
             }
@@ -1073,7 +1085,7 @@ namespace TheEscort
 
                 if (superFlip && superWall){
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, 1f, 0.9f);
+                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 2f), 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
                     toPrint.SetValue("SUPERFLIP", 2);
                 } else {
@@ -1222,7 +1234,7 @@ namespace TheEscort
             bool hypedMode = Esconfig_Hypable(self);
 
             // Implement bettercrawl
-            if (self.bodyMode == Player.BodyModeIndex.Crawl){
+            if (!e.parryTech && self.bodyMode == Player.BodyModeIndex.Crawl){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
             }
@@ -1234,7 +1246,7 @@ namespace TheEscort
             The slugcat apparently has a limit on how fast they can move on the beam while standing on it, leaning more and more foreward and getting more and more friction as a result...
             or to that degree.
             */
-            else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
+            else if (!e.parryTech && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
             } 
@@ -1927,6 +1939,9 @@ namespace TheEscort
                 if (self.slugcatStats.name.value != "EscortMe"){
                     return orig(self, obj);
                 }
+                if (obj == null){
+                    return orig(self, obj);
+                }
             } catch (Exception err){
                 Ebug(err);
                 return orig(self, obj);
@@ -2042,6 +2057,10 @@ namespace TheEscort
         private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
         {
             try{
+                if (!(index != null && index.value != null)){
+                    Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
+                    return orig(index);
+                }
                 if (index.value == "EscortMe"){
                     return 0.012f;
                 } else {
@@ -2056,6 +2075,10 @@ namespace TheEscort
         private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
         {   
             try{
+                if (!(index != null && index.value != null)){
+                    Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
+                    return orig(index);
+                }
                 if (index.value == "EscortMe"){
                     return 0.078f;
                 } else {
@@ -2070,8 +2093,12 @@ namespace TheEscort
         private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
         {
             try{
+                if (!(index != null && index.value != null)){
+                    Ebug("Found nulled slugcat name when applying spear spawn chance!", 1);
+                    return orig(index, originalSpearChance);
+                }
                 if (index.value == "EscortMe"){
-                    return Mathf.Pow(originalSpearChance, 1.3f);
+                    return Mathf.Pow(originalSpearChance, 1.1f);
                 } else {
                     return orig(index, originalSpearChance);
                 }
@@ -2080,6 +2107,46 @@ namespace TheEscort
                 return orig(index, originalSpearChance);
             }
         }
-    }
 
+        private void Escort_Hip_Replacement(On.Room.orig_Loaded orig, Room self)
+        {
+            orig(self);
+            try{
+                if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null)){
+                    Ebug("Found nulled slugcat name when replacing spears!", 1);
+                    return;
+                }
+                if (self.game.StoryCharacter.value != "EscortMe"){  
+                    Ebug("... That's not Escort... nice try", 1);
+                    return;
+                }
+                if (self.abstractRoom.shelter){
+                    Ebug("Spear swap ignores shelters!", 1);
+                }
+                Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
+                for (int i = 0; i < self.abstractRoom.entities.Count; i++){
+                    if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear){
+                        if (UnityEngine.Random.value > 0.75f && !spear.explosive && !spear.electric){
+                            self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false){
+                                needle = true
+                            };
+                        }
+                    }
+                }
+                /*
+                foreach (AbstractPhysicalObject a in self.abstractRoom.entities){
+                    if (a != null && a is AbstractSpear spear){
+                        if (UnityEngine.Random.value > 0.67f && !spear.explosive && !spear.electric){
+                            a = new AbstractSpear(self.world, null, a.pos, a.ID, false){
+                                needle = true
+                            };
+                        }
+                    }
+                }*/
+                
+            } catch (Exception err){
+                Ebug(err, "Something happened while swapping spears!");
+            }
+        }
+    }
 }

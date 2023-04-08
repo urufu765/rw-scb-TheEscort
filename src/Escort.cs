@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TheEscort{
     public class Escort{
+        public readonly SlugcatStats.Name name;
         public int DropKickCD;
         public int CentiCD;
         public float RollinCount;
@@ -35,6 +36,9 @@ namespace TheEscort{
         public int parryExtras;
         
         public Escort(Player player){
+            if (ExtEnumBase.TryParse(typeof(SlugcatStats.Name), "EscortMe", true, out var r)){
+                name = r as SlugcatStats.Name;
+            }
             this.DropKickCD = 0;
             this.CentiCD = 0;
             this.iFrames = 0;
