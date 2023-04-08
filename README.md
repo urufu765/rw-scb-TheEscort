@@ -7,6 +7,12 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
+**(0.2.2.5)** Batflies are eaten in one bite and Escort just eats things twice as fast!
+
+**(0.2.2.4)** In Escort's story, spearmaster's spears may spawn!
+
+**(0.2.2.3)** Added SFX for grabbing lizards (and altered pitch of roll), and fixed check for dropkicking lizards (so when you aren't dunking them you make them fly appropriately)... and you can now hold lizards for a flat 8 seconds (and you can't spam grab)!
+
 **(0.2.2.2)** Fixed Escort instance separation.
 
 **(0.2.2.1)** Implemented a glow that applies when at full hype! Replaces the original spike graphics. (also secret RGB Marking mode)

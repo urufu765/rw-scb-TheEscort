@@ -13,9 +13,12 @@ namespace TheEscort{
         public int iFrames;
         public bool Cometted;
         public int CometFrames;
-        public BodyChunk RollinSFXChunk;
+        public BodyChunk SFXChunk;
         public DynamicSoundLoop Rollin;
+        public DynamicSoundLoop LizGet;
         public bool LizardDunk;
+        public int LizDunkLean;
+        public int LizGoForWalk;
         public bool ParrySuccess;
         public bool ElectroParry;
         public int spriteQueue;
@@ -41,12 +44,14 @@ namespace TheEscort{
             this.CometFrames = 0;
             this.RollinCount = 0f;
             this.LizardDunk = false;
+            this.LizDunkLean = 0;
+            this.LizGoForWalk = 0;
             this.ParrySuccess = false;
             this.ElectroParry = false;
-            this.RollinSFXChunk = player.bodyChunks[0];
+            this.SFXChunk = player.bodyChunks[0];
             this.spriteQueue = -1;
             this.hypeColor = new Color(0.796f, 0.549f, 0.27843f);
-            this.Esclass_set_hypeLight(player, this.hypeColor);
+            this.Esclass_setLight_hype(player, this.hypeColor);
             this.secretRGB = false;
             this.smoothTrans = 0f;
 
@@ -56,17 +61,28 @@ namespace TheEscort{
             this.parryExtras = 0;    // Deflector
         }
 
-        public void Esclass_set_roller(SoundID sound){
+        public void Esclass_setSFX_roller(SoundID sound){
             try{
-                this.Rollin = new ChunkDynamicSoundLoop(RollinSFXChunk);
+                this.Rollin = new ChunkDynamicSoundLoop(SFXChunk);
                 this.Rollin.sound = sound;
-            } catch (Exception e){
+            } catch (Exception err){
                 Debug.Log("Something went horribly wrong when setting up the rolling sound!");
-                Debug.LogException(e);
+                Debug.LogException(err);
             }
         }
 
-        public void Esclass_set_hypeLight(Player self, Color c, float alpha=0f){
+        public void Esclass_setSFX_lizgrab(SoundID sound){
+            try{
+                this.LizGet = new ChunkDynamicSoundLoop(SFXChunk);
+                this.LizGet.sound = sound;
+            } catch (Exception err){
+                Debug.Log("Something went horribly wrong when setting up the lizard grab sound!");
+                Debug.LogException(err);
+            }
+        }
+
+
+        public void Esclass_setLight_hype(Player self, Color c, float alpha=0f){
             try{
                 if (this.hypeLight == null){
                     this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self);
@@ -112,7 +128,7 @@ namespace TheEscort{
             }
         }
 
-        public void Esclass_set_sprite_cue(int cue){
+        public void Esclass_setIndex_sprite_cue(int cue){
             if (this.spriteQueue == -1){
                 this.spriteQueue = cue;
             }

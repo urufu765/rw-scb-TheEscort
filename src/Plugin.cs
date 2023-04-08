@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.3")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -84,6 +84,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Roll;
+        public static SoundID Escort_SFX_Lizard_Grab;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -115,6 +116,7 @@ namespace TheEscort
         //private bool escPatch_emeraldTweaks = false;
 
 
+        // Debug Logger (Beautified!)
         private static void Ebug(String message, int logPrio=3){
             if (logPrio <= instance.logImportance){
                 Debug.Log("-> Escort: " + message);
@@ -225,6 +227,7 @@ namespace TheEscort
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
+            Escort_SFX_Lizard_Grab = new SoundID("Escort_Liz_Grab", true);
             FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
@@ -519,6 +522,22 @@ namespace TheEscort
             else if (requirement > self.aerobicLevel && e.smoothTrans > 0){
                 e.smoothTrans--;
             }
+
+            // Lizard dropkick leniency
+            if (e.LizDunkLean > 0 && e.LizardDunk){
+                e.LizDunkLean--;
+            }
+            else{
+                e.LizardDunk = false;
+                if (e.LizDunkLean == 0){
+                    e.LizGoForWalk = 0;
+                }
+            }
+
+            // Lizard grab timer
+            if (e.LizGoForWalk > 0){
+                e.LizGoForWalk--;
+            }
         }
 
         /*
@@ -550,8 +569,10 @@ namespace TheEscort
                 }
                 Esconfig_Build(self);
                 try {
-                    e.Esclass_set_roller(Escort_SFX_Roll);
-                    Ebug("Setting roll sound", 2);
+                    Ebug("Setting silly sounds", 2);
+                    e.Esclass_setSFX_roller(Escort_SFX_Roll);
+                    e.Esclass_setSFX_lizgrab(Escort_SFX_Lizard_Grab);
+                    Ebug("All done! Awaiting activation.", 2);
                     
                     /*
                     Color col = new Color(0.796f, 0.549f, 0.27843f);
@@ -582,7 +603,7 @@ namespace TheEscort
                 if (!eCon.TryGetValue(self.player, out Escort e)){
                     return;
                 }
-                e.Esclass_set_sprite_cue(s.sprites.Length);
+                e.Esclass_setIndex_sprite_cue(s.sprites.Length);
                 Array.Resize(ref s.sprites, s.sprites.Length + 2);
                 Ebug("Resized array", 1);
                 s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
@@ -668,7 +689,7 @@ namespace TheEscort
                     e.hypeColor = c;
                 }
                 if (e.hypeLight == null || e.hypeSurround == null){
-                    e.Esclass_set_hypeLight(self.player, e.hypeColor);
+                    e.Esclass_setLight_hype(self.player, e.hypeColor);
                 }
                 else{
                     e.hypeLight.color = c;
@@ -772,7 +793,7 @@ namespace TheEscort
                                 }
                             }
                             else {
-                                e.Esclass_set_hypeLight(self.player, e.hypeColor);
+                                e.Esclass_setLight_hype(self.player, e.hypeColor);
                             }
                         }
                     } catch (Exception err){
@@ -906,12 +927,34 @@ namespace TheEscort
                 }
             }
 
-            // Implement rolling SFX
+            // Check if player is grabbing a lizard
+            if (Esconfig_Dunkin(self)){
+                try{
+                    for (int i = 0; i < self.grasps.Length; i++){
+                        if (self.grasps[i] != null && self.grasps[i].grabbed is Lizard lizzie && !lizzie.dead){
+                            e.LizDunkLean = 60;
+                            if (e.LizGoForWalk > 0){
+                                lizzie.Violence(null, null, lizzie.mainBodyChunk, null, Creature.DamageType.Electric, 0f, 40f);
+                            }
+                            break;
+                        }
+                    }
+                } catch (Exception err){
+                    Ebug(err, "Something went wrong when checking for lizard grasps");
+                }
+            }
+
+
+            // Implement looping SFX
             if (Esconfig_SFX(self)){
-                if (self.animation == Player.AnimationIndex.Roll){
+                if (self.animation == Player.AnimationIndex.Roll && e.Rollin != null){
                     e.Rollin.Update();
                 } else {
                     e.RollinCount = 0f;
+                }
+                if (e.LizGet != null){
+                    e.LizGet.Volume = (e.LizardDunk? 1f : 0f);
+                    e.LizGet.Update();
                 }
             }
         }
@@ -951,7 +994,7 @@ namespace TheEscort
                 Ebug("FLIPERONI GO!", 2);
 
                 if (Esconfig_SFX(self)){
-                    self.room.PlaySound(Escort_SFX_Flip, e.RollinSFXChunk);
+                    self.room.PlaySound(Escort_SFX_Flip, e.SFXChunk);
                 }
                 self.animation = Player.AnimationIndex.Flip;
             }
@@ -1008,7 +1051,7 @@ namespace TheEscort
                     self.bodyChunks[0].pos.y += 10f * Mathf.Min(1f, n);
                     self.bodyChunks[1].pos.y += 10f * Mathf.Min(1f, n);
                     toPrint.SetValue("Water", 1);
-                    self.room.PlaySound(SoundID.Slugcat_Normal_Jump, e.RollinSFXChunk, false, 1f, 0.7f);
+                    self.room.PlaySound(SoundID.Slugcat_Normal_Jump, e.SFXChunk, false, 1f, 0.7f);
                 } 
                 else {
                     self.bodyChunks[0].vel.y = ((longWallJump || (superFlip && superWall))? WJV[0] : 8f) * n;
@@ -1018,7 +1061,7 @@ namespace TheEscort
                     self.standing = true;
                     self.jumpStun = 8 * direction;
                     if (superWall){
-                        self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.7f);
+                        self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.SFXChunk, false, 1f, 0.7f);
                     }
                     toPrint.SetValue("Not Water", 1);
                     Ebug("Y Velocity" + self.bodyChunks[0].vel.y, 2);
@@ -1030,7 +1073,7 @@ namespace TheEscort
 
                 if (superFlip && superWall){
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.RollinSFXChunk, false, 1f, 0.9f);
+                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, 1f, 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
                     toPrint.SetValue("SUPERFLIP", 2);
                 } else {
@@ -1132,7 +1175,8 @@ namespace TheEscort
             if (!Esconfig_Heavylift(self)){
                 return orig(self, obj);
             }
-            if (!RR.TryGet(self, out int resetRate)){
+            if (!RR.TryGet(self, out int resetRate) ||
+                !eCon.TryGetValue(self, out Escort e)){
                 return orig(self, obj);
             }
 
@@ -1640,7 +1684,7 @@ namespace TheEscort
                     if (e.parrySlideLean <= 0){
                         e.parrySlideLean = 4;
                     }
-                    self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.RollinSFXChunk);
+                    self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.SFXChunk);
 
                     float normSlideStun = (hypedMode || e.combatTech? bodySlam[1] : bodySlam[1] * 1.5f);
                     if (hypedMode && self.aerobicLevel > requirement){
@@ -1759,14 +1803,20 @@ namespace TheEscort
                 Ebug(err);
                 return;
             }
-            if (!BodySlam.TryGet(self, out var bodySlam)){
+            if (!BodySlam.TryGet(self, out var bodySlam) ||
+                !eCon.TryGetValue(self, out Escort e)){
                 return;
             }
 
             Ebug("Toss Object Triggered!");
-            if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead && self.bodyMode == Player.BodyModeIndex.Default){
-                self.animation = Player.AnimationIndex.RocketJump;
-                self.bodyChunks[1].vel.x += self.slideDirection;
+            if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead){
+                if (Esconfig_SFX(self) && e.LizGet != null){
+                    e.LizGet.Volume = 0f;
+                }
+                if (self.bodyMode == Player.BodyModeIndex.Default){
+                    self.animation = Player.AnimationIndex.RocketJump;
+                    self.bodyChunks[1].vel.x += self.slideDirection;
+                }
             }
         }
 
@@ -1869,6 +1919,7 @@ namespace TheEscort
                     firstChunker.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
                 }
             }
+            Ebug("Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, 2);
         }
 
         private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
@@ -1881,7 +1932,7 @@ namespace TheEscort
                 return orig(self, obj);
             }
             if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
-                return orig(self, obj);
+                return Player.ObjectGrabability.TwoHands;
             }
             if (!dualWielding.TryGet(self, out bool dW) ||
                 !eCon.TryGetValue(self, out Escort e)){
@@ -1896,8 +1947,13 @@ namespace TheEscort
                     // Any lizards that are haulable (while dead) or stunned are dual-wieldable
                     if (lizzie.dead){
                         return Player.ObjectGrabability.OneHand;
-                    } else if (lizzie.Stunned && Esconfig_Dunkin(self)){
-                        lizzie.Violence(self.bodyChunks[1], null, obj.firstChunk, null, Creature.DamageType.Blunt, 0f, 25f);
+                    } else if (lizzie.Stunned && Esconfig_Dunkin(self) && !e.LizardDunk){
+                        if (e.LizGoForWalk == 0){
+                            e.LizGoForWalk = 320;
+                        }
+                        if (!Esconfig_SFX(self)) {
+                            self.room.PlaySound(SoundID.Slugcat_Pick_Up_Misc_Inanimate, self.mainBodyChunk);
+                        }
                         e.LizardDunk = true;
                         return Player.ObjectGrabability.TwoHands;
                     }
@@ -1939,7 +1995,7 @@ namespace TheEscort
                 if (!e.ParrySuccess && e.iFrames == 0){
                     orig(self);
                     if (self.dead && Esconfig_SFX(self)){
-                        self.room.PlaySound(Escort_SFX_Death, e.RollinSFXChunk);
+                        self.room.PlaySound(Escort_SFX_Death, e.SFXChunk);
                         //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
                     }
                     Ebug("Failure.", 1);

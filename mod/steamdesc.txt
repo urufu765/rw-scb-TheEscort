@@ -1,5 +1,5 @@
 A mod that will add The Escort and (eventually) their very special slugpup.
-[i]Thank you Walkfu for the placeholder headshot art (the design is not yet finalized)[/i]
+[i]Thank You Eclipse Shadow Scale for the headshot![/i]
 
 Currently implements The Escort and some of their abilities and movement tech. 
 [i]Should[/i] be fully compatible for playing in other campaigns or arena.
