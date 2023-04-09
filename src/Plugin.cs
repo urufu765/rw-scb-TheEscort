@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.5")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.6")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -433,19 +433,21 @@ namespace TheEscort
                         break;
                 }
                 switch (pal){
-                    // Beginner build
-                    // Full Melee build ()
-                    // Speedstar build (Fast (when running, crawling, etc.), and gets faster when hyped)
+                    // Beginner build (Dropkick on a whim by pressing two buttons! Grab + Jump to Dropkick)
+                    // Speedstar build (Fast, and when running for a certain amount of time, apply BOOST that also does damage on collision)
+                    // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
+                    // Stylist build (Do combos that build up to a super move)
+                    // Stealth build (hold still or crouch to enter stealthed mode)
 
                     case -2:  // Deflector build
-                        e.parryTech = true;
+                        e.Deflector = true;
                         self.slugcatStats.runspeedFac -= 0.1f;
                         self.slugcatStats.corridorClimbSpeedFac -= 0.15f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.15f;
                         Ebug("Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
-                        e.combatTech = false;
+                        e.Bruiser = true;
                         self.slugcatStats.runspeedFac += 0.1f;
                         Ebug("Brawler Build selected!", 2);
                         break;
@@ -502,9 +504,16 @@ namespace TheEscort
                 e.parryAirLean = 20;
             }
 
-            // Increased damage when parry tick
-            if (e.parryExtras > 0){
-                e.parryExtras--;
+            if (e.Deflector){
+                // Increased damage when parry tick
+                if (e.DeflAmpTimer > 0){
+                    e.DeflAmpTimer--;
+                }
+
+                // Sound FX cooldown
+                if (e.DeflSFXcd > 0){
+                    e.DeflSFXcd--;
+                }
             }
 
             // Headbutt cooldown
@@ -918,11 +927,11 @@ namespace TheEscort
                 }
 
                 // Empowered damage from parry visual effect
-                if (e.parryExtras > 0){
+                if (e.DeflAmpTimer > 0){
                     Color empoweredColor = new Color(1f, 0.7f, 0.35f, 0.7f);
                     //empoweredColor.a = 0.7f;
                     //self.room.AddObject(new MoreSlugcats.VoidParticle(self.mainBodyChunk.pos, RWCustom.Custom.RNV() * UnityEngine.Random.value, 5f));
-                    self.room.AddObject(new Spark(self.bodyChunks[0].pos, new Vector2(2f * (e.parryExtras%2==0? 1: -1), Mathf.Lerp(-1f, 1f, UnityEngine.Random.value)), empoweredColor, null, 9, 13));
+                    self.room.AddObject(new Spark(self.bodyChunks[0].pos + new Vector2((e.DeflAmpTimer%2==0? 5: -5), 0), new Vector2(2f * (e.DeflAmpTimer%2==0? 1: -1), Mathf.Lerp(-1f, 1f, UnityEngine.Random.value)), empoweredColor, null, 9, 13));
                 }
             }
 
@@ -1084,7 +1093,7 @@ namespace TheEscort
 
                 if (superFlip && superWall){
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 2f), 0.9f);
+                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 1.4f), 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], self.consistentDownDiagonal));
                     toPrint.SetValue("SUPERFLIP", 2);
                 } else {
@@ -1233,7 +1242,7 @@ namespace TheEscort
             bool hypedMode = Esconfig_Hypable(self);
 
             // Implement bettercrawl
-            if (!e.parryTech && self.bodyMode == Player.BodyModeIndex.Crawl){
+            if (!e.Deflector && self.bodyMode == Player.BodyModeIndex.Crawl){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) : crawlSpeed[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(crawlSpeed[2], crawlSpeed[3], self.aerobicLevel) : crawlSpeed[5]) * self.slugcatStats.runspeedFac;
             }
@@ -1245,7 +1254,7 @@ namespace TheEscort
             The slugcat apparently has a limit on how fast they can move on the beam while standing on it, leaning more and more foreward and getting more and more friction as a result...
             or to that degree.
             */
-            else if (!e.parryTech && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
+            else if (!e.Deflector && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam && (self.animation == Player.AnimationIndex.StandOnBeam || self.animation == Player.AnimationIndex.HangFromBeam)){
                 self.dynamicRunSpeed[0] = (hypedMode? Mathf.Lerp(poleMove[0], poleMove[1], self.aerobicLevel): poleMove[4]) * self.slugcatStats.runspeedFac;
                 self.dynamicRunSpeed[1] = (hypedMode? Mathf.Lerp(poleMove[2], poleMove[3], self.aerobicLevel): poleMove[5]) * self.slugcatStats.runspeedFac;
             } 
@@ -1297,13 +1306,13 @@ namespace TheEscort
             //}
         }
 
-
+        // Check Escort's parry condition
         public bool Eshelp_ParryCondition(Creature self){
             if (self is Player player){
                 if (!eCon.TryGetValue(player, out Escort e)){
                     return false;
                 }
-                if (e.parryTech && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll)){
+                if (e.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll)){
                     Ebug("Parryteched condition!", 2);
                     return true;
                 }
@@ -1323,7 +1332,7 @@ namespace TheEscort
             if (!eCon.TryGetValue(self, out Escort e)){
                 return false;
             }
-            if (e.parryTech && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll)){
+            if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll)){
                 Ebug("Parryteched condition!", 2);
                 return true;
             }
@@ -1337,6 +1346,35 @@ namespace TheEscort
                 return e.parrySlideLean > 0;
             }
         }
+
+        // Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
+        public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie){
+            if (!eCon.TryGetValue(self, out Escort e)){
+                Ebug("Saving throw failed because Scug is not Escort!", 0);
+                return false;
+            }
+            if (!(self != null && offender != null && ouchie != null)){
+                Ebug("Saving throw failed due to null values!", 0);
+                return false;
+            }
+            if (offender.owner is not Creature){
+                Ebug("Saving throw failed due to the offender not being a creature!");
+                return false;
+            }
+            // Deflector isn't allowed a saving throw because they don't need it ;)
+            if (!e.Deflector){
+                // For now, saving throws only apply to bites
+                if (ouchie == Creature.DamageType.Bite && self.animation == Player.AnimationIndex.RocketJump){
+                    Ebug("Escort won a saving throw!", 2);
+                    return true;
+                }
+            }
+            else {
+                Ebug("Saving throw failed: Deflector Build Moment.", 2);
+            }
+            return false;
+        }
+
 
         // Implement Parryslide/midair projectile grab
         private void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
@@ -1553,18 +1591,27 @@ namespace TheEscort
                 }
                 }
             }
-
+            else if (Eshelp_SavingThrow(player, source, type)){
+                e.ParrySuccess = true;
+                (source.owner as Creature).LoseAllGrasps();
+                type = Creature.DamageType.Blunt;
+                damage = 0f;
+                stunBonus = 0f;
+            }
             // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
             // Visual indicator doesn't work ;-;
             if (e.ParrySuccess){
-                if (e.parryTech){
+                if (e.Deflector){
                     stunBonus = 0;
                     player.Jump();
                     player.animation = Player.AnimationIndex.Flip;
                     player.mainBodyChunk.vel.y *= 1.5f;
                     player.mainBodyChunk.vel.x *= 0.15f;
-                    self.room.PlaySound(SoundID.Snail_Warning_Click, self.mainBodyChunk, false, 1.6f, 0.7f);
-                    e.parryExtras = 160;
+                    if (e.DeflSFXcd == 0){
+                        self.room.PlaySound(SoundID.Snail_Warning_Click, self.mainBodyChunk, false, 1.6f, 0.65f);
+                        e.DeflSFXcd = 9;
+                    }
+                    e.DeflAmpTimer = 160;
                 }
                 else {
                     self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
@@ -1674,7 +1721,7 @@ namespace TheEscort
                     if (self.jumpBoost <= 0) {
                         self.jumpBoost = bounce;
                     }
-                    if (e.parryTech){
+                    if (e.Deflector){
                         try{
                             if (self.mainBodyChunk.vel.y < 6f){
                                 self.mainBodyChunk.vel.y += 10f;
@@ -1697,14 +1744,14 @@ namespace TheEscort
                     }
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.SFXChunk);
 
-                    float normSlideStun = (hypedMode || e.combatTech? bodySlam[1] : bodySlam[1] * 1.5f);
+                    float normSlideStun = (hypedMode || e.Bruiser? bodySlam[1] * 1.5f : bodySlam[1]);
                     if (hypedMode && self.aerobicLevel > requirement){
-                        normSlideStun = bodySlam[1] * (e.combatTech? 1.75f : 2f);
+                        normSlideStun = bodySlam[1] * (e.Bruiser? 2f : 1.75f);
                     }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
-                        creature.firstChunk, null, (e.parryExtras > 0? Creature.DamageType.Stab : Creature.DamageType.Blunt),
-                        (e.parryExtras > 0? 0.4f : bodySlam[0]), normSlideStun
+                        creature.firstChunk, null, (e.DeflAmpTimer > 0? Creature.DamageType.Stab : Creature.DamageType.Blunt),
+                        (e.DeflAmpTimer > 0? 0.4f : bodySlam[0]), normSlideStun
                     );
                     /*
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -1716,7 +1763,7 @@ namespace TheEscort
                         direction = self.rollDirection;
                         self.animation = Player.AnimationIndex.Flip;
                         self.WallJump(direction);
-                        if (e.combatTech){
+                        if (!e.Bruiser){
                             self.animation = Player.AnimationIndex.BellySlide;
                             self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
                             self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
@@ -1744,11 +1791,11 @@ namespace TheEscort
                     }
                     float normSlamDamage = 0.1f;
                     if (e.DropKickCD == 0){
-                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.combatTech? 0.15f : 0.27f));
+                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Bruiser? 0.27f : 0.15f));
                         creature.LoseAllGrasps();
-                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.combatTech? 1.6f : 2f);}
-                        if (e.parryTech){
-                            if (e.parryExtras > 0){
+                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.Bruiser? 2f : 1.6f);}
+                        if (e.Deflector){
+                            if (e.DeflAmpTimer > 0){
                                 normSlamDamage *= 3f;
                             }
                             else {
@@ -1761,15 +1808,15 @@ namespace TheEscort
                     }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*DKMultiplier, self.mainBodyChunk.vel.y*DKMultiplier*(e.LizardDunk?0.2f:1f))),
-                        creature.firstChunk, null, ((e.parryExtras > 0 && e.DropKickCD == 0)? Creature.DamageType.Explosion : Creature.DamageType.Blunt),
-                        normSlamDamage, (e.parryExtras > 0? bodySlam[1] : bodySlam[3])
+                        creature.firstChunk, null, ((e.DeflAmpTimer > 0 && e.DropKickCD == 0)? Creature.DamageType.Explosion : Creature.DamageType.Blunt),
+                        normSlamDamage, (e.DeflAmpTimer > 0? bodySlam[1] : bodySlam[3])
                     );
                     Ebug("Dunk the lizard: " + e.LizardDunk, 2);
                     if (e.DropKickCD == 0){
                         e.LizardDunk = false;
                     }
-                    if (e.parryExtras > 0){
-                        e.parryExtras = 0;
+                    if (e.DeflAmpTimer > 0){
+                        e.DeflAmpTimer = 0;
                     }
                     e.DropKickCD = (self.longBellySlide? 25 : 12);
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
@@ -1853,7 +1900,7 @@ namespace TheEscort
             Ebug("ThrownSpear Triggered!");
             float thrust = 7f;
             bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-            bool doNotYeet = onPole || !e.combatTech;
+            bool doNotYeet = onPole || e.Bruiser;
             if (Esconfig_Hypable(self)){
                 if (self.aerobicLevel > requirement){
                     spear.throwModeFrames = -1;
@@ -1905,11 +1952,11 @@ namespace TheEscort
             } else {
                 spear.spearDamageBonus = 1.25f;
             }
-            if (e.parryTech){
-                if (e.parryExtras > 0){
+            if (e.Deflector){
+                if (e.DeflAmpTimer > 0){
                     spear.spearDamageBonus *= 3f;
                     spear.firstChunk.vel *= 2f;
-                    e.parryExtras = 0;
+                    e.DeflAmpTimer = 0;
                 }
                 else {
                     spear.spearDamageBonus = 0.5f;
@@ -1983,8 +2030,8 @@ namespace TheEscort
                     return orig(self);
                 }
                 if (self.slugcatStats.name.value == "EscortMe"){
-                    float biteMult = e.combatTech? 0.5f : 0.15f;
-                    return (Eshelp_ParryCondition(self)? 5f : biteMult);
+                    float biteMult = e.Bruiser? 0.15f : 0.5f;
+                    return (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump)? 5f : biteMult);
                 } else {
                     return orig(self);
                 }

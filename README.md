@@ -7,7 +7,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
-**(0.2.2.6)** Batflies are eaten in one bite and Escort just eats things twice as fast!
+**(0.2.3)** Batflies are eaten in one bite and Escort just eats things twice as fast! And changed Brawler build to give more of a melee fighter fantasy. (Spear throw reduced velocity by 0.85 such that it only hits up close)
+
+**(0.2.2.6)** Added a check that prevents player from dying while dropkicking right into a lizard's maw and fixed parry sound triggering twice rapidly
 
 **(0.2.2.5)** Fixed infinite flight that was possible by certain movements
 

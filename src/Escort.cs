@@ -6,6 +6,7 @@ using UnityEngine;
 namespace TheEscort{
     public class Escort{
         public readonly SlugcatStats.Name name;
+        public String EsbuildName;
         public int DropKickCD;
         public int CentiCD;
         public float RollinCount;
@@ -31,14 +32,16 @@ namespace TheEscort{
         public float smoothTrans;
         
         // Build stuff
-        public bool combatTech;
-        public bool parryTech;
-        public int parryExtras;
+        public bool Bruiser;
+        public bool Deflector;
+        public int DeflAmpTimer;
+        public int DeflSFXcd;
         
         public Escort(Player player){
             if (ExtEnumBase.TryParse(typeof(SlugcatStats.Name), "EscortMe", true, out var r)){
                 name = r as SlugcatStats.Name;
             }
+            
             this.DropKickCD = 0;
             this.CentiCD = 0;
             this.iFrames = 0;
@@ -59,11 +62,20 @@ namespace TheEscort{
             this.secretRGB = false;
             this.smoothTrans = 0f;
 
-            // Build stuff
-            this.combatTech = true;  // Bruiser
-            this.parryTech = false;  // Deflector
-            this.parryExtras = 0;    // Deflector
+
+            // Build specific
+            this.Bruiser = false;
+
+            this.Deflector = false;
+            this.DeflAmpTimer = 0;
+            this.DeflSFXcd = 0;
         }
+        /*
+        public static class Deflector{
+
+        };
+        */
+
 
         public void Esclass_setSFX_roller(SoundID sound){
             try{
