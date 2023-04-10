@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.7")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.8")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -440,6 +440,22 @@ namespace TheEscort
 
         private bool Esconfig_Dunkin(Player self){
             return config.cfgDunkin.Value;
+        }
+
+        private bool Esconfig_Spears(Player self){
+            try {
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    return false;
+                }
+                if (config.cfgSpears.Value){
+                    return e.tossEscort;
+                }
+                return false;
+            }
+            catch (Exception err){
+                Ebug(err, "Something went wrong when setting an Escort build!");
+                return false;
+            }
         }
 
         private bool Esconfig_Build(Player self){
@@ -1795,7 +1811,7 @@ namespace TheEscort
                         direction = self.rollDirection;
                         self.animation = Player.AnimationIndex.Flip;
                         self.WallJump(direction);
-                        if (e.tossEscort){
+                        if (Esconfig_Spears(self)){
                             self.animation = Player.AnimationIndex.BellySlide;
                             self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
                             self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
@@ -1932,7 +1948,7 @@ namespace TheEscort
             Ebug("ThrownSpear Triggered!");
             float thrust = 7f;
             bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-            bool doNotYeet = onPole || !e.tossEscort;
+            bool doNotYeet = onPole || !Esconfig_Spears(self);
             if (Esconfig_Hypable(self)){
                 if (self.aerobicLevel > requirement){
                     spear.throwModeFrames = -1;

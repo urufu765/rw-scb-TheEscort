@@ -9,6 +9,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 ### 0.2 - The Escort
 **(0.2.4)** Batflies are eaten in one bite and Escort just eats things twice as fast! And changed Brawler build to give more of a melee fighter fantasy. (Spear throw reduced velocity by 0.85 such that it only hits up close)
 
+**(0.2.3.1)** Changed how settings are applied in game (you shouldn't notice any changes)
+
 **(0.2.3)** Rocker Build!
 
 **(0.2.2.8)** Changed the bruiser build (part where it launches the player on spear throws) to a selectable option.

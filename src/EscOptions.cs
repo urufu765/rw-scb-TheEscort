@@ -26,6 +26,7 @@ namespace TheEscort{
         public Configurable<int> cfgBuildP3;
         public Configurable<int> cfgBuildP4;
         public Configurable<bool> cfgDunkin;
+        public Configurable<bool> cfgSpears;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
@@ -54,6 +55,7 @@ namespace TheEscort{
             this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
+            this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
         }
 
         public override void Initialize()
@@ -127,8 +129,12 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Grab Stunned Lizards"),
                 new OpCheckBox(this.cfgDunkin, new Vector2(xo + (xp * 0), yo - (yp * 9))){
                     description = OptionInterface.Translate("Allows Escort to grab stunned lizards and cause violence on them. (Default=true)")
-                }
+                },
 
+                new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, "Super Spear"),
+                new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 10))){
+                    description = OptionInterface.Translate("Does additional movement tech when throwing spears. (Default=true)")
+                }
             };
             this.buildSet = new UIelement[]{
                 new OpLabel(xo, yo, "Builds", true),
