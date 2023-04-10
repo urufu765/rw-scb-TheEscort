@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.8")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.9")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -488,15 +488,18 @@ namespace TheEscort
 
                     case -2:  // Deflector build
                         e.Deflector = true;
-                        self.slugcatStats.runspeedFac -= 0.1f;
-                        self.slugcatStats.corridorClimbSpeedFac -= 0.15f;
-                        self.slugcatStats.poleClimbSpeedFac -= 0.15f;
+                        self.slugcatStats.runspeedFac = 1f;
+                        self.slugcatStats.corridorClimbSpeedFac = 1f;
+                        self.slugcatStats.poleClimbSpeedFac = 1f;
                         Ebug("Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
                         e.Barbarian = true;
                         e.tossEscort = false;
-                        self.slugcatStats.runspeedFac += 0.1f;
+                        self.slugcatStats.runspeedFac += 0.25f;
+                        self.slugcatStats.corridorClimbSpeedFac += 15f;
+                        self.slugcatStats.poleClimbSpeedFac += 0.15f;
+                        self.slugcatStats.throwingSkill = 1;
                         Ebug("Brawler Build selected!", 2);
                         break;
                     default:  // Default build
@@ -628,7 +631,7 @@ namespace TheEscort
             if (self.slugcatStats.name.value == "EscortMe"){
                 eCon.Add(self, new Escort(self));
                 if (!eCon.TryGetValue(self, out Escort e)){
-                    Ebug("Something happened while initializing Escort instance!", 0);
+                    Ebug("Something happened while initializing then accessing Escort instance!", 0);
                     return;
                 }
                 Esconfig_Build(self);
@@ -901,7 +904,7 @@ namespace TheEscort
                 if (!self.slugcatStats.malnourished){
                     self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / exhaust));
                 } else {
-                    self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / (exhaust / 2)));
+                    self.aerobicLevel = Mathf.Min(2f, self.aerobicLevel + (f / (exhaust * 2)));
                 }
             } else {
                 orig(self, f);
@@ -985,13 +988,16 @@ namespace TheEscort
 
             // Implement guuh wuuh
             if(self.bodyMode == Player.BodyModeIndex.Swimming){
-                float superSwim = Mathf.Lerp(theGut[0], theGut[1], self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity));
+                float viscoDance = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity);
+
                 if (self.animation == Player.AnimationIndex.DeepSwim){
                     self.mainBodyChunk.vel *= new Vector2(
-                        theGut[2] * superSwim, theGut[3] * superSwim);
+                        Mathf.Lerp(1f, theGut[0], (float)Math.Pow(viscoDance, theGut[6])), 
+                        Mathf.Lerp(1f, (self.mainBodyChunk.vel.y > 0? theGut[1] : theGut[2]), (float)Math.Pow(viscoDance, theGut[7])));
                 } else if (self.animation == Player.AnimationIndex.SurfaceSwim) {
                     self.mainBodyChunk.vel *= new Vector2(
-                        theGut[4] * superSwim, theGut[5] * superSwim);
+                        Mathf.Lerp(1f, theGut[3], (float)Math.Pow(viscoDance, theGut[8])), 
+                        Mathf.Lerp(1f, (self.mainBodyChunk.vel.y > 0? theGut[4] : theGut[5]), (float)Math.Pow(viscoDance, theGut[9])));
                 }
             }
 
@@ -1535,6 +1541,7 @@ namespace TheEscort
                             }
                             if (!keepLooping){
                                 Ebug("Tusk unimpaled!", 2);
+                                Debug.LogError("-> Escort: Please pay no attention to this! This is how Escort parry works (on King Tusks)!");
                                 break;
                             }
                         }
@@ -2079,7 +2086,11 @@ namespace TheEscort
                 }
                 if (self.slugcatStats.name.value == "EscortMe"){
                     float biteMult = e.Barbarian? 0.15f : 0.5f;
-                    return (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump)? 5f : biteMult);
+                    if (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump)){
+                        biteMult = 5f;
+                    }
+                    Ebug("Lizard bites with multiplier: " + biteMult);
+                    return biteMult;
                 } else {
                     return orig(self);
                 }
@@ -2221,7 +2232,7 @@ namespace TheEscort
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++){
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear){
-                        if (UnityEngine.Random.value > 0.75f && !spear.explosive && !spear.electric){
+                        if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric){
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false){
                                 needle = true
                             };

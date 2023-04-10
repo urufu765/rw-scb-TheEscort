@@ -168,6 +168,11 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Trade some movement tech for a more consistent and powerful combat phase"){
                     color = descColor
                 },
+                //new OpLabel(xo + (xp * 2), yo - (yp * 3), "Barbarian"),
+                //new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Reject range, embrace melee. Rocks become the Escort's favorite tool!"){
+                //    color = descColor
+                //},
+
                 new OpLabel(xo + (xp * 2), yo - (yp * 4), "Deflector"),
                 new OpLabel(xo + (xp * 2), yo - (yp * 4) - (tp * 2), " Easier to parry, with empowered damage on success!... at the cost of some base stats."){
                     color = descColor

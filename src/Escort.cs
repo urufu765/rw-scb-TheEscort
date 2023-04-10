@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace TheEscort{
     public class Escort{
-        public readonly SlugcatStats.Name name;
-        public String EsbuildName;
+        //public readonly SlugcatStats.Name name;
+        //public String EsbuildName;
         public int DropKickCD;
         public int CentiCD;
         public float RollinCount;
@@ -34,14 +34,17 @@ namespace TheEscort{
         
         // Build stuff
         public bool Barbarian;
+        public Rock[] BarRockBelt;
+        public int BarRockI;
         public bool Deflector;
         public int DeflAmpTimer;
         public int DeflSFXcd;
         
         public Escort(Player player){
+            /*
             if (ExtEnumBase.TryParse(typeof(SlugcatStats.Name), "EscortMe", true, out var r)){
                 name = r as SlugcatStats.Name;
-            }
+            }*/
             
             this.DropKickCD = 0;
             this.CentiCD = 0;
@@ -67,6 +70,8 @@ namespace TheEscort{
 
             // Build specific
             this.Barbarian = false;
+            this.BarRockBelt = new Rock[3];
+            this.BarRockI = 0;
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;
@@ -166,6 +171,21 @@ namespace TheEscort{
                 return hypeColor;
             }
             return c;
+        }
+
+        public bool Esclass_putaRockInit(Rock rock){
+            try{
+                if (this.BarRockBelt[this.BarRockI] == null && this.BarRockI < 3){
+                    this.BarRockBelt[this.BarRockI] = rock;
+                    this.BarRockBelt[this.BarRockI].mode = Weapon.Mode.OnBack;
+                    this.BarRockI++;
+                    return true;
+                }
+            } catch (Exception e){
+                Debug.LogError("-> Errort: Couldn't do things with rock!");
+                Debug.LogException(e);
+            }
+            return false;
         }
     }
 }

@@ -13,6 +13,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.3)** Rocker Build!
 
+**(0.2.2.9)** Fixed Escort's speed in water (went too fast), nerfed Deflector and (temporarily) buffed Brawler
+
 **(0.2.2.8)** Changed the bruiser build (part where it launches the player on spear throws) to a selectable option.
 
 **(0.2.2.7)** DMS Patch! (Will have to repatch later) 
