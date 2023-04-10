@@ -296,10 +296,13 @@ namespace TheEscort
                     }
                 }
                 else {
-                    Ebug("Using dud patch... (update your DMS!)", 1);
+                    //Ebug("Using dud patch... (update your DMS!)", 1);
+                    Ebug("Using dud patch...", 1);
                     DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                        Name = "UPDATEYOURDMS!",
-                        Description = "Update Your DMS",
+                        //Name = "UPDATEYOURDMS!",
+                        //Description = "Update Your DMS",
+                        Name = "MARKINGS",
+                        Description = "Markings",
                         GallerySprite = "escortHipT",
                         RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
                         Slugcats = new List<string>{"EscortMe"}
