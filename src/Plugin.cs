@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.2.7")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -260,24 +260,51 @@ namespace TheEscort
                 escPatch_revivify = true;
             }
             if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
-                Ebug("Found Dress My Slugcat! Applying patch...", 1);
+                Ebug("Found Dress My Slugcat!", 1);
                 //escPatch_DMS = true;
-                Eshelp_Patch_DMS();
+                Espatch_DMS(ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat"));
             }
             } catch (Exception err){
                 Ebug(err, "Something happened while searching for mods!");
             }
         }
 
-        private static void Eshelp_Patch_DMS(){
+        private static void Espatch_DMS(ModManager.Mod dms){
             try{// Dress My Slugcat Patch
-                DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                    Name = "MARKINGS",
-                    Description = "Markings",
-                    GallerySprite = "escortHipT",
-                    RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                    Slugcats = new List<string>{"EscortMe"}
-                });
+                //if (dms.version)
+                Ebug("Found DMS Version: " + dms.version, 1);
+                String[] dmsVer = dms.version.Split('.');
+                if(int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
+                    Ebug("Applying patch!...", 1);
+                    if(verMin == 3 && int.TryParse(dmsVer[2], out int verPatch) && verPatch == 0){
+                        DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                            Name = "WAIT 4 NEXT DMS PATCH",
+                            Description = "Please wait for next patch (will likely softcrash upon clicking on customize)",
+                            GallerySprite = "escortHipT",
+                            RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                            Slugcats = new List<string>{"EscortMe"}
+                        });
+                    }
+                    else {
+                        DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                            Name = "MARKINGS",
+                            Description = "Markings",
+                            GallerySprite = "escortHipT",
+                            RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                            Slugcats = new List<string>{"EscortMe"}
+                        });
+                    }
+                }
+                else {
+                    Ebug("Using dud patch... (update your DMS!)", 1);
+                    DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                        Name = "UPDATEYOURDMS!",
+                        Description = "Update Your DMS",
+                        GallerySprite = "escortHipT",
+                        RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                        Slugcats = new List<string>{"EscortMe"}
+                    });
+                }
             } catch (Exception merr){
                 //escPatch_DMS = false;
                 Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
@@ -438,6 +465,7 @@ namespace TheEscort
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
                     // Stealth build (hold still or crouch to enter stealthed mode)
+                    // Barbarian build (Throw rock at things!) REPLACES brawler
 
                     case -2:  // Deflector build
                         e.Deflector = true;
@@ -447,7 +475,8 @@ namespace TheEscort
                         Ebug("Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
-                        e.Bruiser = true;
+                        e.Barbarian = true;
+                        e.tossEscort = false;
                         self.slugcatStats.runspeedFac += 0.1f;
                         Ebug("Brawler Build selected!", 2);
                         break;
@@ -1744,9 +1773,9 @@ namespace TheEscort
                     }
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard,e.SFXChunk);
 
-                    float normSlideStun = (hypedMode || e.Bruiser? bodySlam[1] * 1.5f : bodySlam[1]);
+                    float normSlideStun = (hypedMode || e.Barbarian? bodySlam[1] * 1.5f : bodySlam[1]);
                     if (hypedMode && self.aerobicLevel > requirement){
-                        normSlideStun = bodySlam[1] * (e.Bruiser? 2f : 1.75f);
+                        normSlideStun = bodySlam[1] * (e.Barbarian? 2f : 1.75f);
                     }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x/4f, self.mainBodyChunk.vel.y/4f)),
@@ -1763,7 +1792,7 @@ namespace TheEscort
                         direction = self.rollDirection;
                         self.animation = Player.AnimationIndex.Flip;
                         self.WallJump(direction);
-                        if (!e.Bruiser){
+                        if (e.tossEscort){
                             self.animation = Player.AnimationIndex.BellySlide;
                             self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * 18f, 0f);
                             self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * 18f, 5f);
@@ -1791,9 +1820,9 @@ namespace TheEscort
                     }
                     float normSlamDamage = 0.1f;
                     if (e.DropKickCD == 0){
-                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Bruiser? 0.27f : 0.15f));
+                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Barbarian? 0.27f : 0.15f));
                         creature.LoseAllGrasps();
-                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.Bruiser? 2f : 1.6f);}
+                        if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.Barbarian? 2f : 1.6f);}
                         if (e.Deflector){
                             if (e.DeflAmpTimer > 0){
                                 normSlamDamage *= 3f;
@@ -1900,7 +1929,7 @@ namespace TheEscort
             Ebug("ThrownSpear Triggered!");
             float thrust = 7f;
             bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-            bool doNotYeet = onPole || e.Bruiser;
+            bool doNotYeet = onPole || !e.tossEscort;
             if (Esconfig_Hypable(self)){
                 if (self.aerobicLevel > requirement){
                     spear.throwModeFrames = -1;
@@ -2030,7 +2059,7 @@ namespace TheEscort
                     return orig(self);
                 }
                 if (self.slugcatStats.name.value == "EscortMe"){
-                    float biteMult = e.Bruiser? 0.15f : 0.5f;
+                    float biteMult = e.Barbarian? 0.15f : 0.5f;
                     return (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump)? 5f : biteMult);
                 } else {
                     return orig(self);

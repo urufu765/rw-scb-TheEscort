@@ -30,9 +30,10 @@ namespace TheEscort{
         public bool secretRGB;
         private float secretTick;
         public float smoothTrans;
+        public bool tossEscort;
         
         // Build stuff
-        public bool Bruiser;
+        public bool Barbarian;
         public bool Deflector;
         public int DeflAmpTimer;
         public int DeflSFXcd;
@@ -61,10 +62,11 @@ namespace TheEscort{
             this.Esclass_setLight_hype(player, this.hypeColor);
             this.secretRGB = false;
             this.smoothTrans = 0f;
+            this.tossEscort = true;
 
 
             // Build specific
-            this.Bruiser = false;
+            this.Barbarian = false;
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;
