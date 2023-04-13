@@ -31,14 +31,28 @@ namespace TheEscort{
         private float secretTick;
         public float smoothTrans;
         public bool tossEscort;
+        public bool dualWield;
         
         // Build stuff
         public bool Barbarian;
-        public Rock[] BarRockBelt;
-        public int BarRockI;
+        public bool BarbGangster;
+        public Vector2 BarbGangsterDir;
         public bool Deflector;
         public int DeflAmpTimer;
         public int DeflSFXcd;
+        public bool Escapist;
+        public int EscDangerExtend;
+        public Creature.Grasp EscDangerGrasp;
+        public int EscUnGraspTime;
+        public int EscUnGraspLimit;
+        public int EscUnGraspCD;
+        public bool Railgunner;
+        public bool RailDoubleSpear;
+        public bool RailDoubleRock;
+        public bool RailFirstWeaped;
+        public Vector2 RailFirstWeaper;
+        public int RailWeaping;
+
         
         public Escort(Player player){
             /*
@@ -66,22 +80,29 @@ namespace TheEscort{
             this.secretRGB = false;
             this.smoothTrans = 0f;
             this.tossEscort = true;
+            this.dualWield = true;
 
 
             // Build specific
             this.Barbarian = false;
-            this.BarRockBelt = new Rock[3];
-            this.BarRockI = 0;
+            this.RailDoubleSpear = false;
+            this.RailDoubleRock = false;
+            this.BarbGangster = false;
+            this.RailFirstWeaped = false;
+            this.RailFirstWeaper = new Vector2();
+            this.RailWeaping = 0;
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;
             this.DeflSFXcd = 0;
-        }
-        /*
-        public static class Deflector{
 
-        };
-        */
+            this.Escapist = false;
+            this.EscDangerExtend = 0;
+            this.EscDangerGrasp = null;
+            this.EscUnGraspTime = 0;
+            this.EscUnGraspLimit = 0;
+            this.EscUnGraspCD = 0;
+            }
 
 
         public void Esclass_setSFX_roller(SoundID sound){
@@ -173,19 +194,5 @@ namespace TheEscort{
             return c;
         }
 
-        public bool Esclass_putaRockInit(Rock rock){
-            try{
-                if (this.BarRockBelt[this.BarRockI] == null && this.BarRockI < 3){
-                    this.BarRockBelt[this.BarRockI] = rock;
-                    this.BarRockBelt[this.BarRockI].mode = Weapon.Mode.OnBack;
-                    this.BarRockI++;
-                    return true;
-                }
-            } catch (Exception e){
-                Debug.LogError("-> Errort: Couldn't do things with rock!");
-                Debug.LogException(e);
-            }
-            return false;
-        }
     }
 }

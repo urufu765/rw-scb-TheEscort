@@ -35,7 +35,7 @@ namespace TheEscort{
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        private readonly int buildDiv = -2;
+        private readonly int buildDiv = -3;
     
         public EscOptions(Plugin instance, ManualLogSource loggerSource){
             this.instance = instance;
@@ -161,22 +161,28 @@ namespace TheEscort{
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 2), "Default"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 2) - (tp * 2), " The intended way of playing Escort"){
+                new OpLabel(xo + (xp * 2), yo - (yp * 2) - (tp * 2), " The intended way of playing Escort."){
                     color = descColor
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 3), "Brawler"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Trade some movement tech for a more consistent and powerful combat phase"){
+                new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " More powerful and consistent close combat, but reduced range efficiency."){
                     color = descColor
                 },
-                //new OpLabel(xo + (xp * 2), yo - (yp * 3), "Barbarian"),
-                //new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " Reject range, embrace melee. Rocks become the Escort's favorite tool!"){
-                //    color = descColor
-                //},
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 4), "Deflector"),
                 new OpLabel(xo + (xp * 2), yo - (yp * 4) - (tp * 2), " Easier to parry, with empowered damage on success!... at the cost of some base stats."){
                     color = descColor
-                }
+                },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 5), "Escapist"),
+                new OpLabel(xo + (xp * 2), yo - (yp * 5) - (tp * 2), " Force out of grasps, though don't expect to be fighting much..."){
+                    color = descColor
+                },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 6), "Railgunner"),
+                new OpLabel(xo + (xp * 2), yo - (yp * 6) - (tp * 2), " Embrace an unorthodox, yet powerful fighting style."){
+                    color = descColor
+                },
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, "Gimmicks", true),
