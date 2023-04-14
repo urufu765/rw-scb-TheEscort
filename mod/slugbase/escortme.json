@@ -15,7 +15,7 @@
 		"walk_speed": [1.1, 1.0],
 		"crouch_stealth": [0.3, 0.7],
 		"throw_skill": [0, 1],
-		"lung_capacity": [3.0, 1.5],
+		"lung_capacity": [2.0, 3.0],
 		"loudness": [2, 1.5],
 		"alignments": {
 			"Lizards": { "like": -1, "locked": true },
@@ -46,6 +46,7 @@
 
 		"theescort/better_crawl": [3.5, 5, 2, 3.5, 4.2, 2.5],
 		"theescort/body_slam": [0.05, 45, 0.7, 15],
+		"theescort/slide_launch_mod": [18, 5, 7],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
 		"theescort/exhausion": 90,
@@ -60,13 +61,39 @@
 		"theescort/mean_garb_worms": false,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 800,
+		"theescort/reset_rate": 480,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
 		"theescort/guuh_wuuh": [1.5, 1.2, 1.3, 1.5, 1.3, 1.15, 1.5, 1.1, 1.15, 1.1],
 		"theescort/headbutt": 15,
 		"theescort/headthing": [1, 3, 0, 2.5],
-		"theescort/bodything": [1, 0, 0, 0]
+		"theescort/bodything": [1, 0, 0, 0],
+
+		"theescort/brawler/slide_launch_fac": 0.5,
+		"theescort/brawler/dk_h_dmg": 2,
+		"theescort/brawler/spear_vel_fac": 0.7,
+		"theescort/brawler/spear_dmg_fac": [1.25, 10],
+		"theescort/brawler/spear_thrust": 0.5,
+		"theescort/brawler/spear_shank": [70, 120],
+
+		"theescort/deflector/slide_dmg": 0.4,
+		"theescort/deflector/dk_h_dmg": [3, 0.5],
+		"theescort/deflector/slide_launch_fac": 0.5,
+		"theescort/deflector/slide_launch_mod": 8,
+		"theescort/deflector/spear_vel_fac": [2, 1.2],
+		"theescort/deflector/spear_dmg_fac": [3, 0.5],
+
+		"theescort/escapist/slide_launch_mod": 32,
+		"theescort/escapist/slide_launch_fac": 0.95,
+		"theescort/escapist/spear_vel_fac": 0.8,
+		"theescort/escapist/no_grab": [30, 80],
+		"theescort/escapist/cd" : 480,
+
+		"theescort/railgunner/spear_vel_fac": [2, 0.9],
+		"theescort/railgunner/spear_dmg_fac": 0.9,
+		"theescort/railgunner/spear_thrust": [-9, -12, -16, 0.75],
+		"theescort/railgunner/rock_vel_fac": 2.5,
+		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3]
 		}
 }

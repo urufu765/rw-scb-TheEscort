@@ -8,8 +8,8 @@ namespace TheEscort{
     class EscOptions : OptionInterface{
 
 
-        public readonly Plugin instance;
-        public readonly ManualLogSource logSource;
+        //public readonly Plugin instance;
+        public readonly RainWorld rainworld;
         public Configurable<bool> cfgMeanLizards;
         // public Configurable<bool> cfgMeanGarbWorms;
         public Configurable<float> cfgHeavyLift;
@@ -25,21 +25,25 @@ namespace TheEscort{
         public Configurable<int> cfgBuildP2;
         public Configurable<int> cfgBuildP3;
         public Configurable<int> cfgBuildP4;
+        public Configurable<bool> cfgEasyP1;
+        public Configurable<bool> cfgEasyP2;
+        public Configurable<bool> cfgEasyP3;
+        public Configurable<bool> cfgEasyP4;
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
+        public Configurable<bool> cfgDKAnimation;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
-        private readonly float yoffset = 540f;
+        private readonly float yoffset = 560f;
         private readonly float xoffset = 30f;
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        private readonly int buildDiv = -3;
+        private readonly int buildDiv = -4;
     
-        public EscOptions(Plugin instance, ManualLogSource loggerSource){
-            this.instance = instance;
-            this.logSource = loggerSource;
+        public EscOptions(RainWorld rainworld){
+            this.rainworld = rainworld;
             this.cfgMeanLizards = this.config.Bind<bool>("cfg_Mean_Lizards", true);
             this.cfgHeavyLift = this.config.Bind<float>("cfg_Heavy_Lift", 3f, new ConfigAcceptableRange<float>(0.01f, 1000f));
             this.cfgDKMult = this.config.Bind<float>("cfg_Drop_Kick_Multiplier", 3f, new ConfigAcceptableRange<float>(0.01f, 765f));
@@ -49,13 +53,24 @@ namespace TheEscort{
             this.cfgSFX = this.config.Bind<bool>("cfg_SFX", false);
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
+            this.cfgDKAnimation = this.config.Bind<bool>("cfg_Drop_Kick_Animation", true);
             this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
+            this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
+            this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
+            this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
+        }
+
+        private static string swapper(string text, string with=""){
+            text = text.Replace("<LINE>", System.Environment.NewLine);
+            text = text.Replace("<REPLACE>", with);
+            return text;
         }
 
         public override void Initialize()
@@ -65,17 +80,15 @@ namespace TheEscort{
             float xp = this.xpadding;
             float yp = this.ypadding;
             float tp = this.tpadding;
-            String hypeReqText = "0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness";
-            String mainText = "These options change Escort's main abilities and how they play.";
-            String buildText = "These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.";
-            String gimmickText = "These optional gimmicks will add features that may alter the gameplay of Escort significantly (and usually in hilarous ways)";
-            String buildP = "Player<LINE>(1)   (2)   (3)   (4)";
-            hypeReqText = hypeReqText.Replace("<LINE>", "" + System.Environment.NewLine);
-            mainText = mainText.Replace("<LINE>", "" + System.Environment.NewLine);
-            buildText = buildText.Replace("<LINE>", "" + System.Environment.NewLine);
-            buildP = buildP.Replace("<LINE>", "" + System.Environment.NewLine);
-            gimmickText = gimmickText.Replace("<LINE>", "" + System.Environment.NewLine);
-            Color descColor = new Color(0.49f, 0.44f, 0.55f);
+            Color tempColor = new Color(0.5f, 0.5f, 0.55f);
+            Color descColor = new Color(0.53f, 0.48f, 0.59f);
+            Color easyColor = new Color(0.42f, 0.75f, 0.5f);
+            Color p1Color = new Color(1f, 1f, 1f);
+            Color p2Color = new Color(1f, 1f, 23f / 51f);
+            Color p3Color = new Color(1f, 23f / 51f, 23f / 51f);
+            Color p4Color = RWCustom.Custom.HSL2RGB(0.63055557f, 0.54f, 0.2f);
+            bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
+            string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
             base.Initialize();
             OpTab mainTab = new OpTab(this, "Main");
             OpTab buildTab = new OpTab(this, "Builds");
@@ -89,7 +102,9 @@ namespace TheEscort{
 
             this.mainSet = new UIelement[]{
                 new OpLabel(xo, yo, "Options", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), mainText),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), swapper("These options change Escort's main abilities and how they play.<LINE>You can find the easy mode and builds in BUILDS and additional funny shenanigans in GIMMICKS")){
+                    color = descColor
+                },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable (Extra) Mean Lizards"),
                 new OpCheckBox(this.cfgMeanLizards, new Vector2(xo + (xp * 0), yo - (yp * 2))){
@@ -114,11 +129,14 @@ namespace TheEscort{
                     max = 6,
                     description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
                 },
-                new OpLabel(440f + xp - 7, yo - (yp * 6), hypeReqText),
+                new OpLabel(440f + xp - 7, yo - (yp * 6), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Long Wall Jump"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Long Wall Jump"){
+                    color = tempColor
+                },
                 new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 7))){
-                    description = OptionInterface.Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)")
+                    description = OptionInterface.Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)"),
+                    colorEdge = tempColor
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Flippy Pounce"),
@@ -138,64 +156,138 @@ namespace TheEscort{
             };
             this.buildSet = new UIelement[]{
                 new OpLabel(xo, yo, "Builds", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), buildText),
-                new OpLabel(xo - (tp * 3.8f), yo - (yp * 1.5f), buildP){
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), swapper("These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.")){
+                    color = descColor
+                },
+
+                new OpLabel(xo + (xp * 2) + (tp * 1.5f), yo - 3f - (yp * 2) + tp/2, "Easier Mode"){
+                    color = easyColor
+                },
+                new OpCheckBox(this.cfgEasyP1, new Vector2(xo - (tp * 5) + 3f, yo - 3f - (yp * 2))){
+                    description = OptionInterface.Translate("[P1] " + easyText),
+                    colorEdge = easyColor,
+                    colorFill = p1Color * 0.45f
+                },
+                new OpCheckBox(this.cfgEasyP2, new Vector2(xo - (tp * 1) + 3f, yo - 3f - (yp * 2))){
+                    description = OptionInterface.Translate("[P2] " + easyText),
+                    colorEdge = easyColor,
+                    colorFill = p2Color * 0.45f
+                },
+                new OpCheckBox(this.cfgEasyP3, new Vector2(xo + (tp * 3) + 3f, yo - 3f - (yp * 2))){
+                    description = OptionInterface.Translate("[P3] " + easyText),
+                    colorEdge = easyColor,
+                    colorFill = p3Color * 0.7f
+                },
+                new OpCheckBox(this.cfgEasyP4, new Vector2(xo + (tp * 7) + 3f, yo - 3f - (yp * 2))){
+                    description = OptionInterface.Translate("[P4] " + easyText),
+                    colorEdge = easyColor,
+                    colorFill = p4Color
+                },
+
+                new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), "(1)   (2)   (3)   (4) <-PLAYER #"){
                     color = new Color(0.5f, 0.5f, 0.5f)
                 },
 
-                new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    colorLine = p1Color*0.8f,
+                    colorEdge = p1Color*0.9f,
                     min = this.buildDiv,
                     max = 0
                 },
-                new OpSliderTick(this.cfgBuildP2, new Vector2(xo - (tp * 1), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                new OpSliderTick(this.cfgBuildP2, new Vector2(xo - (tp * 1), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    colorLine = p2Color*0.8f,
+                    colorEdge = p2Color*0.9f,
                     min = this.buildDiv,
                     max = 0
                 },
-                new OpSliderTick(this.cfgBuildP3, new Vector2(xo + (tp * 3), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                new OpSliderTick(this.cfgBuildP3, new Vector2(xo + (tp * 3), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    colorLine = p3Color*0.9f,
+                    colorEdge = p3Color,
                     min = this.buildDiv,
                     max = 0
                 },
-                new OpSliderTick(this.cfgBuildP4, new Vector2(xo + (tp * 7), (yo + tp) - (yp * 2) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                new OpSliderTick(this.cfgBuildP4, new Vector2(xo + (tp * 7), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
+                    colorLine = p4Color*2.4f,
+                    colorEdge = p4Color*2.8f,
                     min = this.buildDiv,
                     max = 0
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 2), "Default"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 2) - (tp * 2), " The intended way of playing Escort."){
-                    color = descColor
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.6f), "Default", true){
+                    color = new Color(0.75f, 0.75f, 0.75f) * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 3), "Brawler"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 3) - (tp * 2), " More powerful and consistent close combat, but reduced range efficiency."){
-                    color = descColor
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 2.5f) - (tp * 2.1f) + 0.7f, "  The intended way of playing Escort."){
+                    color = new Color(0.1f, 0.1f, 0.1f)
                 },
-
-                new OpLabel(xo + (xp * 2), yo - (yp * 4), "Deflector"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 4) - (tp * 2), " Easier to parry, with empowered damage on success!... at the cost of some base stats."){
-                    color = descColor
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), "  The intended way of playing Escort."){
+                    color = new Color(0.75f, 0.75f, 0.75f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 5), "Escapist"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 5) - (tp * 2), " Force out of grasps, though don't expect to be fighting much..."){
-                    color = descColor
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.6f), "Brawler", true){
+                    color = new Color(0.8f, 0.6f, 0.6f) * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 3.5f) - (tp * 2.1f) + 0.7f, "  More powerful and consistent close-combat, but reduced range efficiency."){
+                    color = new Color(0.1f, 0.1f, 0.1f)
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 2.1f), "  More powerful and consistent close-combat, but reduced range efficiency."){
+                    color = new Color(0.8f, 0.6f, 0.6f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 6), "Railgunner"),
-                new OpLabel(xo + (xp * 2), yo - (yp * 6) - (tp * 2), " Embrace an unorthodox, yet powerful fighting style."){
-                    color = descColor
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.6f), "Deflector", true){
+                    color = new Color(0.69f, 0.55f, 0.9f) * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 4.5f) - (tp * 2.1f) + 0.7f, "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
+                    color = new Color(0.1f, 0.1f, 0.1f)
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 2.1f), "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
+                    color = new Color(0.69f, 0.55f, 0.9f)
+                },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.6f), "Escapist", true){
+                    color = new Color(0.8f, 0.8f, 0.5f) * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 5.5f) - (tp * 2.1f) + 0.7f, "  Force out of grasps, though don't expect to be fighting much..."){
+                    color = new Color(0.1f, 0.1f, 0.1f)
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), "  Force out of grasps, though don't expect to be fighting much..."){
+                    color = new Color(0.8f, 0.8f, 0.5f)
+                },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.6f), "Railgunner", true){
+                    color = new Color(0.5f, 0.85f, 0.78f) * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 6.5f) - (tp * 2.1f) + 0.7f, swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
+                    color = new Color(0.1f, 0.1f, 0.1f)
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
+                    color = new Color(0.5f, 0.85f, 0.78f)
                 },
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, "Gimmicks", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), gimmickText),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), "These optional gimmicks will add features that may alter the gameplay of Escort significantly (and usually in hilarous ways)"){
+                    color = descColor
+                },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable dumb SFX"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable dumb SFX"){
+                    color = tempColor
+                },
                 new OpCheckBox(this.cfgSFX, new Vector2(xo + (xp * 0), yo - (yp * 2))){
+                    colorEdge = tempColor,
                     description = OptionInterface.Translate("Replaces a few sound effects that on one hand will kill the immersion, but on the other hand... haha funny noises. (Default=false)")
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Elevator"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Elevator"){
+                    color = tempColor
+                },
                 new OpCheckBox(this.cfgElevator, new Vector2(xo + (xp * 0), yo - (yp * 3))){
-                    description = OptionInterface.Translate("When enabled, allows Escort to touch the stars whenever they ramp off a living creature. (Default=false)")
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("When enabled, allows Escort to touch the stars whenever they ramp off a living creature. (Default=false)"),
+                },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Proper Dropkick Animation"),
+                new OpCheckBox(this.cfgDKAnimation, new Vector2(xo + (xp * 0), yo - (yp * 4))){
+                    description = OptionInterface.Translate("During dropkicks, Escort turns their body in midair to make dropkicks look like dropkick dropkicks. (Default=true)"),
                 }
             };
             mainTab.AddItems(this.mainSet);

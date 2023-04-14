@@ -21,6 +21,7 @@ namespace TheEscort{
         public bool LizardDunk;
         public int LizDunkLean;
         public int LizGoForWalk;
+        public int LizGrabCount;
         public bool ParrySuccess;
         public bool ElectroParry;
         public int spriteQueue;
@@ -32,11 +33,14 @@ namespace TheEscort{
         public float smoothTrans;
         public bool tossEscort;
         public bool dualWield;
+        public int superWallFlip;
+        public bool easyMode;
+        public int consoleTick;
         
         // Build stuff
-        public bool Barbarian;
-        public bool BarbGangster;
-        public Vector2 BarbGangsterDir;
+        public bool Brawler;
+        public bool BrawShankMode;
+        public Vector2 BrawShankDir;
         public bool Deflector;
         public int DeflAmpTimer;
         public int DeflSFXcd;
@@ -47,6 +51,8 @@ namespace TheEscort{
         public int EscUnGraspLimit;
         public int EscUnGraspCD;
         public bool Railgunner;
+        public int RailGaussed;
+        public Creature RailThrower;
         public bool RailDoubleSpear;
         public bool RailDoubleRock;
         public bool RailFirstWeaped;
@@ -71,6 +77,7 @@ namespace TheEscort{
             this.LizardDunk = false;
             this.LizDunkLean = 0;
             this.LizGoForWalk = 0;
+            this.LizGrabCount = 0;
             this.ParrySuccess = false;
             this.ElectroParry = false;
             this.SFXChunk = player.bodyChunks[0];
@@ -81,16 +88,15 @@ namespace TheEscort{
             this.smoothTrans = 0f;
             this.tossEscort = true;
             this.dualWield = true;
+            this.superWallFlip = 0;
+            this.easyMode = false;
+            this.consoleTick = 0;
 
 
             // Build specific
-            this.Barbarian = false;
-            this.RailDoubleSpear = false;
-            this.RailDoubleRock = false;
-            this.BarbGangster = false;
-            this.RailFirstWeaped = false;
-            this.RailFirstWeaper = new Vector2();
-            this.RailWeaping = 0;
+            this.Brawler = false;
+            this.BrawShankMode = false;
+            this.BrawShankDir = new Vector2();
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;
@@ -102,6 +108,15 @@ namespace TheEscort{
             this.EscUnGraspTime = 0;
             this.EscUnGraspLimit = 0;
             this.EscUnGraspCD = 0;
+
+            this.Railgunner = false;
+            this.RailGaussed = 0;
+            this.RailThrower = player;
+            this.RailDoubleSpear = false;
+            this.RailDoubleRock = false;
+            this.RailFirstWeaped = false;
+            this.RailFirstWeaper = new Vector2();
+            this.RailWeaping = 0;
             }
 
 

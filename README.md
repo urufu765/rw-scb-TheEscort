@@ -7,11 +7,13 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
-**(0.2.4)** Batflies are eaten in one bite and Escort just eats things twice as fast! And changed Brawler build to give more of a melee fighter fantasy. (Spear throw reduced velocity by 0.85 such that it only hits up close)
+**(0.2.X)** Batflies are eaten in one bite and Escort just eats things twice as fast! And changed Brawler build to give more of a melee fighter fantasy. (Spear throw reduced velocity by 0.85 such that it only hits up close)
 
-**(0.2.3.1)** Changed how settings are applied in game (you shouldn't notice any changes)
+**(0.2.X)** Changed how settings are applied in game (you shouldn't notice any changes)
 
-**(0.2.3)** Rocker Build!
+**(0.2.4)** Spearthrow up and down in corridors!
+
+**(0.2.3)** Added a new thing to Brawler to make it a bit fresher and added two new builds: Escapist & Railgunner! Also tweaked super wall flip so it's easier to do (now you only have to hold any diagonal directions!)
 
 **(0.2.2.9)** Fixed Escort's speed in water (went too fast), nerfed Deflector and (temporarily) buffed Brawler
 
