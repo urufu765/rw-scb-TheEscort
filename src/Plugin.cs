@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -679,7 +679,7 @@ namespace TheEscort
                 if (e.easyMode){
                     Ebug(self, "Easy Mode active!");
                 }
-                self.slugcatStats.lungsFac += self.Malnourished? 0.3f : -0.25f;
+                self.slugcatStats.lungsFac += self.Malnourished? 0.35f : -0.1f;
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
                 Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
@@ -1048,7 +1048,7 @@ namespace TheEscort
                         if (self.player != null && Esconfig_Hypable(self.player)){
                             float alphya = 1f;
                             if (requirement > self.player.aerobicLevel){
-                                alphya = Mathf.Lerp((self.player.dead? 0f : 0.5f), 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                alphya = Mathf.Lerp((self.player.dead? 0f : 0.57f), 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
                             }
                             for (int a = e.spriteQueue; a < s.sprites.Length; a++){
                                 s.sprites[a].alpha = alphya;
@@ -2380,6 +2380,7 @@ namespace TheEscort
                 spear.firstChunk.vel *= eSpearVel;
             }
             if (e.Railgunner){
+                thrust = 5f;
                 if (e.RailDoubleSpear){
                     if (!e.RailFirstWeaped){
                         spear.firstChunk.vel *= rSpearVel[0];
@@ -2419,7 +2420,17 @@ namespace TheEscort
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
                 }
                 if (self.animation != Player.AnimationIndex.BellySlide){
-                    self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
+                    if (e.Railgunner && spear.throwDir.x == 0){
+                        if (spear.throwDir.y == 1){
+                            self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.4f;
+                        } else if (spear.throwDir.y == -1){
+                            self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.65f;
+                        } else {
+                            self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+                        }
+                    } else {
+                        self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
+                    }
                 }
             }
             Ebug(self, "Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, 2);
@@ -2565,7 +2576,7 @@ namespace TheEscort
                         frc *= 0.75f;
                     }
                     if (e.Railgunner){
-                        //float thruster = 7f;
+                        //float thruster = 5f;
                         if (e.RailDoubleRock){
                             if (!e.RailFirstWeaped){
                                 e.RailFirstWeaper = self.firstChunk.vel;

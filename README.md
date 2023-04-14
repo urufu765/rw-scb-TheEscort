@@ -13,6 +13,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.4)** Spearthrow up and down in corridors!
 
+**(0.2.3.2)** Added vfx for railgunner and escapist's gimmicks, and an additional sfx (boop!) for the headbutt, and added cooldown for the dual throws (as well as a vfx to indicate it's in cooldown), campaign image!
+
+**(0.2.3.1)** Nerfed breathing underwater, increased visibility of markings at lowest hype, fixed railgunner hyped behaviour (throwing the spears the wrong way), tweaked railgunner's speartoss so it correctly launches railgunner up or down when doing up or down spear tosses.
+
 **(0.2.3)** Added a new thing to Brawler to make it a bit fresher and added two new builds: Escapist & Railgunner! Also tweaked super wall flip so it's easier to do (now you only have to hold any diagonal directions!) And also also EASY MODE!
 
 **(0.2.2.9)** Fixed Escort's speed in water (went too fast), nerfed Deflector and (temporarily) buffed Brawler

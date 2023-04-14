@@ -141,7 +141,7 @@ namespace TheEscort{
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Flippy Pounce"),
                 new OpCheckBox(this.cfgPounce, new Vector2(xo + (xp * 0), yo - (yp * 8))){
-                    description = OptionInterface.Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding downdiagonal when against a wall and achieve great vertical height. (Default=true)")
+                    description = OptionInterface.Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump to achieve great vertical height. (Default=true)")
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Grab Stunned Lizards"),
@@ -213,7 +213,7 @@ namespace TheEscort{
                     max = 0
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.6f), "Default", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default", true){
                     color = new Color(0.75f, 0.75f, 0.75f) * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 2.5f) - (tp * 2.1f) + 0.7f, "  The intended way of playing Escort."){
@@ -223,7 +223,7 @@ namespace TheEscort{
                     color = new Color(0.75f, 0.75f, 0.75f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.6f), "Brawler", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), "Brawler", true){
                     color = new Color(0.8f, 0.6f, 0.6f) * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 3.5f) - (tp * 2.1f) + 0.7f, "  More powerful and consistent close-combat, but reduced range efficiency."){
@@ -233,7 +233,7 @@ namespace TheEscort{
                     color = new Color(0.8f, 0.6f, 0.6f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.6f), "Deflector", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), "Deflector", true){
                     color = new Color(0.69f, 0.55f, 0.9f) * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 4.5f) - (tp * 2.1f) + 0.7f, "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
@@ -243,7 +243,7 @@ namespace TheEscort{
                     color = new Color(0.69f, 0.55f, 0.9f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.6f), "Escapist", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), "Escapist", true){
                     color = new Color(0.8f, 0.8f, 0.5f) * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 5.5f) - (tp * 2.1f) + 0.7f, "  Force out of grasps, though don't expect to be fighting much..."){
@@ -253,7 +253,7 @@ namespace TheEscort{
                     color = new Color(0.8f, 0.8f, 0.5f)
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.6f), "Railgunner", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), "Railgunner", true){
                     color = new Color(0.5f, 0.85f, 0.78f) * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 6.5f) - (tp * 2.1f) + 0.7f, swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
