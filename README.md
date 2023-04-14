@@ -13,7 +13,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.4)** Spearthrow up and down in corridors!
 
-**(0.2.3)** Added a new thing to Brawler to make it a bit fresher and added two new builds: Escapist & Railgunner! Also tweaked super wall flip so it's easier to do (now you only have to hold any diagonal directions!)
+**(0.2.3)** Added a new thing to Brawler to make it a bit fresher and added two new builds: Escapist & Railgunner! Also tweaked super wall flip so it's easier to do (now you only have to hold any diagonal directions!) And also also EASY MODE!
 
 **(0.2.2.9)** Fixed Escort's speed in water (went too fast), nerfed Deflector and (temporarily) buffed Brawler
 
