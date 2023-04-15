@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.3")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -2528,8 +2528,11 @@ namespace TheEscort
                     }
                 }*/
 
-                if (e.Railgunner && (e.RailDoubleSpear || e.RailDoubleRock)){
+                if (e.Railgunner && (e.RailDoubleSpear || e.RailDoubleRock) && !(escPatch_revivify && self.Malnourished)){
                     self.standing = false;
+                    if (self.Malnourished){
+                        self.Stun(20 * e.RailgunUse);
+                    }
                     Vector2 p = new Vector2();
                     Vector2 v = new Vector2();
                     if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon){
@@ -2564,16 +2567,18 @@ namespace TheEscort
                         // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
                     }
                     e.RailGaussed = 60;
+                    int addition = 0;
+                    if (e.RailDoubleRock){
+                        addition = 1;
+                    } else if (e.RailDoubleSpear){
+                        addition = 3;
+                    }
                     if (e.RailgunCD == 0){
                         e.RailgunCD = 400;
                     } else {
-                        e.RailgunCD += 80;
+                        e.RailgunCD += 40 * addition;
                     }
-                    if (e.RailDoubleRock){
-                        e.RailgunUse++;
-                    } else if (e.RailDoubleSpear){
-                        e.RailgunUse += 3;
-                    }
+                    e.RailgunUse += addition;
                     return;
                 }
             } catch (Exception err){

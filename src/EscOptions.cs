@@ -44,7 +44,7 @@ namespace TheEscort{
     
         public EscOptions(RainWorld rainworld){
             this.rainworld = rainworld;
-            this.cfgMeanLizards = this.config.Bind<bool>("cfg_Mean_Lizards", true);
+            this.cfgMeanLizards = this.config.Bind<bool>("cfg_Mean_Lizards", false);
             this.cfgHeavyLift = this.config.Bind<float>("cfg_Heavy_Lift", 3f, new ConfigAcceptableRange<float>(0.01f, 1000f));
             this.cfgDKMult = this.config.Bind<float>("cfg_Drop_Kick_Multiplier", 3f, new ConfigAcceptableRange<float>(0.01f, 765f));
             this.cfgElevator = this.config.Bind<bool>("cfg_Elevator", false);
@@ -116,9 +116,12 @@ namespace TheEscort{
                     color = descColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable (Extra) Mean Lizards"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable (Extra) Mean Lizards"){
+                    color = tempColor
+                },
                 new OpCheckBox(this.cfgMeanLizards, new Vector2(xo + (xp * 0), yo - (yp * 2))){
-                    description = OptionInterface.Translate("When enabled, lizards will spawn at full aggression when playing Escort... the behaviour may not carry over in coop sessions. (Default=true)")
+                    description = OptionInterface.Translate("When enabled, lizards will spawn at full aggression when playing Escort... the behaviour may not carry over in coop sessions. (Default=true)"),
+                    colorEdge = tempColor
                 },
 
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 3), "Lifting Power Multiplier"),
