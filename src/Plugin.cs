@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.5")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -87,7 +87,7 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> brawler = PlayerFloats("theescort/brawler/");
         public static readonly PlayerFeature<float> brawlerSlideLaunchFac = PlayerFloat("theescort/brawler/slide_launch_fac");
         public static readonly PlayerFeature<float> brawlerDKHypeDmg = PlayerFloat("theescort/brawler/dk_h_dmg");
-        public static readonly PlayerFeature<float> brawlerSpearVelFac = PlayerFloat("theescort/brawler/spear_vel_fac");
+        public static readonly PlayerFeature<float[]> brawlerSpearVelFac = PlayerFloats("theescort/brawler/spear_vel_fac");
         public static readonly PlayerFeature<float[]> brawlerSpearDmgFac = PlayerFloats("theescort/brawler/spear_dmg_fac");
         public static readonly PlayerFeature<float> brawlerSpearThrust = PlayerFloat("theescort/brawler/spear_thrust");
         public static readonly PlayerFeature<float[]> brawlerSpearShankY = PlayerFloats("theescort/brawler/spear_shank");
@@ -146,8 +146,9 @@ namespace TheEscort
          1: Important things
          2: Less important things
          3: Method pings
+         4: Ebug errors (done by design)
         */
-        private int logImportance = 3;
+        private int logImportance = 4;
 
         // Escort instance stuff
         public static ConditionalWeakTable<Player, Escort> eCon = new();
@@ -234,6 +235,9 @@ namespace TheEscort
             }
         }
         private static void Ebug(Player self, String message, int logPrio=3){
+            if (self == null){
+                Ebug(message, logPrio);
+            }
             try{
                 if (logPrio <= instance.logImportance){
                     Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message);
@@ -244,6 +248,9 @@ namespace TheEscort
             }
         }
         private static void Ebug(Player self, System.Object message, int logPrio=3){
+            if (self == null){
+                Ebug(message, logPrio);
+            }
             try{
                 if (logPrio <= instance.logImportance){
                     Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.ToString());
@@ -254,6 +261,9 @@ namespace TheEscort
             }
         }
         private static void Ebug(Player self, String[] messages, int logPrio=3, bool separated=true){
+            if (self == null){
+                Ebug(messages, logPrio, separated);
+            }
             try{
                 if (logPrio <= instance.logImportance){
                     if (separated){
@@ -281,6 +291,9 @@ namespace TheEscort
 
         }
         private static void Ebug(Player self, System.Object[] messages, int logPrio=3, bool separated=true){
+            if (self == null){
+                Ebug(messages, logPrio, separated);
+            }
             try{
                 if (logPrio <= instance.logImportance){
                     if (separated){
@@ -307,6 +320,9 @@ namespace TheEscort
             }
         }
         private static void Ebug(Player self, Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
+            if (self == null){
+                Ebug(exception, message, logPrio, asregular);
+            }
             try {
                 if (logPrio <= instance.logImportance){
                     if(asregular){
@@ -748,7 +764,7 @@ namespace TheEscort
             }
 
             if (e.Escapist){
-                if (e.EscDangerExtend < 9){
+                if (e.EscDangerExtend < 10){
                     e.EscDangerExtend++;
                     if (self.dangerGraspTime > 3 && self.dangerGraspTime < 29){
                         self.dangerGraspTime--;
@@ -800,6 +816,7 @@ namespace TheEscort
                 e.iFrames--;
             } else {
                 e.ElectroParry = false;
+                e.savingThrowed = false;
             }
 
             // Smooth color/brightness transition
@@ -1174,29 +1191,33 @@ namespace TheEscort
             Eshelp_Tick(self);
             
             // Just for seeing what a variable does.
-            if(e.consoleTick == 0){
-                Ebug(self, "Clocked.");
-                Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
-                Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
-                Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
-                if (e.Brawler){
-                    Ebug(self, "Shankmode: " + e.BrawShankMode);
-                }
-                if (e.Deflector){
-                    Ebug(self, "Empowered: " + e.DeflAmpTimer);
-                }
-                if (e.Escapist){
-                    Ebug(self, "Ungrasp Left: " + e.EscUnGraspTime);
-                }
-                if (e.Railgunner){
-                    Ebug(self, "  DoubleRock: " + e.RailDoubleRock);
-                    Ebug(self, " DoubleSpear: " + e.RailDoubleSpear);
-                    //Ebug(self, "  DoubleBomb: " + e.RailDoubleBomb);
-                    //Ebug(self, "DoubleFlower: " + e.RailDoubleFlower);
+            try{
+                if(e.consoleTick == 0){
+                    Ebug(self, "Clocked.");
+                    Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
+                    Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
+                    Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
+                    if (e.Brawler){
+                        Ebug(self, "Shankmode: " + e.BrawShankMode);
+                    }
+                    if (e.Deflector){
+                        Ebug(self, "Empowered: " + e.DeflAmpTimer);
+                    }
+                    if (e.Escapist){
+                        Ebug(self, "Ungrasp Left: " + e.EscUnGraspTime);
+                    }
+                    if (e.Railgunner){
+                        Ebug(self, "  DoubleRock: " + e.RailDoubleRock);
+                        Ebug(self, " DoubleSpear: " + e.RailDoubleSpear);
+                        //Ebug(self, "  DoubleBomb: " + e.RailDoubleBomb);
+                        //Ebug(self, "DoubleFlower: " + e.RailDoubleFlower);
+                    }
                 }
                 //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
                 //Ebug(self, "Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
                 //Ebug(self, "Normalized direction: " + self.bodyChunks[0].vel.normalized);
+            } catch (Exception err){
+                Ebug(self, err, "Caught error when updating and console logging");
             }
 
             // vfx
@@ -1233,9 +1254,9 @@ namespace TheEscort
                 // Escapist escape 
                 if (e.Escapist && e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0){
                     Color escapistColor = new Color(0.8f, 0.8f, 0.5f);
-                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 24, 10f, 3f, 16f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
-                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 25f, 2f, 24f, 2f, escapistColor * eC));
-                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 10, 10f, 2f, 16f, 2f, escapistColor * eC));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 10f, 3f, 20f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 12, 25f, 2f, 32f, 2f, escapistColor * eC));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 8, 10f, 2f, 24f, 2f, escapistColor * eC));
                 }
 
                 // Railgunner cooldown timer
@@ -1313,27 +1334,31 @@ namespace TheEscort
 
             // Implement Escapist's getaway
             if (e.Escapist){
-                if (e.EscDangerGrasp == null){
-                    e.EscUnGraspLimit = 0;
-                    e.EscUnGraspTime = 0;
-                }
-                else if (e.EscDangerGrasp.discontinued){
-                    e.EscDangerGrasp = null;
-                }
-                else if (e.EscUnGraspTime == 0){
-                    Ebug(self, "Attempted to take off grabber", 2);
-                    e.EscDangerGrasp.grabber.LoseAllGrasps();
-                    e.EscUnGraspLimit = 0;
-                    self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Duck_Pop, e.SFXChunk, false, 0.9f, 1.3f);
-                    self.cantBeGrabbedCounter = esNoGrab[1];
-                    e.EscDangerGrasp = null;
-                    e.EscUnGraspCD = esCD;
-                }
+                try{
+                    if (e.EscDangerGrasp == null){
+                        e.EscUnGraspLimit = 0;
+                        e.EscUnGraspTime = 0;
+                    }
+                    else if (e.EscDangerGrasp.discontinued){
+                        e.EscDangerGrasp = null;
+                    }
+                    else if (e.EscUnGraspTime == 0){
+                        Ebug(self, "Attempted to take off grabber", 2);
+                        e.EscDangerGrasp.grabber.LoseAllGrasps();
+                        e.EscUnGraspLimit = 0;
+                        self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Duck_Pop, e.SFXChunk, false, 0.9f, 1.3f);
+                        self.cantBeGrabbedCounter = esNoGrab[1];
+                        e.EscDangerGrasp = null;
+                        e.EscUnGraspCD = esCD;
+                    }
 
-                if (e.EscUnGraspCD > 0){
-                    self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.22f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
-                    self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.26f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
-                    self.Blink(5);
+                    if (e.EscUnGraspCD > 0){
+                        self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.22f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
+                        self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.26f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
+                        self.Blink(5);
+                    }
+                } catch (Exception err){
+                    Ebug(self, err, "UPDATE: Escapist's getaway error!");
                 }
             }
 
@@ -1423,7 +1448,7 @@ namespace TheEscort
             // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
             if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
                 orig(self, direction);
-                float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline);
+                float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline) * (e.savingThrowed? 0.7f : 1f);
                 String[] toPrint = new String[3];
                 toPrint.SetValue("Walls the Jump", 0);
                 if (
@@ -1558,34 +1583,37 @@ namespace TheEscort
                 if (self.slugcatStats.name.value != "EscortMe"){
                     return orig(self, obj);
                 }
+                if (!Esconfig_Heavylift(self)){
+                    return orig(self, obj);
+                }
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    return orig(self, obj);
+                }
+
+                if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
+                    if (e.consoleTick == 0){
+                        Ebug(self, "Revivify skip!", 1);
+                        Ebug(self, "Creature: " + creature.GetType(), 1);
+                        Ebug(self, "Player: " + self.GetOwnerType(), 1);
+                    }
+                    return orig(self, creature);
+                }
+
+                //Ebug(self, "Heavycarry Triggered!");
+                if (obj.TotalMass <= self.TotalMass * (e.Brawler? ratioed*2 : ratioed)){
+                    if (ModManager.CoopAvailable && obj is Player player && player != null && !e.Brawler){
+                        return !player.isSlugpup;
+                    }
+                    if (obj is Creature c && c is not Lizard && !c.dead){
+                        return orig(self, obj);
+                    }
+                    return false;
+                }
+                return orig(self, obj);
             } catch (Exception err){
                 Ebug(self, err);
                 return orig(self, obj);
             }
-            if (!Esconfig_Heavylift(self)){
-                return orig(self, obj);
-            }
-            if (!eCon.TryGetValue(self, out Escort e)){
-                return orig(self, obj);
-            }
-
-            if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
-                if (e.consoleTick == 0){
-                    Ebug(self, "Revivify skip!", 1);
-                    Ebug(self, "Creature: " + creature.GetType(), 1);
-                    Ebug(self, "Player: " + self.GetOwnerType(), 1);
-                }
-                return orig(self, creature);
-            }
-
-            //Ebug(self, "Heavycarry Triggered!");
-            if (obj.TotalMass <= self.TotalMass * (e.Brawler? ratioed*2 : ratioed)){
-                if (ModManager.CoopAvailable && obj is Player player && player != null && !e.Brawler){
-                    return !player.isSlugpup;
-                }
-                return false;
-            }
-            return orig(self, obj);
         }
 
         // Implement Movementthings
@@ -1771,6 +1799,7 @@ namespace TheEscort
                 // For now, saving throws only apply to bites
                 if (ouchie == Creature.DamageType.Bite && self.animation == Player.AnimationIndex.RocketJump){
                     Ebug(self, "Escort won a saving throw!", 2);
+                    e.savingThrowed = true;
                     return true;
                 }
             }
@@ -2108,12 +2137,16 @@ namespace TheEscort
             }
 
             //Ebug(self, "Collision Triggered!");
-            if (e.consoleTick == 0){
-                Ebug(self, "Escort collides!");
-                Ebug(self, "Has physical object? " + otherObject != null);
-                if (otherObject != null){
-                    Ebug(self, "What is it? " + otherObject.GetType());
+            try{
+                if (e.consoleTick == 0){
+                    Ebug(self, "Escort collides!");
+                    Ebug(self, "Has physical object? " + otherObject != null);
+                    if (otherObject != null){
+                        Ebug(self, "What is it? " + otherObject.GetType());
+                    }
                 }
+            } catch (Exception err){
+                Ebug(self, err, "Error when printing collision stuff");
             }
 
             bool hypedMode = Esconfig_Hypable(self);
@@ -2160,6 +2193,8 @@ namespace TheEscort
 
                 // Parryslide (stun module)
                 if (self.animation == Player.AnimationIndex.BellySlide){
+                    try{
+
                     creature.SetKillTag(self.abstractCreature);
 
                     if (e.parrySlideLean <= 0){
@@ -2216,10 +2251,15 @@ namespace TheEscort
                         self.animation = Player.AnimationIndex.Flip;
                         Ebug(self, "Stunslided!", 2);
                     }
+                    } catch (Exception err){
+                        Ebug(self, err, "Error while Slidestunning!");
+                    }
                 }
 
                 // Dropkick
                 else if (self.animation == Player.AnimationIndex.RocketJump){
+                    try{
+
                     creature.SetKillTag(self.abstractCreature);
 
                     String message = (e.easyKick? "Easykicked!" : "Dropkicked!");
@@ -2268,9 +2308,14 @@ namespace TheEscort
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
                     Ebug(self, message + " Dmg: " + normSlamDamage, 2);
+                    } catch (Exception err){
+                        Ebug(self, err, "Error when dropkicking!");
                     }
+                    e.savingThrowed = false;
+                }
 
                 else if (e.CometFrames > 0 && !e.Cometted){
+                    try{
                     creature.SetKillTag(self.abstractCreature);
                     creature.Violence(
                         self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x*(DKMultiplier*0.5f)*creature.TotalMass, self.bodyChunks[0].vel.y*(DKMultiplier*0.5f)*creature.TotalMass)),
@@ -2287,6 +2332,9 @@ namespace TheEscort
                         self.room.PlaySound(Escort_SFX_Boop, e.SFXChunk);
                     }
                     e.Cometted = true;
+                    } catch (Exception err){
+                        Ebug(self, err, "Error when headbutting!");
+                    }
                 }
             }
         }
@@ -2299,24 +2347,24 @@ namespace TheEscort
                 if (self.slugcatStats.name.value != "EscortMe"){
                     return;
                 }
+                if (!BodySlam.TryGet(self, out var bodySlam) ||
+                    !eCon.TryGetValue(self, out Escort e)){
+                    return;
+                }
+
+                Ebug(self, "Toss Object Triggered!");
+                if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead){
+                    if (Esconfig_SFX(self) && e.LizGet != null){
+                        e.LizGet.Volume = 0f;
+                    }
+                    if (self.bodyMode == Player.BodyModeIndex.Default){
+                        self.animation = Player.AnimationIndex.RocketJump;
+                        self.bodyChunks[1].vel.x += self.ThrowDirection;
+                    }
+                }
             } catch (Exception err){
                 Ebug(self, err);
                 return;
-            }
-            if (!BodySlam.TryGet(self, out var bodySlam) ||
-                !eCon.TryGetValue(self, out Escort e)){
-                return;
-            }
-
-            Ebug(self, "Toss Object Triggered!");
-            if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead){
-                if (Esconfig_SFX(self) && e.LizGet != null){
-                    e.LizGet.Volume = 0f;
-                }
-                if (self.bodyMode == Player.BodyModeIndex.Default){
-                    self.animation = Player.AnimationIndex.RocketJump;
-                    self.bodyChunks[1].vel.x += self.ThrowDirection;
-                }
             }
         }
 
@@ -2331,9 +2379,9 @@ namespace TheEscort
                 Ebug(self, err);
                 return;
             }
-            if(
+            if (
                 !bonusSpear.TryGet(self, out float[] spearDmgBonuses) ||
-                !brawlerSpearVelFac.TryGet(self, out float bSpearVel) ||
+                !brawlerSpearVelFac.TryGet(self, out float[] bSpearVel) ||
                 !brawlerSpearDmgFac.TryGet(self, out float[] bSpearDmg) ||
                 !brawlerSpearThrust.TryGet(self, out float bSpearThr) ||
                 !brawlerSpearShankY.TryGet(self, out float[] bSpearY) ||
@@ -2353,6 +2401,7 @@ namespace TheEscort
             float thrust = 7f;
             bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
             bool doNotYeet = onPole || !Esconfig_Spears(self) || e.RailDoubleSpear;
+            try{
             if (Esconfig_Hypable(self)){
                 if (self.aerobicLevel > requirement){
                     spear.throwModeFrames = -1;
@@ -2404,89 +2453,118 @@ namespace TheEscort
             } else {
                 spear.spearDamageBonus *= 1.25f;
             }
+            } catch (Exception err){
+                Ebug(self, err, "Error while setting additional spear effects!");
+            }
             if (e.Brawler){
-                spear.spearDamageBonus *= bSpearDmg[0];
-                spear.firstChunk.vel.x *= bSpearVel;
-                thrust *= 0.5f;
-                /*
-                if (e.BrawShankMode){
-                    spear.throwDir = new RWCustom.IntVector2(0, -1);
-                    spear.firstChunk.vel = e.BrawShankDir;
-                    spear.firstChunk.vel.y = -(Math.Abs(spear.firstChunk.vel.y)) * bSpearY[0];
-                    spear.firstChunk.pos += new Vector2(0f, bSpearY[1]);
-                    e.BrawShankMode = false;
-                    spear.spearDamageBonus = bSpearDmg[1];
+                try{
+                    spear.spearDamageBonus *= bSpearDmg[0];
+                    if (self.bodyMode == Player.BodyModeIndex.Crawl){
+                        spear.firstChunk.vel.x *= bSpearVel[0];
+                    }
+                    else if (self.bodyMode == Player.BodyModeIndex.Stand){
+                        spear.firstChunk.vel.x *= bSpearVel[1];
+                    } else {
+                        spear.firstChunk.vel.x *= bSpearVel[2];
+                    }
+                    thrust *= 0.5f;
+                    if (e.BrawShankMode){
+                        //spear.throwDir = new RWCustom.IntVector2(0, -1);
+                        spear.firstChunk.vel = e.BrawShankDir;
+                        //spear.firstChunk.vel.y = -(Math.Abs(spear.firstChunk.vel.y)) * bSpearY[0];
+                        //spear.firstChunk.pos += new Vector2(0f, bSpearY[1]);
+                        spear.firstChunk.vel *= bSpearY[0];
+                        //spear.doNotTumbleAtLowSpeed = true;
+                        e.BrawShankMode = false;
+                        spear.spearDamageBonus = bSpearDmg[1];
+                        if (self.room != null){
+                            self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk, false, 1f, 2f);
+                        }
+                    }
+                } catch (Exception err){
+                    Ebug(self, err, "Error while applying Brawler-specific speartoss");
                 }
-                */
             }
             if (e.Deflector){
-                if (e.DeflAmpTimer > 0){
-                    spear.spearDamageBonus *= dSpearDmg[0];
-                    spear.firstChunk.vel *= dSpearVel[0];
-                    e.DeflAmpTimer = 0;
-                }
-                else {
-                    spear.spearDamageBonus = dSpearDmg[1];
-                    spear.firstChunk.vel *= dSpearVel[1];
+                try{
+                    if (e.DeflAmpTimer > 0){
+                        spear.spearDamageBonus *= dSpearDmg[0];
+                        spear.firstChunk.vel *= dSpearVel[0];
+                        e.DeflAmpTimer = 0;
+                    }
+                    else {
+                        spear.spearDamageBonus = dSpearDmg[1];
+                        spear.firstChunk.vel *= dSpearVel[1];
+                    }
+                } catch (Exception err){
+                    Ebug(self, err, "Error while applying Deflector-specific speartoss");
                 }
             }
             if (e.Escapist){
                 spear.firstChunk.vel *= eSpearVel;
             }
             if (e.Railgunner){
-                thrust = 5f;
-                if (e.RailDoubleSpear){
-                    if (!e.RailFirstWeaped){
-                        spear.firstChunk.vel *= rSpearVel[0];
-                        e.RailFirstWeaper = spear.firstChunk.vel;
-                        e.RailFirstWeaped = true;
-                    }
-                    else {
-                        spear.firstChunk.vel = e.RailFirstWeaper;
-                        e.RailFirstWeaped = false;
-                        //e.BarbDoubleSpear = false;
-                        if (self.bodyMode == Player.BodyModeIndex.Crawl){
-                            thrust *= rSpearThr[0];
-                        } else if (self.bodyMode == Player.BodyModeIndex.Stand) {
-                            thrust *= rSpearThr[1];
-                        } else {
-                            thrust *= rSpearThr[2];
+                try{
+                    thrust = 5f;
+                    if (e.RailDoubleSpear){
+                        if (!e.RailFirstWeaped){
+                            spear.firstChunk.vel *= rSpearVel[0];
+                            e.RailFirstWeaper = spear.firstChunk.vel;
+                            e.RailFirstWeaped = true;
                         }
+                        else {
+                            spear.firstChunk.vel = e.RailFirstWeaper;
+                            e.RailFirstWeaped = false;
+                            //e.BarbDoubleSpear = false;
+                            if (self.bodyMode == Player.BodyModeIndex.Crawl){
+                                thrust *= rSpearThr[0];
+                            } else if (self.bodyMode == Player.BodyModeIndex.Stand) {
+                                thrust *= rSpearThr[1];
+                            } else {
+                                thrust *= rSpearThr[2];
+                            }
+                        }
+                        spear.spearDamageBonus *= rSpearDmg;
+                        if (!onPole){
+                            self.standing = false;
+                        }
+                    } else {
+                        thrust *= rSpearThr[3];
+                        spear.firstChunk.vel *= rSpearVel[1];
                     }
-                    spear.spearDamageBonus *= rSpearDmg;
-                    if (!onPole){
-                        self.standing = false;
-                    }
-                } else {
-                    thrust *= rSpearThr[3];
-                    spear.firstChunk.vel *= rSpearVel[1];
+                } catch (Exception err){
+                    Ebug(self, err, "Error while applying Railgunner-specific spearthrow");
                 }
             }
             if (onPole && !e.Railgunner) {
                 thrust = 1f;
             }
 
-            BodyChunk firstChunker = self.firstChunk;
-            if ((self.room != null && self.room.gravity == 0f) || (Mathf.Abs(spear.firstChunk.vel.x) < 1f && Mathf.Abs(spear.firstChunk.vel.y) < 1f)){
-                self.firstChunk.vel += spear.firstChunk.vel.normalized * Math.Abs(thrust);
-            } else {
-                if (Esconfig_Spears(self)){
-                    self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
-                }
-                if (self.animation != Player.AnimationIndex.BellySlide){
-                    if (e.Railgunner && spear.throwDir.x == 0){
-                        if (spear.throwDir.y == 1){
-                            self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.4f;
-                        } else if (spear.throwDir.y == -1){
-                            self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.65f;
+            try{
+                BodyChunk firstChunker = self.firstChunk;
+                if ((self.room != null && self.room.gravity == 0f) || (Mathf.Abs(spear.firstChunk.vel.x) < 1f && Mathf.Abs(spear.firstChunk.vel.y) < 1f)){
+                    self.firstChunk.vel += spear.firstChunk.vel.normalized * Math.Abs(thrust);
+                } else {
+                    if (Esconfig_Spears(self)){
+                        self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
+                    }
+                    if (self.animation != Player.AnimationIndex.BellySlide){
+                        if (e.Railgunner && spear.throwDir.x == 0){
+                            if (spear.throwDir.y == 1){
+                                self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.4f;
+                            } else if (spear.throwDir.y == -1){
+                                self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.65f;
+                            } else {
+                                self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+                            }
                         } else {
-                            self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+                            self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
                         }
-                    } else {
-                        self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
                     }
                 }
-            }
+            } catch (Exception err){
+                Ebug(self, err, "Error while adjusting the player thrust");
+            }            
             Ebug(self, "Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, 2);
         }
 
@@ -2500,15 +2578,15 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
-                /*
                 if (e.Brawler && (self.grasps[grasp] != null && self.grasps[1 - grasp] != null)){
                     for (int j = 0; j < 2; j++){
                         if (self.grasps[j].grabbed is Spear s &&
                         self.grasps[1 - j].grabbed is Creature cs){
-                            if (cs.dead){
+                            if (cs.dead || cs.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || cs.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && cs is Player && !RWCustom.Custom.rainWorld.options.friendlyFire)){
                                 break;
                             }
                             Creature c = cs;
+                            c.firstChunk.vel.y += 1f;
                             orig(self, 1 - j, eu);
                             
                             //s.alwaysStickInWalls = false;
@@ -2517,7 +2595,7 @@ namespace TheEscort
                             //}
                             
                             //s.firstChunk.pos = self.mainBodyChunk.pos + new Vector2(0f, 80f);
-                            s.firstChunk.vel = new Vector2(c.firstChunk.pos.x - s.firstChunk.pos.x, c.firstChunk.pos.y - s.firstChunk.pos.y).normalized;
+                            s.firstChunk.vel = new Vector2(c.mainBodyChunk.pos.x - s.firstChunk.pos.x, c.mainBodyChunk.pos.y - s.firstChunk.pos.y).normalized;
                             //Vector2 v = (c.firstChunk.pos - s.firstChunk.pos).normalized * 3f;
                             e.BrawShankDir = s.firstChunk.vel;
                             Ebug(self, "Throw Spear at Creature!");
@@ -2526,12 +2604,13 @@ namespace TheEscort
                             return;
                         }
                     }
-                }*/
+                }
 
-                if (e.Railgunner && (e.RailDoubleSpear || e.RailDoubleRock) && !(escPatch_revivify && self.Malnourished)){
+                if (e.Railgunner && (e.RailDoubleSpear || e.RailDoubleRock)){
                     self.standing = false;
                     if (self.Malnourished){
                         self.Stun(20 * e.RailgunUse);
+                        e.RailgunUse++;
                     }
                     Vector2 p = new Vector2();
                     Vector2 v = new Vector2();
@@ -2578,11 +2657,14 @@ namespace TheEscort
                     } else {
                         e.RailgunCD += 40 * addition;
                     }
+                    if (e.RailgunCD > 400){
+                        e.RailgunCD = 400;
+                    }
                     e.RailgunUse += addition;
                     return;
                 }
             } catch (Exception err){
-                Ebug(self, err);
+                Ebug(self, err, "Throwing object error!");
                 orig(self, grasp, eu);
                 return;
             }
@@ -2778,6 +2860,7 @@ namespace TheEscort
 
         }
 
+
         private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj){
             try{
                 if (self.slugcatStats.name.value != "EscortMe"){
@@ -2786,52 +2869,58 @@ namespace TheEscort
                 if (obj == null){
                     return orig(self, obj);
                 }
+                if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
+                    return Player.ObjectGrabability.TwoHands;
+                }
+                if (!dualWielding.TryGet(self, out bool dW) ||
+                    !eCon.TryGetValue(self, out Escort e)){
+                    return orig(self, obj);
+                }
+
+                if (dW && e.dualWield){
+                    if (obj is Weapon){
+                        // Any weapon is dual-wieldable, including spears
+                        return Player.ObjectGrabability.OneHand;
+                    }
+                    if (e.Brawler){
+                        for (int i = 0; i < 2; i++){
+                            if (
+                                self.grasps[i] != null &&
+                                self.grasps[i].grabbed != obj &&
+                                self.grasps[i].grabbed is Spear &&
+                                obj is Creature c && !c.dead &&
+                                c.Stunned){
+                                if (c is Lizard l && Esconfig_Dunkin(self) && !e.LizardDunk){
+                                    if (e.LizGoForWalk == 0){
+                                        e.LizGoForWalk = 320;
+                                    }
+                                    e.LizardDunk = true;
+                                }
+                                return Player.ObjectGrabability.OneHand;
+                            }
+                        }
+                    }
+                    if (obj is Lizard lizzie){
+                        // Any lizards that are haulable (while dead) or stunned are dual-wieldable
+                        if (lizzie.dead){
+                            return Player.ObjectGrabability.OneHand;
+                        } else if (lizzie.Stunned && Esconfig_Dunkin(self) && !e.LizardDunk){
+                            if (e.LizGoForWalk == 0){
+                                e.LizGoForWalk = 320;
+                            }
+                            if (!Esconfig_SFX(self)) {
+                                self.room.PlaySound(SoundID.Slugcat_Pick_Up_Misc_Inanimate, self.mainBodyChunk);
+                            }
+                            e.LizardDunk = true;
+                            return Player.ObjectGrabability.TwoHands;
+                        }
+                    }
+                }
+                return orig(self, obj);
             } catch (Exception err){
                 Ebug(self, err);
                 return orig(self, obj);
             }
-            if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead) {
-                return Player.ObjectGrabability.TwoHands;
-            }
-            if (!dualWielding.TryGet(self, out bool dW) ||
-                !eCon.TryGetValue(self, out Escort e)){
-                return orig(self, obj);
-            }
-
-            if (dW && e.dualWield){
-                if (obj is Weapon){
-                    // Any weapon is dual-wieldable, including spears
-                    return Player.ObjectGrabability.OneHand;
-                }
-                if (e.Brawler){
-                    for (int i = 0; i < 2; i++){
-                        if (
-                            self.grasps[i] != null &&
-                            self.grasps[i].grabbed is Spear &&
-                            !self.HeavyCarry(obj) &&
-                            obj is Creature c && !c.dead &&
-                            c.Stunned){
-                            return Player.ObjectGrabability.OneHand;
-                        }
-                    }
-                }
-                if (obj is Lizard lizzie){
-                    // Any lizards that are haulable (while dead) or stunned are dual-wieldable
-                    if (lizzie.dead){
-                        return Player.ObjectGrabability.OneHand;
-                    } else if (lizzie.Stunned && Esconfig_Dunkin(self) && !e.LizardDunk){
-                        if (e.LizGoForWalk == 0){
-                            e.LizGoForWalk = 320;
-                        }
-                        if (!Esconfig_SFX(self)) {
-                            self.room.PlaySound(SoundID.Slugcat_Pick_Up_Misc_Inanimate, self.mainBodyChunk);
-                        }
-                        e.LizardDunk = true;
-                        return Player.ObjectGrabability.TwoHands;
-                    }
-                }
-            }
-            return orig(self, obj);
         }
 
         private void Escort_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu){

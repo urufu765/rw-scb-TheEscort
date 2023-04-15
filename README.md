@@ -13,7 +13,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.4)** Spearthrow up and down in corridors!
 
-**(0.2.3.4)** Added Brawler's shank! New campaign image! 
+**(0.2.3.6)** New campaign image!
+
+**(0.2.3.5)** Reduced shanking damage while I work on how to balance it, fixed lizard dropkick, fixed death explosion
+
+**(0.2.3.4)** Buffed Escapist so they have more time to escape from grasps. Added a lot more try/catches to make sure errors occur less often. Undid revivify thing whatever it was. Added Brawler's shank! Escort can no longer onehand living creatures. Fixed recursion crash when using brawler build. Buffed Railgunner's doubleup
 
 **(0.2.3.3)** Adjusted how malnourished works. Also adjusted how the CD is added for railgunner. Also also railgunner regular spear velocity buff. Also adjusted easykick so it's more lenient... and also adjusted the explosion for more hilarity
 

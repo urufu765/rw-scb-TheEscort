@@ -72,10 +72,10 @@
 
 		"theescort/brawler/slide_launch_fac": 0.5,
 		"theescort/brawler/dk_h_dmg": 2,
-		"theescort/brawler/spear_vel_fac": 0.7,
-		"theescort/brawler/spear_dmg_fac": [1.25, 10],
+		"theescort/brawler/spear_vel_fac": [0.73, 0.72, 0.71],
+		"theescort/brawler/spear_dmg_fac": [1.25, 5],
 		"theescort/brawler/spear_thrust": 0.5,
-		"theescort/brawler/spear_shank": [70, 120],
+		"theescort/brawler/spear_shank": [35, 120],
 
 		"theescort/deflector/slide_dmg": 0.4,
 		"theescort/deflector/dk_h_dmg": [3, 0.5],
@@ -92,7 +92,7 @@
 		"theescort/escapist/color": 2,
 
 		"theescort/railgunner/spear_vel_fac": [2, 0.95],
-		"theescort/railgunner/spear_dmg_fac": 1.25,
+		"theescort/railgunner/spear_dmg_fac": 1.3,
 		"theescort/railgunner/spear_thrust": [-9, -12, -16, 0.75],
 		"theescort/railgunner/rock_vel_fac": 3.3,
 		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3]
