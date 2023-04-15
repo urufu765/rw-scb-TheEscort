@@ -2,3 +2,5 @@
 [ADD]Escort_Flip : escortflip/vol=0.25/minPitch=0.9/maxPitch=1.1
 [ADD]Escort_Roll/rangeFac=1 : escortaround/vol=0.3/pitch=0.9
 [ADD]Escort_Liz_Grab/rangeFac=1 : lizzrdgrab/vol=0.3/pitch=1
+[ADD]Escort_Boop : escortboopa/vol=0.3/pitch=1.05, escortboopb/vol=0.3/pitch=1, escortboopc/vol=0.3/pitch=1.15, escortboopd/vol=0.3/pitch=1.1, escortboope/vol=0.3/pitch=0.95
+[ADD]Escort_Rail_Fail : escortrailfail/vol=0.25/minPitch=0.7/maxPitch=1.15

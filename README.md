@@ -13,7 +13,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.4)** Spearthrow up and down in corridors!
 
-**(0.2.3.2)** Added vfx for railgunner and escapist's gimmicks, and an additional sfx (boop!) for the headbutt, and added cooldown for the dual throws (as well as a vfx to indicate it's in cooldown), campaign image!
+**(0.2.3.3)** Added Brawler's shank! New campaign image!
+
+**(0.2.3.2)** Added vfx for railgunner and escapist's gimmicks, and an additional sfx (boop!) for the headbutt, and added cooldown for the dual throws (as well as a vfx to indicate it's in cooldown)
 
 **(0.2.3.1)** Nerfed breathing underwater, increased visibility of markings at lowest hype, fixed railgunner hyped behaviour (throwing the spears the wrong way), tweaked railgunner's speartoss so it correctly launches railgunner up or down when doing up or down spear tosses.
 

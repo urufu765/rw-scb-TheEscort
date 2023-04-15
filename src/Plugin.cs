@@ -8,7 +8,7 @@ using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.3.2")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -112,6 +112,7 @@ namespace TheEscort
         public static readonly PlayerFeature<float> escapistSpearVelFac= PlayerFloat("theescort/escapist/spear_vel_fac");
         public static readonly PlayerFeature<int[]> escapistNoGrab = PlayerInts("theescort/escapist/no_grab");
         public static readonly PlayerFeature<int> escapistCD = PlayerInt("theescort/escapist/cd");
+        public static readonly PlayerFeature<float> escapistColor = PlayerFloat("theescort/escapist/color");
 
         // Railgunner tweak values
         // public static readonly PlayerFeature<> railgun = Player("theescort/railgunner/");
@@ -128,6 +129,8 @@ namespace TheEscort
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Roll;
+        public static SoundID Escort_SFX_Boop;
+        public static SoundID Escort_SFX_Railgunner_Death;
         public static SoundID Escort_SFX_Lizard_Grab;
         //public static SoundID Escort_SFX_Spawn;
 
@@ -381,6 +384,8 @@ namespace TheEscort
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
+            Escort_SFX_Boop = new SoundID("Escort_Boop", true);
+            Escort_SFX_Railgunner_Death = new SoundID("Escort_Rail_Fail", true);
             Escort_SFX_Lizard_Grab = new SoundID("Escort_Liz_Grab", true);
             FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
@@ -641,7 +646,7 @@ namespace TheEscort
 
                     case -4:  // Railgunner build
                         e.Railgunner = true;
-                        self.slugcatStats.lungsFac = 1.4f;
+                        self.slugcatStats.lungsFac = 1.3f;
                         self.slugcatStats.throwingSkill = 2;
                         self.slugcatStats.loudnessFac += 2f;
                         self.slugcatStats.generalVisibilityBonus += 1f;
@@ -773,6 +778,11 @@ namespace TheEscort
                 }
                 if (e.RailGaussed > 0){
                     e.RailGaussed--;
+                }
+                if (e.RailgunCD > 0){
+                    e.RailgunCD--;
+                } else {
+                    e.RailgunUse = 0;
                 }
             }
 
@@ -1154,6 +1164,7 @@ namespace TheEscort
                 !WallJumpVal.TryGet(self, out float[] WJV) ||
                 !escapistCD.TryGet(self, out int esCD) ||
                 !escapistNoGrab.TryGet(self, out int[] esNoGrab) ||
+                !escapistColor.TryGet(self, out float eC) ||
                 !eCon.TryGetValue(self, out Escort e)
                 ){
                 return;
@@ -1213,12 +1224,41 @@ namespace TheEscort
                 }
 
                 // Empowered damage from parry visual effect
-                if (e.DeflAmpTimer > 0){
+                if (e.Deflector && e.DeflAmpTimer > 0){
                     Color empoweredColor = new Color(1f, 0.7f, 0.35f, 0.7f);
                     //empoweredColor.a = 0.7f;
                     //self.room.AddObject(new MoreSlugcats.VoidParticle(self.mainBodyChunk.pos, RWCustom.Custom.RNV() * UnityEngine.Random.value, 5f));
                     self.room.AddObject(new Spark(self.bodyChunks[0].pos + new Vector2((e.DeflAmpTimer%2==0? 5: -5), 0), new Vector2(2f * (e.DeflAmpTimer%2==0? 1: -1), Mathf.Lerp(-1f, 1f, UnityEngine.Random.value)), empoweredColor, null, 9, 13));
                 }
+                // Escapist escape 
+                if (e.Escapist && e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0){
+                    Color escapistColor = new Color(0.8f, 0.8f, 0.5f);
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 24, 10f, 3f, 16f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 25f, 2f, 24f, 2f, escapistColor * eC));
+                    self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 10, 10f, 2f, 16f, 2f, escapistColor * eC));
+                }
+
+                // Railgunner cooldown timer
+                if (e.Railgunner && e.RailgunCD > 0){
+                    Color railgunColor = new Color(0.5f, 0.85f, 0.78f);
+                    float r = UnityEngine.Random.Range(-1, 1);
+                    for (int i = 0; i < (e.RailgunUse >= e.RailgunLimit - 3? 3 : 1); i++){
+                        Vector2 v = RWCustom.Custom.RNV() * (r == 0? 0.1f : r);
+                        self.room.AddObject(new Spark(self.mainBodyChunk.pos + 15f * v, v, Color.Lerp(railgunColor * 0.5f, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit - 3, e.RailgunUse)), null, (e.RailgunUse >= e.RailgunLimit - 3? 8 : 6), (e.RailgunUse >= e.RailgunLimit - 3? 16 : 10)));
+                    }
+                    /*
+                    self.room.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[0].pos, self.mainBodyChunk.vel + new Vector2(0, 1), 1f, Color.Lerp(Color.black, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)), Color.Lerp(new Color(0f, 0f, 0f, 0f), railgunColor, Mathf.InverseLerp(0, 400, e.RailgunCD)), (e.RailgunUse >= e.RailgunLimit - 3? 12 : 6)));
+                    */
+                    /*
+                    self.room.AddObject(new Explosion.ExplosionSmoke(self.mainBodyChunk.pos, RWCustom.Custom.RNV() * 1.5f * UnityEngine.Random.value, 1f){
+                        colorA = Color.Lerp(Color.black, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)),
+                        colorB = Color.Lerp(new Color(0f, 0f, 0f, 0f), railgunColor, Mathf.InverseLerp(0, 400, e.RailgunCD))
+                    });*/
+                    //Smoke.FireSmoke s = new Smoke.FireSmoke(self.room);
+                    //self.room.AddObject(s);
+                    //s.EmitSmoke(self.mainBodyChunk.pos, RWCustom.Custom.RNV(), Color.Lerp(Color.black, railgunColor, Mathf.InverseLerp(0, 400, e.RailgunCD)), (e.RailgunUse >= e.RailgunLimit - 3? 12 : 5));
+                }
+
             }
 
             // Implement guuh wuuh
@@ -1266,11 +1306,10 @@ namespace TheEscort
             }
 
             // Implement Easy Mode
-            if (e.easyMode && (self.wantToJump > 0 && self.input[0].pckp)){
+            if (e.easyMode && (self.wantToJump > 0 && self.input[0].pckp) && self.input[0].x != 0){
                 self.animation = Player.AnimationIndex.RocketJump;
-
+                e.easyKick = true;
             }
-
 
             // Implement Escapist's getaway
             if (e.Escapist){
@@ -1285,15 +1324,15 @@ namespace TheEscort
                     Ebug(self, "Attempted to take off grabber", 2);
                     e.EscDangerGrasp.grabber.LoseAllGrasps();
                     e.EscUnGraspLimit = 0;
-                    self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Duck_Pop, self.mainBodyChunk, false, 0.8f, 1.5f);
+                    self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Duck_Pop, e.SFXChunk, false, 0.9f, 1.3f);
                     self.cantBeGrabbedCounter = esNoGrab[1];
                     e.EscDangerGrasp = null;
                     e.EscUnGraspCD = esCD;
                 }
 
                 if (e.EscUnGraspCD > 0){
-                    self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.5f, Mathf.InverseLerp(0f, 80f, (float)(e.EscUnGraspCD)));
-                    self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.5f, Mathf.InverseLerp(0f, 80f, (float)(e.EscUnGraspCD)));
+                    self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.22f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
+                    self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.26f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
                     self.Blink(5);
                 }
             }
@@ -1653,6 +1692,14 @@ namespace TheEscort
                 self.bodyChunks[0].vel.y += 0.05f;
                 self.bodyChunks[1].vel.y += 0.1f;
             }
+            if(e.easyMode && e.easyKick){
+                if (self.animation == Player.AnimationIndex.RocketJump && self.input[0].x == 0){
+                    self.animation = Player.AnimationIndex.None;
+                }
+                if (self.animation != Player.AnimationIndex.RocketJump){
+                    e.easyKick = false;
+                }
+            } 
 
             // I'll find out how to implement a more lineant slide (like rivulet's slide pounces) while keeping it short (like every other slugcats) one day...
             //if (self.animation == Player.AnimationIndex.BellySlide){
@@ -1712,7 +1759,11 @@ namespace TheEscort
                 return false;
             }
             if (offender.owner is not Creature){
-                Ebug(self, "Saving throw failed due to the offender not being a creature!");
+                Ebug(self, "Saving throw failed due to the offender not being a creature!", 2);
+                return false;
+            }
+            if (e.easyKick){
+                Ebug(self, "Saving throw don't work on easier dropkicks!", 2);
                 return false;
             }
             // Deflector isn't allowed a saving throw because they don't need it ;)
@@ -2171,13 +2222,13 @@ namespace TheEscort
                 else if (self.animation == Player.AnimationIndex.RocketJump){
                     creature.SetKillTag(self.abstractCreature);
 
-                    String message = "Dropkicked!";
+                    String message = (e.easyKick? "Easykicked!" : "Dropkicked!");
                     self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 1.15f);
                     
                     if (!creature.dead) {
                         DKMultiplier *= creature.TotalMass;
                     }
-                    float normSlamDamage = 0.05f;
+                    float normSlamDamage = (e.easyKick? 0.001f : 0.05f);
                     if (e.DropKickCD == 0){
                         normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler? 0.27f : 0.15f));
                         creature.LoseAllGrasps();
@@ -2206,7 +2257,7 @@ namespace TheEscort
                     if (e.DeflAmpTimer > 0){
                         e.DeflAmpTimer = 0;
                     }
-                    e.DropKickCD = (self.longBellySlide? 25 : 15);
+                    e.DropKickCD = (e.easyKick? 40 : 15);
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
                     /*
                     if (self.pickUpCandidate is Spear){
@@ -2232,6 +2283,9 @@ namespace TheEscort
                         self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     }
                     Ebug(self, "Headbutted!", 2);
+                    if (self.room != null){
+                        self.room.PlaySound(Escort_SFX_Boop, e.SFXChunk);
+                    }
                     e.Cometted = true;
                 }
             }
@@ -2477,25 +2531,49 @@ namespace TheEscort
                 if (e.Railgunner && (e.RailDoubleSpear || e.RailDoubleRock)){
                     self.standing = false;
                     Vector2 p = new Vector2();
-                    // Vector2 v = new Vector2();
+                    Vector2 v = new Vector2();
                     if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon){
                         p = self.grasps[grasp].grabbed.firstChunk.pos;
-                        // v = self.grasps[grasp].grabbed.firstChunk.vel;
+                        v = self.grasps[grasp].grabbed.firstChunk.vel;
                     }
+                    Weapon w = self.grasps[grasp].grabbed as Weapon;
                     orig(self, grasp, eu);
                     self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
-                    // self.grasps[1].grabbed.firstChunk.vel = v;
+                    //self.grasps[1].grabbed.firstChunk.vel = v;
                     orig(self, 1 - grasp, eu);
 
                     if (self.room != null){
-                        self.room.PlaySound(SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, 0.85f, 1.75f);
+                        Color c = new Color(0.5f, 0.85f, 0.78f);
+                        Smoke.FireSmoke s = new Smoke.FireSmoke(self.room);
+                        self.room.AddObject(s);
                         for (int i = 0; i < 6; i++)
                         {
-                            self.room.AddObject(new Spark(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(2f, 7f, UnityEngine.Random.value) * 6, new Color(1f, 1f, 1f), null, 10, 170));
+                            self.room.AddObject(new Spark(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(2f, 7f, UnityEngine.Random.value) * 6, c, null, 10, 170));
+                            s.EmitSmoke(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, self.mainBodyChunk.vel + v * UnityEngine.Random.value * -10f, c, 12);
                         }
+                        self.room.AddObject(new Explosion.ExplosionLight(p, 90f, 0.7f, 4, c));
+                        if (e.Esclass_Railgunner_Death(self, self.room)){
+                            if (Esconfig_SFX(self)){
+                                self.room.PlaySound(Escort_SFX_Railgunner_Death, e.SFXChunk);
+                            }
+                            return;
+                        }
+                        self.room.PlaySound(e.RailgunUse >= e.RailgunLimit - 3? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, 0.8f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
+
+                        // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
                         // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
                     }
                     e.RailGaussed = 60;
+                    if (e.RailgunCD == 0){
+                        e.RailgunCD = 400;
+                    } else {
+                        e.RailgunCD += 80;
+                    }
+                    if (e.RailDoubleRock){
+                        e.RailgunUse++;
+                    } else if (e.RailDoubleSpear){
+                        e.RailgunUse += 3;
+                    }
                     return;
                 }
             } catch (Exception err){

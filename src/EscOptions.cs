@@ -80,13 +80,23 @@ namespace TheEscort{
             float xp = this.xpadding;
             float yp = this.ypadding;
             float tp = this.tpadding;
+
             Color tempColor = new Color(0.5f, 0.5f, 0.55f);
             Color descColor = new Color(0.53f, 0.48f, 0.59f);
             Color easyColor = new Color(0.42f, 0.75f, 0.5f);
+
             Color p1Color = new Color(1f, 1f, 1f);
             Color p2Color = new Color(1f, 1f, 23f / 51f);
             Color p3Color = new Color(1f, 23f / 51f, 23f / 51f);
             Color p4Color = RWCustom.Custom.HSL2RGB(0.63055557f, 0.54f, 0.2f);
+
+            Color bShadow = new Color(0.1f, 0.1f, 0.1f);
+            Color bDefault = new Color(0.75f, 0.75f, 0.75f);
+            Color bBrawler = new Color(0.8f, 0.6f, 0.6f);
+            Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
+            Color bEscapist = new Color(0.8f, 0.8f, 0.5f);
+            Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
+
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
             base.Initialize();
@@ -214,53 +224,53 @@ namespace TheEscort{
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default", true){
-                    color = new Color(0.75f, 0.75f, 0.75f) * 0.75f
+                    color = bDefault * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 2.5f) - (tp * 2.1f) + 0.7f, "  The intended way of playing Escort."){
-                    color = new Color(0.1f, 0.1f, 0.1f)
+                    color = bShadow
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), "  The intended way of playing Escort."){
-                    color = new Color(0.75f, 0.75f, 0.75f)
+                    color = bDefault
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), "Brawler", true){
-                    color = new Color(0.8f, 0.6f, 0.6f) * 0.75f
+                    color = bBrawler * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 3.5f) - (tp * 2.1f) + 0.7f, "  More powerful and consistent close-combat, but reduced range efficiency."){
-                    color = new Color(0.1f, 0.1f, 0.1f)
+                    color = bShadow
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 2.1f), "  More powerful and consistent close-combat, but reduced range efficiency."){
-                    color = new Color(0.8f, 0.6f, 0.6f)
+                    color = bBrawler
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), "Deflector", true){
-                    color = new Color(0.69f, 0.55f, 0.9f) * 0.75f
+                    color = bDeflector * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 4.5f) - (tp * 2.1f) + 0.7f, "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
-                    color = new Color(0.1f, 0.1f, 0.1f)
+                    color = bShadow
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 2.1f), "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
-                    color = new Color(0.69f, 0.55f, 0.9f)
+                    color = bDeflector
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), "Escapist", true){
-                    color = new Color(0.8f, 0.8f, 0.5f) * 0.75f
+                    color = bEscapist * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 5.5f) - (tp * 2.1f) + 0.7f, "  Force out of grasps, though don't expect to be fighting much..."){
-                    color = new Color(0.1f, 0.1f, 0.1f)
+                    color = bShadow
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), "  Force out of grasps, though don't expect to be fighting much..."){
-                    color = new Color(0.8f, 0.8f, 0.5f)
+                    color = bEscapist
                 },
 
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), "Railgunner", true){
-                    color = new Color(0.5f, 0.85f, 0.78f) * 0.75f
+                    color = bRailgunner * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 6.5f) - (tp * 2.1f) + 0.7f, swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
-                    color = new Color(0.1f, 0.1f, 0.1f)
+                    color = bShadow
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
-                    color = new Color(0.5f, 0.85f, 0.78f)
+                    color = bRailgunner
                 },
             };
             this.gimmickSet = new UIelement[]{

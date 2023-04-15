@@ -89,11 +89,12 @@
 		"theescort/escapist/spear_vel_fac": 0.8,
 		"theescort/escapist/no_grab": [30, 80],
 		"theescort/escapist/cd" : 480,
+		"theescort/escapist/color": 2,
 
 		"theescort/railgunner/spear_vel_fac": [2, 0.9],
-		"theescort/railgunner/spear_dmg_fac": 0.9,
+		"theescort/railgunner/spear_dmg_fac": 1.25,
 		"theescort/railgunner/spear_thrust": [-9, -12, -16, 0.75],
-		"theescort/railgunner/rock_vel_fac": 2.5,
+		"theescort/railgunner/rock_vel_fac": 3.3,
 		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3]
 		}
 }
