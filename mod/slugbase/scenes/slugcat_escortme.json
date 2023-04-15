@@ -2,17 +2,17 @@
 	"id": "Slugcat_EscortMe",
 	"scene_folder": "scenes/slugcat - escortme",
 	"images": [
-		{ "name": "placeholder bg - 6", "pos": [492, 297], "depth": 4, "shader": "Basic" },
-		{ "name": "placeholder bg - 5",    "pos": [420, 140], "depth": 3.8, "shader": "Basic" },
-		{ "name": "placeholder bg - 4",    "pos": [0, 60], "depth": 3.4, "shader": "Basic" },
-		{ "name": "placeholder bg - 3",    "pos": [420, 140], "depth": 3.0, "shader": "Basic" },
-		{ "name": "placeholder bg - 2",    "pos": [0, 60], "depth": 2.6, "shader": "Basic" },
-		{ "name": "placeholder escort - 1",    "pos": [420, 140], "depth": 2.2, "shader": "Basic" },
-		{ "name": "placeholder fg - 0",    "pos": [0, 60], "depth": 1.8, "shader": "Basic" }
+		{ "name": "escort bg - 6", "pos": [421, 197], "depth": 4.4, "shader": "Basic" },
+		{ "name": "escort bg - 5",    "pos": [529, 174], "depth": 4.2, "shader": "Basic" },
+		{ "name": "escort mg - 4",    "pos": [416, 120], "depth": 3.6, "shader": "Basic" },
+		{ "name": "escort mg - 3",    "pos": [469, 455], "depth": 3.3, "shader": "Basic" },
+		{ "name": "escort slugcat - 2",    "pos": [582, 207], "depth": 2.6, "shader": "Basic" },
+		{ "name": "escort fg - 1",    "pos": [399, 182], "depth": 2.1, "shader": "Basic" },
+		{ "name": "escort fg - 0",    "pos": [381, 321], "depth": 1.8, "shader": "Basic" }
 	],
-	"idle_depths": [ 2.2 ],
+	"idle_depths": [ 2.1, 2.8 ],
 	"glow_pos": [688, 484],
 	"mark_pos": [689, 583],
 	"select_menu_pos": [0, 0],
-	"slugcat_depth": 2.2
+	"slugcat_depth": 2.6
 }

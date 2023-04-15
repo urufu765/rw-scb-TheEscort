@@ -32,9 +32,12 @@ namespace TheEscort{
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
         public Configurable<bool> cfgDKAnimation;
+        public Configurable<bool> cfgNoticeHype;
+        public Configurable<bool> cfgNoticeEmpower;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
+        private UIelement[] accessibleSet;
         private readonly float yoffset = 560f;
         private readonly float xoffset = 30f;
         private readonly float ypadding = 40f;
@@ -65,6 +68,8 @@ namespace TheEscort{
             this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
+            this.cfgNoticeHype = this.config.Bind<bool>("cfg_Noticeable_Hype", false);
+            this.cfgNoticeEmpower = this.config.Bind<bool>("cfg_Noticeable_Empower", false);
         }
 
         private static string swapper(string text, string with=""){
@@ -96,6 +101,7 @@ namespace TheEscort{
             Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
             Color bEscapist = new Color(0.8f, 0.8f, 0.5f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
+            Color bSpeedster = Color.grey;
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
@@ -103,10 +109,12 @@ namespace TheEscort{
             OpTab mainTab = new OpTab(this, "Main");
             OpTab buildTab = new OpTab(this, "Builds");
             OpTab gimmickTab = new OpTab(this, "Gimmicks");
+            OpTab accessibilityTab = new OpTab(this, "Accessibility");
             this.Tabs = new OpTab[]{
                 mainTab,
                 buildTab,
-                gimmickTab
+                gimmickTab,
+                accessibilityTab
             };
 
 
@@ -275,6 +283,17 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
                     color = bRailgunner
                 },
+
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Coming soon...", true){
+                    color = bSpeedster * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 7.5f) - (tp * 2.1f) + 0.7f, "  Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast."){
+                    color = bShadow
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 2.1f), "  Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast."){
+                    color = bSpeedster
+                },
+
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, "Gimmicks", true),
@@ -303,9 +322,32 @@ namespace TheEscort{
                     description = OptionInterface.Translate("During dropkicks, Escort turns their body in midair to make dropkicks look like dropkick dropkicks. (Default=true)"),
                 }
             };
+            this.accessibleSet = new UIelement[]{
+                new OpLabel(xo, yo, "Accessibility", true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), "Change how some visual effects are displayed for easier understanding of what's going on."){
+                    color = descColor
+                },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Stronger Battle-hyped Indicator"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgNoticeHype, new Vector2(xo + (xp * 0), yo - (yp * 2))){
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("Adds a visual effect to show more clearly whether Escort is in the battle-hyped state or not. (Default=false)")
+                },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Different Empowered VFX for Deflector Build"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgNoticeEmpower, new Vector2(xo + (xp * 0), yo - (yp * 3))){
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("Changes the empowered vfx for Deflector Escort from sparks to pulsing circle. (Default=false)")
+                },
+            };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
             gimmickTab.AddItems(this.gimmickSet);
+            accessibilityTab.AddItems(this.accessibleSet);
         }
     }
 }

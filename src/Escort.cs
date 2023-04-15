@@ -38,6 +38,7 @@ namespace TheEscort{
         public bool easyKick;
         public int consoleTick;
         public bool savingThrowed;
+        public bool lenientSlide;
         
         // Build stuff
         public bool Brawler;
@@ -46,6 +47,8 @@ namespace TheEscort{
         public bool Deflector;
         public int DeflAmpTimer;
         public int DeflSFXcd;
+        public int DeflSlideCom;
+        public bool DeflSlideKick;
         public bool Escapist;
         public int EscDangerExtend;
         public Creature.Grasp EscDangerGrasp;
@@ -57,14 +60,18 @@ namespace TheEscort{
         public Creature RailThrower;
         public bool RailDoubleSpear;
         public bool RailDoubleRock;
+        public bool RailDoubleLilly;
+        public bool RailDoubleBomb;
         public bool RailFirstWeaped;
         public Vector2 RailFirstWeaper;
         public int RailWeaping;
         public int RailgunCD;
         public int RailgunUse;
         public int RailgunLimit;
+        public bool RailIReady;
         public bool Speedstar;
-        public int SpeeSpeedin;
+        public int SpeSpeedin;
+        public bool SpeDashNCrash;
         
 
         
@@ -101,6 +108,7 @@ namespace TheEscort{
             this.easyKick = false;
             this.consoleTick = 0;
             this.savingThrowed = false;
+            this.lenientSlide = false;
 
 
             // Build specific
@@ -111,6 +119,8 @@ namespace TheEscort{
             this.Deflector = false;
             this.DeflAmpTimer = 0;
             this.DeflSFXcd = 0;
+            this.DeflSlideCom = 0;
+            this.DeflSlideKick = false;
 
             this.Escapist = false;
             this.EscDangerExtend = 0;
@@ -124,12 +134,15 @@ namespace TheEscort{
             this.RailThrower = player;
             this.RailDoubleSpear = false;
             this.RailDoubleRock = false;
+            this.RailDoubleLilly = false;
+            this.RailDoubleBomb = false;
             this.RailFirstWeaped = false;
             this.RailFirstWeaper = new Vector2();
             this.RailWeaping = 0;
             this.RailgunCD = 0;
             this.RailgunUse = 0;
-            this.RailgunLimit = 9;
+            this.RailgunLimit = 10;
+            this.RailIReady = false;
             }
 
 
@@ -228,7 +241,7 @@ namespace TheEscort{
                 Color c = new Color(0.5f, 0.85f, 0.78f);
                 Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
                 room.AddObject(new SootMark(room, v, 120f, bigSprite:true));
-                room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 3.5f, 10f, 0.4f, self, 0.7f, 2f, 0f));
+                room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 3.5f, 10f, 0.4f, self, 0.7f, 2f, 1f));
                 room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 40f, 1f));
                 room.AddObject(new Explosion.ExplosionLight(v, 210f, 0.7f, 7, c));
                 room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
@@ -238,7 +251,7 @@ namespace TheEscort{
                     room.AddObject(new Explosion.FlashingSmoke(v + v2 * 40f * UnityEngine.Random.value, v2 * Mathf.Lerp(4f, 20f, Mathf.Pow(UnityEngine.Random.value, 2f)), 1f + 0.05f * UnityEngine.Random.value, Color.white, c, UnityEngine.Random.Range(3, 11)));
                 }
                 room.ScreenMovement(v, default(Vector2), 1.5f);
-                room.PlaySound(SoundID.Bomb_Explode, this.SFXChunk, false, 0.95f, 0.4f);
+                room.PlaySound(SoundID.Bomb_Explode, this.SFXChunk, false, 0.90f, 0.24f);
                 self.Die();
                 return true;
             }

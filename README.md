@@ -7,13 +7,15 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 ### 0.2 - The Escort
-**(0.2.X)** Batflies are eaten in one bite and Escort just eats things twice as fast! And changed Brawler build to give more of a melee fighter fantasy. (Spear throw reduced velocity by 0.85 such that it only hits up close)
-
 **(0.2.X)** Changed how settings are applied in game (you shouldn't notice any changes)
 
-**(0.2.4)** Spearthrow up and down in corridors!
+**(0.2.X)** Spearthrow up and down in corridors!
 
-**(0.2.3.6)** New campaign image!
+**(0.2.4.X)** Railgunner pull spears from walls
+
+**(0.2.4)** New campaign and thumbnail image! Proper workshop page! Railgunner can now doubleup bombs and lillypucks, the former which will allow you to throw much further and also go right up into other's faces and blow up... the latter not working correctly but I'll adjust that later. Rolls get faster the longer you're rollin'! Batflies are eaten in one bite and Escort just eats things twice as fast! And also also fixed the boop sound playing when silly sfx are off. Also also tweaked so that using easy dropkick does not cause player to grab creatures. Gave Deflector a more lenient and faster slide. Added standard sfx for headbutting. Added accessibility tab for enabling the option to change some visual effects. And finally, eating a mushroom sets the minimum hype to the requirement level!
+
+**(0.2.3.6)** Railgunner: Increased the doubleup capacity by 1, reduced cooldown increase by half, reverted damage buff
 
 **(0.2.3.5)** Reduced shanking damage while I work on how to balance it, fixed lizard dropkick, fixed death explosion
 
