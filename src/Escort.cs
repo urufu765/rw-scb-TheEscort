@@ -224,7 +224,7 @@ namespace TheEscort{
                 Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
                 room.AddObject(new SootMark(room, v, 120f, bigSprite:true));
                 room.AddObject(new Explosion(room, self, v, 10, 30f, 60f, 3.5f, 10f, 0.4f, self, 0.7f, 2f, 0f));
-                room.AddObject(new Explosion(room, self, v, 8, 300f, 60f, 0.02f, 300f, 0.4f, self, 0.01f, 200f, 1f));
+                room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 40f, 1f));
                 room.AddObject(new Explosion.ExplosionLight(v, 210f, 0.7f, 7, c));
                 room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
                 for (int i = 0; i < 20; i++){

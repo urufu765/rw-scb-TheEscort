@@ -15,7 +15,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.3.4)** Added Brawler's shank! New campaign image! 
 
-**(0.2.3.3)** Adjusted how malnourished works. Also adjusted how the CD is added for railgunner. Also also railgunner regular spear velocity buff
+**(0.2.3.3)** Adjusted how malnourished works. Also adjusted how the CD is added for railgunner. Also also railgunner regular spear velocity buff. Also adjusted easykick so it's more lenient... and also adjusted the explosion for more hilarity
 
 **(0.2.3.2)** Added vfx for railgunner and escapist's gimmicks, and an additional sfx (boop!) for the headbutt, and added cooldown for the dual throws (as well as a vfx to indicate it's in cooldown)
 

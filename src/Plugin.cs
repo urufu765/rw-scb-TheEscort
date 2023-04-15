@@ -1693,7 +1693,7 @@ namespace TheEscort
                 self.bodyChunks[1].vel.y += 0.1f;
             }
             if(e.easyMode && e.easyKick){
-                if (self.animation == Player.AnimationIndex.RocketJump && self.input[0].x == 0){
+                if (self.animation == Player.AnimationIndex.RocketJump && self.input[0].x == 0 && self.input[1].x == 0 && self.input[2].x == 0){
                     self.animation = Player.AnimationIndex.None;
                 }
                 if (self.animation != Player.AnimationIndex.RocketJump){
