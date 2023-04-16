@@ -34,6 +34,7 @@ namespace TheEscort{
         public Configurable<bool> cfgDKAnimation;
         public Configurable<bool> cfgNoticeHype;
         public Configurable<bool> cfgNoticeEmpower;
+        public Configurable<bool> cfgFunnyDeflSlide;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
@@ -70,6 +71,7 @@ namespace TheEscort{
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
             this.cfgNoticeHype = this.config.Bind<bool>("cfg_Noticeable_Hype", false);
             this.cfgNoticeEmpower = this.config.Bind<bool>("cfg_Noticeable_Empower", false);
+            this.cfgFunnyDeflSlide = this.config.Bind<bool>("cfg_Funny_Deflector_Slide", false);
         }
 
         private static string swapper(string text, string with=""){
@@ -320,6 +322,14 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Proper Dropkick Animation"),
                 new OpCheckBox(this.cfgDKAnimation, new Vector2(xo + (xp * 0), yo - (yp * 4))){
                     description = OptionInterface.Translate("During dropkicks, Escort turns their body in midair to make dropkicks look like dropkick dropkicks. (Default=true)"),
+                },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 5) + tp/2, "Super-Extended Deflector Slide"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgFunnyDeflSlide, new Vector2(xo + (xp * 0), yo - (yp * 5))){
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("Makes Deflector Escort's slides last much longer. (Default=false)"),
                 }
             };
             this.accessibleSet = new UIelement[]{

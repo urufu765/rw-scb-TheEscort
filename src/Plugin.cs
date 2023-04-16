@@ -9,7 +9,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.4.1")]
     class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -356,6 +356,7 @@ namespace TheEscort
             On.RainWorld.PostModsInit += Escort_PostInit;
 
             On.Lizard.ctor += Escort_Lizard_ctor;
+            //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
             On.Room.Loaded += Escort_Hip_Replacement;
 
@@ -887,6 +888,25 @@ namespace TheEscort
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
         }
+        /*
+        private void Escort_Lizard_Denial(On.LizardAI.orig_GiftRecieved orig, LizardAI self, SocialEventRecognizer.OwnedItemOnGround giftOfferedToMe)
+        {
+            try{
+                if (giftOfferedToMe != null && giftOfferedToMe.owner != null && giftOfferedToMe.owner is Player p){
+                    if (p.slugcatStats.name.value == "EscortMe" && config.cfgMeanLizards.Value){
+                        giftOfferedToMe.active = false;
+                        giftOfferedToMe.offered = false;
+                        giftOfferedToMe.owner = null;
+                    }
+                }
+                orig(self, giftOfferedToMe);
+            } catch (Exception err){
+                orig(self, giftOfferedToMe);
+                Ebug(err, "Exception when lizard likes!");
+            }
+        }*/
+
+
 
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
@@ -1274,11 +1294,16 @@ namespace TheEscort
                         self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 8, Mathf.Lerp(10f, 20f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer%20)), 2f, 24f, 3f, empoweredColor * 1.5f));
                     }
                 }
-                // Escapist escape 
+                // Escapist escape progress VFX
                 if (e.Escapist && e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0){
                     Color escapistColor = new Color(0.8f, 0.8f, 0.5f);
+                    // Progress fill ring
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 10f, 3f, 20f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
+
+                    // Outer ring
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 12, 25f, 2f, 32f, 2f, escapistColor * eC));
+
+                    // Inner ring
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 8, 10f, 2f, 24f, 2f, escapistColor * eC));
                 }
 
@@ -1752,15 +1777,21 @@ namespace TheEscort
                     if (self.initSlideCounter < 3){
                         self.initSlideCounter += 3;
                     }
-                    if (e.DeflSlideCom < (self.longBellySlide?51:20) && self.rollCounter > 12 && self.rollCounter < 15){
+                    int da = 32;
+                    int db = 18;
+                    if (config.cfgFunnyDeflSlide.Value){
+                        da = 46;
+                        db = 22;
+                    }
+                    if (e.DeflSlideCom < (self.longBellySlide?da:db) && self.rollCounter > 12 && self.rollCounter < 15){
                         self.rollCounter--;
                         //self.exitBellySlideCounter--;
                     }
-                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1.1f, 1.3f, Mathf.InverseLerp(0, 10, e.DeflSlideCom));
+                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1.1f, 1.3f, Mathf.InverseLerp(0, (self.longBellySlide?20:10), e.DeflSlideCom));
                 }
                 else if (e.DeflSlideKick && self.animation == Player.AnimationIndex.RocketJump){
                     self.mainBodyChunk.vel.x *= 1.4f;
-                    self.mainBodyChunk.vel.y *= 0.95f;
+                    self.mainBodyChunk.vel.y *= 0.9f;
                     e.DeflSlideKick = false;
                 } 
                 else {
@@ -2629,7 +2660,8 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
-                if (!eCon.TryGetValue(self, out Escort e)){
+                if (!eCon.TryGetValue(self, out Escort e) ||
+                    !NoMoreGutterWater.TryGet(self, out float[] theGut)){
                     orig(self, grasp, eu);
                     return;
                 }
@@ -2695,7 +2727,7 @@ namespace TheEscort
                             }
                             return;
                         }
-                        self.room.PlaySound(e.RailgunUse >= e.RailgunLimit - 3? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, 0.8f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
+                        self.room.PlaySound(e.RailgunUse >= e.RailgunLimit - 3? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, (e.RailgunUse >= e.RailgunLimit - 3?0.9f:0.8f), Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
 
                         // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
                         // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
@@ -2862,6 +2894,8 @@ namespace TheEscort
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
                 }
+                //self.doNotTumbleAtLowSpeed = false;
+                self.canBeHitByWeapons = true;
                 if (thrownBy is Player p){
                     if (p.slugcatStats.name.value != "EscortMe"){
                         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
@@ -2878,15 +2912,22 @@ namespace TheEscort
                             if (!e.RailFirstWeaped){
                                 self.firstChunk.vel.x *= (float)Math.Abs(self.throwDir.x);
                                 self.firstChunk.vel.y *= (float)Math.Abs(self.throwDir.y);
+                                if (!(p.input[0].x == 0 && p.input[0].y != 0)){
+                                    self.firstChunk.vel.y *= 0.25f;
+                                }
                                 e.RailFirstWeaper = self.firstChunk.vel;
-                                //self.canBeHitByWeapons = false;
                                 e.RailFirstWeaped = true;
                             }
                             else {
                                 self.firstChunk.vel = e.RailFirstWeaper;
                                 e.RailFirstWeaped = false;
                             }
+                            self.canBeHitByWeapons = false;
+                            //self.doNotTumbleAtLowSpeed = true;
                             frc *= rLillyVel;
+                        }
+                        else{
+                            frc *= 1.25f;
                         }
                     }
                 }
@@ -2928,7 +2969,7 @@ namespace TheEscort
                                 e.RailFirstWeaped = false;
                             }
                             self.canBeHitByWeapons = false;
-                            if (p.input[0].y == 0){
+                            if (!(p.animation == Player.AnimationIndex.Flip && p.input[0].x == 0 && p.input[0].y != 0)){
                                 self.floorBounceFrames += 20;
                             }
                             e.RailIReady = true;

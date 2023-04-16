@@ -11,9 +11,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.X)** Spearthrow up and down in corridors!
 
-**(0.2.4.X)** Railgunner pull spears from walls
+**(0.2.X)** Escort can throw better in water
 
-**(0.2.4)** New campaign and thumbnail image! Proper workshop page! Railgunner can now doubleup bombs and lillypucks, the former which will allow you to throw much further and also go right up into other's faces and blow up... the latter not working correctly but I'll adjust that later. Rolls get faster the longer you're rollin'! Batflies are eaten in one bite and Escort just eats things twice as fast! And also also fixed the boop sound playing when silly sfx are off. Also also tweaked so that using easy dropkick does not cause player to grab creatures. Gave Deflector a more lenient and faster slide. Added standard sfx for headbutting. Added accessibility tab for enabling the option to change some visual effects. And finally, eating a mushroom sets the minimum hype to the requirement level!
+**(0.2.4.X)** Railgunner pull spears from walls, code reorganization proper.
+
+**(0.2.4.1)** Lillypuck flies better when doubleupped, bombs work better when doubleupped, Deflector's slide nerfed but at the same time new gimmick option
+
+**(0.2.4)** New campaign and thumbnail image! Railgunner can now doubleup bombs and lillypucks, the former which will allow you to throw much further and also go right up into other's faces and blow up... the latter not working correctly but I'll adjust that later. Rolls get faster the longer you're rollin'! Batflies are eaten in one bite and Escort just eats things twice as fast! And also also fixed the boop sound playing when silly sfx are off. Also also tweaked so that using easy dropkick does not cause player to grab creatures. Gave Deflector a more lenient and faster slide. Added standard sfx for headbutting. Added accessibility tab for enabling the option to change some visual effects. And finally, eating a mushroom sets the minimum hype to the requirement level!
 
 **(0.2.3.6)** Railgunner: Increased the doubleup capacity by 1, reduced cooldown increase by half, reverted damage buff
 
