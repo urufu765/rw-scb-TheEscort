@@ -69,9 +69,11 @@ namespace TheEscort{
         public int RailgunUse;
         public int RailgunLimit;
         public bool RailIReady;
+        public bool RailBombJump;
         public bool Speedstar;
         public int SpeSpeedin;
         public bool SpeDashNCrash;
+        public int voidRetailiate;
         
 
         
@@ -98,7 +100,7 @@ namespace TheEscort{
             this.SFXChunk = player.bodyChunks[0];
             this.spriteQueue = -1;
             this.hypeColor = new Color(0.796f, 0.549f, 0.27843f);
-            this.Esclass_setLight_hype(player, this.hypeColor);
+            this.Escat_setLight_hype(player, this.hypeColor);
             this.secretRGB = false;
             this.smoothTrans = 0f;
             this.tossEscort = true;
@@ -109,6 +111,7 @@ namespace TheEscort{
             this.consoleTick = 0;
             this.savingThrowed = false;
             this.lenientSlide = false;
+            this.voidRetailiate = 40;
 
 
             // Build specific
@@ -143,10 +146,11 @@ namespace TheEscort{
             this.RailgunUse = 0;
             this.RailgunLimit = 10;
             this.RailIReady = false;
+            this.RailBombJump = false;
             }
 
 
-        public void Esclass_setSFX_roller(SoundID sound){
+        public void Escat_setSFX_roller(SoundID sound){
             try{
                 this.Rollin = new ChunkDynamicSoundLoop(SFXChunk);
                 this.Rollin.sound = sound;
@@ -156,7 +160,7 @@ namespace TheEscort{
             }
         }
 
-        public void Esclass_setSFX_lizgrab(SoundID sound){
+        public void Escat_setSFX_lizgrab(SoundID sound){
             try{
                 this.LizGet = new ChunkDynamicSoundLoop(SFXChunk);
                 this.LizGet.sound = sound;
@@ -167,7 +171,7 @@ namespace TheEscort{
         }
 
 
-        public void Esclass_setLight_hype(Player self, Color c, float alpha=0f){
+        public void Escat_setLight_hype(Player self, Color c, float alpha=0f){
             try{
                 if (this.hypeLight == null){
                     this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self);
@@ -213,7 +217,7 @@ namespace TheEscort{
             }
         }
 
-        public void Esclass_setIndex_sprite_cue(int cue){
+        public void Escat_setIndex_sprite_cue(int cue){
             if (this.spriteQueue == -1){
                 this.spriteQueue = cue;
             }
@@ -222,7 +226,7 @@ namespace TheEscort{
             }
         }
 
-        public Color Esclass_runit_thru_RGB(Color c, float progression=1f){
+        public Color Escat_runit_thru_RGB(Color c, float progression=1f){
             if (this.secretRGB){
                 this.hypeColor = new HSLColor(Mathf.InverseLerp(0f, 959f, secretTick), 1f, (progression > 5f? 0.67f : 0.5f)).rgb;
                 if (secretTick >= 959f){
@@ -236,26 +240,5 @@ namespace TheEscort{
         }
 
 
-        public bool Esclass_Railgunner_Death(Player self, Room room){
-            if (this.RailgunUse >= this.RailgunLimit){
-                Color c = new Color(0.5f, 0.85f, 0.78f);
-                Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
-                room.AddObject(new SootMark(room, v, 120f, bigSprite:true));
-                room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 3.5f, 10f, 0.4f, self, 0.7f, 2f, 1f));
-                room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 40f, 1f));
-                room.AddObject(new Explosion.ExplosionLight(v, 210f, 0.7f, 7, c));
-                room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
-                for (int i = 0; i < 20; i++){
-                    Vector2 v2 = RWCustom.Custom.RNV();
-                    room.AddObject(new Spark(v + v2 * Mathf.Lerp(30f, 60f, UnityEngine.Random.value), v2 * Mathf.Lerp(7f, 38f, UnityEngine.Random.value) + RWCustom.Custom.RNV() * 20f * UnityEngine.Random.value, Color.Lerp(Color.white, c, UnityEngine.Random.value), null, 11, 33));
-                    room.AddObject(new Explosion.FlashingSmoke(v + v2 * 40f * UnityEngine.Random.value, v2 * Mathf.Lerp(4f, 20f, Mathf.Pow(UnityEngine.Random.value, 2f)), 1f + 0.05f * UnityEngine.Random.value, Color.white, c, UnityEngine.Random.Range(3, 11)));
-                }
-                room.ScreenMovement(v, default(Vector2), 1.5f);
-                room.PlaySound(SoundID.Bomb_Explode, this.SFXChunk, false, 0.90f, 0.24f);
-                self.Die();
-                return true;
-            }
-            return false;
-        }
     }
 }
