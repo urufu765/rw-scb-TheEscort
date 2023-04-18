@@ -23,7 +23,25 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> deflectorSpearDmgFac = PlayerFloats("theescort/deflector/spear_dmg_fac");
 
 
-        private void Esclass_Defl_Update(Player self, ref Escort e){
+        public void Esclass_DF_Tick(Player self, ref Escort e){
+            // Increased damage when parry tick
+            if (e.DeflAmpTimer > 0){
+                e.DeflAmpTimer--;
+            }
+
+            // Sound FX cooldown
+            if (e.DeflSFXcd > 0){
+                e.DeflSFXcd--;
+            }
+
+            if (self.rollCounter > 1){
+                e.DeflSlideCom++;
+            } else {
+                e.DeflSlideCom = 0;
+            }
+        }
+
+        private void Esclass_DF_Update(Player self, ref Escort e){
             // VFX
             if(self != null && self.room != null){
                 // Empowered damage from parry visual effect
@@ -41,7 +59,7 @@ namespace TheEscort
             }
         }
 
-        private bool Esclass_Defl_StickySpear(Player self){
+        private bool Esclass_DF_StickySpear(Player self){
             return !(
                 self.animation == Player.AnimationIndex.BellySlide ||
                 self.animation == Player.AnimationIndex.Roll ||
@@ -49,7 +67,7 @@ namespace TheEscort
             );
         }
 
-        private void Esclass_Defl_UpdateAnimation(Player self, ref Escort e){
+        private void Esclass_DF_UpdateAnimation(Player self, ref Escort e){
             if (self.animation == Player.AnimationIndex.BellySlide){
                 e.DeflSlideKick = true;
                 if (self.rollCounter < 8){
@@ -81,7 +99,7 @@ namespace TheEscort
 
         }
 
-        private void Esclass_Defl_ThrownSpear(Player self, Spear spear, ref Escort e){
+        private void Esclass_DF_ThrownSpear(Player self, Spear spear, ref Escort e){
             if (
                 !deflectorSpearVelFac.TryGet(self, out float[] dSpearVel) ||
                 !deflectorSpearDmgFac.TryGet(self, out float[] dSpearDmg)

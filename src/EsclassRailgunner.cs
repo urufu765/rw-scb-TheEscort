@@ -23,8 +23,26 @@ namespace TheEscort
         public static readonly PlayerFeature<float> railgunBombVelFac = PlayerFloat("theescort/railgunner/bomb_vel_fac");
         public static readonly PlayerFeature<float[]> railgunRockThrust = PlayerFloats("theescort/railgunner/rock_thrust");
 
+        public void Esclass_RG_Tick(Player self, ref Escort e){
+            if (e.RailWeaping > 0){
+                e.RailWeaping--;
+            }
+            if (e.RailGaussed > 0){
+                e.RailGaussed--;
+            } else {
+                e.RailIReady = false;
+                e.RailBombJump = false;
+            }
+            if (e.RailgunCD > 0){
+                if (self.bodyMode != Player.BodyModeIndex.Stunned){
+                    e.RailgunCD--;
+                }
+            } else {
+                e.RailgunUse = 0;
+            }
+        }
         
-        private void Esclass_Rail_Update(Player self, ref Escort e){
+        private void Esclass_RG_Update(Player self, ref Escort e){
             // VFX
             if(self != null && self.room != null){
                 // Railgunner cooldown timer
@@ -52,7 +70,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Rail_ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust){
+        private void Esclass_RG_ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust){
             if (
                 !railgunSpearVelFac.TryGet(self, out float[] rSpearVel) ||
                 !railgunSpearDmgFac.TryGet(self, out float[] rSpearDmg) ||
@@ -96,7 +114,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Rail_LillyThrow(On.MoreSlugcats.LillyPuck.orig_Thrown orig, MoreSlugcats.LillyPuck self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+        private void Esclass_RG_LillyThrow(On.MoreSlugcats.LillyPuck.orig_Thrown orig, MoreSlugcats.LillyPuck self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
         {
             try{
                 if (thrownBy == null){
@@ -148,7 +166,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_Rail_BombThrow(On.ScavengerBomb.orig_Thrown orig, ScavengerBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+        private void Esclass_RG_BombThrow(On.ScavengerBomb.orig_Thrown orig, ScavengerBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
         {
             try{
                 if (thrownBy == null){
@@ -196,7 +214,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_Rail_AntiDeflect(On.Weapon.orig_WeaponDeflect orig, Weapon self, Vector2 inbetweenPos, Vector2 deflectDir, float bounceSpeed){
+        private void Esclass_RG_AntiDeflect(On.Weapon.orig_WeaponDeflect orig, Weapon self, Vector2 inbetweenPos, Vector2 deflectDir, float bounceSpeed){
             try{
                 if (self.thrownBy is Player p){
                     if (p.slugcatStats.name.value != "EscortMe"){
@@ -221,7 +239,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Rail_RockThrow(Rock self, float frc, Player p, ref Escort e){
+        private void Esclass_RG_RockThrow(Rock self, float frc, Player p, ref Escort e){
             if (
                 !railgunRockVelFac.TryGet(p, out float rRockVel) ||
                 !railgunRockThrust.TryGet(p, out float[] rRockThr)
@@ -274,7 +292,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Rail_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
+        private void Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
             if (!(e.RailDoubleSpear || e.RailDoubleRock || e.RailDoubleBomb || e.RailDoubleLilly)){
                 return;
             }
@@ -302,7 +320,7 @@ namespace TheEscort
                 }
                 self.room.AddObject(new Explosion.ExplosionLight(p, 90f, 0.7f, 4, c));
                 self.room.PlaySound(e.RailgunUse >= e.RailgunLimit - 3? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, (e.RailgunUse >= e.RailgunLimit - 3?0.8f:0.93f), Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
-                if (Esclass_Railgunner_Death(self, self.room, ref e)){
+                if (Esclass_RG_Death(self, self.room, ref e)){
                     if (Esconfig_SFX(self)){
                         self.room.PlaySound(Escort_SFX_Railgunner_Death, e.SFXChunk);
                     }
@@ -338,7 +356,7 @@ namespace TheEscort
             e.RailgunUse += addition;
         }
 
-        private void Esclass_Rail_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu){
+        private void Esclass_RG_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu){
             try{
                 if (self.slugcatStats.name.value != "EscortMe"){
                     orig(self, eu);
@@ -396,7 +414,7 @@ namespace TheEscort
         }
 
 
-        public bool Esclass_Railgunner_Death(Player self, Room room, ref Escort e){
+        public bool Esclass_RG_Death(Player self, Room room, ref Escort e){
             bool secondChance = false;
             if (e.RailgunUse >= e.RailgunLimit){
                 if (UnityEngine.Random.value > (self.Malnourished? 0.75f : 0.25f)){
@@ -434,7 +452,7 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_Rail_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
+        private bool Esclass_RG_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
         {
             try{
                 if (self.slugcatStats.name.value != "EscortMe"){

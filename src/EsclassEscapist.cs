@@ -22,8 +22,32 @@ namespace TheEscort
         public static readonly PlayerFeature<int> escapistCD = PlayerInt("theescort/escapist/cd");
         public static readonly PlayerFeature<float> escapistColor = PlayerFloat("theescort/escapist/color");
 
+        public void Esclass_EC_Tick(Player self, ref Escort e){
+            if (e.EscDangerExtend < 10){
+                e.EscDangerExtend++;
+                if (self.dangerGraspTime > 3 && self.dangerGraspTime < 29){
+                    self.dangerGraspTime--;
+                }
+            } else {
+                if (e.EscUnGraspTime > 4 && e.EscUnGraspTime < e.EscUnGraspLimit){
+                    e.EscUnGraspTime++;
+                }
+                e.EscDangerExtend = 0;
+            }
 
-        private void Esclass_Esc_Update(Player self, ref Escort e){
+            if (e.EscUnGraspTime > 0 && !self.dead && e.EscUnGraspCD == 0){
+                Player.InputPackage iP = RWInput.PlayerInput(self.playerState.playerNumber, self.room.game.rainWorld);
+                if (iP.thrw){
+                    e.EscUnGraspTime--;
+                }
+            }
+
+            if (e.EscUnGraspCD > 0 && self.stun < 5){
+                e.EscUnGraspCD--;
+            }
+        }
+
+        private void Esclass_EC_Update(Player self, ref Escort e){
             if (
                 !escapistColor.TryGet(self, out float eC) ||
                 !escapistCD.TryGet(self, out int esCD) ||
@@ -35,7 +59,7 @@ namespace TheEscort
             if(self != null && self.room != null){
                 // Escapist escape progress VFX
                 if (e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0){
-                    Color escapistColor = new Color(0.8f, 0.8f, 0.5f);
+                    Color escapistColor = new Color(0.42f, 0.75f, 0.1f);
                     // Progress fill ring
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 10f, 3f, 20f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
 
@@ -78,7 +102,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Esc_ThrownSpear(Player self, Spear spear){
+        private void Esclass_EC_ThrownSpear(Player self, Spear spear){
             if (!escapistSpearVelFac.TryGet(self, out float eSpearVel)){
                 return;
             }
@@ -86,7 +110,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Esc_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp){
+        private void Esclass_EC_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp){
             orig(self, grasp);
             try{
                 if (self.slugcatStats.name.value != "EscortMe"){

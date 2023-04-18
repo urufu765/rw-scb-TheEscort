@@ -40,6 +40,96 @@ namespace TheEscort
         /// </list></summary>
         public static readonly PlayerFeature<float[]> BetterPoleHang = PlayerFloats("theescort/better_polehang");
 
+
+        private void Esclass_Tick(Player self){
+            if (!eCon.TryGetValue(self, out Escort e) || !CR.TryGet(self, out int limiter)){
+                return;
+            }
+
+            // Build-specific ticks
+            if (e.Deflector) Esclass_DF_Tick(self, ref e);
+            if (e.Escapist) Esclass_EC_Tick(self, ref e);
+            if (e.Railgunner) Esclass_RG_Tick(self, ref e);
+            if (e.Speedster) Esclass_SS_Tick(self, ref e);
+
+
+            // Console ticker
+            if (e.consoleTick > limiter){
+                e.consoleTick = 0;
+            }
+            else {
+                e.consoleTick++;
+            }
+
+            // Dropkick damage cooldown
+            if (e.DropKickCD > 0){
+                e.DropKickCD--;
+            }
+
+            // Parry leniency when triggering stunslide first (may not actually occur)
+            if (e.parrySlideLean > 0){
+                e.parrySlideLean--;
+            }
+
+            // Parry leniency when not touching the ground
+            if (e.parryAirLean > 0 && self.canJump == 0){
+                e.parryAirLean--;
+            } else if (self.canJump != 0){
+                e.parryAirLean = 20;
+            }
+
+
+            // Headbutt cooldown
+            if (e.CometFrames > 0){
+                e.CometFrames--;
+            } else {
+                e.Cometted = false;
+            }
+
+            // Invincibility Frames
+            if (e.iFrames > 0){
+                Ebug(self, "IFrames: " + e.iFrames, 2);
+                e.iFrames--;
+            } else {
+                e.ElectroParry = false;
+                e.savingThrowed = false;
+            }
+
+            // Smooth color/brightness transition
+            if (requirement <= self.aerobicLevel && e.smoothTrans < 15){
+                e.smoothTrans++;
+            }
+            else if (requirement > self.aerobicLevel && e.smoothTrans > 0){
+                e.smoothTrans--;
+            }
+
+            // Lizard dropkick leniency
+            if (e.LizDunkLean > 0){
+                e.LizDunkLean--;
+            }
+
+            // Lizard grab timer
+            if (e.LizGoForWalk > 0){
+                e.LizGoForWalk--;
+            } else {
+                e.LizGrabCount = 0;
+            }
+
+            // Super Wall Flip
+            if (self.input[0].x != 0 && self.input[0].y != 0){
+                if (e.superWallFlip < 60){
+                    e.superWallFlip++;
+                }
+            } else if (self.input[0].x == 0 || self.input[0].y == 0){
+                if (e.superWallFlip > 3){
+                    e.superWallFlip -= 3;
+                } else if (e.superWallFlip > 0){
+                    e.superWallFlip--;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Does a variety of things, from test logs, ticking the Escort variables, general VFX, lizard grab, easy mode, drug use, looping sfx.
         /// </summary>
@@ -70,15 +160,19 @@ namespace TheEscort
             }
 
             // Cooldown/Frames Tick
-            Eshelp_Tick(self);
-            if (e.Deflector) Esclass_Defl_Update(self, ref e);
-            if (e.Escapist) Esclass_Esc_Update(self, ref e);
-            if (e.Railgunner) Esclass_Rail_Update(self, ref e);
-            
+            Esclass_Tick(self);
+            if (e.Deflector) Esclass_DF_Update(self, ref e);
+            if (e.Escapist) Esclass_EC_Update(self, ref e);
+            if (e.Railgunner) Esclass_RG_Update(self, ref e);
+            if (e.Speedster) Esclass_SS_Update(self, ref e);
+
             // Just for seeing what a variable does.
             try{
                 if(e.consoleTick == 0){
                     Ebug(self, "Clocked.");
+                    Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
+                    Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
+                    Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
                     Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
                     Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
                     Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
@@ -96,6 +190,9 @@ namespace TheEscort
                         Ebug(self, " DoubleSpear: " + e.RailDoubleSpear);
                         //Ebug(self, "  DoubleBomb: " + e.RailDoubleBomb);
                         //Ebug(self, "DoubleFlower: " + e.RailDoubleFlower);
+                    }
+                    if (e.Speedster){
+                        Ebug(self, "Speeding Tickets: " + e.SpeSpeedin);
                     }
                 }
                 //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
@@ -198,7 +295,7 @@ namespace TheEscort
             if (!eCon.TryGetValue(self, out Escort e)){
                 return;
             }
-            if (e.Deflector) Esclass_Defl_UpdateAnimation(self, ref e);
+            if (e.Deflector) Esclass_DF_UpdateAnimation(self, ref e);
 
             //Ebug(self, "UpdateAnimation Triggered!");
             // Infiniroll
@@ -233,8 +330,8 @@ namespace TheEscort
                 if (self.animation != Player.AnimationIndex.RocketJump){
                     e.easyKick = false;
                 }
-            } 
-
+            }
+            if (e.Speedster) Esclass_SS_UpdateAnimation(self, ref e);
         }
 
         // Implement Movementthings
@@ -260,6 +357,7 @@ namespace TheEscort
             }
 
             bool hypedMode = Esconfig_Hypable(self);
+            
 
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl){
@@ -324,6 +422,8 @@ namespace TheEscort
                     self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(viscoDance, theGut[12]));
                 }
             }
+
+            if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
 
         /// <summary>
@@ -356,6 +456,151 @@ namespace TheEscort
 
 
         /// <summary>
+        /// Modifies <c>Player.aerobicLevel</c> by reducing it's value by 0.1f if the aerobic level > 0.1f, and also uses the same check as ingame for pouncing to replace it with a sick flip.
+        /// </summary>
+        /// <remarks>
+        /// The sick flip may need to be moved elsewhere to ensure it works with mods like Simplified Movesets.
+        /// </remarks>
+        private void Escort_Jump(On.Player.orig_Jump orig, Player self)
+        {
+            orig(self);
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(self, err);
+                return;
+            }
+            if (!eCon.TryGetValue(self, out Escort e)){
+                return;
+            }
+
+            //Ebug(self, "Jump Triggered!");
+            // Decreases aerobiclevel gained from jumping
+            if (self.aerobicLevel > 0.1f){
+                self.aerobicLevel -= 0.1f;
+            }
+
+            // Replace chargepounce with a sick flip
+            if (
+                Esconfig_Pouncing(self) && 
+                (
+                    self.superLaunchJump >= 19 || 
+                    self.simulateHoldJumpButton == 6 || 
+                    self.killSuperLaunchJumpCounter > 0
+                    ) && 
+                self.bodyMode == Player.BodyModeIndex.Crawl
+                ){
+                Ebug(self, "FLIPERONI GO!", 2);
+
+                if (Esconfig_SFX(self)){
+                    self.room.PlaySound(Escort_SFX_Flip, e.SFXChunk);
+                }
+                self.animation = Player.AnimationIndex.Flip;
+            }
+            if (e.Speedster) Esclass_SS_Jump(self, ref e);
+        }
+
+        /// <summary>
+        /// Changes how walljumps work so Escort can have wall longpounce and super wall flip
+        /// </summary>
+        private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
+        {
+            /*
+            if (self.bodyMode != Player.BodyModeIndex.WallClimb){
+                orig(self, direction);
+                return;
+            }*/
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    orig(self, direction);
+                    return;
+                }
+            } catch (Exception err){
+                orig(self, direction);
+                Ebug(self, err);
+                return;
+            }
+            if (!WallJumpVal.TryGet(self, out var WJV) ||
+                !eCon.TryGetValue(self, out Escort e)){
+                orig(self, direction);
+                return;
+            }
+
+            Ebug(self, "Walljump Triggered!");
+            bool wallJumper = Esconfig_WallJumps(self);
+            bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
+            bool superWall = (Esconfig_Pouncing(self) && e.superWallFlip > (int)WJV[4]);
+            bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
+
+            // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
+            if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
+                orig(self, direction);
+                float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline) * (e.savingThrowed? 0.7f : 1f);
+                float m = 1f;
+                if (e.Speedster && e.SpeDashNCrash){
+                    m = (e.SpeSecretSpeed? 2f : 0.66f);
+                }
+                String[] toPrint = new String[3];
+                toPrint.SetValue("Walls the Jump", 0);
+                if (
+                    self.IsTileSolid(1, 0, -1) ||
+                    self.IsTileSolid(0, 0, -1) ||
+                    self.bodyChunks[1].submersion > 0.1f ||
+                    (
+                        self.input[0].x != 0 && 
+                        self.bodyChunks[0].ContactPoint.x == self.input[0].x &&
+                        self.IsTileSolid(0, self.input[0].x, 0) &&
+                        !self.IsTileSolid(0, self.input[0].x, 1)
+                    )
+                ){
+                    self.bodyChunks[0].vel.y = 8f * n;
+                    self.bodyChunks[1].vel.y = 7f * n;
+                    self.bodyChunks[0].pos.y += 10f * Mathf.Min(1f, n);
+                    self.bodyChunks[1].pos.y += 10f * Mathf.Min(1f, n);
+                    toPrint.SetValue("Water", 1);
+                    self.room.PlaySound(SoundID.Slugcat_Normal_Jump, e.SFXChunk, false, 1f, 0.7f);
+                } 
+                else {
+                    self.bodyChunks[0].vel.y = ((longWallJump || (superFlip && superWall))? WJV[0] : 8f) * n;
+                    self.bodyChunks[1].vel.y = ((longWallJump || (superFlip && superWall))? WJV[1] : 7f) * n;
+                    self.bodyChunks[0].vel.x = ((superFlip && superWall)? WJV[2] * m : 7f) * n * (float)direction;
+                    self.bodyChunks[1].vel.x = ((superFlip && superWall)? WJV[3] * m : 6f) * n * (float)direction;
+                    self.standing = true;
+                    self.jumpStun = 8 * direction;
+                    if (superWall){
+                        self.room.PlaySound((self.superLaunchJump > 19? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.SFXChunk, false, 1f, 0.7f);
+                    }
+                    toPrint.SetValue("Not Water", 1);
+                    Ebug(self, "Y Velocity" + self.bodyChunks[0].vel.y, 2);
+                    Ebug(self, "Y Velocity" + self.bodyChunks[1].vel.y, 2);
+                    Ebug(self, "X Velocity" + self.bodyChunks[0].vel.x, 2);
+                    Ebug(self, "X Velocity" + self.bodyChunks[1].vel.x, 2);
+                }
+                self.jumpBoost = 0f;
+
+                if (superFlip && superWall){
+                    self.animation = Player.AnimationIndex.Flip;
+                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 1.4f), 0.9f);
+                    self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], e.superWallFlip));
+                    toPrint.SetValue("SUPERFLIP", 2);
+                } else {
+                    toPrint.SetValue("not so flip", 2);
+                }
+                Ebug(self, "Jumpboost" + self.jumpBoost, 2);
+                Ebug(self, "SWallFlip" + e.superWallFlip, 2);
+                Ebug(self, "SLaunchJump" + self.superLaunchJump, 2);
+                if (self.superLaunchJump > 19){
+                    self.superLaunchJump = 0;
+                }
+                self.canWallJump = 0;
+                Ebug(self, toPrint, 2);
+            }
+        }
+
+
+        /// <summary>
         /// Unsticking spears component of parryslide.
         /// </summary>
         private bool Escort_StickySpear(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos appPos, Vector2 direction)
@@ -376,7 +621,7 @@ namespace TheEscort
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
             Ebug(self, "Sticky Triggered!");
-            if (e.Deflector) return Esclass_Defl_StickySpear(self);
+            if (e.Deflector) return Esclass_DF_StickySpear(self);
             return !(self.animation == Player.AnimationIndex.BellySlide);
         }
 
@@ -404,7 +649,7 @@ namespace TheEscort
                 }
 
 
-                if (e.Brawler) return Esclass_Braw_HeavyCarry(orig, self, obj);
+                if (e.Brawler) return Esclass_BL_HeavyCarry(orig, self, obj);
 
                 //Ebug(self, "Heavycarry Triggered!");
                 if (obj.TotalMass <= self.TotalMass * ratioed){
@@ -503,10 +748,10 @@ namespace TheEscort
             } catch (Exception err){
                 Ebug(self, err, "Error while setting additional spear effects!");
             }
-            if (e.Brawler) Esclass_Braw_ThrownSpear(self, spear, ref e, ref thrust);
-            if (e.Deflector) Esclass_Defl_ThrownSpear(self, spear, ref e);
-            if (e.Escapist) Esclass_Esc_ThrownSpear(self, spear);
-            if (e.Railgunner) Esclass_Rail_ThrownSpear(self, spear, onPole, ref e, ref thrust);
+            if (e.Brawler) Esclass_BL_ThrownSpear(self, spear, ref e, ref thrust);
+            if (e.Deflector) Esclass_DF_ThrownSpear(self, spear, ref e);
+            if (e.Escapist) Esclass_EC_ThrownSpear(self, spear);
+            if (e.Railgunner) Esclass_RG_ThrownSpear(self, spear, onPole, ref e, ref thrust);
             if (onPole && !e.Railgunner) {
                 thrust = 1f;
             }
@@ -519,14 +764,28 @@ namespace TheEscort
                     if (Esconfig_Spears(self)){
                         self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
                     }
+                    if (self.bodyMode == Player.BodyModeIndex.CorridorClimb){
+                        spear.throwDir = new IntVector2((int)(self.mainBodyChunk.Rotation.x * 2), (int)(self.mainBodyChunk.Rotation.y * 2));
+                        if (spear.throwDir.y != 0){
+                            spear.firstChunk.vel.y = Mathf.Abs(spear.firstChunk.vel.x) * spear.throwDir.y;
+                            spear.firstChunk.vel.x = 0;
+                            thrust *= 0.25f;
+                        } else {
+                            thrust *= 0.5f;
+                        }
+                    }
                     if (self.animation != Player.AnimationIndex.BellySlide){
-                        if (e.Railgunner && spear.throwDir.x == 0){
-                            if (spear.throwDir.y == 1){
-                                self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.4f;
-                            } else if (spear.throwDir.y == -1){
-                                self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.65f;
+                        if (spear.throwDir.x == 0){
+                            if (e.Railgunner){
+                                if (spear.throwDir.y == 1){
+                                    self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.4f;
+                                } else if (spear.throwDir.y == -1){
+                                    self.firstChunk.vel.y += spear.firstChunk.vel.normalized.y * thrust * 0.65f;
+                                } else {
+                                    self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+                                }
                             } else {
-                                self.firstChunk.vel += spear.firstChunk.vel.normalized * thrust;
+                                self.firstChunk.vel.y = firstChunker.vel.y + Mathf.Sign(spear.firstChunk.vel.y) * thrust;
                             }
                         } else {
                             self.firstChunk.vel.x = firstChunker.vel.x + Mathf.Sign(spear.firstChunk.vel.x) * thrust;
@@ -550,8 +809,8 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
-                if (e.Brawler) Esclass_Braw_ThrowObject(orig, self, grasp, eu, ref e);
-                if (e.Railgunner) Esclass_Rail_ThrowObject(orig, self, grasp, eu, ref e);
+                if (e.Brawler) Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e);
+                if (e.Railgunner) Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e);
             } catch (Exception err){
                 Ebug(self, err, "Throwing object error!");
                 orig(self, grasp, eu);
@@ -627,7 +886,7 @@ namespace TheEscort
                     if (e.Escapist){
                         frc *= 0.75f;
                     }
-                    if (e.Railgunner) Esclass_Rail_RockThrow(self, frc, p, ref e);
+                    if (e.Railgunner) Esclass_RG_RockThrow(self, frc, p, ref e);
                 }
                 orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
             } catch (Exception err){
@@ -659,7 +918,7 @@ namespace TheEscort
                         // Any weapon is dual-wieldable, including spears
                         return Player.ObjectGrabability.OneHand;
                     }
-                    if (e.Brawler && Esclass_Braw_Grabability(self, obj, ref e)){
+                    if (e.Brawler && Esclass_BL_Grabability(self, obj, ref e)){
                         return Player.ObjectGrabability.OneHand;
                     }
                     if (obj is Lizard lizzie){
@@ -685,7 +944,7 @@ namespace TheEscort
             }
         }
 
-        private float Escort_DeathBiteMult(On.Player.orig_DeathByBiteMultiplier orig, Player self)
+        private float Escort_GotBit(On.Player.orig_DeathByBiteMultiplier orig, Player self)
         {
             try{
                 if (!eCon.TryGetValue(self, out Escort e)){
@@ -963,6 +1222,7 @@ namespace TheEscort
                 }
                 else {
                     self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
+                    self.room.PlaySound(Escort_SFX_Parry, e.SFXChunk);
                 }
                 if (self != null && self.room != null && self.mainBodyChunk != null){
                     for (int c = 0; c < 7; c++){
@@ -1073,7 +1333,7 @@ namespace TheEscort
                 if (e.Escapist && self.aerobicLevel > 0.02f){
                     self.aerobicLevel -= 0.01f;
                 }
-
+                if (e.Speedster) Esclass_SS_Collision(self, creature, ref e);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 /*
@@ -1173,13 +1433,13 @@ namespace TheEscort
                     creature.SetKillTag(self.abstractCreature);
 
                     String message = (e.easyKick? "Easykicked!" : "Dropkicked!");
-                    self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.85f);
                     
                     if (!creature.dead) {
                         DKMultiplier *= creature.TotalMass;
                     }
                     float normSlamDamage = (e.easyKick? 0.001f : 0.05f);
                     if (e.DropKickCD == 0){
+                        self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
                         normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler? 0.27f : 0.15f));
                         creature.LoseAllGrasps();
                         if (hypedMode && self.aerobicLevel > requirement) {normSlamDamage = bodySlam[2] * (e.Brawler? bDKHDmg : 1.6f);}
@@ -1193,7 +1453,7 @@ namespace TheEscort
                         }
                         message = "Powerdropkicked!";
                     } else {
-                        //multiplier *= 0.5f;
+                        self.room.PlaySound(SoundID.Big_Needle_Worm_Bounce_Terrain, self.mainBodyChunk, false, 1f, 0.9f);
                     }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x*DKMultiplier, self.mainBodyChunk.vel.y*DKMultiplier*(e.LizardDunk?0.2f:1f))),
@@ -1249,6 +1509,7 @@ namespace TheEscort
                         Ebug(self, err, "Error when headbutting!");
                     }
                 }
+
             }
         }
     }

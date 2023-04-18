@@ -45,7 +45,7 @@
 		"gameescort/realtime_edits": false,
 
 		"theescort/insta_hype": false,
-		"theescort/better_crawl": [4.2, 5.6, 4.4],
+		"theescort/better_crawl": [3.5, 4.3, 3.7],
 		"theescort/better_polewalk": [4.8, 9.6, 5, 0.6],
 		"theescort/better_polehang": [1.85, 2.66, -0.55, -0.35, 1.9, -0.5],
 		"theescort/body_slam": [0.05, 45, 0.7, 15],
@@ -62,7 +62,7 @@
 		"theescort/mean_lizards": true,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 800,
+		"theescort/reset_rate": 400,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,
@@ -98,6 +98,9 @@
 		"theescort/railgunner/rock_vel_fac": 3.3,
 		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3],
 		"theescort/railgunner/lilly_vel_fac": 1.8, 
-		"theescort/railgunner/bomb_vel_fac": 3
+		"theescort/railgunner/bomb_vel_fac": 3,
+
+		"theescort/speedster/custom_shader": "Basic",
+		"theescort/speedster/pole_rise": [0.8, 0.65]
 		}
 }

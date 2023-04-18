@@ -4,3 +4,5 @@
 [ADD]Escort_Liz_Grab/rangeFac=1 : lizzrdgrab/vol=0.3/pitch=1
 [ADD]Escort_Boop : escortboopa/vol=0.14/pitch=1.05, escortboopb/vol=0.14/pitch=1, escortboopc/vol=0.14/pitch=1.15, escortboopd/vol=0.14/pitch=1.1, escortboope/vol=0.12/pitch=0.95
 [ADD]Escort_Rail_Fail : escortrailfail/vol=0.28/minPitch=0.9/maxPitch=1.05
+[ADD]Escort_Impact : escortimpact/vol=0.32/minPitch=0.75/maxPitch=1
+[ADD]Escort_Parry : escortparry/vol=0.19/minPitch=1.15/maxPitch=2

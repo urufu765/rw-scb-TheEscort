@@ -9,7 +9,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.4.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -65,8 +65,7 @@ namespace TheEscort
         /* JSON VALUES
         ["Head Y velocity", "Body Y velocity", "Head X velocity", "Body X velocity", "ConstantDownDiagnoal floor value", "ConstantDownDiagonal ceiling value", "min JumpBoost", "max JumpBoost"]
         */
-        public static readonly PlayerFeature<float[]>
-        WallJumpVal = PlayerFloats("theescort/wall_jump_val");
+        public static readonly PlayerFeature<float[]> WallJumpVal = PlayerFloats("theescort/wall_jump_val");
 
         /* JSON VALUES
         [Rotation val, X val, Y val]
@@ -84,6 +83,8 @@ namespace TheEscort
         public static SoundID Escort_SFX_Boop;
         public static SoundID Escort_SFX_Railgunner_Death;
         public static SoundID Escort_SFX_Lizard_Grab;
+        public static SoundID Escort_SFX_Impact;
+        public static SoundID Escort_SFX_Parry;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -307,7 +308,7 @@ namespace TheEscort
             On.Lizard.ctor += Escort_Lizard_ctor;
             //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
-            On.Room.Loaded += Escort_Hip_Replacement;
+            On.Room.Loaded += Escort_Hipbone_Replacement;
 
             On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -329,23 +330,24 @@ namespace TheEscort
             On.Player.MovementUpdate += Escort_MovementUpdate;
             On.Player.checkInput += Escort_checkInput;
             On.Player.ctor += Escort_ctor;
-            On.Player.DeathByBiteMultiplier += Escort_DeathBiteMult;
+            On.Player.DeathByBiteMultiplier += Escort_GotBit;
             On.Player.TossObject += Escort_TossObject;
             On.Player.ThrowObject += Escort_ThrowObject;
             On.Player.SpearStick += Escort_StickySpear;
-            On.Player.Grabbed += Esclass_Esc_Grabbed;
-            On.Player.GrabUpdate += Esclass_Rail_GrabUpdate;
+            On.Player.Grabbed += Esclass_EC_Grabbed;
+            On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
             On.Player.BiteEdibleObject += Escort_Eated;
-            On.Player.CanIPickThisUp += Esclass_Rail_SpearGet;
+            On.Player.CanIPickThisUp += Esclass_RG_SpearGet;
+            On.Player.TerrainImpact += Esclass_SS_Bonk;
 
             On.Rock.HitSomething += Escort_RockHit;
             On.Rock.Thrown += Escort_RockThrow;
 
-            On.ScavengerBomb.Thrown += Esclass_Rail_BombThrow;
+            On.ScavengerBomb.Thrown += Esclass_RG_BombThrow;
 
-            On.MoreSlugcats.LillyPuck.Thrown += Esclass_Rail_LillyThrow;
+            On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
 
-            On.Weapon.WeaponDeflect += Esclass_Rail_AntiDeflect;
+            On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
 
             On.SlugcatStats.SpearSpawnModifier += Escort_SpearSpawnMod;
             On.SlugcatStats.SpearSpawnElectricRandomChance += Escort_EleSpearSpawnChance;
@@ -362,6 +364,8 @@ namespace TheEscort
             Escort_SFX_Boop = new SoundID("Escort_Boop", true);
             Escort_SFX_Railgunner_Death = new SoundID("Escort_Rail_Fail", true);
             Escort_SFX_Lizard_Grab = new SoundID("Escort_Liz_Grab", true);
+            Escort_SFX_Impact = new SoundID("Escort_Impact", true);
+            Escort_SFX_Parry = new SoundID("Escort_Parry", true);
             FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
@@ -403,7 +407,6 @@ namespace TheEscort
                 String[] dmsVer = dms.version.Split('.');
                 if(int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
                     Ebug("Applying patch!...", 1);
-                    /*
                     if(verMin == 3 && int.TryParse(dmsVer[2], out int verPatch) && verPatch == 0){
                         DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
                             Name = "WAIT 4 NEXT DMS PATCH",
@@ -422,7 +425,6 @@ namespace TheEscort
                             Slugcats = new List<string>{"EscortMe"}
                         });
                     }
-                    */
                 }
                 else {
                     //Ebug(self, "Using dud patch... (update your DMS!)", 1);
@@ -613,17 +615,18 @@ namespace TheEscort
                         break;
                 }
                 switch (pal){
-                    // Speedstar build (Fast, and when running for a certain amount of time, apply BOOST that also does damage on collision)
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
+                    // Ultrakill build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
+                    // Speedstar build (Fast, and when running for a certain amount of time, apply BOOST that also does damage on collision)
                     case -5:  // Speedstar build
-                        e.Speedstar = true;
-                        self.slugcatStats.lungsFac -= 0.12f;
+                        e.Speedster = true;
+                        self.slugcatStats.lungsFac -= 0.1f;
                         self.slugcatStats.bodyWeightFac += 0.1f;
-                        self.slugcatStats.corridorClimbSpeedFac += 0.5f;
+                        self.slugcatStats.corridorClimbSpeedFac += 1.0f;
                         self.slugcatStats.poleClimbSpeedFac += 0.6f;
-                        self.slugcatStats.runspeedFac += 0.4f;
+                        self.slugcatStats.runspeedFac += 0.35f;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -675,159 +678,6 @@ namespace TheEscort
             } catch (Exception err){
                 Ebug(self, err, "Something went wrong when setting an Escort build!");
                 return false;
-            }
-        }
-
-
-        /*
-        Miscellaneous!
-        */
-        private void Eshelp_Tick(Player self){
-            if (!eCon.TryGetValue(self, out Escort e) || !CR.TryGet(self, out int limiter)){
-                return;
-            }
-
-            if (e.consoleTick > limiter){
-                e.consoleTick = 0;
-            }
-            else {
-                e.consoleTick++;
-            }
-
-            // Dropkick damage cooldown
-            if (e.DropKickCD > 0){
-                e.DropKickCD--;
-            }
-
-            // Get out of centipede grasp cooldown
-            // TODO: IMPLEMENT
-            if (e.CentiCD > 0){
-                e.CentiCD--;
-            }
-
-            // Parry leniency when triggering stunslide first (may not actually occur)
-            if (e.parrySlideLean > 0){
-                e.parrySlideLean--;
-            }
-
-            // Parry leniency when not touching the ground
-            if (e.parryAirLean > 0 && self.canJump == 0){
-                e.parryAirLean--;
-            } else if (self.canJump != 0){
-                e.parryAirLean = 20;
-            }
-
-            // Build-specific ticks
-            if (e.Deflector){
-                // Increased damage when parry tick
-                if (e.DeflAmpTimer > 0){
-                    e.DeflAmpTimer--;
-                }
-
-                // Sound FX cooldown
-                if (e.DeflSFXcd > 0){
-                    e.DeflSFXcd--;
-                }
-
-                if (self.rollCounter > 1){
-                    e.DeflSlideCom++;
-                } else {
-                    e.DeflSlideCom = 0;
-                }
-            }
-
-            if (e.Escapist){
-                if (e.EscDangerExtend < 10){
-                    e.EscDangerExtend++;
-                    if (self.dangerGraspTime > 3 && self.dangerGraspTime < 29){
-                        self.dangerGraspTime--;
-                    }
-                } else {
-                    if (e.EscUnGraspTime > 4 && e.EscUnGraspTime < e.EscUnGraspLimit){
-                        e.EscUnGraspTime++;
-                    }
-                    e.EscDangerExtend = 0;
-                }
-
-                if (e.EscUnGraspTime > 0 && !self.dead && e.EscUnGraspCD == 0){
-                    Player.InputPackage iP = RWInput.PlayerInput(self.playerState.playerNumber, self.room.game.rainWorld);
-                    if (iP.thrw){
-                        e.EscUnGraspTime--;
-                    }
-                }
-
-                if (e.EscUnGraspCD > 0 && self.stun < 5){
-                    e.EscUnGraspCD--;
-                }
-            }
-
-            if (e.Railgunner){
-                if (e.RailWeaping > 0){
-                    e.RailWeaping--;
-                }
-                if (e.RailGaussed > 0){
-                    e.RailGaussed--;
-                } else {
-                    e.RailIReady = false;
-                    e.RailBombJump = false;
-                }
-                if (e.RailgunCD > 0){
-                    if (self.bodyMode != Player.BodyModeIndex.Stunned){
-                        e.RailgunCD--;
-                    }
-                } else {
-                    e.RailgunUse = 0;
-                }
-            }
-
-
-            // Headbutt cooldown
-            if (e.CometFrames > 0){
-                e.CometFrames--;
-            } else {
-                e.Cometted = false;
-            }
-
-            // Invincibility Frames
-            if (e.iFrames > 0){
-                Ebug(self, "IFrames: " + e.iFrames, 2);
-                e.iFrames--;
-            } else {
-                e.ElectroParry = false;
-                e.savingThrowed = false;
-            }
-
-            // Smooth color/brightness transition
-            if (requirement <= self.aerobicLevel && e.smoothTrans < 15){
-                e.smoothTrans++;
-            }
-            else if (requirement > self.aerobicLevel && e.smoothTrans > 0){
-                e.smoothTrans--;
-            }
-
-            // Lizard dropkick leniency
-            if (e.LizDunkLean > 0){
-                e.LizDunkLean--;
-            }
-
-            // Lizard grab timer
-            if (e.LizGoForWalk > 0){
-                e.LizGoForWalk--;
-            } else {
-                e.LizGrabCount = 0;
-            }
-
-            // Super Wall Flip
-            if (self.input[0].x != 0 && self.input[0].y != 0){
-                if (e.superWallFlip < 60){
-                    e.superWallFlip++;
-                }
-            } else if (self.input[0].x == 0 || self.input[0].y == 0){
-                if (e.superWallFlip > 3){
-                    e.superWallFlip -= 3;
-                } else if (e.superWallFlip > 0){
-                    e.superWallFlip--;
-                }
             }
         }
 
@@ -1125,6 +975,7 @@ namespace TheEscort
                         s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
+                if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
             } catch (Exception err){
                 Ebug(self.player, err, "Something happened while trying to draw sprites!");
             }
@@ -1290,7 +1141,7 @@ namespace TheEscort
             }
         }
 
-        private void Escort_Hip_Replacement(On.Room.orig_Loaded orig, Room self)
+        private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
         {
             orig(self);
             try{

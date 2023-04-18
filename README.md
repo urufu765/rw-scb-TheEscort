@@ -9,9 +9,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 ### 0.2 - The Escort
 **(0.2.X)** Changed how settings are applied in game (you shouldn't notice any changes)
 
-**(0.2.X)** Spearthrow up and down in corridors!
+**(0.2.X)** 
 
 **(0.2.X)** Escort can throw better in water
+
+**(0.2.5)** Speedster. Added a supplimentary sfx for parry to assist with the main parry sound. Adjusted the crawl speed to less jank. Weaker dropkicks also make a different sound to differenciate between a powerkick and a regular kick. Also repatched DMS, Spearthrow up and down in corridors! Brawler can spear walls!
 
 **(0.2.4.2)** Escort's pole walk and hang speed adjusted, Escort can swim a bit better in water, Railgunner can pull spears from walls, code reorganization proper, and a bit more developer comments. Railgun does more spear damage when overcharged (but hyped does not affect spear damage). When railgun bombboosts, they're sent more up instead of sideways!
 

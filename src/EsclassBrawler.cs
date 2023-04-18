@@ -23,7 +23,7 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> brawlerSpearShankY = PlayerFloats("theescort/brawler/spear_shank");
 
 
-        private bool Esclass_Braw_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
+        private bool Esclass_BL_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj){
             if (obj.TotalMass <= self.TotalMass * ratioed*2){
                 if (obj is Creature c && c is not Lizard && !c.dead){
                     return orig(self, obj);
@@ -34,7 +34,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Braw_ThrownSpear(Player self, Spear spear, ref Escort e, ref float thrust){
+        private void Esclass_BL_ThrownSpear(Player self, Spear spear, ref Escort e, ref float thrust){
             if (
                 !brawlerSpearVelFac.TryGet(self, out float[] bSpearVel) ||
                 !brawlerSpearDmgFac.TryGet(self, out float[] bSpearDmg) ||
@@ -66,6 +66,8 @@ namespace TheEscort
                     if (self.room != null){
                         self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk, false, 1f, 2f);
                     }
+                } else {
+                    spear.alwaysStickInWalls = true;
                 }
             } catch (Exception err){
                 Ebug(self, err, "Error while applying Brawler-specific speartoss");
@@ -73,7 +75,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_Braw_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
+        private void Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
             if (!(self.grasps[grasp] != null && self.grasps[1 - grasp] != null)){
                 return;
             }
@@ -105,7 +107,7 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_Braw_Grabability(Player self, PhysicalObject obj, ref Escort e){
+        private bool Esclass_BL_Grabability(Player self, PhysicalObject obj, ref Escort e){
             for (int i = 0; i < 2; i++){
                 if (
                     self.grasps[i] != null &&

@@ -44,7 +44,7 @@ namespace TheEscort{
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        private readonly int buildDiv = -4;
+        private readonly int buildDiv = -5;
     
         public EscOptions(RainWorld rainworld){
             this.rainworld = rainworld;
@@ -99,11 +99,12 @@ namespace TheEscort{
 
             Color bShadow = new Color(0.1f, 0.1f, 0.1f);
             Color bDefault = new Color(0.75f, 0.75f, 0.75f);
-            Color bBrawler = new Color(0.8f, 0.6f, 0.6f);
+            Color bBrawler = new Color(0.8f, 0.4f, 0.6f);
             Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
-            Color bEscapist = new Color(0.8f, 0.8f, 0.5f);
+            Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
-            Color bSpeedster = Color.grey;
+            Color bSpeedster = new Color(0.76f, 0.78f, 0f);
+            Color bUltraKill = new Color(0.7f, 0.2f, 0.2f);
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
@@ -286,7 +287,7 @@ namespace TheEscort{
                     color = bRailgunner
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Coming soon...", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster", true){
                     color = bSpeedster * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 7.5f) - (tp * 2.1f) + 0.7f, "  Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast."){
@@ -296,6 +297,15 @@ namespace TheEscort{
                     color = bSpeedster
                 },
 
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Coming Soon...", true){
+                    color = Color.grey * 0.75f
+                },
+                new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 8.5f) - (tp * 2.1f) + 0.7f, "  More details when this mod reaches 1k subs!"){
+                    color = bShadow
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), "  More details when this mod reaches 1.5k subs!"){
+                    color = Color.gray
+                },
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, "Gimmicks", true),
