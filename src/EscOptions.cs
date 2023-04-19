@@ -104,7 +104,8 @@ namespace TheEscort{
             Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
-            Color bUltraKill = new Color(0.7f, 0.2f, 0.2f);
+            Color bUK = new Color(0.7f, 0.2f, 0.2f);
+            // I'm so done with this shit, may we never remotely reach 1.5k
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";

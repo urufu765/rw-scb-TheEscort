@@ -32,12 +32,9 @@
 		"karma": 2,
 		"karma_cap": 3,
 		"start_room": "CC_SUMP02",
-		"cycle_length_min": 12,
-		"cycle_length_max": 20,
 		"food_min": 9,
 		"food_max": 14,
 		"world_state": "Spear",
-		"guide_overseer": 4,
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Ghost_EscortMe",
 
@@ -46,8 +43,8 @@
 
 		"theescort/insta_hype": false,
 		"theescort/better_crawl": [3.5, 4.3, 3.7],
-		"theescort/better_polewalk": [4.8, 9.6, 5, 0.6],
-		"theescort/better_polehang": [1.85, 2.66, -0.55, -0.35, 1.9, -0.5],
+		"theescort/better_polewalk": [3.9, 5.2, 5, 0.6],
+		"theescort/better_polehang": [1.35, 2.16, -0.55, -0.35, 1.9, -0.5],
 		"theescort/body_slam": [0.05, 45, 0.7, 15],
 		"theescort/slide_launch_mod": [18, 5, 7],
 		"theescort/dk_multiplier": 3,
@@ -76,7 +73,7 @@
 		"theescort/brawler/spear_vel_fac": [0.73, 0.72, 0.71],
 		"theescort/brawler/spear_dmg_fac": [1.25, 5],
 		"theescort/brawler/spear_thrust": 0.5,
-		"theescort/brawler/spear_shank": [35, 120],
+		"theescort/brawler/spear_shank": [0.1, 120],
 
 		"theescort/deflector/slide_dmg": 0.4,
 		"theescort/deflector/dk_h_dmg": [3, 0.5],
@@ -87,7 +84,8 @@
 
 		"theescort/escapist/slide_launch_mod": 32,
 		"theescort/escapist/slide_launch_fac": 0.95,
-		"theescort/escapist/spear_vel_fac": 0.8,
+		"theescort/escapist/spear_vel_fac": 0.9,
+		"theescort/escapist/spear_dmg_fac": 0.9,
 		"theescort/escapist/no_grab": [30, 80],
 		"theescort/escapist/cd" : 480,
 		"theescort/escapist/color": 2,

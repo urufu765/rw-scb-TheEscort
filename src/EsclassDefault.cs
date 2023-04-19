@@ -47,6 +47,7 @@ namespace TheEscort
             }
 
             // Build-specific ticks
+            if (e.Brawler) Esclass_BL_Tick(self, ref e);
             if (e.Deflector) Esclass_DF_Tick(self, ref e);
             if (e.Escapist) Esclass_EC_Tick(self, ref e);
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
@@ -161,6 +162,7 @@ namespace TheEscort
 
             // Cooldown/Frames Tick
             Esclass_Tick(self);
+            if (e.Brawler) Esclass_BL_Update(self, ref e);
             if (e.Deflector) Esclass_DF_Update(self, ref e);
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
@@ -176,6 +178,7 @@ namespace TheEscort
                     Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
                     Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
                     Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
+                    Ebug(self, "Grasp length: " + self.grasps.Length);
                     if (e.Brawler){
                         Ebug(self, "Shankmode: " + e.BrawShankMode);
                     }
@@ -495,7 +498,7 @@ namespace TheEscort
                 Ebug(self, "FLIPERONI GO!", 2);
 
                 if (Esconfig_SFX(self)){
-                    self.room.PlaySound(Escort_SFX_Flip, e.SFXChunk);
+                    self.room.PlaySound(Eshelp_SFX_Flip(), e.SFXChunk);
                 }
                 self.animation = Player.AnimationIndex.Flip;
             }
@@ -582,7 +585,7 @@ namespace TheEscort
 
                 if (superFlip && superWall){
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((Esconfig_SFX(self)? Escort_SFX_Flip : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 1.4f), 0.9f);
+                    self.room.PlaySound((Esconfig_SFX(self)? Eshelp_SFX_Flip() : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self)? 1f : 1.4f), 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], e.superWallFlip));
                     toPrint.SetValue("SUPERFLIP", 2);
                 } else {
@@ -649,7 +652,9 @@ namespace TheEscort
                 }
 
 
-                if (e.Brawler) return Esclass_BL_HeavyCarry(orig, self, obj);
+                if (e.Brawler && Esclass_BL_HeavyCarry(self, obj)){
+                    //return false;
+                }
 
                 //Ebug(self, "Heavycarry Triggered!");
                 if (obj.TotalMass <= self.TotalMass * ratioed){
@@ -692,6 +697,9 @@ namespace TheEscort
             bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
             bool doNotYeet = onPole || !Esconfig_Spears(self) || e.RailDoubleSpear;
             try{
+                if (self.slugcatStats.throwingSkill == 0 && !e.Speedster){
+                    spear.spearDamageBonus = 1;
+                }
                 if (Esconfig_Hypable(self)){
                     if (self.aerobicLevel > requirement){
                         spear.throwModeFrames = -1;
@@ -752,7 +760,7 @@ namespace TheEscort
             if (e.Deflector) Esclass_DF_ThrownSpear(self, spear, ref e);
             if (e.Escapist) Esclass_EC_ThrownSpear(self, spear);
             if (e.Railgunner) Esclass_RG_ThrownSpear(self, spear, onPole, ref e, ref thrust);
-            if (onPole && !e.Railgunner) {
+            if (onPole && !e.Railgunner || self.bodyMode == Player.BodyModeIndex.Crawl) {
                 thrust = 1f;
             }
 
@@ -919,7 +927,7 @@ namespace TheEscort
                         return Player.ObjectGrabability.OneHand;
                     }
                     if (e.Brawler && Esclass_BL_Grabability(self, obj, ref e)){
-                        return Player.ObjectGrabability.OneHand;
+                        return Player.ObjectGrabability.BigOneHand;
                     }
                     if (obj is Lizard lizzie){
                         // Any lizards that are haulable (while dead) or stunned are dual-wieldable
@@ -935,6 +943,9 @@ namespace TheEscort
                             e.LizardDunk = true;
                             return Player.ObjectGrabability.TwoHands;
                         }
+                    }
+                    if (obj is Creature c && c.TotalMass <= self.TotalMass * ratioed && c.dead){
+                        return Player.ObjectGrabability.BigOneHand;
                     }
                 }
                 return orig(self, obj);
@@ -1208,6 +1219,9 @@ namespace TheEscort
             // Auralvisual indicator: Manual white flickering effect? I'd be surprised if this works as intended
             // Visual indicator doesn't work ;-;
             if (e.ParrySuccess){
+                if (player.abstractCreature.world.game.IsArenaSession && !e.DeflTrampoline){
+                    player.abstractCreature.world.game.GetArenaGameSession.arenaSitting.players[0].parries++;
+                }
                 if (e.Deflector){
                     stunBonus = 0;
                     player.Jump();
@@ -1219,6 +1233,7 @@ namespace TheEscort
                         e.DeflSFXcd = 9;
                     }
                     e.DeflAmpTimer = 160;
+                    e.DeflTrampoline = false;
                 }
                 else {
                     self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
@@ -1240,6 +1255,7 @@ namespace TheEscort
                     }
                     self.stun = 0;
                 }
+                self.AllGraspsLetGoOfThisObject(false);
             }
             else if (e.iFrames > 0) {
                 if (e.Railgunner && e.RailIReady){
@@ -1352,6 +1368,7 @@ namespace TheEscort
                             if (self.mainBodyChunk.vel.y < 6f){
                                 self.mainBodyChunk.vel.y += 10f;
                             }
+                            e.DeflTrampoline = true;
                             self.Violence(null, null, self.mainBodyChunk, null, Creature.DamageType.Blunt, 0f, 0f);
                         } catch (Exception err){
                             Ebug(self, err, "Hitting thyself failed!");

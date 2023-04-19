@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BepInEx;
 using UnityEngine;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -76,15 +77,18 @@ namespace TheEscort
 
 
 
-
+        public static readonly SlugcatStats.Name EscortMe = new SlugcatStats.Name("EscortMe");
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
+        public static SoundID Escort_SFX_Flip2;
+        public static SoundID Escort_SFX_Flip3;
         public static SoundID Escort_SFX_Roll;
         public static SoundID Escort_SFX_Boop;
         public static SoundID Escort_SFX_Railgunner_Death;
         public static SoundID Escort_SFX_Lizard_Grab;
         public static SoundID Escort_SFX_Impact;
         public static SoundID Escort_SFX_Parry;
+        public static SoundID Escort_SFX_Brawler_Shank;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -102,6 +106,8 @@ namespace TheEscort
          4: Ebug errors (done by design)
         */
         private int logImportance = 4;
+        private static int logRepetition = 0;
+        private static String prevLog = "";
 
         // Escort instance stuff
         public static ConditionalWeakTable<Player, Escort> eCon = new();
@@ -120,7 +126,16 @@ namespace TheEscort
         // Debug Logger (Beautified!)
         private static void Ebug(String message, int logPrio=3){
             if (logPrio <= instance.logImportance){
-                Debug.Log("-> Escort: " + message);
+                if (message != prevLog){
+                    if (logRepetition > 0){
+                        Debug.Log("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
+                    }
+                    prevLog = message;
+                    logRepetition = 0;
+                    Debug.Log("-> Escort: " + message);
+                } else {
+                    logRepetition++;
+                }
             }
         }
         private static void Ebug(System.Object message, int logPrio=3){
@@ -193,7 +208,16 @@ namespace TheEscort
             }
             try{
                 if (logPrio <= instance.logImportance){
-                    Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message);
+                    if (message != prevLog){
+                        if (logRepetition > 0){
+                            Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetition + " times: " + prevLog);
+                        }
+                        prevLog = message;
+                        logRepetition = 0;
+                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message);
+                    } else {
+                        logRepetition++;
+                    }
                 }
             } catch (Exception err){
                 Ebug(message, logPrio);
@@ -309,6 +333,7 @@ namespace TheEscort
             //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
             On.Room.Loaded += Escort_Hipbone_Replacement;
+            On.RoomSettings.Load += Escort_Transplant;
 
             On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -339,6 +364,7 @@ namespace TheEscort
             On.Player.BiteEdibleObject += Escort_Eated;
             On.Player.CanIPickThisUp += Esclass_RG_SpearGet;
             On.Player.TerrainImpact += Esclass_SS_Bonk;
+            On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
 
             On.Rock.HitSomething += Escort_RockHit;
             On.Rock.Thrown += Escort_RockThrow;
@@ -367,6 +393,9 @@ namespace TheEscort
             Escort_SFX_Impact = new SoundID("Escort_Impact", true);
             Escort_SFX_Parry = new SoundID("Escort_Parry", true);
             FAtlas aB, aH;
+            Escort_SFX_Flip2 = new SoundID("Escort_Flip_More", true);
+            Escort_SFX_Flip3 = new SoundID("Escort_Flip_Even_More", true);
+            Escort_SFX_Brawler_Shank = new SoundID("Escort_Brawl_Shank", true);
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             if (aB == null || aH == null){
@@ -684,6 +713,19 @@ namespace TheEscort
         /*
         Escort code!
         */
+        private SoundID Eshelp_SFX_Flip(){
+            float r = UnityEngine.Random.value;
+            switch (r){
+                case var _ when r > 0.5f:
+                    return Escort_SFX_Flip;
+                case var _ when r > 0.3f:
+                    return Escort_SFX_Flip2;
+                case var _ when r > 0:
+                    return Escort_SFX_Flip3;
+            }
+            return Escort_SFX_Flip;
+        }
+
         // Implement lizard aggression (edited from template)
         private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
         {
@@ -1158,12 +1200,14 @@ namespace TheEscort
                     return;
                 }
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
+                int j = 0;
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++){
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear){
                         if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric){
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false){
                                 needle = true
                             };
+                            j++;
                         }
                     }
                 }
@@ -1177,9 +1221,45 @@ namespace TheEscort
                         }
                     }
                 }*/
-                
+                Ebug("Swapped " + j + " spears!");
             } catch (Exception err){
                 Ebug(err, "Something happened while swapping spears!");
+            }
+        }
+
+        private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
+        {
+            try{
+                if (index == null){
+                    Ebug("Transplant failed due to nulled slugcat name!");
+                    return orig(self, index);
+                }
+                if (self == null || self.name == null){
+                    Ebug("Transplant failed due to nulled roomSettings name");
+                    return orig(self, index);
+                }
+                if (index != EscortMe){
+                    Ebug("Not Escort!", 1);
+                    return orig(self, index);
+                }
+                Ebug("Roomsetting name: " + self.name);
+                string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
+                if (File.Exists(p)){
+                    Ebug("Escort Transplanted!", 4);
+                    self.filePath = p;
+                } else {
+                    p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
+                    if (File.Exists(p)){
+                        Ebug("Spearmaster Transplanted!", 4);
+                        self.filePath = p;
+                    } else {
+                        Ebug("No Transplant, gone default", 4);
+                    }
+                }
+                return orig(self, index);
+            } catch (Exception err){
+                Ebug(err, "Something happened while replacing room setting file paths!");
+                return orig(self, index);
             }
         }
     }

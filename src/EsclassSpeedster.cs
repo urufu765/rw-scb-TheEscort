@@ -86,24 +86,26 @@ namespace TheEscort
                     v = Mathf.Max(v, Mathf.Abs(self.mainBodyChunk.vel.y));
                 }
                 switch(v){
-                    case var _ when v > 13:
+                    case var _ when v > 13f:
                         e.SpeSpeedin += 10;
                         break;
-                    case var _ when v > 9:
+                    case var _ when v > 9f:
                         e.SpeSpeedin += 4;
                         break;
-                    case var _ when v > 5.5:
+                    case var _ when v > 5.5f:
                         e.SpeSpeedin++;
                         break;
                     default:
-                        e.SpeSpeedin--;
+                        if (Mathf.Abs(self.mainBodyChunk.vel.y) <= 4.5f){
+                            e.SpeSpeedin--;
+                        }
                         break;
                 }
             } else {
-                if (Mathf.Abs(self.mainBodyChunk.vel.x) < 7 && Mathf.Abs(self.mainBodyChunk.vel.y) < 7){
+                if (Mathf.Abs(self.mainBodyChunk.vel.x) < 7 && Mathf.Abs(self.mainBodyChunk.vel.y) < 6){
                     e.SpeSpeedin--;
                 }
-                if (Mathf.Abs(self.mainBodyChunk.vel.x) > 9 || Mathf.Abs(self.mainBodyChunk.vel.y) > 9){
+                if (Mathf.Abs(self.mainBodyChunk.vel.x) > 9 || Mathf.Abs(self.mainBodyChunk.vel.y) > 8){
                     e.SpeSpeedin++;
                 }
             }
@@ -196,15 +198,15 @@ namespace TheEscort
         }
 
         private void Esclass_SS_Collision(Player self, Creature creature, ref Escort e){
-            if (e.SpeDashNCrash && !creature.dead){
+            if (e.SpeDashNCrash && !creature.dead && Mathf.Max(Mathf.Abs(self.mainBodyChunk.vel.x), Mathf.Abs(self.mainBodyChunk.vel.y)) > 4f){
                 creature.SetKillTag(self.abstractCreature);
                 creature.LoseAllGrasps();
                 creature.Violence(
-                    self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x*(DKMultiplier)*creature.TotalMass, self.bodyChunks[0].vel.y*(DKMultiplier)*creature.TotalMass)),
+                    self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x*DKMultiplier, self.bodyChunks[0].vel.y*DKMultiplier)),
                     creature.mainBodyChunk, null, Creature.DamageType.Blunt,
                     Mathf.Lerp(
-                        0.2f, e.SpeSecretSpeed? 2f: 1f, Mathf.InverseLerp(
-                            0f, 10f, Mathf.Max(
+                        0.1f, e.SpeSecretSpeed? 2.5f: 1f, Mathf.InverseLerp(
+                            4f, 16f, Mathf.Max(
                                 Mathf.Abs(self.mainBodyChunk.vel.x), 
                                 Mathf.Abs(self.mainBodyChunk.vel.y)
                             )
@@ -214,12 +216,12 @@ namespace TheEscort
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                     self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                 }
-                creature.firstChunk.vel.x = self.bodyChunks[0].vel.x*(DKMultiplier)*creature.TotalMass;
-                creature.firstChunk.vel.y = self.bodyChunks[0].vel.y*(DKMultiplier)*creature.TotalMass;
+                creature.firstChunk.vel.x = self.bodyChunks[0].vel.x*(DKMultiplier)*(creature.TotalMass*0.5f);
+                creature.firstChunk.vel.y = self.bodyChunks[0].vel.y*(DKMultiplier)*(creature.TotalMass*0.5f);
                 //self.WallJump(-self.flipDirection);
                 self.bodyChunks[0].vel.x *= -(e.SpeSecretSpeed? 2.5f : 1.5f);
                 self.bodyChunks[1].vel.x *= -(e.SpeSecretSpeed? 1.5f : 1f);
-                self.Stun(e.SpeSecretSpeed? 50 : 30);
+                self.Stun(e.SpeSecretSpeed? 160 : 60);
             }
         }
 

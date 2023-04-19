@@ -13,6 +13,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.X)** Escort can throw better in water
 
+**(0.2.5.2)** Brawler Escort no longer does a standing dropkick when in shanking mode.
+
+**(0.2.5.1)** Escort campaign's rain timer is no longer super long... and overseer will no longer spawn. Nerfed Escort's polewalk and hang a wee bit. Fixed Escort's spears doing incorrect amount of damage (for the longest time, I haven't noticed... whoops). Escort will no longer thrust forward when throwing a spear while crouched (no more throwing Escort off the edge by complete accident!). Brawler shank overhaul, and the rest of Escort can now pick up dead creatures lighter than them alongside a spear or rock or lizard or any onehandable. Speedster Escort's windup will no longer go down when climbing or falling at a fast enough speed. More sfx for sick flips! Buffed Escapist's spear velocity but nerfed base damage.
+
 **(0.2.5)** Speedster. Added a supplimentary sfx for parry to assist with the main parry sound. Adjusted the crawl speed to less jank. Weaker dropkicks also make a different sound to differenciate between a powerkick and a regular kick. Also repatched DMS, Spearthrow up and down in corridors! Brawler can spear walls!
 
 **(0.2.4.2)** Escort's pole walk and hang speed adjusted, Escort can swim a bit better in water, Railgunner can pull spears from walls, code reorganization proper, and a bit more developer comments. Railgun does more spear damage when overcharged (but hyped does not affect spear damage). When railgun bombboosts, they're sent more up instead of sideways!

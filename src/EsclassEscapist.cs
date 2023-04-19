@@ -18,6 +18,7 @@ namespace TheEscort
         public static readonly PlayerFeature<float> escapistSlideLaunchMod = PlayerFloat("theescort/escapist/slide_launch_mod");
         public static readonly PlayerFeature<float> escapistSlideLaunchFac = PlayerFloat("theescort/escapist/slide_launch_fac");
         public static readonly PlayerFeature<float> escapistSpearVelFac= PlayerFloat("theescort/escapist/spear_vel_fac");
+        public static readonly PlayerFeature<float> escapistSpearDmgFac= PlayerFloat("theescort/escapist/spear_dmg_fac");
         public static readonly PlayerFeature<int[]> escapistNoGrab = PlayerInts("theescort/escapist/no_grab");
         public static readonly PlayerFeature<int> escapistCD = PlayerInt("theescort/escapist/cd");
         public static readonly PlayerFeature<float> escapistColor = PlayerFloat("theescort/escapist/color");
@@ -103,10 +104,12 @@ namespace TheEscort
 
 
         private void Esclass_EC_ThrownSpear(Player self, Spear spear){
-            if (!escapistSpearVelFac.TryGet(self, out float eSpearVel)){
+            if (!escapistSpearVelFac.TryGet(self, out float eSpearVel) ||
+                !escapistSpearDmgFac.TryGet(self, out float eSpearDmg)){
                 return;
             }
             spear.firstChunk.vel *= eSpearVel;
+            spear.spearDamageBonus *= eSpearDmg;
         }
 
 
