@@ -280,6 +280,81 @@ namespace TheEscort
                     e.LizGet.Update();
                 }
             }
+
+            // optional Pole Tech
+            if (config.cfgPoleBounce.Value && self.input[0].jmp && !self.input[1].jmp){
+                // Normally rivulet check
+                try {
+                    bool flipperoni = self.animation == Player.AnimationIndex.Flip ||
+                            self.animation == Player.AnimationIndex.Roll;
+                    bool kickeroni = self.animation == Player.AnimationIndex.RocketJump;
+                    if (
+                        Mathf.Abs(self.bodyChunks[1].lastPos.y - self.bodyChunks[1].pos.y) < 35f && 
+                        self.bodyChunks[1].vel.y < 9f &&
+                        (
+                            self.animation == Player.AnimationIndex.None ||
+                            flipperoni || kickeroni
+                        ) &&
+                        self.bodyMode == Player.BodyModeIndex.Default &&
+                        self.bodyChunks[1].contactPoint.y == 0 &&
+                        self.bodyChunks[1].contactPoint.x == 0 &&
+                        self.bodyChunks[0].contactPoint.y == 0 &&
+                        self.bodyChunks[0].contactPoint.x == 0 &&
+                        !self.IsTileSolid(1, -1, 0) && !self.IsTileSolid(1, 1, 0)
+                    ) {
+                        if (
+                            (
+                                self.room.GetTile(self.bodyChunks[1].pos).horizontalBeam || 
+                                self.room.GetTile(new Vector2(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y - 10f)).horizontalBeam) && 
+                                Mathf.Min(Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].pos.y), Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].lastPos.y)
+                            ) < 22.5f &&
+                            self.input[0].y <= 0 &&
+                            self.poleSkipPenalty < 1
+                        ){
+                            if (flipperoni){
+                                self.bodyChunks[0].vel.y = 7f;
+                                self.bodyChunks[1].vel.y = 6f;
+                                self.bodyChunks[0].vel.x *= 1.08f;
+                                self.bodyChunks[1].vel.x *= 1.04f;
+                                self.jumpBoost += 8f;
+                            }
+                            else if (kickeroni){
+                                self.bodyChunks[0].vel.y = 6f;
+                                self.bodyChunks[1].vel.y = 5f;
+                                self.bodyChunks[0].vel.x *= 1.1f;
+                                self.bodyChunks[1].vel.x *= 1.2f;
+                                self.jumpBoost += 7f;
+                            }
+                            else{
+                                self.bodyChunks[0].vel.y = 5f;
+                                self.bodyChunks[1].vel.y = 4f;
+                                self.jumpBoost += 6f;
+                            }
+                            if (self.animation != Player.AnimationIndex.None){
+                                for (int num8 = 0; num8 < 7; num8++){
+                                    self.room.AddObject(new WaterDrip(self.mainBodyChunk.pos + new Vector2(self.mainBodyChunk.rad * self.mainBodyChunk.vel.x, 0f), Custom.DegToVec(UnityEngine.Random.value * 180f * (0f - self.mainBodyChunk.vel.x)) * Mathf.Lerp(10f, 17f, UnityEngine.Random.value), waterColor: false));
+                                }
+                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk);
+                            } else {
+                                self.room.PlaySound(SoundID.Slugcat_From_Horizontal_Pole_Jump, e.SFXChunk);
+                            }
+                            float n = self.room.MiddleOfTile(self.bodyChunks[1].pos).y + 5f - self.bodyChunks[1].pos.y;
+                            self.bodyChunks[1].pos.y += n;
+                            self.bodyChunks[0].pos.y += n;
+                            self.poleSkipPenalty = 3;
+                            self.wantToJump = 0;
+                            self.canJump = 0;
+                        } else {
+                            self.poleSkipPenalty = 5;
+                            self.wantToJump = 5;
+                        }
+                    } else {
+                        self.wantToJump = 5;
+                    }
+                } catch (Exception err){
+                    Ebug(self, err, "Pole bounce failed!");
+                }
+            }
         }
 
 
@@ -497,7 +572,7 @@ namespace TheEscort
                 ){
                 Ebug(self, "FLIPERONI GO!", 2);
 
-                if (Esconfig_SFX(self)){
+                if (Esconfig_SFX(self) && !e.kickFlip){
                     self.room.PlaySound(Eshelp_SFX_Flip(), e.SFXChunk);
                 }
                 self.animation = Player.AnimationIndex.Flip;
@@ -1491,7 +1566,9 @@ namespace TheEscort
                         self.PickupPressed();
                     }*/
                     direction = -self.flipDirection;
+                    e.kickFlip = true;
                     self.WallJump(direction);
+                    e.kickFlip = false;
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
                     Ebug(self, message + " Dmg: " + normSlamDamage, 2);
@@ -1501,6 +1578,7 @@ namespace TheEscort
                     e.savingThrowed = false;
                 }
 
+                // Headbutt
                 else if (e.CometFrames > 0 && !e.Cometted){
                     try{
                     creature.SetKillTag(self.abstractCreature);

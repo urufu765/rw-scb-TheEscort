@@ -43,6 +43,8 @@ namespace TheEscort{
         public int voidRetailiate;
         public int spearLaunched;
         public bool slideStunOnCD;
+        public bool poleDance;
+        public bool kickFlip;
 
         // Build stuff
         public bool Brawler;
@@ -119,7 +121,8 @@ namespace TheEscort{
             this.voidRetailiate = 0;
             this.spearLaunched = 0;
             this.slideStunOnCD = false;
-
+            this.poleDance = false;
+            this.kickFlip = false;
 
             // Build specific
             this.Brawler = false;

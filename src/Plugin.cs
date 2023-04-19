@@ -10,7 +10,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -89,6 +89,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Impact;
         public static SoundID Escort_SFX_Parry;
         public static SoundID Escort_SFX_Brawler_Shank;
+        public static SoundID Escort_SFX_Pole_Bounce;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -396,6 +397,7 @@ namespace TheEscort
             Escort_SFX_Flip2 = new SoundID("Escort_Flip_More", true);
             Escort_SFX_Flip3 = new SoundID("Escort_Flip_Even_More", true);
             Escort_SFX_Brawler_Shank = new SoundID("Escort_Brawl_Shank", true);
+            Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             if (aB == null || aH == null){

@@ -13,7 +13,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.X)** Escort can throw better in water
 
-**(0.2.5.2)** Brawler Escort no longer does a standing dropkick when in shanking mode.
+**(0.2.5.3)** Brawler Escort no longer does a standing dropkick when in shanking mode. Swim speed is properly affected by their movement speed. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard)
+
+**(0.2.5.2)** Someone requested Escort to have rivulet pole tech. You're welcome.
 
 **(0.2.5.1)** Escort campaign's rain timer is no longer super long... and overseer will no longer spawn. Nerfed Escort's polewalk and hang a wee bit. Fixed Escort's spears doing incorrect amount of damage (for the longest time, I haven't noticed... whoops). Escort will no longer thrust forward when throwing a spear while crouched (no more throwing Escort off the edge by complete accident!). Brawler shank overhaul, and the rest of Escort can now pick up dead creatures lighter than them alongside a spear or rock or lizard or any onehandable. Speedster Escort's windup will no longer go down when climbing or falling at a fast enough speed. More sfx for sick flips! Buffed Escapist's spear velocity but nerfed base damage.
 
