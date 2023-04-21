@@ -10,7 +10,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.3")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -90,6 +90,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Parry;
         public static SoundID Escort_SFX_Brawler_Shank;
         public static SoundID Escort_SFX_Pole_Bounce;
+        public static SoundID Escort_SFX_Uhoh_Big;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -120,6 +121,7 @@ namespace TheEscort
 
         // Patches
         private static bool escPatch_revivify = false;
+        private static bool escPatch_rotundness = false;
         //private static bool escPatch_DMS = false;
         //private bool escPatch_emeraldTweaks = false;
 
@@ -190,14 +192,14 @@ namespace TheEscort
             if (logPrio <= instance.logImportance){
                 if(asregular){
                     Debug.LogWarning("-> ERcORt: " + message + " => " + exception.Message);
-                    if (exception.Source != null){
-                        Debug.LogWarning("->       : " + exception.Source);
+                    if (exception.StackTrace != null){
+                        Debug.LogWarning("->       : " + exception.StackTrace);
                     }
                 }
                 else{
                     Debug.LogError("-> ERcORt: " + message);
-                    if (exception.Source != null){
-                        Debug.LogError("->       : " + exception.Source);
+                    if (exception.StackTrace != null){
+                        Debug.LogError("->       : " + exception.StackTrace);
                     }
                     Debug.LogException(exception);
                 }
@@ -305,14 +307,14 @@ namespace TheEscort
                 if (logPrio <= instance.logImportance){
                     if(asregular){
                         Debug.LogWarning("-> ERcORt[" + self.playerState.playerNumber + "]: " + message + " => " + exception.Message);
-                        if (exception.Source != null){
-                            Debug.LogWarning("->       : " + exception.Source);
+                        if (exception.StackTrace != null){
+                            Debug.LogWarning("->       : " + exception.StackTrace);
                         }
                     }
                     else{
                         Debug.LogError("-> ERcORt[" + self.playerState.playerNumber + "]: " + message);
-                        if (exception.Source != null){
-                            Debug.LogError("->       [" + self.playerState.playerNumber + "]: " + exception.Source);
+                        if (exception.StackTrace != null){
+                            Debug.LogError("->       [" + self.playerState.playerNumber + "]: " + exception.StackTrace);
                         }
                         Debug.LogException(exception);
                     }
@@ -363,7 +365,7 @@ namespace TheEscort
             On.Player.Grabbed += Esclass_EC_Grabbed;
             On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
             On.Player.BiteEdibleObject += Escort_Eated;
-            On.Player.CanIPickThisUp += Esclass_RG_SpearGet;
+            On.Player.CanIPickThisUp += Escort_SpearGet;
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
 
@@ -398,6 +400,7 @@ namespace TheEscort
             Escort_SFX_Flip3 = new SoundID("Escort_Flip_Even_More", true);
             Escort_SFX_Brawler_Shank = new SoundID("Escort_Brawl_Shank", true);
             Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
+            Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             if (aB == null || aH == null){
@@ -425,6 +428,10 @@ namespace TheEscort
                 Ebug("Found Dress My Slugcat!", 1);
                 //escPatch_DMS = true;
                 Espatch_DMS(ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat"));
+            }
+            if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus")){
+                Ebug("Found Rotund World! Applying custom patch...", 1);
+                escPatch_rotundness = true;
             }
             } catch (Exception err){
                 Ebug(err, "Something happened while searching for mods!");
@@ -651,6 +658,10 @@ namespace TheEscort
                     // Ultrakill build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
                     // Speedstar build (Fast, and when running for a certain amount of time, apply BOOST that also does damage on collision)
+                    case -6:  // 
+                        e.EsTest  = true;
+                        break;
+
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         self.slugcatStats.lungsFac -= 0.1f;
@@ -771,6 +782,7 @@ namespace TheEscort
                     return;
                 }
                 Esconfig_Build(self);
+                e.originalMass = self.TotalMass;
                 try {
                     Ebug(self, "Setting silly sounds", 2);
                     e.Escat_setSFX_roller(Escort_SFX_Roll);
@@ -930,8 +942,8 @@ namespace TheEscort
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue]);
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue + 1]);
                     Ebug(self.player, "Addition success.", 1);
-                    s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[3]);
                     s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[9]);
+                    s.sprites[e.spriteQueue + 1].MoveBehindOtherNode(s.sprites[3]);
                     //Ebug(self.player, "Restructure success.", 1);
                 }
             } catch(Exception err){
@@ -941,24 +953,36 @@ namespace TheEscort
         }
 
         private void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP){
-            orig(self, s, rCam, t, camP);
             try{
                 if (!(self != null && self.player != null)){
+                    orig(self, s, rCam, t, camP);
                     return;
                 }
                 if (self.player.slugcatStats.name.value != "EscortMe"){
+                    orig(self, s, rCam, t, camP);
                     return;
                 }
                 if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD) || !eCon.TryGetValue(self.player, out Escort e)){
+                    orig(self, s, rCam, t, camP);
                     return;
                 }
                 if (e.spriteQueue == -1){
+                    orig(self, s, rCam, t, camP);
                     return;
                 }
                 if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
+                    orig(self, s, rCam, t, camP);
                     Ebug(self.player, "Oh crap. Sprites? Hello?!", 0);
                     return;
                 }
+                if (s.sprites.Length > 9 && s.sprites[1] != null){
+                    e.hipScaleX = s.sprites[1].scaleX;
+                    e.hipScaleY = s.sprites[1].scaleY;
+                } else {
+                    e.hipScaleX = bD[0];
+                    e.hipScaleY = bD[0];
+                }
+                orig(self, s, rCam, t, camP);
                 if (s.sprites.Length > e.spriteQueue){
                     // Hypelevel visual fx
                     try{
@@ -971,6 +995,8 @@ namespace TheEscort
                                 s.sprites[a].alpha = alphya;
                                 s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
+                            s.sprites[e.spriteQueue + 1].scaleX = e.hipScaleX;
+                            s.sprites[e.spriteQueue + 1].scaleY = e.hipScaleY;
                             if (e.hypeLight != null && e.hypeSurround != null){
                                 float alpine = 0f;
                                 float alpite = 0f;
@@ -1004,7 +1030,7 @@ namespace TheEscort
                     s.sprites[e.spriteQueue].rotation = s.sprites[9].rotation;
                     s.sprites[e.spriteQueue + 1].rotation = s.sprites[1].rotation;
                     s.sprites[e.spriteQueue].scaleX = hD[0];
-                    s.sprites[e.spriteQueue + 1].scaleX = bD[0];
+                    //s.sprites[e.spriteQueue + 1].scaleX = bD[0];
                     if (self.player.animation == Player.AnimationIndex.Flip || self.player.animation == Player.AnimationIndex.Roll){
                         Vector2 vectoria = RWCustom.Custom.DegToVec(s.sprites[9].rotation) * hD[1];
                         Vector2 vectorib = RWCustom.Custom.DegToVec(s.sprites[1].rotation) * bD[1];
@@ -1021,6 +1047,7 @@ namespace TheEscort
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
             } catch (Exception err){
+                orig(self, s, rCam, t, camP);
                 Ebug(self.player, err, "Something happened while trying to draw sprites!");
             }
         }

@@ -45,6 +45,10 @@ namespace TheEscort{
         public bool slideStunOnCD;
         public bool poleDance;
         public bool kickFlip;
+        public float hipScaleX;
+        public float hipScaleY;
+        public bool isChunko;
+        public float originalMass;
 
         // Build stuff
         public bool Brawler;
@@ -90,7 +94,6 @@ namespace TheEscort{
             if (ExtEnumBase.TryParse(typeof(SlugcatStats.Name), "EscortMe", true, out var r)){
                 name = r as SlugcatStats.Name;
             }*/
-            
             this.DropKickCD = 0;
             this.iFrames = 0;
             this.parrySlideLean = 0;
@@ -123,6 +126,10 @@ namespace TheEscort{
             this.slideStunOnCD = false;
             this.poleDance = false;
             this.kickFlip = false;
+            this.hipScaleX = 1f;
+            this.hipScaleY = 1f;
+            this.isChunko = false;
+            this.originalMass = 0f;
 
             // Build specific
             this.Brawler = false;
@@ -167,7 +174,6 @@ namespace TheEscort{
             this.RailBombJump = false;
 
             EscortSS();
-            EscortTest();
         }
 
 

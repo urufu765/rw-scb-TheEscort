@@ -167,6 +167,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
+            //if (e.EsTest) Esclass_Test_Update(self);
 
             // Just for seeing what a variable does.
             try{
@@ -178,7 +179,7 @@ namespace TheEscort
                     Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
                     Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
                     Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
-                    Ebug(self, "Grasp length: " + self.grasps.Length);
+                    Ebug(self, "How big?: " + self.TotalMass / e.originalMass);
                     if (e.Brawler){
                         Ebug(self, "Shankmode: " + e.BrawShankMode);
                     }
@@ -353,6 +354,19 @@ namespace TheEscort
                     }
                 } catch (Exception err){
                     Ebug(self, err, "Pole bounce failed!");
+                }
+            }
+
+            // Rotund world rotundness check then SFX!
+            if (escPatch_rotundness){
+                if (!e.isChunko && self.TotalMass / e.originalMass > 1.5f && self.room != null){
+                    if (Esconfig_SFX(self)){
+                        Ebug("Play rotund sound!");
+                        self.room.PlaySound(Escort_SFX_Uhoh_Big, e.SFXChunk);
+                    }
+                    e.isChunko = true;
+                } else if (e.isChunko && self.TotalMass / e.originalMass < 1.5f){
+                    e.isChunko = false;
                 }
             }
         }
@@ -892,8 +906,8 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
-                if (e.Brawler) Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e);
-                if (e.Railgunner) Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e);
+                if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
             } catch (Exception err){
                 Ebug(self, err, "Throwing object error!");
                 orig(self, grasp, eu);
@@ -1606,6 +1620,31 @@ namespace TheEscort
                 }
 
             }
+        }
+
+
+        private bool Escort_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj){
+            try{
+                if (self.slugcatStats.name.value != "EscortMe"){
+                    return orig(self, obj);
+                }
+            } catch (Exception err){
+                Ebug(self, err, "Grab update!");
+                return orig(self, obj);
+            }
+            if(
+                !eCon.TryGetValue(self, out Escort e)
+                ){
+                return orig(self, obj);
+            }
+            if (e.Railgunner && Esclass_RG_SpearGet(obj)){
+                return true;
+            }
+            if (obj != null && obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown){
+                Ebug(self, "Hehe, yoink!");
+                return true;
+            }
+            return orig(self, obj);
         }
     }
 }

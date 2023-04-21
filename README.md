@@ -11,9 +11,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 **(0.2.X)** 
 
-**(0.2.X)** Escort can throw better in water
+**(0.2.5.X)** Escort can throw better in water. Swim speed is properly affected by their movement speed. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Dropkick is now affected by player weight (Hey rotund world!), and Brawler shank no longer launches creatures.
 
-**(0.2.5.3)** Brawler Escort no longer does a standing dropkick when in shanking mode. Swim speed is properly affected by their movement speed. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard)
+**(0.2.5.3)** Brawler Escort no longer does a standing dropkick when in shanking mode. Escort's marking on the chest is not displayed on top of everything anymore!... becoming rotund will stretch the sprite ;>. Becoming fat with rotund world will also cause a silly SFX to trigger. Escort can now maybe catch spears midair. Potential fix of Brawler Escort exploding? Idk, I couldn't replicate it.
 
 **(0.2.5.2)** Someone requested Escort to have rivulet pole tech. You're welcome.
 

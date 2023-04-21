@@ -59,7 +59,7 @@
 		"theescort/mean_lizards": true,
 		"theescort/adrenaline_system": true,
 		"theescort/stamina_req": 0.75,
-		"theescort/reset_rate": 400,
+		"theescort/reset_rate": 40,
 		"theescort/spear_damage": [1.5, 1.0],
 		"theescort/dual_wield": true,
 		"theescort/sounds_ahoy": false,

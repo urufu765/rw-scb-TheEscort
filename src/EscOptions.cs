@@ -95,9 +95,10 @@ namespace TheEscort{
             Color easyColor = new Color(0.42f, 0.75f, 0.5f);
 
             Color p1Color = new Color(1f, 1f, 1f);
-            Color p2Color = new Color(1f, 1f, 23f / 51f);
-            Color p3Color = new Color(1f, 23f / 51f, 23f / 51f);
-            Color p4Color = RWCustom.Custom.HSL2RGB(0.63055557f, 0.54f, 0.2f);
+            Color p2Color = new Color(1f, 1f, 0.451f);
+            Color p3Color = new Color(1f, 0.451f, 0.451f);
+            Color p4Color = new Color(0.09f, 0.1373f, 0.306f);
+            //Color p4Color = RWCustom.Custom.HSL2RGB(0.63055557f, 0.54f, 0.2f);
 
             Color bShadow = new Color(0.1f, 0.1f, 0.1f);
             Color bDefault = new Color(0.75f, 0.75f, 0.75f);
@@ -240,7 +241,7 @@ namespace TheEscort{
                     max = 0
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default {***__}", true){
                     color = bDefault * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 2.5f) - (tp * 2.1f) + 0.7f, "  The intended way of playing Escort."){
@@ -250,7 +251,7 @@ namespace TheEscort{
                     color = bDefault
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), "Brawler", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), "Brawler {***__}", true){
                     color = bBrawler * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 3.5f) - (tp * 2.1f) + 0.7f, "  More powerful and consistent close-combat, but reduced range efficiency."){
@@ -260,7 +261,7 @@ namespace TheEscort{
                     color = bBrawler
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), "Deflector", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), "Deflector {*****}", true){
                     color = bDeflector * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 4.5f) - (tp * 2.1f) + 0.7f, "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
@@ -270,7 +271,7 @@ namespace TheEscort{
                     color = bDeflector
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), "Escapist", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), "Escapist {*____}", true){
                     color = bEscapist * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 5.5f) - (tp * 2.1f) + 0.7f, "  Force out of grasps, though don't expect to be fighting much..."){
@@ -280,7 +281,7 @@ namespace TheEscort{
                     color = bEscapist
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), "Railgunner", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), "Railgunner {****_}", true){
                     color = bRailgunner * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 6.5f) - (tp * 2.1f) + 0.7f, swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
@@ -290,7 +291,7 @@ namespace TheEscort{
                     color = bRailgunner
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
                     color = bSpeedster * 0.75f
                 },
                 new OpLabel(xo + (xp * 2) - 1f, yo - (yp * 7.5f) - (tp * 2.1f) + 0.7f, "  Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast."){

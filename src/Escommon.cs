@@ -114,7 +114,7 @@ namespace TheEscort
                     if (Esconfig_SFX(self) && e.LizGet != null){
                         e.LizGet.Volume = 0f;
                     }
-                    if (self.bodyMode == Player.BodyModeIndex.Default){
+                    if (self.bodyMode == Player.BodyModeIndex.Default && e.BrawThrowGrab == 0){
                         self.animation = Player.AnimationIndex.RocketJump;
                         self.bodyChunks[1].vel.x += self.ThrowDirection;
                     }

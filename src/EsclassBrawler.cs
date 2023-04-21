@@ -32,7 +32,10 @@ namespace TheEscort
             }
         }
 
+
+
         private void Esclass_BL_Update(Player self, ref Escort e){
+            // Melee weapon use
             if (e.BrawMeleeWeapon.Count > 0 && e.BrawThrowGrab == 0 && self.grasps[e.BrawThrowUsed] == null){
                 Ebug("Spear mode was: " + e.BrawMeleeWeapon.Peek().mode);
                 if (self.room != null && e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature){
@@ -45,11 +48,13 @@ namespace TheEscort
                 e.BrawThrowUsed = -1;
             }
 
+            // Brawler wall spear
             if (e.BrawWallSpear.Count > 0 && e.BrawRevertWall == 0){
                 e.BrawWallSpear.Pop().doNotTumbleAtLowSpeed = e.BrawWall;
                 e.BrawRevertWall = -1;
             }
 
+            // VFX
             if (self.room != null && e.BrawThrowGrab > 0 && e.BrawMeleeWeapon.Count > 0){
                 for (int i = -4; i < 5; i++){
                     self.room.AddObject(new Spark(self.mainBodyChunk.pos + new Vector2(self.mainBodyChunk.Rotation.x * 5f, i*0.5f), new Vector2(self.mainBodyChunk.Rotation.x * (10f - e.BrawThrowGrab) * (3f - (0.4f*Mathf.Abs(i))), e.BrawThrowGrab * 0.5f), new Color(0.8f, 0.4f, 0.6f), null, 4, 6));
@@ -57,6 +62,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Stops 
+        /// </summary>
         private bool Esclass_BL_HeavyCarry(Player self, PhysicalObject obj){
             if (obj.TotalMass <= self.TotalMass * ratioed*2 && obj is Creature){
                 for (int i = 0; i < 2; i++){
@@ -67,6 +75,8 @@ namespace TheEscort
             }
             return false;
         }
+        
+        
         private bool Esclass_BL_Grabability(Player self, PhysicalObject obj, ref Escort e){
             if (obj is Creature c && !c.dead){
                 if (obj is JetFish || obj is Fly || obj is TubeWorm || obj is Cicada || obj is MoreSlugcats.Yeek || (obj is Player && obj == self)){
@@ -149,12 +159,12 @@ namespace TheEscort
         }
 
 
-        private void Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
+        private bool Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
             if (!(self.grasps[grasp] != null && self.grasps[1 - grasp] != null)){
-                return;
+                return false;
             }
             if (self.Malnourished){
-                return;
+                return false;
             }
             for (int j = 0; j < 2; j++){
                 if (self.grasps[j].grabbed is Spear s &&
@@ -165,7 +175,7 @@ namespace TheEscort
                     Creature c = cs;
                     //c.firstChunk.vel.y += 1f;
                     orig(self, 1 - j, eu);
-                    
+                    c.mainBodyChunk.vel *= 0.5f;
                     //s.alwaysStickInWalls = false;
                     //if (c.mainBodyChunk != null){
                     //    s.meleeHitChunk = c.mainBodyChunk;
@@ -188,11 +198,10 @@ namespace TheEscort
                     s.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
                     //self.SlugcatGrab(s, j);
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
-
-
     }
 }

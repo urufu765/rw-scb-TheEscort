@@ -292,9 +292,9 @@ namespace TheEscort
         }
 
 
-        private void Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
+        private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e){
             if (!(e.RailDoubleSpear || e.RailDoubleRock || e.RailDoubleBomb || e.RailDoubleLilly)){
-                return;
+                return false;
             }
             self.standing = false;
             Vector2 p = new Vector2();
@@ -324,7 +324,7 @@ namespace TheEscort
                     if (Esconfig_SFX(self)){
                         self.room.PlaySound(Escort_SFX_Railgunner_Death, e.SFXChunk);
                     }
-                    return;
+                    return true;
                 }
 
                 // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
@@ -354,6 +354,7 @@ namespace TheEscort
                 e.RailgunCD = 400;
             }
             e.RailgunUse += addition;
+            return true;
         }
 
         private void Esclass_RG_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu){
@@ -452,25 +453,12 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_RG_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
+        private bool Esclass_RG_SpearGet(PhysicalObject obj)
         {
-            try{
-                if (self.slugcatStats.name.value != "EscortMe"){
-                    return orig(self, obj);
-                }
-            } catch (Exception err){
-                Ebug(self, err, "Grab update!");
-                return orig(self, obj);
-            }
-            if(
-                !eCon.TryGetValue(self, out Escort e)
-                ){
-                return orig(self, obj);
-            }
-            if (e.Railgunner && obj != null && obj is Spear s && s.mode == Weapon.Mode.StuckInWall){
+            if (obj != null && obj is Spear s && s.mode == Weapon.Mode.StuckInWall){
                 return true;
             }
-            return orig(self, obj);
+            return false;
         }
     }
 }
