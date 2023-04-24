@@ -10,7 +10,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.6")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin instance;
@@ -78,6 +78,7 @@ namespace TheEscort
 
 
         public static readonly SlugcatStats.Name EscortMe = new SlugcatStats.Name("EscortMe");
+        public static readonly SlugcatStats.Name EscortSocks = new SlugcatStats.Name("EscortSocks");
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Flip2;
@@ -382,7 +383,11 @@ namespace TheEscort
             On.SlugcatStats.SpearSpawnElectricRandomChance += Escort_EleSpearSpawnChance;
             On.SlugcatStats.SpearSpawnExplosiveRandomChance += Escort_ExpSpearSpawnChance;
             On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
-            }
+            On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
+            On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
+            //On.SlugcatStats.getSlugcatTimelineOrder += Escort_Time;
+        }
+
 
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
@@ -395,12 +400,12 @@ namespace TheEscort
             Escort_SFX_Lizard_Grab = new SoundID("Escort_Liz_Grab", true);
             Escort_SFX_Impact = new SoundID("Escort_Impact", true);
             Escort_SFX_Parry = new SoundID("Escort_Parry", true);
-            FAtlas aB, aH;
             Escort_SFX_Flip2 = new SoundID("Escort_Flip_More", true);
             Escort_SFX_Flip3 = new SoundID("Escort_Flip_Even_More", true);
             Escort_SFX_Brawler_Shank = new SoundID("Escort_Brawl_Shank", true);
             Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
             Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
+            FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             if (aB == null || aH == null){
@@ -420,19 +425,19 @@ namespace TheEscort
 
             // Look for mods...
             try{
-            if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
-                Ebug("Found Revivify! Applying patch...", 1);
-                escPatch_revivify = true;
-            }
-            if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
-                Ebug("Found Dress My Slugcat!", 1);
-                //escPatch_DMS = true;
-                Espatch_DMS(ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat"));
-            }
-            if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus")){
-                Ebug("Found Rotund World! Applying custom patch...", 1);
-                escPatch_rotundness = true;
-            }
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
+                    Ebug("Found Revivify! Applying patch...", 1);
+                    escPatch_revivify = true;
+                }
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
+                    Ebug("Found Dress My Slugcat!", 1);
+                    //escPatch_DMS = true;
+                    Espatch_DMS(ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat"));
+                }
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus")){
+                    Ebug("Found Rotund World! Applying custom patch...", 1);
+                    escPatch_rotundness = true;
+                }
             } catch (Exception err){
                 Ebug(err, "Something happened while searching for mods!");
             }
@@ -657,18 +662,22 @@ namespace TheEscort
                     // Stylist build (Do combos that build up to a super move)
                     // Ultrakill build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
-                    // Speedstar build (Fast, and when running for a certain amount of time, apply BOOST that also does damage on collision)
                     case -6:  // 
                         e.EsTest  = true;
                         break;
 
                     case -5:  // Speedstar build
                         e.Speedster = true;
-                        self.slugcatStats.lungsFac -= 0.1f;
+                        e.SpeOldSpeed = config.cfgOldSpeedster.Value;
+                        self.slugcatStats.lungsFac += 0.1f;
                         self.slugcatStats.bodyWeightFac += 0.1f;
-                        self.slugcatStats.corridorClimbSpeedFac += 1.0f;
+                        //self.slugcatStats.corridorClimbSpeedFac += 1.0f;
                         self.slugcatStats.poleClimbSpeedFac += 0.6f;
+                        self.slugcatStats.corridorClimbSpeedFac += 0.8f;
                         self.slugcatStats.runspeedFac += 0.35f;
+                        self.airFriction -= 0.5f;
+                        self.waterFriction -= 0.5f;
+                        self.surfaceFriction -= 0.5f;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -698,7 +707,7 @@ namespace TheEscort
                     case -1:  // Brawler build
                         e.Brawler = true;
                         e.tossEscort = false;
-                        self.slugcatStats.runspeedFac -= 0.2f;
+                        self.slugcatStats.runspeedFac -= 0.1f;
                         self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                         self.slugcatStats.throwingSkill = 1;
@@ -713,6 +722,7 @@ namespace TheEscort
                     Ebug(self, "Easy Mode active!");
                 }
                 self.slugcatStats.lungsFac += self.Malnourished? 0.15f : -0.1f;
+                self.buoyancy -= 0.05f;
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
                 Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
@@ -775,7 +785,7 @@ namespace TheEscort
             Ebug(self, "Ctor Triggered!");
             orig(self, abstractCreature, world);
 
-            if (self.slugcatStats.name.value == "EscortMe"){
+            if (self.slugcatStats.name == EscortMe){
                 eCon.Add(self, new Escort(self));
                 if (!eCon.TryGetValue(self, out Escort e)){
                     Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
@@ -803,254 +813,9 @@ namespace TheEscort
                     Ebug(self, "All ctor'd", 1);
                 }
             }
+            if (self.slugcatStats.name == EscortSocks) Socks_ctor(self);
         }
 
-        private void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
-        {
-            orig(self, s, rCam);
-            try{
-                if (!(self != null && self.player != null)){
-                    return;
-                }
-                if (self.player.slugcatStats.name.value != "EscortMe"){
-                    return;
-                }
-                if (!eCon.TryGetValue(self.player, out Escort e)){
-                    return;
-                }
-                e.Escat_setIndex_sprite_cue(s.sprites.Length);
-                Array.Resize(ref s.sprites, s.sprites.Length + 2);
-                //Ebug(self.player, "Resized array", 1);
-                s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
-                s.sprites[e.spriteQueue + 1] = new FSprite("escortHipT");
-                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
-                    Ebug(self.player, "Oh geez. No sprites?", 0);
-                }
-                //Ebug(self.player, "Set the sprites", 1);
-                self.AddToContainer(s, rCam, null);
-                //Ebug(self.player, "Sprite init complete!", 1);
-            } catch(Exception err){
-                Ebug(self.player, err, "Something went wrong when initiating sprites!");
-                return;
-            }
-        }
-
-        private void Escort_ApplyPalette(On.PlayerGraphics.orig_ApplyPalette orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, RoomPalette palette){
-            orig(self, s, rCam, palette);
-            try{
-                if (!(self != null && self.player != null)){
-                    return;
-                }
-                if (self.player.slugcatStats.name.value != "EscortMe"){
-                    return;
-                }
-                if (!eCon.TryGetValue(self.player, out Escort e)){
-                    return;
-                }
-
-                if (e.spriteQueue == -1){
-                    return;
-                }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
-                    Ebug(self.player, "Oh dear. Null sprites!!", 0);
-                    return;
-                }
-                Color c = new Color(0.796f, 0.549f, 0.27843f);
-                // Applying colors?
-                if (s.sprites.Length > e.spriteQueue){
-                    //Ebug(self.player, "Gone in", 2);
-                    if (ModManager.CoopAvailable && self.useJollyColor){
-                        //Ebug(self.player, "Jollymachine", 2);
-                        c = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
-                        //Ebug(self.player, "R: " + c.r + " G: " + c.g + " B: " + c.b);
-                        //Ebug(self.player, "Jollymachine end", 2);
-                    }
-                    else if (PlayerGraphics.CustomColorsEnabled()){
-                        Ebug(self.player, "Custom color go brr", 2);
-                        c = PlayerGraphics.CustomColorSafety(2);
-                        Ebug(self.player, "Custom color end", 2);
-                    }
-                    else{
-                        //==Ebug(self.player, "Arenasession or Singleplayer", 2);
-
-                        if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors){
-                            switch(self.player.playerState.playerNumber){
-                                case 0:
-                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && !nonArena){
-                                        c = new Color(0.2f, 0.6f, 0.77f);
-                                    }
-                                    break;
-                                case 1:
-                                    c = new Color(0.26f, 0.68f, 0.21f);
-                                    break;
-                                case 2:
-                                    c = new Color(0.55f, 0.11f, 0.55f);
-                                    break;
-                                case 3:
-                                    c = new Color(0.91f, 0.7f, 0.9f);
-                                    break;
-                            }
-                        }
-                        Ebug(self.player, "Arena/Single end.", 2);
-                    }
-                }
-                if (c.r <= 0.02f && c.g <= 0.02f && c.b <= 0.02f){
-                    e.secretRGB = true;
-                }
-                for (int i = e.spriteQueue; i < s.sprites.Length; i++){
-                    s.sprites[i].color = e.Escat_runit_thru_RGB(c);
-                }
-                if (!e.secretRGB){
-                    e.hypeColor = c;
-                }
-                if (e.hypeLight == null || e.hypeSurround == null){
-                    e.Escat_setLight_hype(self.player, e.hypeColor);
-                }
-                else{
-                    e.hypeLight.color = c;
-                    e.hypeSurround.color = c;
-                }
-            } catch(Exception err){
-                Ebug(self.player, err, "Something went wrong when coloring in the palette!");
-                return;
-            }
-        }
-
-        private void Escort_AddGFXContainer(On.PlayerGraphics.orig_AddToContainer orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, FContainer newContainer){
-            orig(self, s, rCam, newContainer);
-            try{
-                if (!(self != null && self.player != null)){
-                    return;
-                }
-                if (self.player.slugcatStats.name.value != "EscortMe"){
-                    return;
-                }
-                if (!eCon.TryGetValue(self.player, out Escort e)){
-                    return;
-                }
-                if (e.spriteQueue == -1){
-                    return;
-                }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
-                    Ebug(self.player, "Oh shoot. Where sprites?", 0);
-                    return;
-                }
-                if (e.spriteQueue < s.sprites.Length){
-                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue]);
-                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue + 1]);
-                    Ebug(self.player, "Removal success.", 1);
-                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue]);
-                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue + 1]);
-                    Ebug(self.player, "Addition success.", 1);
-                    s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[9]);
-                    s.sprites[e.spriteQueue + 1].MoveBehindOtherNode(s.sprites[3]);
-                    //Ebug(self.player, "Restructure success.", 1);
-                }
-            } catch(Exception err){
-                Ebug(self.player, err, "Something went wrong when adding graphics to container!");
-                return;
-            }
-        }
-
-        private void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP){
-            try{
-                if (!(self != null && self.player != null)){
-                    orig(self, s, rCam, t, camP);
-                    return;
-                }
-                if (self.player.slugcatStats.name.value != "EscortMe"){
-                    orig(self, s, rCam, t, camP);
-                    return;
-                }
-                if (!headDraw.TryGet(self.player, out var hD) || !bodyDraw.TryGet(self.player, out var bD) || !eCon.TryGetValue(self.player, out Escort e)){
-                    orig(self, s, rCam, t, camP);
-                    return;
-                }
-                if (e.spriteQueue == -1){
-                    orig(self, s, rCam, t, camP);
-                    return;
-                }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null)){
-                    orig(self, s, rCam, t, camP);
-                    Ebug(self.player, "Oh crap. Sprites? Hello?!", 0);
-                    return;
-                }
-                if (s.sprites.Length > 9 && s.sprites[1] != null){
-                    e.hipScaleX = s.sprites[1].scaleX;
-                    e.hipScaleY = s.sprites[1].scaleY;
-                } else {
-                    e.hipScaleX = bD[0];
-                    e.hipScaleY = bD[0];
-                }
-                orig(self, s, rCam, t, camP);
-                if (s.sprites.Length > e.spriteQueue){
-                    // Hypelevel visual fx
-                    try{
-                        if (self.player != null && Esconfig_Hypable(self.player)){
-                            float alphya = 1f;
-                            if (requirement > self.player.aerobicLevel){
-                                alphya = Mathf.Lerp((self.player.dead? 0f : 0.57f), 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
-                            }
-                            for (int a = e.spriteQueue; a < s.sprites.Length; a++){
-                                s.sprites[a].alpha = alphya;
-                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
-                            }
-                            s.sprites[e.spriteQueue + 1].scaleX = e.hipScaleX;
-                            s.sprites[e.spriteQueue + 1].scaleY = e.hipScaleY;
-                            if (e.hypeLight != null && e.hypeSurround != null){
-                                float alpine = 0f;
-                                float alpite = 0f;
-
-                                if (requirement > self.player.aerobicLevel){
-                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
-                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
-                                }
-                                else {
-                                    alpine = 0.1f;
-                                    alpite = 0.3f;
-                                }
-                                e.hypeLight.stayAlive = true;
-                                e.hypeSurround.stayAlive = true;
-                                e.hypeLight.setPos = self.player.mainBodyChunk.pos;
-                                e.hypeSurround.setPos = self.player.bodyChunks[0].pos;
-                                e.hypeLight.setAlpha = alpine;
-                                e.hypeSurround.setAlpha = alpite;
-                                if (e.secretRGB){
-                                    e.hypeLight.color = e.hypeColor * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
-                                    e.hypeSurround.color = e.hypeColor * Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
-                                }
-                            }
-                            else {
-                                e.Escat_setLight_hype(self.player, e.hypeColor);
-                            }
-                        }
-                    } catch (Exception err){
-                        Ebug(self.player, err, "something went wrong when altering alpha");
-                    }
-                    s.sprites[e.spriteQueue].rotation = s.sprites[9].rotation;
-                    s.sprites[e.spriteQueue + 1].rotation = s.sprites[1].rotation;
-                    s.sprites[e.spriteQueue].scaleX = hD[0];
-                    //s.sprites[e.spriteQueue + 1].scaleX = bD[0];
-                    if (self.player.animation == Player.AnimationIndex.Flip || self.player.animation == Player.AnimationIndex.Roll){
-                        Vector2 vectoria = RWCustom.Custom.DegToVec(s.sprites[9].rotation) * hD[1];
-                        Vector2 vectorib = RWCustom.Custom.DegToVec(s.sprites[1].rotation) * bD[1];
-                        s.sprites[e.spriteQueue].x = s.sprites[9].x + vectoria.x;
-                        s.sprites[e.spriteQueue].y = s.sprites[9].y + vectoria.y;
-                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + vectorib.x;
-                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + vectorib.y;
-                    } else {
-                        s.sprites[e.spriteQueue].x = s.sprites[9].x + hD[2];
-                        s.sprites[e.spriteQueue].y = s.sprites[9].y + hD[3];
-                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + bD[2];
-                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + bD[3];
-                    }
-                }
-                if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
-            } catch (Exception err){
-                orig(self, s, rCam, t, camP);
-                Ebug(self.player, err, "Something happened while trying to draw sprites!");
-            }
-        }
 
 
         // Check Escort's parry condition
@@ -1127,12 +892,61 @@ namespace TheEscort
             return false;
         }
 
+        private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
+        {
+            try{
+                if (i == null){
+                    Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", 1);
+                    return orig(i, rainWorld);
+                }
+                if (i == EscortMe){
+                    return true;
+                    // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
+                }
+                if (i == EscortSocks){
+                    // TODO: Find a way to check if Escort has been beaten or not
+                    return !unplayableSocks;
+                    // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
+                }
+            } catch (Exception err){
+                Ebug(err, "Something happened when setting whether slugcat is playable or not!");
+            }
+            return orig(i, rainWorld);
+        }
 
+        private static SlugcatStats.Name[] Escort_Time(On.SlugcatStats.orig_getSlugcatTimelineOrder orig)
+        {
+            SlugcatStats.Name[] timeline = orig();
+            try{
+                SlugcatStats.Name[] newTimeline = new SlugcatStats.Name[timeline.Length + 1];
+                int j = 0;
+                for (int i = 0; i < timeline.Length; i++){
+                    if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear){
+                        newTimeline[j] = timeline[i];
+                        j++;
+                        newTimeline[j] = EscortMe;
+                    }
+                    else if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer){
+                        newTimeline[j] = EscortSocks;
+                        j++;
+                        newTimeline[j] = timeline[i];
+                    }
+                    else {
+                        newTimeline[j] = timeline[i];
+                    }
+                    j++;
+                }
+                return newTimeline;
+            } catch (Exception err){
+                Ebug(err, "Couldn't set timeline!");
+            }
+            return timeline;
+        }
 
         private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
         {
             try {
-                if (i.value == "EscortMe"){
+                if (i == EscortMe){
                     return new string[]{
                         "SU",
                         "HI",
@@ -1147,69 +961,90 @@ namespace TheEscort
                         "UW",
                         "SS",
                         "SB",
-                        "DM"
+                        "DM",
+                        "OE"
                     };
-                } else {
-                    return orig(i);
+                }
+                if (i == EscortSocks){
+                    return new string[]
+                    {
+                        "SU",
+                        "HI",
+                        "DS",
+                        "CC",
+                        "GW",
+                        "SH",
+                        "VS",
+                        "LM",
+                        "SI",
+                        "LF",
+                        "UW",
+                        "SS",
+                        "SB",
+                        "OE"
+                    };
                 }
             } catch (Exception err){
                 Ebug(err, "Something went wrong when getting story regions!");
-                return orig(i);
             }
+            return orig(i);
         }
 
         private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
         {
             try{
-                if (!(index != null && index.value != null)){
+                if (index == null){
                     Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
                     return orig(index);
                 }
-                if (index.value == "EscortMe"){
+                if (index == EscortMe){
                     return 0.012f;
-                } else {
-                    return orig(index);
+                }
+                if (index == EscortSocks){
+                    return 0.01f;
                 }
             } catch (Exception err){
                 Ebug(err, "Something happened when setting exploding spear chance!");
-                return orig(index);
             }
+            return orig(index);
         }
 
         private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
         {   
             try{
-                if (!(index != null && index.value != null)){
+                if (index == null){
                     Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
                     return orig(index);
                 }
-                if (index.value == "EscortMe"){
+                if (index == EscortMe){
                     return 0.078f;
-                } else {
-                    return orig(index);
+                }
+                if (index == EscortSocks){
+                    return 0.03f;
                 }
             } catch (Exception err){
                 Ebug(err, "Something happened when setting electric spear spawn chance!");
-                return orig(index);
             }
+            return orig(index);
         }
 
         private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
         {
             try{
-                if (!(index != null && index.value != null)){
+                if (index == null){
                     Ebug("Found nulled slugcat name when applying spear spawn chance!", 1);
                     return orig(index, originalSpearChance);
                 }
-                if (index.value == "EscortMe"){
+                if (index == EscortMe){
                     return Mathf.Pow(originalSpearChance, 1.1f);
-                } else {
-                    return orig(index, originalSpearChance);
+                }
+                if (index == EscortSocks){
+                    return Mathf.Pow(originalSpearChance, 0.83f);
                 }
             } catch (Exception err){
                 Ebug(err, "Something happened when spawning spears!");
-                return orig(index, originalSpearChance);
             }
+            return orig(index, originalSpearChance);
         }
 
         private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
@@ -1267,29 +1102,44 @@ namespace TheEscort
                     Ebug("Transplant failed due to nulled roomSettings name");
                     return orig(self, index);
                 }
-                if (index != EscortMe){
-                    Ebug("Not Escort!", 1);
-                    return orig(self, index);
-                }
-                Ebug("Roomsetting name: " + self.name);
-                string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
-                if (File.Exists(p)){
-                    Ebug("Escort Transplanted!", 4);
-                    self.filePath = p;
-                } else {
-                    p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
+                if (index == EscortMe){
+                    Ebug("Roomsetting name: " + self.name);
+                    string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
                     if (File.Exists(p)){
-                        Ebug("Spearmaster Transplanted!", 4);
+                        Ebug("Escort Transplanted!", 4);
                         self.filePath = p;
                     } else {
-                        Ebug("No Transplant, gone default", 4);
+                        p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
+                        if (File.Exists(p)){
+                            Ebug("Spearmaster Transplanted!", 4);
+                            self.filePath = p;
+                        } else {
+                            Ebug("No Transplant, gone default", 4);
+                        }
                     }
                 }
-                return orig(self, index);
+                if (index == EscortSocks){
+                    Ebug("Roomsetting name: " + self.name);
+                    string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
+                    if (File.Exists(p)){
+                        Ebug("Socks Transplanted!", 4);
+                        self.filePath = p;
+                    } else {
+                        p = WorldLoader.FindRoomFile(self.name, false, "_settings-artificer.txt");
+                        if (File.Exists(p)){
+                            Ebug("Artificer Transplanted!", 4);
+                            self.filePath = p;
+                        } else {
+                            Ebug("No Transplant, gone default", 4);
+                        }
+                    }
+
+                }
             } catch (Exception err){
                 Ebug(err, "Something happened while replacing room setting file paths!");
-                return orig(self, index);
             }
+            return orig(self, index);
         }
+
     }
 }

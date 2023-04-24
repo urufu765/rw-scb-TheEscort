@@ -72,6 +72,8 @@ namespace TheEscort
                 }
             }
 
+
+
             // Implement Escapist's getaway
             try{
                 if (e.EscDangerGrasp == null){

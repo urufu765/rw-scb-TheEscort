@@ -49,6 +49,7 @@ namespace TheEscort{
         public float hipScaleY;
         public bool isChunko;
         public float originalMass;
+        public bool slideFromSpear;
 
         // Build stuff
         public bool Brawler;
@@ -130,6 +131,7 @@ namespace TheEscort{
             this.hipScaleY = 1f;
             this.isChunko = false;
             this.originalMass = 0f;
+            this.slideFromSpear = false;
 
             // Build specific
             this.Brawler = false;

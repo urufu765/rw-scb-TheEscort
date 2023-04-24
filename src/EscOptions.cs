@@ -36,6 +36,7 @@ namespace TheEscort{
         public Configurable<bool> cfgNoticeEmpower;
         public Configurable<bool> cfgFunnyDeflSlide;
         public Configurable<bool> cfgPoleBounce;
+        public Configurable<bool> cfgOldSpeedster;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
@@ -74,6 +75,7 @@ namespace TheEscort{
             this.cfgNoticeEmpower = this.config.Bind<bool>("cfg_Noticeable_Empower", false);
             this.cfgFunnyDeflSlide = this.config.Bind<bool>("cfg_Funny_Deflector_Slide", false);
             this.cfgPoleBounce = this.config.Bind<bool>("cfg_Pole_Bounce", false);
+            this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
         }
 
         private static string swapper(string text, string with=""){
@@ -352,7 +354,16 @@ namespace TheEscort{
                 new OpCheckBox(this.cfgPoleBounce, new Vector2(xo + (xp * 0), yo - (yp * 6))){
                     colorEdge = tempColor,
                     description = OptionInterface.Translate("Because someone requested it. Not quite Rivulet, but something along the lines ;). (Default=false)"),
+                },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Old Speedster Mechanics"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgOldSpeedster, new Vector2(xo + (xp * 0), yo - (yp * 7))){
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("Reverts Speedster Escort Mechanics to before the revamp. (Default=false)"),
                 }
+
             };
             this.accessibleSet = new UIelement[]{
                 new OpLabel(xo, yo, "Accessibility", true),

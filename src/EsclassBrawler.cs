@@ -40,6 +40,7 @@ namespace TheEscort
                 Ebug("Spear mode was: " + e.BrawMeleeWeapon.Peek().mode);
                 if (self.room != null && e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature){
                     self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
+                    self.slowMovementStun += 60;
                 }
                 e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
                 e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);

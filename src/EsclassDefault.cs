@@ -197,6 +197,17 @@ namespace TheEscort
                     }
                     if (e.Speedster){
                         Ebug(self, "Speeding Tickets: " + e.SpeSpeedin);
+                        Ebug(self, "Speeding Tickets 2: " + e.SpeBuildup);
+                        Ebug(self, "Charge/Gear: " + e.SpeCharge + "/" + e.SpeGear);
+                        Ebug(self, "Gravity: " + self.gravity);
+                        Ebug(self, "Customgrav: " + self.customPlayerGravity);
+                        Ebug(self, "FrictionAir: " + self.airFriction);
+                        Ebug(self, "FrictionWar: " + self.waterFriction);
+                        Ebug(self, "FrictionSur: " + self.surfaceFriction);
+                        Ebug(self, "FrictionMush: " + self.mushroomEffect);
+                        Ebug(self, "Timesinceincorr: " + self.timeSinceInCorridorMode);
+                        Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
+                        Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
                     }
                 }
                 //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
@@ -359,13 +370,13 @@ namespace TheEscort
 
             // Rotund world rotundness check then SFX!
             if (escPatch_rotundness){
-                if (!e.isChunko && self.TotalMass / e.originalMass > 1.5f && self.room != null){
+                if (!e.isChunko && self.TotalMass / e.originalMass > 1.4f && self.room != null){
                     if (Esconfig_SFX(self)){
                         Ebug("Play rotund sound!");
                         self.room.PlaySound(Escort_SFX_Uhoh_Big, e.SFXChunk);
                     }
                     e.isChunko = true;
-                } else if (e.isChunko && self.TotalMass / e.originalMass < 1.5f){
+                } else if (e.isChunko && self.TotalMass / e.originalMass < 1.4f){
                     e.isChunko = false;
                 }
             }
@@ -424,6 +435,11 @@ namespace TheEscort
                 }
             }
             if (e.Speedster) Esclass_SS_UpdateAnimation(self, ref e);
+
+
+            if (e.slideFromSpear && self.animation != Player.AnimationIndex.BellySlide){
+                e.slideFromSpear = false;
+            }
         }
 
         // Implement Movementthings
@@ -800,6 +816,7 @@ namespace TheEscort
                                 self.rollCounter = 0;
                                 if (self.input[0].jmp && self.input[0].thrw){
                                     self.animation = Player.AnimationIndex.BellySlide;
+                                    e.slideFromSpear = true;
                                     self.whiplashJump = true;
                                     spear.firstChunk.vel.x *= 1.7f;
                                     Ebug(self, "Spear Go!?", 2);
@@ -816,6 +833,7 @@ namespace TheEscort
                                 self.rollCounter = 0;
                                 self.flipFromSlide = true;
                                 self.animation = Player.AnimationIndex.BellySlide;
+                                e.slideFromSpear = true;
                             }
                             thrust = 9f;
                         }
@@ -826,6 +844,7 @@ namespace TheEscort
                                 self.whiplashJump = true;
                                 if (self.animation != Player.AnimationIndex.BellySlide){
                                     self.animation = Player.AnimationIndex.BellySlide;
+                                    e.slideFromSpear = true;
                                 }
                                 if (self.input[0].jmp && self.input[0].thrw){
                                     spear.firstChunk.vel.x *= 1.6f;

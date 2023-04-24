@@ -1,0 +1,38 @@
+{
+	"id": "EscortSocks",
+	"name": "The Escort's Pup",
+	"description": "you shouldn't be seeing this >:( <LINE>[this will just straight up kill you if you try playing this as the slugpup anyways sooo..]",
+	"features": {
+		"color" : "ede5fa",
+		"custom_colors" : [
+			{"name": "Body", "story": "ede5fa", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
+			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}
+		],
+		"weight": [0.55, 0.45],
+		"tunnel_speed": [1.35, 1],
+		"climb_speed": [1.45, 1.1],
+		"walk_speed": [1.5, 1.15],
+		"crouch_stealth": [0.7, 0.9],
+		"throw_skill": [2, 0],
+		"lung_capacity": 2.5,
+		"loudness": [0.5, 0.4],
+		"alignments": {
+			"Scavengers": { "like": 0.5, "strength": 0.85 }
+		},
+		"diet": {
+			"base": "Gourmand",
+			"corpses": 0.25,
+			"plants": 1
+		},
+		"karma": 4,
+		"karma_cap": 9,
+		"start_room": "SB_TOPSIDE",
+		"food_min": 3,
+		"food_max": 6,
+		"world_state": "Artificer",
+		"timeline_before": "Artificer",
+		"the_mark": true,
+		"select_menu_scene": "EsTemp",
+		"select_menu_scene_ascended": "EsTemp"
+		}
+}

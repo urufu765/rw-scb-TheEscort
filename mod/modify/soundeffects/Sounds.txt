@@ -10,4 +10,4 @@
 [ADD]Escort_Flip_Even_More : escortflipmoremore/vol=0.25/minPitch=0.9/maxPitch=1.1
 [ADD]Escort_Brawl_Shank : escortbrawlshanka/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankb/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankc/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankd/vol=0.24/minPitch=0.5/maxPitch=1
 [ADD]Escort_Pole_Bounce : escortpolebounce/vol=0.24/minPitch=0.9/maxPitch=1.75
-[ADD]Escort_Rotunded : escortrotund/vol=0.25/minPitch=0.9/maxPitch=1.2
+[ADD]Escort_Rotunded : escortrotund/vol=0.25/minPitch=0.8/maxPitch=1.05

@@ -16,8 +16,13 @@ namespace TheEscort{
         public int SpeExtraSpe;
         public Color SpeColor;
         public int SpeBonk;
+        public float SpeBuildup;
+        public int SpeGear;
+        public int SpeCharge;
+        public float SpeGain;
+        public bool SpeOldSpeed;
 
-        public void EscortSS(){
+        public void EscortSS(bool useOld=false){
             this.Speedster = false;
             this.SpeSpeedin = 0;
             this.SpeExtraSpe = 0;
@@ -29,6 +34,11 @@ namespace TheEscort{
             this.SpeTrailTick = 0;
             this.SpeColor = new Color(0.76f, 0.78f, 0f);
             this.SpeBonk = 0;
+            this.SpeBuildup = 0f;
+            this.SpeGear = 0;
+            this.SpeCharge = 0;
+            this.SpeGain = -1f;
+            this.SpeOldSpeed = useOld;
         }
 
         public class SpeedTrail : ISingleCameraDrawable{
@@ -50,6 +60,7 @@ namespace TheEscort{
             private Color color2;
             private Vector2 cPos;
             private Vector2 offset;
+            public bool killed = false;
             public SpeedTrail(PlayerGraphics pg, RoomCamera.SpriteLeaser s, Color color, Color bonusColor, int life=20){
                 this.lifeTime = life;
                 this.maxLife = life;
@@ -129,12 +140,10 @@ namespace TheEscort{
                             ) - this.offset);
                     }
                 }
-                if (lifeTime > 0){
-                    lifeTime--;
-                }
             }
 
             public void KillTrail(){
+                this.killed = true;
                 foreach(FSprite f in pSprite){
                     camera.ReturnFContainer("Background").RemoveChild(f);
                 }
@@ -147,6 +156,12 @@ namespace TheEscort{
 
             public void Draw(RoomCamera rCam, float timeStacker, Vector2 camPos){
                 this.offset = new Vector2(camPos.x - this.cPos.x, camPos.y - this.cPos.y);
+                if (this.lifeTime > 0){
+                    this.lifeTime--;
+                }
+                else {
+                    KillTrail();
+                }
             }
         }
         public void Escat_addTrail(PlayerGraphics pg, RoomCamera.SpriteLeaser s, int life, int trailCount=10){
@@ -154,11 +169,19 @@ namespace TheEscort{
                 SpeedTrail trail = this.SpeTrail.Dequeue();
                 trail.KillTrail();
             }
-            this.SpeTrail.Enqueue(new SpeedTrail(pg, s, (this.SpeSecretSpeed? Color.white : this.hypeColor), (this.SpeSecretSpeed? this.hypeColor : Color.black), life));
+            if (this.SpeOldSpeed){
+                this.SpeTrail.Enqueue(new SpeedTrail(pg, s, (this.SpeSecretSpeed? Color.white : this.hypeColor), (this.SpeSecretSpeed? this.hypeColor : Color.black), life));
+            }
+            else {
+                this.SpeTrail.Enqueue(new SpeedTrail(pg, s, Color.Lerp(this.hypeColor, Color.white, this.SpeGear * 0.33f), Color.Lerp(Color.black, this.hypeColor, this.SpeGear * 0.33f), life));
+            }
         }
 
         public void Escat_showTrail(RoomCamera rCam, float timeStacker, Vector2 camPos){
             foreach(SpeedTrail trail in this.SpeTrail){
+                if (trail.killed){
+                    continue;
+                }
                 if (trail.playerGraphics != null && trail.playerGraphics.owner != null){
                     trail.Update();
                 } else {
@@ -166,7 +189,5 @@ namespace TheEscort{
                 }
             }
         }
-
-    
     }
 }

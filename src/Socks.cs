@@ -1,19 +1,25 @@
 using System;
 using System.Collections.Generic;
-using BepInEx;
-using UnityEngine;
 using System.Runtime.CompilerServices;
-using SlugBase.Features;
-using static SlugBase.Features.FeatureTypes;
-using RWCustom;
+using System.Linq;
+using System.Threading.Tasks;
+using TheEscort;
 
 namespace TheEscort
 {
-    /// <summary>
-    /// It's Socks!
-    /// </summary>
-    partial class Plugin : BaseUnityPlugin
+    public static class Socklass
     {
-        
+        public class Socks{
+            public bool coopMode;
+            //public MoreSlugcats.SlugNPCAI sAI;
+            public readonly int sID = 3118;
+
+            public Socks(Player self){
+                this.coopMode = false;
+            }
+        }
+
+        private static readonly ConditionalWeakTable<Player, Socks> CWT = new();
+        public static Socks Get(this Player player) => CWT.GetValue(player, _ => new(player));
     }
 }
