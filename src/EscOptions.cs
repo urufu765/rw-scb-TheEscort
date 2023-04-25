@@ -37,6 +37,9 @@ namespace TheEscort{
         public Configurable<bool> cfgFunnyDeflSlide;
         public Configurable<bool> cfgPoleBounce;
         public Configurable<bool> cfgOldSpeedster;
+        public Configurable<bool> cfgDeveloperMode;
+        //private OpCheckBox hypableBtn;
+        //private OpSliderTick hypedSlide;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] gimmickSet;
@@ -76,6 +79,8 @@ namespace TheEscort{
             this.cfgFunnyDeflSlide = this.config.Bind<bool>("cfg_Funny_Deflector_Slide", false);
             this.cfgPoleBounce = this.config.Bind<bool>("cfg_Pole_Bounce", false);
             this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
+            this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
+            this.cfgDeveloperMode.OnChange += longDevLogChange;
         }
 
         private static string swapper(string text, string with=""){
@@ -111,6 +116,19 @@ namespace TheEscort{
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
             Color bUK = new Color(0.7f, 0.2f, 0.2f);
             // I'm so done with this shit, may we never remotely reach 1.5k
+
+            /*
+            this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
+                description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
+            };
+            this.hypedSlide = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 6)), 400 - (int)xp - 7){
+                min = 0,
+                max = 6,
+                description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
+            };
+            //this.hypableBtn.OnDeactivate += setTheHype;
+            //this.hypableBtn.OnReactivate += killTheHype;
+            */
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
@@ -151,6 +169,7 @@ namespace TheEscort{
                 },
 
                 new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 5) - tp, "Battle-Hype Mechanic"),
+                //hypableBtn, hypedSlide,
                 new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
                     description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
                 },
@@ -386,11 +405,37 @@ namespace TheEscort{
                     colorEdge = tempColor,
                     description = OptionInterface.Translate("Changes the empowered vfx for Deflector Escort from sparks to pulsing circle. (Default=false)")
                 },
+
+                new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Keep Track of All Methods (for modders)"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgDeveloperMode, new Vector2(xo + (xp * 0), yo - (yp * 4))){
+                    colorEdge = tempColor,
+                    description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)")
+                },
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
             gimmickTab.AddItems(this.gimmickSet);
             accessibilityTab.AddItems(this.accessibleSet);
+        }
+
+        /*
+        public override void Update()
+        {
+            this.cfgDeveloperMode.OnChange += longDevLogChange;
+            base.Update();
+        }*/
+
+
+        private void longDevLogChange()
+        {
+            if (this.cfgDeveloperMode.Value){
+                Plugin.ins.L().turnOnLog();
+            }
+            else {
+                Plugin.ins.L().turnOffLog();
+            }
         }
     }
 }

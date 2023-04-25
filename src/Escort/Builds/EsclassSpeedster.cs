@@ -39,11 +39,6 @@ namespace TheEscort
         }
 
         private void Esclass_SS_Update(Player self, ref Escort e){
-            if (self == null || (self != null && self.dead) || (self != null && self.mainBodyChunk == null)){
-                if (e.SpeTrail.Count > 0){
-                    e.SpeTrail.Dequeue().KillTrail();
-                }
-            }
             if (!(self != null && self.mainBodyChunk != null)){
                 return;
             }
@@ -121,6 +116,7 @@ namespace TheEscort
 
             else {  // New speedway
                 if (e.SpeBonk == 1){
+                    self.Stun(40 * e.SpeGear);
                     if (e.SpeDashNCrash && e.SpeGear > 0){
                         e.SpeGear--;
                     }
@@ -216,11 +212,6 @@ namespace TheEscort
             if (e.SpeDashNCrash){
                 self.dynamicRunSpeed[0] += 3f * n;
                 self.dynamicRunSpeed[1] += 3f * n;
-                if (self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut){
-                    while (e.SpeTrail.Count > 0){
-                        e.SpeTrail.Dequeue().KillTrail();
-                    }
-                }
             }
         }
 
@@ -240,24 +231,24 @@ namespace TheEscort
                     if (self.initSlideCounter < 5){
                         self.initSlideCounter += 5;
                     }
-                    self.bodyChunks[0].vel.x += Mathf.Sign(self.bodyChunks[0].vel.x) * n * 2f;
-                    self.bodyChunks[1].vel.x += Mathf.Sign(self.bodyChunks[1].vel.x) * n * 1.8f;
+                    self.bodyChunks[0].vel.x += Mathf.Sign(self.bodyChunks[0].vel.x) * n * 2.5f;
+                    self.bodyChunks[1].vel.x += Mathf.Sign(self.bodyChunks[1].vel.x) * n * 2.3f;
                     self.bodyChunks[0].vel.y *= 0.9f;
                     self.bodyChunks[1].vel.y *= 0.75f;
                 }
                 if (self.animation == Player.AnimationIndex.HangFromBeam){
-                    self.bodyChunks[0].vel.x += self.input[0].x * n;
-                    self.bodyChunks[1].vel.x += self.input[0].x * n;
+                    self.bodyChunks[0].vel.x += self.input[0].x * n * 0.5f;
+                    self.bodyChunks[1].vel.x += self.input[0].x * n * 0.5f;
                 }
                 if (self.animation == Player.AnimationIndex.StandOnBeam){
-                    self.bodyChunks[0].vel.x += self.input[0].x * n;
-                    self.bodyChunks[1].vel.x += self.input[0].x * n;
+                    self.bodyChunks[0].vel.x += self.input[0].x * n * 1.1f;
+                    self.bodyChunks[1].vel.x += self.input[0].x * n * 1.1f;
                 }
                 if (self.animation == Player.AnimationIndex.ClimbOnBeam){
                     if (self.input[0].y > 0){
-                        self.bodyChunks[0].vel.y += poleR[0] * self.input[0].y * n;
+                        self.bodyChunks[0].vel.y += poleR[0] * self.input[0].y * n * 1.3f;
                     } else {
-                        self.bodyChunks[1].vel.y += poleR[1] * self.input[0].y * n;
+                        self.bodyChunks[1].vel.y += poleR[1] * self.input[0].y * n * 1.3f;
                     }
                 }
                 if (self.animation == Player.AnimationIndex.RocketJump && self.allowRoll == 0){
@@ -277,7 +268,7 @@ namespace TheEscort
                     e.SpeDashNCrash = true;
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
-                    e.SpeSpeedin = 200 + 50 * (int)Math.Pow(2, e.SpeGear);
+                    e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                     if (self.room != null){
                         for (int i = 0; i < 10; i++){
                             self.room.AddObject(new Spark(self.bodyChunks[1].pos + new Vector2(-10 * Mathf.Sign(self.bodyChunks[1].vel.x), 0), new Vector2(-2f * self.bodyChunks[0].vel.x, Mathf.Lerp(0f, 10f, UnityEngine.Random.value)), e.SpeColor, null, 20, 40));
@@ -322,7 +313,7 @@ namespace TheEscort
         }
 
         private void Esclass_SS_Collision(Player self, Creature creature, ref Escort e){
-            if (e.SpeDashNCrash && !creature.dead && Mathf.Max(Mathf.Abs(self.mainBodyChunk.vel.x), Mathf.Abs(self.mainBodyChunk.vel.y)) > 4f){
+            if (e.SpeDashNCrash && !creature.dead && Mathf.Max(Mathf.Abs(self.mainBodyChunk.vel.x), Mathf.Abs(self.mainBodyChunk.vel.y)) > 10f){
                 if (e.SpeOldSpeed){
                     creature.SetKillTag(self.abstractCreature);
                     creature.LoseAllGrasps();

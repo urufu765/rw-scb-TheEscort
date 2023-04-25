@@ -10,15 +10,15 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.9")]
     partial class Plugin : BaseUnityPlugin
     {
-        public static Plugin instance;
+        public static Plugin ins;
         public EscOptions config;
         private const string MOD_ID = "urufudoggo.theescort";
         public Plugin(){
             try{
-                Plugin.instance = this;
+                Plugin.ins = this;
             } catch (Exception e){
                 base.Logger.LogError(e);
             }
@@ -129,7 +129,7 @@ namespace TheEscort
 
         // Debug Logger (Beautified!)
         private static void Ebug(String message, int logPrio=3){
-            if (logPrio <= instance.logImportance){
+            if (logPrio <= ins.logImportance){
                 if (message != prevLog){
                     if (logRepetition > 0){
                         Debug.Log("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
@@ -143,12 +143,12 @@ namespace TheEscort
             }
         }
         private static void Ebug(System.Object message, int logPrio=3){
-            if (logPrio <= instance.logImportance){
+            if (logPrio <= ins.logImportance){
                 Debug.Log("-> Escort: " + message.ToString());
             }
         }
         private static void Ebug(String[] messages, int logPrio=3, bool separated=true){
-            if (logPrio <= instance.logImportance){
+            if (logPrio <= ins.logImportance){
                 if (separated){
                     String message = "";
                     foreach(String msg in messages){
@@ -169,7 +169,7 @@ namespace TheEscort
             }
         }
         private static void Ebug(System.Object[] messages, int logPrio=3, bool separated=true){
-            if (logPrio <= instance.logImportance){
+            if (logPrio <= ins.logImportance){
                 if (separated){
                     String message = "";
                     foreach(String msg in messages){
@@ -190,7 +190,8 @@ namespace TheEscort
             }
         }
         private static void Ebug(Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
-            if (logPrio <= instance.logImportance){
+            ins.L().letItRip(exception.GetType().ToString(), !asregular);
+            if (logPrio <= ins.logImportance){
                 if(asregular){
                     Debug.LogWarning("-> ERcORt: " + message + " => " + exception.Message);
                     if (exception.StackTrace != null){
@@ -211,7 +212,7 @@ namespace TheEscort
                 Ebug(message, logPrio);
             }
             try{
-                if (logPrio <= instance.logImportance){
+                if (logPrio <= ins.logImportance){
                     if (message != prevLog){
                         if (logRepetition > 0){
                             Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetition + " times: " + prevLog);
@@ -233,7 +234,7 @@ namespace TheEscort
                 Ebug(message, logPrio);
             }
             try{
-                if (logPrio <= instance.logImportance){
+                if (logPrio <= ins.logImportance){
                     Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.ToString());
                 }
             } catch (Exception err){
@@ -246,7 +247,7 @@ namespace TheEscort
                 Ebug(messages, logPrio, separated);
             }
             try{
-                if (logPrio <= instance.logImportance){
+                if (logPrio <= ins.logImportance){
                     if (separated){
                         String message = "";
                         foreach(String msg in messages){
@@ -276,7 +277,7 @@ namespace TheEscort
                 Ebug(messages, logPrio, separated);
             }
             try{
-                if (logPrio <= instance.logImportance){
+                if (logPrio <= ins.logImportance){
                     if (separated){
                         String message = "";
                         foreach(String msg in messages){
@@ -304,8 +305,9 @@ namespace TheEscort
             if (self == null){
                 Ebug(exception, message, logPrio, asregular);
             }
+            ins.L().letItRip(exception.GetType().ToString(), !asregular);
             try {
-                if (logPrio <= instance.logImportance){
+                if (logPrio <= ins.logImportance){
                     if(asregular){
                         Debug.LogWarning("-> ERcORt[" + self.playerState.playerNumber + "]: " + message + " => " + exception.Message);
                         if (exception.StackTrace != null){
@@ -388,10 +390,16 @@ namespace TheEscort
             //On.SlugcatStats.getSlugcatTimelineOrder += Escort_Time;
         }
 
+        // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
+        public void OnApplicationQuit() {
+            ins.L().letItRip();
+        }
+
 
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
+            ins.L().set();
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
@@ -421,20 +429,33 @@ namespace TheEscort
 
 
         private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self){
+            ins.L().set();
             orig(self);
 
             // Look for mods...
             try{
                 if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
+                    ins.L().set("Patch: Revivify");
                     Ebug("Found Revivify! Applying patch...", 1);
                     escPatch_revivify = true;
                 }
                 if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
+                    ins.L().set("Patch: DressMySlugcat");
                     Ebug("Found Dress My Slugcat!", 1);
+                    ModManager.Mod DMS_Mod = ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat");
                     //escPatch_DMS = true;
-                    Espatch_DMS(ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat"));
+                    Ebug("Found DMS Version: " + DMS_Mod.version, 1);
+                    String[] dmsVer = DMS_Mod.version.Split('.');
+                    if(int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
+                        Ebug("Applying patch!...", 1);
+                        Espatch_DMS(DMS_Mod, verMin);
+                    } else {
+                        Ebug("Applying dud patch...", 1);
+                        Espatch_DMS();
+                    }
                 }
                 if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus")){
+                    ins.L().set("Patch: Rotund World");
                     Ebug("Found Rotund World! Applying custom patch...", 1);
                     escPatch_rotundness = true;
                 }
@@ -443,38 +464,21 @@ namespace TheEscort
             }
         }
 
-        private static void Espatch_DMS(ModManager.Mod dms){
+        private static void Espatch_DMS(ModManager.Mod dms, int verMin){
             try{// Dress My Slugcat Patch
                 //if (dms.version)
-                Ebug("Found DMS Version: " + dms.version, 1);
                 String[] dmsVer = dms.version.Split('.');
-                if(int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
-                    Ebug("Applying patch!...", 1);
-                    if(verMin == 3 && int.TryParse(dmsVer[2], out int verPatch) && verPatch == 0){
-                        DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                            Name = "WAIT 4 NEXT DMS PATCH",
-                            Description = "Please wait for next patch (will likely softcrash upon clicking on customize)",
-                            GallerySprite = "escortHipT",
-                            RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                            Slugcats = new List<string>{"EscortMe"}
-                        });
-                    }
-                    else {
-                        DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                            Name = "MARKINGS",
-                            Description = "Markings",
-                            GallerySprite = "escortHipT",
-                            RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                            Slugcats = new List<string>{"EscortMe"}
-                        });
-                    }
+                if(verMin == 3){
+                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                        Name = "WAIT 4 NEXT DMS PATCH",
+                        Description = "Please wait for next patch (will likely softcrash upon clicking on customize)",
+                        GallerySprite = "escortHipT",
+                        RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                        Slugcats = new List<string>{"EscortMe"}
+                    });
                 }
                 else {
-                    //Ebug(self, "Using dud patch... (update your DMS!)", 1);
-                    Ebug("Using dud patch...", 1);
-                    DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                        //Name = "UPDATEYOURDMS!",
-                        //Description = "Update Your DMS",
+                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
                         Name = "MARKINGS",
                         Description = "Markings",
                         GallerySprite = "escortHipT",
@@ -487,7 +491,27 @@ namespace TheEscort
                 Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
             }
         }
-        
+
+        private static void Espatch_DMS(){
+            try{// Dress My Slugcat Patch
+                //if (dms.version)
+                Ebug("Using dud patch...", 1);
+                DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                    //Name = "UPDATEYOURDMS!",
+                    //Description = "Update Your DMS",
+                    Name = "MARKINGS",
+                    Description = "Markings",
+                    GallerySprite = "escortHipT",
+                    RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
+                    Slugcats = new List<string>{"EscortMe"}
+                });
+            } catch (Exception merr){
+                //escPatch_DMS = false;
+                Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
+            }
+        }
+
+                    //Ebug(self, "Using dud patch... (update your DMS!)", 1);
 
         /*
         Configurations!
@@ -752,11 +776,12 @@ namespace TheEscort
         // Implement lizard aggression (edited from template)
         private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
         {
-            
+            ins.L().setF();
             orig(self, abstractCreature, world);
 
             if(Esconfig_Mean_Lizards(world))
             {
+                ins.L().setF(true);
                 Ebug("Lizard Ctor Triggered!");
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
@@ -782,10 +807,12 @@ namespace TheEscort
 
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
+            ins.L().set();
             Ebug(self, "Ctor Triggered!");
             orig(self, abstractCreature, world);
 
             if (self.slugcatStats.name == EscortMe){
+                ins.L().set("Escort Check");
                 eCon.Add(self, new Escort(self));
                 if (!eCon.TryGetValue(self, out Escort e)){
                     Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
@@ -807,15 +834,29 @@ namespace TheEscort
                     // April fools!
                     //self.setPupStatus(set: true);
                     //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
+                    //Ebug(new NullReferenceException(), "Test");
                 } catch (Exception err){
                     Ebug(self, err, "Error while constructing!");
                 } finally {
                     Ebug(self, "All ctor'd", 1);
                 }
             }
-            if (self.slugcatStats.name == EscortSocks) Socks_ctor(self);
+            if (self.slugcatStats.name == EscortSocks) {
+                ins.L().set("Socks Check");
+                Socks_ctor(self);
+            }
         }
 
+
+        private void Eshelp_ExpressoDepresso(Player self){
+            try{
+                Eshelp_ExpressoDepresso(self);
+                return;
+            } catch (Exception err){
+                Ebug(self, err);
+            }
+            //throw new NotImplementedException();
+        }
 
 
         // Check Escort's parry condition
@@ -894,16 +935,20 @@ namespace TheEscort
 
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
         {
+            ins.L().set();
             try{
                 if (i == null){
                     Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", 1);
                     return orig(i, rainWorld);
                 }
+                ins.L().set("Null Check");
                 if (i == EscortMe){
+                    ins.L().set("Escort Check");
                     return true;
                     // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
                 }
                 if (i == EscortSocks){
+                    ins.L().set("Socks Check");
                     // TODO: Find a way to check if Escort has been beaten or not
                     return !unplayableSocks;
                     // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
@@ -916,17 +961,20 @@ namespace TheEscort
 
         private static SlugcatStats.Name[] Escort_Time(On.SlugcatStats.orig_getSlugcatTimelineOrder orig)
         {
+            ins.L().set();
             SlugcatStats.Name[] timeline = orig();
             try{
                 SlugcatStats.Name[] newTimeline = new SlugcatStats.Name[timeline.Length + 1];
                 int j = 0;
                 for (int i = 0; i < timeline.Length; i++){
                     if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear){
+                        ins.L().set("Escort Check");
                         newTimeline[j] = timeline[i];
                         j++;
                         newTimeline[j] = EscortMe;
                     }
                     else if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer){
+                        ins.L().set("Socks Check");
                         newTimeline[j] = EscortSocks;
                         j++;
                         newTimeline[j] = timeline[i];
@@ -945,8 +993,15 @@ namespace TheEscort
 
         private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
         {
+            ins.L().set();
             try {
+                if (i == null){
+                    Ebug("Found nulled cat when searching for regions!");
+                    return orig(i);
+                }
+                ins.L().set("Null Check");
                 if (i == EscortMe){
+                    ins.L().set("Escort Check");
                     return new string[]{
                         "SU",
                         "HI",
@@ -966,6 +1021,7 @@ namespace TheEscort
                     };
                 }
                 if (i == EscortSocks){
+                    ins.L().set("Socks Check");
                     return new string[]
                     {
                         "SU",
@@ -992,15 +1048,19 @@ namespace TheEscort
 
         private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
         {
+            ins.L().setF();
             try{
                 if (index == null){
                     Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
                     return orig(index);
                 }
+                ins.L().setF("Null Check");
                 if (index == EscortMe){
+                    ins.L().setF("Escort Check");
                     return 0.012f;
                 }
                 if (index == EscortSocks){
+                    ins.L().setF("Socks Check");
                     return 0.01f;
                 }
             } catch (Exception err){
@@ -1011,15 +1071,19 @@ namespace TheEscort
 
         private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
         {   
+            ins.L().setF();
             try{
                 if (index == null){
                     Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
                     return orig(index);
                 }
+                ins.L().setF("Null Check");
                 if (index == EscortMe){
+                    ins.L().setF("Escort Check");
                     return 0.078f;
                 }
                 if (index == EscortSocks){
+                    ins.L().setF("Socks Check");
                     return 0.03f;
                 }
             } catch (Exception err){
@@ -1030,15 +1094,19 @@ namespace TheEscort
 
         private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
         {
+            ins.L().setF();
             try{
                 if (index == null){
                     Ebug("Found nulled slugcat name when applying spear spawn chance!", 1);
                     return orig(index, originalSpearChance);
                 }
+                ins.L().setF("Null Check");
                 if (index == EscortMe){
+                    ins.L().setF("Escort Check");
                     return Mathf.Pow(originalSpearChance, 1.1f);
                 }
                 if (index == EscortSocks){
+                    ins.L().setF("Socks Check");
                     return Mathf.Pow(originalSpearChance, 0.83f);
                 }
             } catch (Exception err){
@@ -1049,20 +1117,24 @@ namespace TheEscort
 
         private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
         {
+            ins.L().setF();
             orig(self);
             try{
                 if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null)){
                     Ebug("Found nulled slugcat name when replacing spears!", 1);
                     return;
                 }
+                ins.L().setF("Null Check");
                 if (self.game.StoryCharacter.value != "EscortMe"){  
                     Ebug("... That's not Escort... nice try", 1);
                     return;
                 }
+                ins.L().setF("Escort Check");
                 if (self.abstractRoom.shelter){
                     Ebug("Spear swap ignores shelters!", 1);
                     return;
                 }
+                ins.L().setF("Is not shelter");
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 int j = 0;
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++){
@@ -1093,16 +1165,20 @@ namespace TheEscort
 
         private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
         {
+            ins.L().setF();
             try{
                 if (index == null){
                     Ebug("Transplant failed due to nulled slugcat name!");
                     return orig(self, index);
                 }
+                ins.L().setF("Null Check");
                 if (self == null || self.name == null){
                     Ebug("Transplant failed due to nulled roomSettings name");
                     return orig(self, index);
                 }
+                ins.L().setF("Roomsetting presence Check");
                 if (index == EscortMe){
+                    ins.L().setF("Escort Check");
                     Ebug("Roomsetting name: " + self.name);
                     string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
                     if (File.Exists(p)){
@@ -1119,6 +1195,7 @@ namespace TheEscort
                     }
                 }
                 if (index == EscortSocks){
+                    ins.L().setF("Socks Check");
                     Ebug("Roomsetting name: " + self.name);
                     string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
                     if (File.Exists(p)){

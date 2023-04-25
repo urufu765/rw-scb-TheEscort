@@ -15,7 +15,19 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
   * **(0.2.5.5)** Swim speed is properly affected by their movement speed. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Dropkick is now affected by player weight (Hey rotund world!)
 
+  * **(0.2.5.10)** Brawler can no longer dualwield any weapon, Brawler will also punch things with rocks. . Dropkicks do regular flips again. Up and down corridor spear throws actually go vertically not horizontally (it's goofy af lol). 
+
+  * **(0.2.6)** Parry Upgrade update
+
+  * **(0.2.x)** Escapist can no longer throw spears? But unique backspear.
+
+  * **(0.2.x)** Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly
+
 * ### 0.2 - The Escort
+  * **(0.2.5.9)** Moved things around in code for better organization, fixed chance of crash upon using old DMS, added a little logger (will complete later), Speedster climbs poles faster and goes across poles slower, gets stunned when colliding with walls, increased speedster durations, and increased tolerance of bodyslams. Railgunner's base cooldown and max cooldown increased. Buffed railgunner doubleup rocks.
+
+  * **(0.2.5.8)** Fixed the trail. Now it should work fine even with DMS and shouldn't throw any exceptions
+
   * **(0.2.5.6)** Deactivated slugpup campaign, slight build adjustments, revamped Speedster, fixed their special effect, moved files around.
 
   * **(0.2.5.4)** Sleep screen!

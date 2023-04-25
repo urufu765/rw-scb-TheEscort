@@ -77,7 +77,15 @@ namespace TheEscort{
                 this.prePos = new Vector2[s.sprites.Length];
                 for (int i = 0; i < s.sprites.Length; i++){
                     //this.pSprite[i] = Clone(s.sprites[i]);
-                    this.pSprite[i] = new FSprite(s.sprites[i].element);
+                    if (i == 0){
+                        this.pSprite[0] = new FSprite("BodyA");
+                    }
+                    else if (i == 1){
+                        this.pSprite[1] = new FSprite("HipsA");
+                    }
+                    else {
+                        this.pSprite[i] = new FSprite(s.sprites[i].element);
+                    }
                     this.pSprite[i].SetPosition(s.sprites[i].GetPosition());
                     this.pSprite[i].scaleX = s.sprites[i].scaleX;
                     this.pSprite[i].scaleY = s.sprites[i].scaleY;
@@ -88,7 +96,7 @@ namespace TheEscort{
                     /*
                     this.wasVisible[i] = s.sprites[i].isVisible;
                     */
-                    if (s.sprites[i].element == Futile.atlasManager.GetElementWithName("Futile_White") || s.sprites[i].element == Futile.atlasManager.GetElementWithName("pixel")){
+                    if (s.sprites[i].element == Futile.atlasManager.GetElementWithName("Futile_White") || s.sprites[i].element == Futile.atlasManager.GetElementWithName("pixel") || i == 2){
                         this.wasVisible[i] = false;
                     }
                     else {
@@ -118,10 +126,6 @@ namespace TheEscort{
             }*/
 
             public void Update(){
-                if (camera.AboutToSwitchRoom){
-                    this.KillTrail();
-                    return;
-                }
                 for(int j = 0; j < pSprite.Length; j++){
                     if (lifeTime > maxLife - (int)(maxLife / 10)){
                         pSprite[j].isVisible = false;
@@ -159,7 +163,7 @@ namespace TheEscort{
                 if (this.lifeTime > 0){
                     this.lifeTime--;
                 }
-                else {
+                else if (!this.killed) {
                     KillTrail();
                 }
             }
@@ -167,7 +171,9 @@ namespace TheEscort{
         public void Escat_addTrail(PlayerGraphics pg, RoomCamera.SpriteLeaser s, int life, int trailCount=10){
             if (this.SpeTrail.Count >= trailCount){
                 SpeedTrail trail = this.SpeTrail.Dequeue();
-                trail.KillTrail();
+                if (!trail.killed){
+                    trail.KillTrail();
+                }
             }
             if (this.SpeOldSpeed){
                 this.SpeTrail.Enqueue(new SpeedTrail(pg, s, (this.SpeSecretSpeed? Color.white : this.hypeColor), (this.SpeSecretSpeed? this.hypeColor : Color.black), life));
@@ -184,7 +190,7 @@ namespace TheEscort{
                 }
                 if (trail.playerGraphics != null && trail.playerGraphics.owner != null){
                     trail.Update();
-                } else {
+                } else if (!trail.killed) {
                     trail.KillTrail();
                 }
             }

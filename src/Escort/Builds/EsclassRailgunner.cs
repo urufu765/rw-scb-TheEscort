@@ -296,6 +296,7 @@ namespace TheEscort
             if (!(e.RailDoubleSpear || e.RailDoubleRock || e.RailDoubleBomb || e.RailDoubleLilly)){
                 return false;
             }
+            // TODO fix an exception that occurs somewhere here
             self.standing = false;
             Vector2 p = new Vector2();
             Vector2 v = new Vector2();
@@ -346,12 +347,12 @@ namespace TheEscort
                 addition = 4;
             }
             if (e.RailgunCD == 0){
-                e.RailgunCD = 160;
+                e.RailgunCD = 200;
             } else {
                 e.RailgunCD += (self.Malnourished? 60: 40) * addition;
             }
-            if (e.RailgunCD > 400){
-                e.RailgunCD = 400;
+            if (e.RailgunCD > 600){
+                e.RailgunCD = 600;
             }
             e.RailgunUse += addition;
             return true;

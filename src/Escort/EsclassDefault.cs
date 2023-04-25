@@ -167,7 +167,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
-            //if (e.EsTest) Esclass_Test_Update(self);
+            if (e.EsTest) Esclass_Test2_Update(self);
 
             // Just for seeing what a variable does.
             try{
@@ -199,15 +199,15 @@ namespace TheEscort
                         Ebug(self, "Speeding Tickets: " + e.SpeSpeedin);
                         Ebug(self, "Speeding Tickets 2: " + e.SpeBuildup);
                         Ebug(self, "Charge/Gear: " + e.SpeCharge + "/" + e.SpeGear);
-                        Ebug(self, "Gravity: " + self.gravity);
-                        Ebug(self, "Customgrav: " + self.customPlayerGravity);
-                        Ebug(self, "FrictionAir: " + self.airFriction);
-                        Ebug(self, "FrictionWar: " + self.waterFriction);
-                        Ebug(self, "FrictionSur: " + self.surfaceFriction);
-                        Ebug(self, "FrictionMush: " + self.mushroomEffect);
-                        Ebug(self, "Timesinceincorr: " + self.timeSinceInCorridorMode);
-                        Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
-                        Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
+                        //Ebug(self, "Gravity: " + self.gravity);
+                        //Ebug(self, "Customgrav: " + self.customPlayerGravity);
+                        //Ebug(self, "FrictionAir: " + self.airFriction);
+                        //Ebug(self, "FrictionWar: " + self.waterFriction);
+                        //Ebug(self, "FrictionSur: " + self.surfaceFriction);
+                        //Ebug(self, "FrictionMush: " + self.mushroomEffect);
+                        //Ebug(self, "Timesinceincorr: " + self.timeSinceInCorridorMode);
+                        //Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
+                        //Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
                     }
                 }
                 //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
@@ -297,8 +297,7 @@ namespace TheEscort
             if (config.cfgPoleBounce.Value && self.input[0].jmp && !self.input[1].jmp){
                 // Normally rivulet check
                 try {
-                    bool flipperoni = self.animation == Player.AnimationIndex.Flip ||
-                            self.animation == Player.AnimationIndex.Roll;
+                    bool flipperoni = self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll;
                     bool kickeroni = self.animation == Player.AnimationIndex.RocketJump;
                     if (
                         Mathf.Abs(self.bodyChunks[1].lastPos.y - self.bodyChunks[1].pos.y) < 35f && 
@@ -959,7 +958,7 @@ namespace TheEscort
                         if (ModManager.MSC && self.room.game.IsArenaSession && self.room.game.GetArenaGameSession.chMeta != null){
                             stunBonus = 105f;
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock? Math.Max(result.chunk.mass*0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, e.Railgunner? (e.RailDoubleRock? 0.15f : 0.2f): (e.Escapist? 0.1f : 0.02f), (e.Brawler? stunBonus *= 1.5f : stunBonus));
+                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock? Math.Max(result.chunk.mass*0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, e.Railgunner? (e.RailDoubleRock? 0.25f : 0.2f): (e.Escapist? 0.1f : 0.02f), (e.Brawler? stunBonus *= 1.5f : stunBonus));
                     }
                     else if (result.chunk != null){
                         result.chunk.vel += self.firstChunk.vel * self.firstChunk.mass / result.chunk.mass;
@@ -1095,7 +1094,7 @@ namespace TheEscort
         }
 
 
-        // Implement Parryslide/midair projectile grab
+        // Implement Parryslide
         private void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus){
             try{
                 if (self is Player && (self as Player).slugcatStats.name.value != "EscortMe"){

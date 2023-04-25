@@ -6,7 +6,8 @@
 		"color" : "ede5fa",
 		"custom_colors" : [
 			{"name": "Body", "story": "ede5fa", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
-			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}
+			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]},
+			{"name": "Grappler", "story": "bbbbbb"}
 		],
 		"weight": [0.55, 0.45],
 		"tunnel_speed": [1.35, 1],
