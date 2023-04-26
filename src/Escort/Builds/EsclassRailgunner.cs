@@ -239,7 +239,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_RG_RockThrow(Rock self, float frc, Player p, ref Escort e){
+        private void Esclass_RG_RockThrow(Rock self, Player p, ref float frc, ref Escort e){
             if (
                 !railgunRockVelFac.TryGet(p, out float rRockVel) ||
                 !railgunRockThrust.TryGet(p, out float[] rRockThr)

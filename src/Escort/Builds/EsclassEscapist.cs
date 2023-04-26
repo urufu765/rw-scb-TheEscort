@@ -129,6 +129,7 @@ namespace TheEscort
 
                 if (e.Escapist){
                     e.EscUnGraspLimit = 120;
+                    e.EscDangerGrasp = grasp;
                     if (grasp.grabber is Lizard){
                         e.EscUnGraspLimit = 80;
                     }
@@ -144,7 +145,15 @@ namespace TheEscort
                     else if (grasp.grabber is Centipede){
                         e.EscUnGraspLimit = 40;
                     }
-                    e.EscDangerGrasp = grasp;
+                    else if (grasp.grabber is Player){
+                        if (!(ModManager.CoopAvailable && !RWCustom.Custom.rainWorld.options.friendlyFire)){
+                            e.EscUnGraspLimit = 60;
+                        }
+                        else {
+                            e.EscUnGraspLimit = 0;
+                            e.EscDangerGrasp = null;
+                        }
+                    }
                     e.EscUnGraspTime = e.EscUnGraspLimit;
                 }
 

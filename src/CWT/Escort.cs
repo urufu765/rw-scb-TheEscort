@@ -55,6 +55,7 @@ namespace TheEscort{
         public bool Brawler;
         public bool BrawWall;
         public bool BrawShankMode;
+        public bool BrawPunch;
         public bool BrawShankSpearTumbler;
         public Vector2 BrawShankDir;
         public Stack<Weapon> BrawMeleeWeapon;
@@ -136,6 +137,7 @@ namespace TheEscort{
             // Build specific
             this.Brawler = false;
             this.BrawShankMode = false;
+            this.BrawPunch = false;
             this.BrawWall = false;
             this.BrawRevertWall = -1;
             this.BrawWallSpear = new Stack<Spear>(1);

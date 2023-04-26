@@ -642,7 +642,7 @@ namespace TheEscort
             bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
 
             // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
-            if ((wallJumper && self.canWallJump != 0) || !wallJumper) {
+            if ((wallJumper && self.canWallJump != 0) || !wallJumper && !e.kickFlip) {
                 orig(self, direction);
                 float n = Mathf.Lerp(1f, 1.15f, self.Adrenaline) * (e.savingThrowed? 0.7f : 1f);
                 float m = 1f;
@@ -950,6 +950,7 @@ namespace TheEscort
                     }
                     self.vibrate = 20;
                     self.ChangeMode(Weapon.Mode.Free);
+                    bool issaPunch = false;
                     if (result.obj is Creature c){
                         float stunBonus = 60f;
                         if (ModManager.MMF && MoreSlugcats.MMF.cfgIncreaseStuns.Value && (c is Cicada || c is LanternMouse || (ModManager.MSC && c is MoreSlugcats.Yeek))){
@@ -958,7 +959,27 @@ namespace TheEscort
                         if (ModManager.MSC && self.room.game.IsArenaSession && self.room.game.GetArenaGameSession.chMeta != null){
                             stunBonus = 105f;
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock? Math.Max(result.chunk.mass*0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, e.Railgunner? (e.RailDoubleRock? 0.25f : 0.2f): (e.Escapist? 0.1f : 0.02f), (e.Brawler? stunBonus *= 1.5f : stunBonus));
+                        if (e.Brawler && e.BrawPunch && !(
+                            c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
+                        ){
+                            c.Violence(self.firstChunk, self.firstChunk.vel, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, 0.7f, 45f);
+                            if (ModManager.MSC && c is Player pl){
+                                pl.playerState.permanentDamageTracking += 0.7 / pl.Template.baseDamageResistance;
+                                if (pl.playerState.permanentDamageTracking >= 1){
+                                    pl.Die();
+                                }
+                            }
+                            if (self.room != null){
+                                self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Medium, self.firstChunk, false, 1.5f, 0.7f);
+                                self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk, false, 1f, 0.5f);
+                            }
+                            self.vibrate = 0;
+                            e.BrawThrowGrab = 0;
+                            issaPunch = true;
+                        }
+                        else {
+                            c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock? Math.Max(result.chunk.mass*0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, e.Railgunner? (e.RailDoubleRock? 0.25f : 0.2f): (e.Escapist? 0.1f : 0.02f), (e.Brawler? stunBonus *= 1.5f : stunBonus));
+                        }
                     }
                     else if (result.chunk != null){
                         result.chunk.vel += self.firstChunk.vel * self.firstChunk.mass / result.chunk.mass;
@@ -967,7 +988,9 @@ namespace TheEscort
                         (result.obj as PhysicalObject.IHaveAppendages).ApplyForceOnAppendage(result.onAppendagePos, self.firstChunk.vel * self.firstChunk.mass);
                     }
                     self.firstChunk.vel = self.firstChunk.vel * -0.5f + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(0.1f, 0.4f, UnityEngine.Random.value) * self.firstChunk.vel.magnitude;
-                    self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk);
+                    if(!issaPunch){
+                        self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk);
+                    }
                     if (result.chunk != null)
                     {
                         self.room.AddObject(new ExplosionSpikes(self.room, result.chunk.pos + RWCustom.Custom.DirVec(result.chunk.pos, result.collisionPoint) * result.chunk.rad, 5, 2f, 4f, 4.5f, 30f, new Color(1f, 1f, 1f, 0.5f)));
@@ -998,10 +1021,16 @@ namespace TheEscort
                         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                         return;
                     }
+                    if (e.Brawler) {
+                        if (e.BrawPunch){
+                            frc *= 0.25f;
+                            Esclass_BL_RockThrow(self, p);
+                        }
+                    }
                     if (e.Escapist){
                         frc *= 0.75f;
                     }
-                    if (e.Railgunner) Esclass_RG_RockThrow(self, frc, p, ref e);
+                    if (e.Railgunner) Esclass_RG_RockThrow(self, p, ref frc, ref e);
                 }
                 orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
             } catch (Exception err){
@@ -1080,7 +1109,7 @@ namespace TheEscort
                         biteMult -= 0.15f;
                     }
                     if (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump)){
-                        biteMult = 5f;
+                        biteMult = 100f;
                     }
                     Ebug(self, "Lizard bites with multiplier: " + biteMult);
                     return biteMult;

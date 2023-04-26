@@ -70,12 +70,13 @@
 		"theescort/headthing": [1, 3, 0, 2.5],
 		"theescort/bodything": [1, 0, 0, 0],
 
-		"theescort/brawler/slide_launch_fac": 0.5,
+		"theescort/brawler/slide_launch_fac": 0.25,
 		"theescort/brawler/dk_h_dmg": 2,
 		"theescort/brawler/spear_vel_fac": [0.73, 0.72, 0.71],
 		"theescort/brawler/spear_dmg_fac": [1.25, 5],
 		"theescort/brawler/spear_thrust": 0.5,
 		"theescort/brawler/spear_shank": [0.1, 120],
+		"theescort/brawler/rock_height": 0,
 
 		"theescort/deflector/slide_dmg": 0.4,
 		"theescort/deflector/dk_h_dmg": [3, 0.5],

@@ -10,7 +10,7 @@ using RWCustom;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.9")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.10")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -128,7 +128,7 @@ namespace TheEscort
 
 
         // Debug Logger (Beautified!)
-        private static void Ebug(String message, int logPrio=3){
+        public static void Ebug(String message, int logPrio=3){
             if (logPrio <= ins.logImportance){
                 if (message != prevLog){
                     if (logRepetition > 0){
@@ -142,12 +142,12 @@ namespace TheEscort
                 }
             }
         }
-        private static void Ebug(System.Object message, int logPrio=3){
+        public static void Ebug(System.Object message, int logPrio=3){
             if (logPrio <= ins.logImportance){
                 Debug.Log("-> Escort: " + message.ToString());
             }
         }
-        private static void Ebug(String[] messages, int logPrio=3, bool separated=true){
+        public static void Ebug(String[] messages, int logPrio=3, bool separated=true){
             if (logPrio <= ins.logImportance){
                 if (separated){
                     String message = "";
@@ -168,7 +168,7 @@ namespace TheEscort
                 }
             }
         }
-        private static void Ebug(System.Object[] messages, int logPrio=3, bool separated=true){
+        public static void Ebug(System.Object[] messages, int logPrio=3, bool separated=true){
             if (logPrio <= ins.logImportance){
                 if (separated){
                     String message = "";
@@ -189,7 +189,7 @@ namespace TheEscort
                 }
             }
         }
-        private static void Ebug(Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
+        public static void Ebug(Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
             ins.L().letItRip(exception.GetType().ToString(), !asregular);
             if (logPrio <= ins.logImportance){
                 if(asregular){
@@ -207,7 +207,7 @@ namespace TheEscort
                 }
             }
         }
-        private static void Ebug(Player self, String message, int logPrio=3){
+        public static void Ebug(Player self, String message, int logPrio=3){
             if (self == null){
                 Ebug(message, logPrio);
             }
@@ -229,7 +229,7 @@ namespace TheEscort
                 Ebug(err, logPrio:4, asregular:true);
             }
         }
-        private static void Ebug(Player self, System.Object message, int logPrio=3){
+        public static void Ebug(Player self, System.Object message, int logPrio=3){
             if (self == null){
                 Ebug(message, logPrio);
             }
@@ -242,7 +242,7 @@ namespace TheEscort
                 Ebug(err, logPrio:4, asregular:true);
             }
         }
-        private static void Ebug(Player self, String[] messages, int logPrio=3, bool separated=true){
+        public static void Ebug(Player self, String[] messages, int logPrio=3, bool separated=true){
             if (self == null){
                 Ebug(messages, logPrio, separated);
             }
@@ -272,7 +272,7 @@ namespace TheEscort
             }
 
         }
-        private static void Ebug(Player self, System.Object[] messages, int logPrio=3, bool separated=true){
+        public static void Ebug(Player self, System.Object[] messages, int logPrio=3, bool separated=true){
             if (self == null){
                 Ebug(messages, logPrio, separated);
             }
@@ -301,7 +301,7 @@ namespace TheEscort
                 Ebug(err, logPrio:4, asregular:true);
             }
         }
-        private static void Ebug(Player self, Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
+        public static void Ebug(Player self, Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
             if (self == null){
                 Ebug(exception, message, logPrio, asregular);
             }
@@ -388,6 +388,10 @@ namespace TheEscort
             On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
             On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
             //On.SlugcatStats.getSlugcatTimelineOrder += Escort_Time;
+
+            //On.PlayerGraphics.PopulateJollyColorArray += ReJollyCoop.PopulateTheJollyMan;
+            //,
+			//{"name": "Glow", "story": "ffffff"}
         }
 
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
