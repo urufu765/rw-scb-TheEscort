@@ -1,5 +1,6 @@
 using System;
 using BepInEx.Logging;
+using Menu.Remix;
 using Menu.Remix.MixedUI;
 using UnityEngine;
 
@@ -38,10 +39,14 @@ namespace TheEscort{
         public Configurable<bool> cfgPoleBounce;
         public Configurable<bool> cfgOldSpeedster;
         public Configurable<bool> cfgDeveloperMode;
+        public Configurable<int> cfgSecret;
+        public Configurable<bool> cfgSectret;
+        private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
+        private UIelement[] buildText;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private readonly float yoffset = 560f;
@@ -81,6 +86,9 @@ namespace TheEscort{
             this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
             this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
             this.cfgDeveloperMode.OnChange += longDevLogChange;
+            this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 1000, new ConfigAcceptableRange<int>(1000, 99999));
+            this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
+            this.cfgSecret.OnChange += inputSecret;
         }
 
         private static string swapper(string text, string with=""){
@@ -117,6 +125,14 @@ namespace TheEscort{
             Color bUK = new Color(0.7f, 0.2f, 0.2f);
             // I'm so done with this shit, may we never remotely reach 1.5k
 
+
+            this.secretText = new OpTextBox(this.cfgSecret, new Vector2(xo + (xp * 14f), yo - (yp * 14)), 60){
+                description = OptionInterface.Translate("Hmm? What's this?"),
+                colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.6f),
+                colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.6f),
+                colorText = new Color(0.9294f, 0.898f, 0.98f, 0.6f),
+                maxLength = 5
+            };
             /*
             this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
                 description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
@@ -237,6 +253,7 @@ namespace TheEscort{
                     color = new Color(0.5f, 0.5f, 0.5f)
                 },
 
+                // Sliders
                 new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
                     colorLine = p1Color*0.8f,
                     colorEdge = p1Color*0.9f,
@@ -261,7 +278,8 @@ namespace TheEscort{
                     min = this.buildDiv,
                     max = 0
                 },
-
+            };
+            this.buildText = new UIelement[]{
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default {***__}", true){
                     color = bDefault * 0.75f
                 },
@@ -381,8 +399,10 @@ namespace TheEscort{
                 new OpCheckBox(this.cfgOldSpeedster, new Vector2(xo + (xp * 0), yo - (yp * 7))){
                     colorEdge = tempColor,
                     description = OptionInterface.Translate("Reverts Speedster Escort Mechanics to before the revamp. (Default=false)"),
-                }
+                },
 
+
+                secretText
             };
             this.accessibleSet = new UIelement[]{
                 new OpLabel(xo, yo, "Accessibility", true),
@@ -416,6 +436,7 @@ namespace TheEscort{
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
+            buildTab.AddItems(this.buildText);
             gimmickTab.AddItems(this.gimmickSet);
             accessibilityTab.AddItems(this.accessibleSet);
         }
@@ -437,5 +458,47 @@ namespace TheEscort{
                 Plugin.ins.L().turnOffLog();
             }
         }
+
+        private void inputSecret()
+        {
+            int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
+            string[] insult = new string[1];
+            Action[] doThing = new Action[1]{
+                makeSomeNoiseEsconfig
+            };
+            insult[0] = "Ur not my mum.";
+            switch(UnityEngine.Random.Range(0, 4)){
+                case 1: insult[0] = "F#@k off."; break;
+                case 2: insult[0] = "Don't tell me what to do."; break;
+                case 3: insult[0] = "I don't care."; break;
+                case 4: insult[0] = "Shut the f$&k up."; break;
+            }
+            if (this.cfgSecret.Value == num){
+                if (!this.cfgSectret.Value){
+                    this.cfgSectret.Value = true;
+                    ConfigConnector.CreateDialogBoxMultibutton(
+                        swapper(
+                            "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
+                        ), insult, doThing
+                    );
+                }
+                Plugin.ins.L().christmas(this.cfgSectret.Value);
+            }
+            else {
+                this.cfgSectret.Value = false;
+                Plugin.ins.L().christmas();
+                try{
+                    ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
+                } catch (Exception err){
+                    Debug.LogError("Couldn't play sound!");
+                    Debug.LogException(err);
+                }
+            }
+        }
+
+        private void makeSomeNoiseEsconfig(){
+            ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
+        }
+
     }
 }

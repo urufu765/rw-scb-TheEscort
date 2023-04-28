@@ -203,3 +203,93 @@
         }
     }
     */
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEngine;
+using System.Linq;
+using System.Threading.Tasks;
+using TheEscort;
+
+namespace TheEscort
+{
+    public static class Socklass
+    {
+        public class Socks{
+            public bool coopMode;
+            //public MoreSlugcats.SlugNPCAI sAI;
+            public readonly int sID = 3118;
+            public int spriteQueue = -1;
+
+            public Socks(Player self){
+                this.coopMode = false;
+            }
+            public void setIndex_sprite_cue(int cue){
+                if (this.spriteQueue == -1){
+                    this.spriteQueue = cue;
+                }
+                else{
+                    Debug.Log("-> Socwt: Cue is already set for sprites!");
+                }
+            }
+
+        }
+
+        private static readonly ConditionalWeakTable<Player, Socks> CWT = new();
+        public static Socks Sget(this Player player) => CWT.GetValue(player, _ => new(player));
+    }
+}
+
+
+            try{
+                if (this.grabbedBy == null){
+                    Debug.LogWarning("The backpack lost its shoulderstraps");
+                    forceOutOfUpdate = true;
+                }
+                if (this.grabbedBy != null && this.grabbedBy.Count == 0){
+                    Debug.LogWarning("The backpack lost its owner!");
+                    forceOutOfUpdate = true;
+                }
+                if (this.attachment == null){
+                    Debug.LogWarning("The backpack's owner is gone!");
+                    forceOutOfUpdate = true;
+                }
+                //Return worm to owner
+                if (this.grabbedBy.Count == 0){
+                    if (this.attachment != null && this.attachment.grasps != null && this.attachment.grasps.Length == 3){
+                        Debug.Log("Backpack returns to owner!");
+                        this.attachment.SlugcatGrab(this, 2);
+                    }
+                    else if (this.room != null && this.room.physicalObjects != null) {
+                        bool lookingForPlayer = true;
+                        for (int a = 0; a < this.room.physicalObjects.Length && lookingForPlayer; a++){
+                            if (this.room.physicalObjects[a] != null){
+                                for (int b = 0; b < this.room.physicalObjects[a].Count && lookingForPlayer; b++){
+                                    if (this.room.physicalObjects[a][b] is Player && (this.room.physicalObjects[a][b] as Player) != null && (this.room.physicalObjects[a][b] as Player).grasps != null && (this.room.physicalObjects[a][b] as Player).grasps.Length == 3 && (this.room.physicalObjects[a][b] as Player).grasps[2].grabbed == null){
+                                        Debug.Log("Backpack finds new owner!");
+                                        (this.room.physicalObjects[a][b] as Player).SlugcatGrab(this, 2);
+                                        this.attachment = this.room.physicalObjects[a][b] as Player;
+                                        lookingForPlayer = false;
+                                    }
+                                }
+                            }
+                        }
+                        if (lookingForPlayer){
+                            Debug.Log("Couldn't find new owner, sending to the lost & found!");
+                            this.Destroy();
+                            return;
+                        }
+                    }
+                }
+            } catch (Exception err){
+                Debug.LogError("Something happened while returning worm to owner");
+                Debug.LogException(err);
+                return;
+            }
+            if (forceOutOfUpdate){
+                return;
+            }

@@ -7,10 +7,11 @@ using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 using RWCustom;
+using MonoMod.Cil;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.5.10")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -79,6 +80,8 @@ namespace TheEscort
 
         public static readonly SlugcatStats.Name EscortMe = new SlugcatStats.Name("EscortMe");
         public static readonly SlugcatStats.Name EscortSocks = new SlugcatStats.Name("EscortSocks");
+
+
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
         public static SoundID Escort_SFX_Flip2;
@@ -92,6 +95,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Brawler_Shank;
         public static SoundID Escort_SFX_Pole_Bounce;
         public static SoundID Escort_SFX_Uhoh_Big;
+        public static SoundID Esconfig_SFX_Sectret;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -114,6 +118,7 @@ namespace TheEscort
 
         // Escort instance stuff
         public static ConditionalWeakTable<Player, Escort> eCon = new();
+        public static ConditionalWeakTable<Player, Socks> sCon = new();
         //private Escort e;
         private float requirement;
         private float DKMultiplier;
@@ -335,6 +340,10 @@ namespace TheEscort
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
             On.RainWorld.PostModsInit += Escort_PostInit;
 
+            //IL.AbstractCreature.Realize += Backpack_ILRealize;
+            On.AbstractCreature.Realize += Backpack_Realize;
+            //On.StaticWorld.InitCustomTemplates += Custom_Stuff;
+
             On.Lizard.ctor += Escort_Lizard_ctor;
             //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
@@ -371,6 +380,14 @@ namespace TheEscort
             On.Player.CanIPickThisUp += Escort_SpearGet;
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
+
+            On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm; 
+            On.Player.Update += Socks_Update;
+            On.Player.GraphicsModuleUpdated += Socks_GMU;
+            On.Player.SlugcatGrab += Socks_Mine;
+            On.Player.CanIPickThisUp += Socks_Grabby;
+            On.Creature.LoseAllGrasps += Socks_DontLoseBackpack;
+            On.Player.Die += Socks_Death;
 
             On.Rock.HitSomething += Escort_RockHit;
             On.Rock.Thrown += Escort_RockThrow;
@@ -417,6 +434,7 @@ namespace TheEscort
             Escort_SFX_Brawler_Shank = new SoundID("Escort_Brawl_Shank", true);
             Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
             Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
+            Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
             FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
@@ -428,6 +446,7 @@ namespace TheEscort
             EscEnums.RegisterValues();  // TODO: do something with this
             this.config = new EscOptions(rainWorld);
             MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
+            ins.L().christmas(config.cfgSectret.Value);
             Ebug("All loaded!", 1);
         }
 
@@ -812,7 +831,7 @@ namespace TheEscort
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
             ins.L().set();
-            Ebug(self, "Ctor Triggered!");
+            Ebug("Ctor Triggered!");
             orig(self, abstractCreature, world);
 
             if (self.slugcatStats.name == EscortMe){
@@ -847,7 +866,22 @@ namespace TheEscort
             }
             if (self.slugcatStats.name == EscortSocks) {
                 ins.L().set("Socks Check");
+                sCon.Add(self, new Socks(self));
+                if (!sCon.TryGetValue(self, out Socks es)){
+                    Ebug(self, "Something happened while initializing then accessing Socks instance!", 0);
+                    return;
+                }
                 Socks_ctor(self);
+                es.world = world;
+                try{
+                    Creature.Grasp[] tempGrasps = self.grasps;
+                    Array.Resize(ref tempGrasps, self.grasps.Length + 1);
+                    self.grasps = tempGrasps;
+                    //es.Escat_kill_backpack();
+                    //es.Escat_generate_backpack(self);
+                } catch (Exception err){
+                    Ebug(self, err, "Error while constructing!");
+                }
             }
         }
 
@@ -936,6 +970,53 @@ namespace TheEscort
             }
             return false;
         }
+
+
+        private void Backpack_ILRealize(ILContext il)
+        {
+            //throw new NotImplementedException();
+            var cursor = new ILCursor(il);
+            while (cursor.TryGotoNext(MoveType.After, 
+                i => i.MatchLdarg(0),
+                i => i.MatchLdarg(0),
+                i => i.MatchLdarg(0),
+                i => i.MatchLdfld<AbstractWorldEntity>("world"),
+                i => i.MatchNewobj<TubeWorm>(),
+                i => i.MatchCall<AbstractCreature>("set_realizedCreature")
+            )){
+                
+            }
+            cursor.EmitDelegate<Action<CreatureTemplate>>(
+                (cb) => {
+                    if (cb.type == GrappleBackpack.GrapplingPack){
+                        
+                    }
+                }
+            );
+        }
+
+        private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
+        {
+            orig(self);
+            try{
+                if (self.creatureTemplate.name == GrappleBackpack.GrapplingPack.value && self.realizedCreature != null && self.realizedCreature is not GrappleBackpack){
+                    Ebug("Replaced Grapple with Backpack!");
+                    self.realizedCreature.Destroy();
+                    self.realizedCreature = new GrappleBackpack(self, self.world);
+                }
+            } catch (Exception err){
+                Ebug(err, "Something happened while replacing Tubeworm with GrappleBackpack!");
+            }
+        }
+
+        private void Custom_Stuff(On.StaticWorld.orig_InitCustomTemplates orig)
+        {
+            orig();
+        }
+
+
+
+
 
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
         {

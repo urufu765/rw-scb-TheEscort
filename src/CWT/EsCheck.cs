@@ -63,10 +63,12 @@ namespace TheEscort
             private string lastAccess = "";
             private string lastCheck = "";
             private bool frequentLogMode = false;
+            public bool crispmunch {get; private set;}
 
             public EFC(){
                 this.EscheckFunctionDictionary = new Dictionary<string, EFD>(128);
                 this.EscheckFunctionLastChecks = new Queue<string>(32);
+                this.crispmunch = true;
             }
 
             public void turnOnLog(){
@@ -77,6 +79,10 @@ namespace TheEscort
             public void turnOffLog(){
                 UnityEngine.Debug.LogWarning("Turned off frequent checker log mode. Only methods hooked by Escort that don't update frequently will be logged!");
                 this.frequentLogMode = false;
+            }
+
+            public void christmas(bool hasArrived=false){
+                this.crispmunch = !hasArrived;
             }
 
             public void set(bool isChecked=false, [CallerMemberName] string callerName = ""){

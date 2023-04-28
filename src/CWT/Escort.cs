@@ -9,6 +9,7 @@ namespace TheEscort{
     public partial class Escort{
         //public readonly SlugcatStats.Name name;
         //public String EsbuildName;
+        public string Eskie = "Escort";
         public int DropKickCD;
         public float RollinCount;
         public int parrySlideLean;
@@ -26,6 +27,7 @@ namespace TheEscort{
         public bool ParrySuccess;
         public bool ElectroParry;
         public int spriteQueue;
+        public int customSprites;
         public LightSource hypeLight;
         public LightSource hypeSurround;
         public Color hypeColor;
@@ -111,6 +113,7 @@ namespace TheEscort{
             this.ElectroParry = false;
             this.SFXChunk = player.bodyChunks[0];
             this.spriteQueue = -1;
+            this.customSprites = 2;
             this.hypeColor = new Color(0.796f, 0.549f, 0.27843f);
             this.Escat_setLight_hype(player, this.hypeColor);
             this.secretRGB = false;
@@ -186,7 +189,7 @@ namespace TheEscort{
                 this.Rollin = new ChunkDynamicSoundLoop(SFXChunk);
                 this.Rollin.sound = sound;
             } catch (Exception err){
-                Debug.Log("Something went horribly wrong when setting up the rolling sound!");
+                Debug.Log("-> Escwt: Something went horribly wrong when setting up the rolling sound!");
                 Debug.LogException(err);
             }
         }
@@ -196,7 +199,7 @@ namespace TheEscort{
                 this.LizGet = new ChunkDynamicSoundLoop(SFXChunk);
                 this.LizGet.sound = sound;
             } catch (Exception err){
-                Debug.Log("Something went horribly wrong when setting up the lizard grab sound!");
+                Debug.Log("-> Escwt: Something went horribly wrong when setting up the lizard grab sound!");
                 Debug.LogException(err);
             }
         }
@@ -213,7 +216,7 @@ namespace TheEscort{
                     this.hypeLight.flat = true;
                 }
                 else{
-                    Debug.Log("-> Esclas: Hypelight Rebuild!");
+                    Debug.Log("-> Escwt: Hypelight Rebuild!");
                     this.hypeLight.Destroy();
                     this.hypeLight = null;
                     this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self);
@@ -231,7 +234,7 @@ namespace TheEscort{
                     this.hypeSurround.setAlpha = alpha * 5f;
                 }
                 else {
-                    Debug.Log("-> Esclas: Hypesurround Rebuild!");
+                    Debug.Log("-> Escwt: Hypesurround Rebuild!");
                     this.hypeSurround.Destroy();
                     this.hypeSurround = null;
                     this.hypeSurround = new LightSource(self.bodyChunks[0].pos, environmentalLight: false, c, self);
@@ -242,7 +245,7 @@ namespace TheEscort{
                 self.room.AddObject(this.hypeLight);
                 self.room.AddObject(this.hypeSurround);
             } catch (Exception e){
-                Debug.Log("Something went horribly wrong when setting up the hyped light!");
+                Debug.Log("-> Escwt: Something went horribly wrong when setting up the hyped light!");
                 Debug.LogException(e);
             }
         }
@@ -252,7 +255,7 @@ namespace TheEscort{
                 this.spriteQueue = cue;
             }
             else{
-                Debug.Log("Cue is already set for sprites!");
+                Debug.Log("-> Escwt: Cue is already set for sprites!");
             }
         }
 

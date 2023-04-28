@@ -8,6 +8,7 @@
 [ADD]Escort_Parry : escortparry/vol=0.19/minPitch=1.15/maxPitch=2
 [ADD]Escort_Flip_More : escortflipmore/vol=0.25/minPitch=0.9/maxPitch=1.1
 [ADD]Escort_Flip_Even_More : escortflipmoremore/vol=0.25/minPitch=0.9/maxPitch=1.1
-[ADD]Escort_Brawl_Shank : escortbrawlshanka/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankb/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankc/vol=0.24/minPitch=0.5/maxPitch=1, escortbrawlshankd/vol=0.24/minPitch=0.5/maxPitch=1
+[ADD]Escort_Brawl_Shank : escortbrawlshanka/vol=0.2/minPitch=0.5/maxPitch=1, escortbrawlshankb/vol=0.2/minPitch=0.5/maxPitch=1, escortbrawlshankc/vol=0.2/minPitch=0.5/maxPitch=1, escortbrawlshankd/vol=0.2/minPitch=0.5/maxPitch=1
 [ADD]Escort_Pole_Bounce : escortpolebounce/vol=0.24/minPitch=0.9/maxPitch=1.75
 [ADD]Escort_Rotunded : escortrotund/vol=0.25/minPitch=0.8/maxPitch=1.05
+[ADD]Esconfig_Sectret : esconfigsec1/vol=0.24/minPitch=0.9/maxPitch=1.1, esconfigsec2/vol=0.3/pitch=0.94, esconfigsec3/vol=0.3/pitch=1

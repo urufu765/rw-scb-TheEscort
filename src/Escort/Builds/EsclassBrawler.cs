@@ -49,12 +49,10 @@ namespace TheEscort
                     if (self.slowMovementStun > 0){
                         self.Blink(30);
                     }
-                    self.slowMovementStun += 80;
+                    self.slowMovementStun += 60;
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock){
-                    if (e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.Free){
-                        self.slowMovementStun += 30;
-                    }
+                    self.slowMovementStun += 30;
                     e.BrawPunch = false;
                 }
                 if (e.BrawMeleeWeapon.Peek() is Spear){
@@ -226,7 +224,7 @@ namespace TheEscort
 
                 // Punch
                 else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is Rock r){
-                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Rock){
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Weapon){
                         continue;
                     }
                     if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Creature){

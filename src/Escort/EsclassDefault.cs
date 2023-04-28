@@ -141,7 +141,7 @@ namespace TheEscort
                     Ebug(self, "Attempted to access a nulled player when updating!", 0);
                     return;
                 }
-                if (self.slugcatStats.name.value != "EscortMe"){
+                if (self.slugcatStats.name != EscortMe){
                     return;
                 }
             } catch (Exception err){
@@ -962,16 +962,16 @@ namespace TheEscort
                         if (e.Brawler && e.BrawPunch && !(
                             c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
                         ){
-                            c.Violence(self.firstChunk, self.firstChunk.vel, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, 0.7f, 45f);
+                            c.Violence(self.firstChunk, self.firstChunk.vel, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, 0.2f, 30f);
                             if (ModManager.MSC && c is Player pl){
-                                pl.playerState.permanentDamageTracking += 0.7 / pl.Template.baseDamageResistance;
+                                pl.playerState.permanentDamageTracking += 0.2 / pl.Template.baseDamageResistance;
                                 if (pl.playerState.permanentDamageTracking >= 1){
                                     pl.Die();
                                 }
                             }
                             if (self.room != null){
-                                self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Medium, self.firstChunk, false, 1.5f, 0.7f);
-                                self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk, false, 1f, 0.5f);
+                                self.room.PlaySound(Escort_SFX_Impact, self.firstChunk, false, 1f, 1.2f);
+                                self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk, false, 0.7f, 0.9f);
                             }
                             self.vibrate = 0;
                             e.BrawThrowGrab = 0;

@@ -16,31 +16,36 @@ namespace TheEscort
     {
         private void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
         {
+            ins.L().set();
             orig(self, s, rCam);
             try{
                 if (!(self != null && self.player != null)){
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe"){
+                ins.L().set("Null Check");
+                if (self.player.slugcatStats.name != EscortMe){
                     return;
                 }
+                ins.L().set("Escort Check");
                 if (!eCon.TryGetValue(self.player, out Escort e)){
                     return;
                 }
-                // Store the end index of the sprites so none are overwritten!
+                ins.L().set("Escort/Socks CWT Access");
                 e.Escat_setIndex_sprite_cue(s.sprites.Length);
-
-
-                Array.Resize(ref s.sprites, s.sprites.Length + 2);
+                Array.Resize(ref s.sprites, s.sprites.Length + e.customSprites);
+                // Store the end index of the sprites so none are overwritten!
                 s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
                 s.sprites[e.spriteQueue + 1] = new FSprite("escortHipT");
-                if (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null){
-                    Ebug(self.player, "Oh geez. No sprites?", 0);
+                
+                // When builds have custom sprites, do an if condition and add accordingly
+                for (int i = e.spriteQueue; i < e.spriteQueue + e.customSprites; i++){
+                    if (s.sprites[e.spriteQueue] == null){
+                        Ebug(self.player, "Oh geez. No sprites?", 0);
+                    }
                 }
+
+                ins.L().set("Successful Spriting Check");
                 self.AddToContainer(s, rCam, null);
-                //Ebug(self.player, "Resized array", 1);
-                //Ebug(self.player, "Set the sprites", 1);
-                //Ebug(self.player, "Sprite init complete!", 1);
             } catch(Exception err){
                 Ebug(self.player, err, "Something went wrong when initiating sprites!");
                 return;
