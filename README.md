@@ -28,6 +28,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.2.x)** Kickflips are done with slide pounces but not on roll pounces
 
 * ### 0.2 - The Escort
+  * **(0.2.6.1)** Fixed Socks' sleep screen
+
   * **(0.2.6)** Redid the CWT classes, rewrote my graphics functions to allow custom spriting flexibility (so other builds can have more sprites), secret Socks mode, nerfed the heck out of brawler punch, and fixed punching conditions
 
   * **(0.2.5.10)** Reduced Brawler's stunslide throw distance, holding a rock and no weapons will do a punch (otherwise it'll throw the rock or weapon), nerfed the shank a little. Escapist escapes player grasps in arena/friendlyfire mode. Dropkicks no longer do a sick flip (will reintroduce with tweaked mechanics).

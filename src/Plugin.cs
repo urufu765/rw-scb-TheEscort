@@ -11,7 +11,7 @@ using MonoMod.Cil;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;

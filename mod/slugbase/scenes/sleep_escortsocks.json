@@ -6,7 +6,7 @@
 		{ "name": "sleep - 5", "pos": [672, 236], "depth": 3.6},
 		{ "name": "sleep - 4", "pos": [674, 138], "depth": 3.2, "shader": "Lighten" },
 		{ "name": "sleep - 3", "pos": [710, 120], "depth": 3.1},
-		{ "name": "sleep - 2 - escortsocks", "pos": [769, 100], "depth": 2.6, "shader": "Basic"},
+		{ "name": "sleep - 2 - escortsocks", "pos": [832, 96], "depth": 2.6, "shader": "Basic"},
 		{ "name": "sleep - 1", "pos": [486, -54], "depth": 2.1}
 	],
 	"idle_depths": [ 1.1, 4.5 ]
