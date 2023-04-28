@@ -7,27 +7,33 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### Planned (Immediate)...
-  * **(0.2.X)** Changed how settings are applied in game (you shouldn't notice any changes)
+  * **(0.2.8)** Parry Upgrade update
 
-  * **(0.2.X)** 
+  * **(0.2.7)** Extra (Extra) EXTRA mean lizards: After a certain amount of time, they start tracking you (also reenabled extra mean lizards as default)
 
-  * **(0.2.5.X)** Escort can throw better in water. 
-
-  * **(0.2.5.5)** Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
-
-  * **(0.2.5.10)** Brawler can no longer dualwield any weapon, Brawler will also punch things with rocks. . Dropkicks do regular flips again. Up and down corridor spear throws actually go vertically not horizontally (it's goofy af lol). 
-
-  * **(0.2.6)** Parry Upgrade update
-
-  * **(0.2.x)** Escapist can no longer throw spears? But unique backspear.
-
-  * **(0.2.x)** Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Brawler also no longer stuns creatures when grabbing onto them. 
-
-  * **(0.2.x)** Railgunner gets double the amount of slowstun
-
-  * **(0.2.x)** Kickflips are done with slide pounces but not on roll pounces
+  * **(0.2.X)** Idea backlog...
+    * Changed how settings are applied in game (you shouldn't notice any changes)
+    * Escort can throw better in water. 
+    * Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
+    * Brawler can no longer dualwield any weapon, Brawler will also punch things with rocks. . Dropkicks do regular flips again. Up and down corridor spear throws actually go vertically not horizontally (it's goofy af lol). 
+    * Escapist can no longer throw spears? But unique backspear.
+    * Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Brawler also no longer stuns creatures when grabbing onto them. 
+    * Railgunner gets double the amount of slowstun
+    * Kickflips are done with slide pounces but not on roll pounces
+    * VFX for punches are different from shanks
+    * Fix midair spear grab
+    * Escapist only tosses spears now, but much longer leniency on escaping
+    * Socks grapple gives a bit more air time when not attached to anything
+    * Socks grapple works in ZeroG properly
+    * Socks can have different grapples for different effects (tonguing a shocky thing gives it electric tongue)
+    * Make Socks grapple have less... elasticness and not be grabbable by wormgrass
+    * Reduce Socks' spear damage to 0.8 flat
+    * Socks has reduced movement bonuses when tired
+    * Give Deflector throwskill of 1 to make ricochets possible... and also let the roll throws travel
 
 * ### 0.2 - The Escort
+  * **(0.2.6.3)** Fixed the grapple worm not respawning and reduced respawn timer
+
   * **(0.2.6.2)** Fixed one of the insults so it doesn't go off the button, added grapple respawn if detached. Killed the check tracker for now
 
   * **(0.2.6.1)** Fixed Socks' sleep screen

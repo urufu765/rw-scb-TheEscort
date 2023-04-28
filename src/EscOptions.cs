@@ -467,7 +467,7 @@ namespace TheEscort{
                 makeSomeNoiseEsconfig
             };
             insult[0] = "Ur not my mum.";
-            switch(UnityEngine.Random.Range(0, 4)){
+            switch(UnityEngine.Random.Range(0, 5)){
                 case 1: insult[0] = "F#@k off."; break;
                 case 2: insult[0] = "Skill issue."; break;
                 case 3: insult[0] = "I don't care."; break;

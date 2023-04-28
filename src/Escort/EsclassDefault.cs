@@ -137,7 +137,7 @@ namespace TheEscort
         private void Escort_Update(On.Player.orig_Update orig, Player self, bool eu){
             orig(self, eu);
             try{
-                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null && self.slugcatStats.name.value != null)){
+                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null)){
                     Ebug(self, "Attempted to access a nulled player when updating!", 0);
                     return;
                 }
@@ -167,7 +167,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
-            if (e.EsTest) Esclass_Test2_Update(self);
+            //if (e.EsTest) Estest_2_Update(self);
 
             // Just for seeing what a variable does.
             try{

@@ -11,7 +11,7 @@ using MonoMod.Cil;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.3")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -133,9 +133,9 @@ namespace TheEscort
 
 
         // Debug Logger (Beautified!)
-        public static void Ebug(String message, int logPrio=3){
+        public static void Ebug(String message, int logPrio=3, bool ignoreRepetition=false){
             if (logPrio <= ins.logImportance){
-                if (message != prevLog){
+                if (message != prevLog || ignoreRepetition){
                     if (logRepetition > 0){
                         Debug.Log("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
                     }
@@ -212,13 +212,13 @@ namespace TheEscort
                 }
             }
         }
-        public static void Ebug(Player self, String message, int logPrio=3){
+        public static void Ebug(Player self, String message, int logPrio=3, bool ignoreRepetition=false){
             if (self == null){
-                Ebug(message, logPrio);
+                Ebug(message, logPrio, ignoreRepetition);
             }
             try{
                 if (logPrio <= ins.logImportance){
-                    if (message != prevLog){
+                    if (message != prevLog || ignoreRepetition){
                         if (logRepetition > 0){
                             Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetition + " times: " + prevLog);
                         }
@@ -409,7 +409,10 @@ namespace TheEscort
             //On.PlayerGraphics.PopulateJollyColorArray += ReJollyCoop.PopulateTheJollyMan;
             //,
 			//{"name": "Glow", "story": "ffffff"}
+
+            On.Player.GrabUpdate += Estest_3_GrabUpdate;
         }
+
 
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
         public void OnApplicationQuit() {

@@ -11,7 +11,10 @@ namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        private void Esclass_Test_Update(Player self){    
+        /// <summary>
+        /// Implementing an artificer parry... electric style!
+        /// </summary>
+        private void Estest_1_Update(Player self){    
             if (!eCon.TryGetValue(self, out Escort e)){
                 return;
             }
@@ -27,8 +30,10 @@ namespace TheEscort
             }
         }
 
-
-        private void Esclass_Test2_Update(Player self){    
+        /// <summary>
+        /// Implementing not dying by falling into a deathpit
+        /// </summary>
+        private void Estest_2_Update(Player self){    
             if (self.GetCat().updateTimer > 0){
                 self.GetCat().updateTimer--;
             }
@@ -66,6 +71,56 @@ namespace TheEscort
                 }
             }
         }
+
+        /// <summary>
+        /// Implementing healing an injured creature the player grabs
+        /// </summary>
+        private void Estest_3_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        {
+            orig(self, eu);
+            // Slugcat check
+            try{
+                // Null slugcat check (you never know)
+                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null)){
+                    Ebug(self, "Attempted to access a nulled player when updating!", 0);
+                    return;
+                }
+                // Custom Scug check
+                if (self.slugcatStats.name != EscortMe){
+                    return;
+                }
+                // CWT access just to check for if character is for testing purposes (legacy code go brr)
+                if (!eCon.TryGetValue(self, out Escort e)){
+                    return;
+                }
+                if (!e.EsTest){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(self, err);  // LOG!
+                return;
+            }
+            // When player presses the pickup button after grabbing a creature (the self.noPickUpOnRelease prevents the player from applying the medic thing on the same button press as when they picked up the creature)
+            if (self.input[0].pckp && !self.input[1].pckp && self.noPickUpOnRelease < 1){
+                for (int i = 0; i < self.grasps.Length; i++){
+                    if (self.grasps[i] != null && self.grasps[i].grabbed != null && self.grasps[i].grabbed is Creature c){
+                        // Creature health check (assumes their health is 1 or their healthstate is based on 0%-100%)
+                        if ((c.abstractCreature.state as HealthState).health > 0 && (c.abstractCreature.state as HealthState).health < 1){
+
+                            //replace this with item usage... I'm using food pips for now
+                            if (self.playerState.foodInStomach >= 1){
+                                Ebug(self, "Apply medic!", ignoreRepetition: true);  // LOG!
+                                self.SubtractFood(1);  // remove food
+
+                                // Apply health 
+                                (c.abstractCreature.state as HealthState).health = Mathf.Min(1f, (c.abstractCreature.state as HealthState).health + 0.2f); // Regenerate 0.2f (20%) of creature health (and prevent it from going higher than 100% health using .Min())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
 }

@@ -54,16 +54,27 @@ namespace TheEscort
                 return;
             }
             ins.L().setF("Socks CWT");
-            if (es.backpack == null && es.Escat_clock_backpackReGen()){
+
+            // Generate backpack!
+            if (self.animation != Player.AnimationIndex.DeepSwim && es.backpack == null && es.Escat_clock_backpackReGen()){
                 ins.L().setF("Socks Backpack Check");
                 es.Escat_generate_backpack(self);
             }
 
-            if (self.grasps.Length == 3 && self.grasps[2] == null && es.backpack != null){
-                es.Escat_kill_backpack();
-                es.Escat_clock_backpackReGen(40);
+            // Force respawn backpack when it dies
+            if (self.grasps.Length == 3 && self.grasps[2] != null && self.grasps[2].grabbed != null && (self.grasps[2].grabbed as GrappleBackpack).dead){
+                Ebug("Backpack is dead. Rip");
+                self.ReleaseGrasp(2);
             }
 
+            // Respawn backpack
+            if (self.grasps.Length == 3 && self.grasps[2] == null && es.backpack != null){
+                Ebug("Regenerate backpack!");
+                es.Escat_kill_backpack();
+                es.Escat_clock_backpackReGen(10);
+            }
+
+            // Allow the backpack to actually be used lol (change this later so that it's compatible with remap mods)
             if (self.input[0].jmp && !self.input[1].jmp){
                 if (self.grasps[2] != null && self.grasps[2].grabbed is GrappleBackpack){
                     (self.grasps[2].grabbed as GrappleBackpack).JumpButton(self);
