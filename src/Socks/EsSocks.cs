@@ -59,6 +59,11 @@ namespace TheEscort
                 es.Escat_generate_backpack(self);
             }
 
+            if (self.grasps.Length == 3 && self.grasps[2] == null && es.backpack != null){
+                es.Escat_kill_backpack();
+                es.Escat_clock_backpackReGen(40);
+            }
+
             if (self.input[0].jmp && !self.input[1].jmp){
                 if (self.grasps[2] != null && self.grasps[2].grabbed is GrappleBackpack){
                     (self.grasps[2].grabbed as GrappleBackpack).JumpButton(self);

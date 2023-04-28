@@ -28,6 +28,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.2.x)** Kickflips are done with slide pounces but not on roll pounces
 
 * ### 0.2 - The Escort
+  * **(0.2.6.2)** Fixed one of the insults so it doesn't go off the button, added grapple respawn if detached. Killed the check tracker for now
+
   * **(0.2.6.1)** Fixed Socks' sleep screen
 
   * **(0.2.6)** Redid the CWT classes, rewrote my graphics functions to allow custom spriting flexibility (so other builds can have more sprites), secret Socks mode, nerfed the heck out of brawler punch, and fixed punching conditions

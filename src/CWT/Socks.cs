@@ -30,6 +30,10 @@ namespace TheEscort
                     backpack = null;
                     return;
                 }
+                if (!owner.dead && backpack.dead){
+                    backpack.Destroy();
+                    return;
+                }
                 // Vector2 vector = owner.mainBodyChunk.pos;
                 // Vector2 vector2 = owner.bodyChunks[1].pos;
                 // if (owner.graphicsModule != null)
@@ -119,7 +123,8 @@ namespace TheEscort
             this.backpack.EquipBackpack((GrappleBackpack)ac.realizedCreature);
         }
 
-        public bool Escat_clock_backpackReGen(){
+        public bool Escat_clock_backpackReGen(int refresh=0){
+            this.makeBackpackWait += refresh;
             if (this.makeBackpackWait > 0){
                 this.makeBackpackWait--;
                 return false;

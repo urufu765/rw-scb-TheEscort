@@ -122,7 +122,7 @@ namespace TheEscort{
             Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
-            Color bUK = new Color(0.7f, 0.2f, 0.2f);
+            Color bUlKi = new Color(0.7f, 0.2f, 0.2f);
             // I'm so done with this shit, may we never remotely reach 1.5k
 
 
@@ -469,7 +469,7 @@ namespace TheEscort{
             insult[0] = "Ur not my mum.";
             switch(UnityEngine.Random.Range(0, 4)){
                 case 1: insult[0] = "F#@k off."; break;
-                case 2: insult[0] = "Don't tell me what to do."; break;
+                case 2: insult[0] = "Skill issue."; break;
                 case 3: insult[0] = "I don't care."; break;
                 case 4: insult[0] = "Shut the f$&k up."; break;
             }

@@ -62,6 +62,7 @@ namespace TheEscort
             private Queue<string> EscheckFunctionLastChecks;
             private string lastAccess = "";
             private string lastCheck = "";
+            private static bool NOLOG = true;
             private bool frequentLogMode = false;
             public bool crispmunch {get; private set;}
 
@@ -86,6 +87,9 @@ namespace TheEscort
             }
 
             public void set(bool isChecked=false, [CallerMemberName] string callerName = ""){
+                if (NOLOG){
+                    return;
+                }
                 try{
                     if (!EscheckFunctionDictionary.ContainsKey(callerName)){
                         EscheckFunctionDictionary.Add(callerName, new EFD());
@@ -106,6 +110,9 @@ namespace TheEscort
             }
 
             public void set(string functionname, bool isChecked=true, [CallerMemberName] string callerName = ""){
+                if (NOLOG){
+                    return;
+                }
                 try{
                     if (!EscheckFunctionDictionary.ContainsKey(callerName)){
                         EscheckFunctionDictionary.Add(callerName, new EFD());
@@ -130,6 +137,9 @@ namespace TheEscort
             }
 
             public void setF(bool isChecked=false, [CallerMemberName] string callerName = ""){
+                if (NOLOG){
+                    return;
+                }
                 if (!frequentLogMode){
                     return;
                 }
@@ -153,6 +163,9 @@ namespace TheEscort
             }
 
             public void setF(string functionname, bool isChecked=true, [CallerMemberName] string callerName = ""){
+                if (NOLOG){
+                    return;
+                }
                 if (!frequentLogMode){
                     return;
                 }

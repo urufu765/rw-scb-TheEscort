@@ -11,7 +11,7 @@ using MonoMod.Cil;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -414,6 +414,7 @@ namespace TheEscort
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
         public void OnApplicationQuit() {
             ins.L().letItRip();
+            
         }
 
 
@@ -707,12 +708,12 @@ namespace TheEscort
                 switch (pal){
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
-                    // Ultrakill build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
+                    // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
-                    case -6:  // 
+                    case -7:  // Testing build
                         e.EsTest  = true;
                         break;
-
+                    case -6:
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;

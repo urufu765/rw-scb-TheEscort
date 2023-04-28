@@ -76,7 +76,7 @@ namespace TheEscort
                                 if (p.animation == Player.AnimationIndex.Flip){
                                     p.mainBodyChunk.vel *= 2f;
                                 }
-                                p.bodyChunks[0].vel.y += 12f;
+                                p.bodyChunks[0].vel.y += 15f;
                                 break;
                             }
                         }
