@@ -13,7 +13,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Changed how settings are applied in game (you shouldn't notice any changes)
     * Escort can throw better in water. 
     * Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
-    * Brawler can no longer dualwield any weapon, Brawler will also punch things with rocks. . Dropkicks do regular flips again. Up and down corridor spear throws actually go vertically not horizontally (it's goofy af lol). 
+    * Brawler can no longer dualwield any weapon. 
     * Escapist can no longer throw spears? But unique backspear.
     * Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Brawler also no longer stuns creatures when grabbing onto them. 
     * Railgunner gets double the amount of slowstun
@@ -29,8 +29,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Give Deflector throwskill of 1 to make ricochets possible... and also let the roll throws travel
     * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
     * Properly implement Grapple Backpack template
+    * Bombs do explosive punches (Brawler)
 
 * ### 0.2 - The Escort
+  * **(0.2.7.1)** Increased spear spawn rate in DM Leg, fixed softcrash in arena when new feature is on, fixed lizard punt not working on other builds (other than brawler), decreased the number of kills required to trigger Vengeful Lizards event, disallowed grapple worms from grabbing onto Socks, and code reorganization
+
   * **(0.2.7)** Custom conversations! And Sock's speed and skills are highly dependent on how tired they are now (more tired = slower). Sock's spear damage also changes depending on tiredness. New feature: Vengeful lizards... After a certain amount of time, they start tracking you. Fixed a bug with Socks' grapple worm despawning other grapples (outside shelter).
 
   * **(0.2.6.3)** Fixed the grapple worm not respawning and reduced respawn timer

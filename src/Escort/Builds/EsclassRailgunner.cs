@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
+using static TheEscort.Eshelp;
 using RWCustom;
 
 namespace TheEscort

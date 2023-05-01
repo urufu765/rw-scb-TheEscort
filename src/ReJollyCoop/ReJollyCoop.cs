@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
+using static TheEscort.Eshelp;
 using RWCustom;
 
 namespace TheEscort
@@ -14,6 +15,10 @@ namespace TheEscort
     /// </summary>
     class ReJollyCoop
     {
+        public static void Hooker(){
+            On.PlayerGraphics.PopulateJollyColorArray += PopulateTheJollyMan;
+        }
+
         public static void PopulateTheJollyMan(On.PlayerGraphics.orig_PopulateJollyColorArray orig, SlugcatStats.Name reference)
         {
             try{
@@ -80,7 +85,7 @@ namespace TheEscort
                     }
                 }
             } catch (Exception err){
-                TheEscort.Plugin.Ebug(err, "Error when replacing jolly coop color array lol");
+                Ebug(err, "Error when replacing jolly coop color array lol");
                 orig(reference);
             }
         }

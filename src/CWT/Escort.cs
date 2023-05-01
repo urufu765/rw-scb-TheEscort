@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml.Serialization;
 using TheEscort;
 using static TheEscort.Plugin;
+using static TheEscort.Eshelp;
 
 
 namespace TheEscort{
@@ -34,7 +35,7 @@ namespace TheEscort{
         public LightSource hypeSurround;
         public Color hypeColor;
         public bool secretRGB;
-        private float secretTick;
+        private float rgbTick;
         public float smoothTrans;
         public bool tossEscort;
         public bool dualWield;
@@ -149,7 +150,7 @@ namespace TheEscort{
             this.lizzieVengenceClock = 400;
             this.lizzieVengenceTick = 40;
             this.vengefulLizards = new List<AbstractCreature>(18);
-            this.lizzieVengenceTolerance = UnityEngine.Random.Range(4, 14);
+            this.lizzieVengenceTolerance = UnityEngine.Random.Range(3, 7);
             //this.lizzieVengenceTolerance = 1;
             this.lizzieDestination = player.abstractCreature.pos;
 
@@ -277,12 +278,7 @@ namespace TheEscort{
 
         public Color Escat_runit_thru_RGB(Color c, float progression=1f){
             if (this.secretRGB){
-                this.hypeColor = new HSLColor(Mathf.InverseLerp(0f, 959f, secretTick), 1f, (progression > 5f? 0.67f : 0.5f)).rgb;
-                if (secretTick >= 959f){
-                    secretTick = 0;
-                } else {
-                    secretTick += progression;
-                }
+                this.hypeColor = Eshelp_cycle_dat_RGB(ref rgbTick, lightness:(progression > 5f? 0.67f : 0.5f), increment:progression);
                 return hypeColor;
             }
             return c;

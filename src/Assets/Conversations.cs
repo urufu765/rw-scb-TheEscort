@@ -7,6 +7,8 @@ using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using TheEscort;
 using static TheEscort.Plugin;
+using static TheEscort.Eshelp;
+
 
 namespace TheEscort
 {

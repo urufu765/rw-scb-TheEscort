@@ -149,7 +149,8 @@ namespace TheEscort{
             public void KillTrail(){
                 this.killed = true;
                 foreach(FSprite f in pSprite){
-                    camera.ReturnFContainer("Background").RemoveChild(f);
+                    //camera.ReturnFContainer("Background").RemoveChild(f);
+                    f.RemoveFromContainer();
                 }
                 this.pSprite = null;
                 this.wasVisible = null;

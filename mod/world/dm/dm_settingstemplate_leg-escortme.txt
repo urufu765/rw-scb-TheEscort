@@ -10,7 +10,7 @@ Grime: 0
 BkgDroneVolume: 0
 BkgDroneNoThreatVolume: 1
 RandomItemDensity: 0.5
-RandomItemSpearChance: 0.6
+RandomItemSpearChance: 0.75
 Palette: 13
 EffectColorA: 12
 EffectColorB: 6

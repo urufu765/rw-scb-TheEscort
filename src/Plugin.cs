@@ -8,10 +8,11 @@ using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 using RWCustom;
 using MonoMod.Cil;
+using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -103,18 +104,6 @@ namespace TheEscort
         // Miscellanious things
         private bool nonArena = false;
         //public static readonly String EscName = "EscortMe";
-        /*
-        Log Priority:
-        -1: No logs
-         0: Exceptions
-         1: Important things
-         2: Less important things
-         3: Method pings
-         4: Ebug errors (done by design)
-        */
-        private int logImportance = 4;
-        private static int logRepetition = 0;
-        private static String prevLog = "";
 
         // Escort instance stuff
         public static ConditionalWeakTable<Player, Escort> eCon = new();
@@ -133,206 +122,6 @@ namespace TheEscort
 
 
         // Debug Logger (Beautified!)
-        public static void Ebug(String message, int logPrio=3, bool ignoreRepetition=false){
-            if (logPrio <= ins.logImportance){
-                if (message != prevLog || ignoreRepetition){
-                    if (logRepetition > 0){
-                        Debug.Log("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
-                    }
-                    prevLog = message;
-                    logRepetition = 0;
-                    Debug.Log("-> Escort: " + message);
-                } else {
-                    logRepetition++;
-                }
-            }
-        }
-        public static void Ebug(System.Object message, int logPrio=3){
-            if (logPrio <= ins.logImportance){
-                Debug.Log("-> Escort: " + message.ToString());
-            }
-        }
-        public static void Ebug(String[] messages, int logPrio=3, bool separated=true){
-            if (logPrio <= ins.logImportance){
-                if (separated){
-                    String message = "";
-                    foreach(String msg in messages){
-                        message += ", " + msg;
-                    }
-                    Debug.Log("-> Escort: " + message.Substring(2));
-                }
-                else {
-                    for(int i = 0; i < messages.Length; i++){
-                        if (i == 0){
-                            Debug.Log("-> Escort: " + messages[i]);
-                        }
-                        else{
-                            Debug.Log("->         " + messages[i]);
-                        }
-                    }
-                }
-            }
-        }
-        public static void Ebug(System.Object[] messages, int logPrio=3, bool separated=true){
-            if (logPrio <= ins.logImportance){
-                if (separated){
-                    String message = "";
-                    foreach(String msg in messages){
-                        message += ", " + msg.ToString();
-                    }
-                    Debug.Log("-> Escort: " + message.Substring(2));
-                }
-                else {
-                    for(int i = 0; i < messages.Length; i++){
-                        if (i == 0){
-                            Debug.Log("-> Escort: " + messages[i].ToString());
-                        }
-                        else{
-                            Debug.Log("->         " + messages[i].ToString());
-                        }
-                    }
-                }
-            }
-        }
-        public static void Ebug(Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
-            ins.L().letItRip(exception.GetType().ToString(), !asregular);
-            if (logPrio <= ins.logImportance){
-                if(asregular){
-                    Debug.LogWarning("-> ERcORt: " + message + " => " + exception.Message);
-                    if (exception.StackTrace != null){
-                        Debug.LogWarning("->       : " + exception.StackTrace);
-                    }
-                }
-                else{
-                    Debug.LogError("-> ERcORt: " + message);
-                    if (exception.StackTrace != null){
-                        Debug.LogError("->       : " + exception.StackTrace);
-                    }
-                    Debug.LogException(exception);
-                }
-            }
-        }
-        public static void Ebug(Player self, String message, int logPrio=3, bool ignoreRepetition=false){
-            if (self == null){
-                Ebug(message, logPrio, ignoreRepetition);
-            }
-            try{
-                if (logPrio <= ins.logImportance){
-                    if (message != prevLog || ignoreRepetition){
-                        if (logRepetition > 0){
-                            Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetition + " times: " + prevLog);
-                        }
-                        prevLog = message;
-                        logRepetition = 0;
-                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message);
-                    } else {
-                        logRepetition++;
-                    }
-                }
-            } catch (Exception err){
-                Ebug(message, logPrio);
-                Ebug(err, logPrio:4, asregular:true);
-            }
-        }
-        public static void Ebug(Player self, System.Object message, int logPrio=3){
-            if (self == null){
-                Ebug(message, logPrio);
-            }
-            try{
-                if (logPrio <= ins.logImportance){
-                    Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.ToString());
-                }
-            } catch (Exception err){
-                Ebug(message, logPrio);
-                Ebug(err, logPrio:4, asregular:true);
-            }
-        }
-        public static void Ebug(Player self, String[] messages, int logPrio=3, bool separated=true){
-            if (self == null){
-                Ebug(messages, logPrio, separated);
-            }
-            try{
-                if (logPrio <= ins.logImportance){
-                    if (separated){
-                        String message = "";
-                        foreach(String msg in messages){
-                            message += ", " + msg;
-                        }
-                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
-                    }
-                    else {
-                        for(int i = 0; i < messages.Length; i++){
-                            if (i == 0){
-                                Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i]);
-                            }
-                            else{
-                                Debug.Log("->        [" + self.playerState.playerNumber + "]: " + messages[i]);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception err){
-                Ebug(messages, logPrio, separated);
-                Ebug(err, logPrio:4, asregular:true);
-            }
-
-        }
-        public static void Ebug(Player self, System.Object[] messages, int logPrio=3, bool separated=true){
-            if (self == null){
-                Ebug(messages, logPrio, separated);
-            }
-            try{
-                if (logPrio <= ins.logImportance){
-                    if (separated){
-                        String message = "";
-                        foreach(String msg in messages){
-                            message += ", " + msg.ToString();
-                        }
-                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
-                    }
-                    else {
-                        for(int i = 0; i < messages.Length; i++){
-                            if (i == 0){
-                                Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i].ToString());
-                            }
-                            else{
-                                Debug.Log("->         [" + self.playerState.playerNumber + "]: " + messages[i].ToString());
-                            }
-                        }
-                    }
-                }
-            } catch (Exception err){
-                Ebug(messages, logPrio, separated);
-                Ebug(err, logPrio:4, asregular:true);
-            }
-        }
-        public static void Ebug(Player self, Exception exception, String message="caught error!", int logPrio=0, bool asregular=false){
-            if (self == null){
-                Ebug(exception, message, logPrio, asregular);
-            }
-            ins.L().letItRip(exception.GetType().ToString(), !asregular);
-            try {
-                if (logPrio <= ins.logImportance){
-                    if(asregular){
-                        Debug.LogWarning("-> ERcORt[" + self.playerState.playerNumber + "]: " + message + " => " + exception.Message);
-                        if (exception.StackTrace != null){
-                            Debug.LogWarning("->       : " + exception.StackTrace);
-                        }
-                    }
-                    else{
-                        Debug.LogError("-> ERcORt[" + self.playerState.playerNumber + "]: " + message);
-                        if (exception.StackTrace != null){
-                            Debug.LogError("->       [" + self.playerState.playerNumber + "]: " + exception.StackTrace);
-                        }
-                        Debug.LogException(exception);
-                    }
-                }
-            } catch (Exception err){
-                Ebug(exception, message, logPrio, asregular);
-                Ebug(err, logPrio:4, asregular:true);
-            }
-        }
-
 
         // Add hooks
         public void OnEnable()
@@ -413,6 +202,9 @@ namespace TheEscort
             //On.Player.Update += Estest_1_Update;
             //On.Player.GrabUpdate += Estest_3_GrabUpdate;
             Escort_Conversation.Attach();
+
+            On.TubeWorm.Update += Socks_Sticky_Immune;
+            //ReJollyCoop.Hooker();
         }
 
 

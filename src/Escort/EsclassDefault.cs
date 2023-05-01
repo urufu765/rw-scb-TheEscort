@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
+using static TheEscort.Eshelp;
 using RWCustom;
 
 namespace TheEscort
@@ -232,7 +233,7 @@ namespace TheEscort
             }
 
             // Vengeful Lizards
-            if (Esconfig_Vengeful_Lizards()){
+            if (self != null && self.room != null && self.room.game != null && self.room.game.IsStorySession && Esconfig_Vengeful_Lizards()){
                 if (e.playerKillCount < self.SessionRecord.kills.Count){
                     int a = 0;
                     foreach (PlayerSessionRecord.KillRecord killz in self.SessionRecord.kills){

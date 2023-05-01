@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
+using static TheEscort.Eshelp;
 using RWCustom;
 
 namespace TheEscort
@@ -222,6 +223,24 @@ namespace TheEscort
             } catch(Exception err){
                 Ebug(err, "Something went wrong while trying to stop socks from having a laugh!");
                 return orig(self, obj);
+            }
+        }
+
+
+        private void Socks_Sticky_Immune(On.TubeWorm.orig_Update orig, TubeWorm self, bool eu)
+        {
+            orig(self, eu);
+            try{
+                for (int i = 0; i < self.tongues.Length; i++){
+                    if (self.tongues[i].mode == TubeWorm.Tongue.Mode.AttachedToObject && self.tongues[i].attachedChunk != null && self.tongues[i].attachedChunk.owner is Player){
+                        Player p = self.tongues[i].attachedChunk.owner as Player;
+                        if (p.slugcatStats.name == EscortSocks){
+                            self.tongues[i].Release();
+                        }
+                    }
+                }
+            } catch (Exception err){
+                Ebug(err, "Oh no Tubeworm vengence!");
             }
         }
 
