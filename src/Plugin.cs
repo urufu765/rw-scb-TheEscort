@@ -11,7 +11,7 @@ using MonoMod.Cil;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.6.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -74,8 +74,8 @@ namespace TheEscort
         */
         public static readonly PlayerFeature<float[]>headDraw = PlayerFloats("theescort/headthing");
         public static readonly PlayerFeature<float[]>bodyDraw = PlayerFloats("theescort/bodything");
-        
 
+        public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
 
 
         public static readonly SlugcatStats.Name EscortMe = new SlugcatStats.Name("EscortMe");
@@ -341,7 +341,7 @@ namespace TheEscort
             On.RainWorld.PostModsInit += Escort_PostInit;
 
             //IL.AbstractCreature.Realize += Backpack_ILRealize;
-            On.AbstractCreature.Realize += Backpack_Realize;
+            //On.AbstractCreature.Realize += Backpack_Realize;
             //On.StaticWorld.InitCustomTemplates += Custom_Stuff;
 
             On.Lizard.ctor += Escort_Lizard_ctor;
@@ -410,8 +410,11 @@ namespace TheEscort
             //,
 			//{"name": "Glow", "story": "ffffff"}
 
-            On.Player.GrabUpdate += Estest_3_GrabUpdate;
+            //On.Player.Update += Estest_1_Update;
+            //On.Player.GrabUpdate += Estest_3_GrabUpdate;
+            Escort_Conversation.Attach();
         }
+
 
 
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
@@ -473,9 +476,9 @@ namespace TheEscort
                     //escPatch_DMS = true;
                     Ebug("Found DMS Version: " + DMS_Mod.version, 1);
                     String[] dmsVer = DMS_Mod.version.Split('.');
-                    if(int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
+                    if(int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
                         Ebug("Applying patch!...", 1);
-                        Espatch_DMS(DMS_Mod, verMin);
+                        Espatch_DMS(DMS_Mod, verMaj, verMin);
                     } else {
                         Ebug("Applying dud patch...", 1);
                         Espatch_DMS();
@@ -491,14 +494,13 @@ namespace TheEscort
             }
         }
 
-        private static void Espatch_DMS(ModManager.Mod dms, int verMin){
+        private static void Espatch_DMS(ModManager.Mod dms, int verMaj, int verMin){
             try{// Dress My Slugcat Patch
                 //if (dms.version)
-                String[] dmsVer = dms.version.Split('.');
-                if(verMin == 3){
+                if(verMaj == 1 && verMin == 3){
                     DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
-                        Name = "WAIT 4 NEXT DMS PATCH",
-                        Description = "Please wait for next patch (will likely softcrash upon clicking on customize)",
+                        Name = "WHY DO YOU HAVE THIS PATCH",
+                        Description = "Please update DMS",
                         GallerySprite = "escortHipT",
                         RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
                         Slugcats = new List<string>{"EscortMe"}
@@ -519,6 +521,7 @@ namespace TheEscort
             }
         }
 
+        // Legacy
         private static void Espatch_DMS(){
             try{// Dress My Slugcat Patch
                 //if (dms.version)
@@ -543,6 +546,14 @@ namespace TheEscort
         /*
         Configurations!
         */
+        private bool Esconfig_Mean_Lizards(){
+            return config.cfgMeanLizards.Value;
+        }
+
+        private bool Esconfig_Vengeful_Lizards(){
+            return config.cfgVengefulLizards.Value;
+        }
+
         private bool Esconfig_Mean_Lizards(World self){
             if (!gRTEdits.TryGet(self.game, out bool RT) || !SupahMeanLizards.TryGet(self.game, out bool meanLizard)){
                 return false;
@@ -837,7 +848,6 @@ namespace TheEscort
             ins.L().set();
             Ebug("Ctor Triggered!");
             orig(self, abstractCreature, world);
-
             if (self.slugcatStats.name == EscortMe){
                 ins.L().set("Escort Check");
                 eCon.Add(self, new Escort(self));
@@ -1003,7 +1013,13 @@ namespace TheEscort
         {
             orig(self);
             try{
-                if (self.creatureTemplate.name == GrappleBackpack.GrapplingPack.value && self.realizedCreature != null && self.realizedCreature is not GrappleBackpack){
+                if (!(self != null && self.world != null && self.world.game != null)){
+                    return;
+                }
+                else if (replaceGrapple != null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG){
+                    return;
+                }
+                if (self.Room != null && self.Room.shelter && self.realizedCreature != null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack){
                     Ebug("Replaced Grapple with Backpack!");
                     self.realizedCreature.Destroy();
                     self.realizedCreature = new GrappleBackpack(self, self.world);

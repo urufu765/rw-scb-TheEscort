@@ -55,6 +55,11 @@ namespace TheEscort
             }
             ins.L().setF("Socks CWT");
 
+            self.slugcatStats.runspeedFac = es.Escat_socks_runspd(self.Malnourished, self.aerobicLevel, self.Adrenaline);
+            self.slugcatStats.poleClimbSpeedFac = es.Escat_socks_climbspd(self.Malnourished, self.aerobicLevel, self.Adrenaline);
+            self.slugcatStats.corridorClimbSpeedFac = es.Escat_socks_corrspd(self.Malnourished, self.aerobicLevel, self.Adrenaline);
+            self.slugcatStats.throwingSkill = es.Escat_socks_skillz(self.Malnourished, self.aerobicLevel - self.Adrenaline);
+
             // Generate backpack!
             if (self.animation != Player.AnimationIndex.DeepSwim && es.backpack == null && es.Escat_clock_backpackReGen()){
                 ins.L().setF("Socks Backpack Check");

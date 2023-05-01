@@ -8,11 +8,7 @@
 			{"name": "Body", "story": "ede5fa", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
 			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}		],
 		"weight": [0.47, 0.35],
-		"tunnel_speed": [1.35, 1],
-		"climb_speed": [1.45, 1.1],
-		"walk_speed": [1.5, 1.15],
 		"crouch_stealth": [0.7, 0.9],
-		"throw_skill": [2, 0],
 		"lung_capacity": 2.5,
 		"loudness": [0.5, 0.4],
 		"alignments": {
@@ -33,6 +29,8 @@
 		"the_mark": true,
 		"select_menu_scene": "EsTemp",
 		"select_menu_scene_ascended": "EsTemp",
-		"sleep_scene": "Sleep_EscortSocks"
+		"sleep_scene": "Sleep_EscortSocks",
+
+		"thesocks/replacegrapple": true
 		}
 }

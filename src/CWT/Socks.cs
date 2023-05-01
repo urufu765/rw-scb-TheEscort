@@ -79,6 +79,9 @@ namespace TheEscort
         public readonly int sID = 3118;
 
         private int makeBackpackWait;
+        private readonly float[] tunnelSpd = new float[]{0.7f, 1f, 1.4f};
+        private readonly float[] climbSpd = new float[]{0.75f, 1.1f, 1.5f};
+        private readonly float[] walkSpd = new float[]{0.8f, 1.2f, 1.6f};
 
         public World world { get; set; }
 
@@ -103,6 +106,24 @@ namespace TheEscort
             }
         }
 
+        public int Escat_socks_skillz(bool malnourished, float tiredness){
+            return (malnourished, tiredness) switch{
+                (false, < 0.33f) => 2,
+                (false, < 0.66f) or (true, < 0.5f) => 1,
+                _ => 0
+            };
+        }
+
+        public float Escat_socks_runspd(bool malnourished, float tiredness, float drugs){
+            return Mathf.Lerp(this.walkSpd[0], malnourished? this.walkSpd[1] : this.walkSpd[2], (1 + drugs)-tiredness) + (0.24f * drugs);
+        }
+        public float Escat_socks_corrspd(bool malnourished, float tiredness, float drugs){
+            return Mathf.Lerp(this.tunnelSpd[0], malnourished? this.tunnelSpd[1] : this.tunnelSpd[2], (1 + drugs)-tiredness) + (0.08f * drugs);
+        }
+        public float Escat_socks_climbspd(bool malnourished, float tiredness, float drugs){
+            return Mathf.Lerp(this.climbSpd[0], malnourished? this.climbSpd[1] : this.climbSpd[2], (1 + drugs)-tiredness) + (0.16f * drugs);
+        }
+
         public void Escat_generate_backpack(Player owner){
             if (this.backpack != null && this.backpack.abstractBackpack != null && this.backpack.backpack != null){
                 this.backpack.abstractBackpack.Deactivate();
@@ -115,7 +136,9 @@ namespace TheEscort
             AbstractCreature ac = new AbstractCreature(
                 this.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.TubeWorm), 
                 null, owner.abstractCreature.pos, owner.room.game.GetNewID());
+            ac.saveCreature = false;
             owner.room.abstractRoom.AddEntity(ac);
+            ac.creatureTemplate = new CreatureTemplate(ac.creatureTemplate);
             ac.creatureTemplate.name = GrappleBackpack.GrapplingPack.value;
             ac.realizedCreature = new GrappleBackpack(ac, this.world, owner);
             ac.InitiateAI();

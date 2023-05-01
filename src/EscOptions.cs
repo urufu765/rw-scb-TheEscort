@@ -12,6 +12,7 @@ namespace TheEscort{
         //public readonly Plugin instance;
         public readonly RainWorld rainworld;
         public Configurable<bool> cfgMeanLizards;
+        public Configurable<bool> cfgVengefulLizards;
         // public Configurable<bool> cfgMeanGarbWorms;
         public Configurable<float> cfgHeavyLift;
         public Configurable<float> cfgDKMult;
@@ -59,6 +60,7 @@ namespace TheEscort{
         public EscOptions(RainWorld rainworld){
             this.rainworld = rainworld;
             this.cfgMeanLizards = this.config.Bind<bool>("cfg_Mean_Lizards", false);
+            this.cfgVengefulLizards = this.config.Bind<bool>("cfg_Vengeful_Lizards", false);
             this.cfgHeavyLift = this.config.Bind<float>("cfg_Heavy_Lift", 3f, new ConfigAcceptableRange<float>(0.01f, 1000f));
             this.cfgDKMult = this.config.Bind<float>("cfg_Drop_Kick_Multiplier", 3f, new ConfigAcceptableRange<float>(0.01f, 765f));
             this.cfgElevator = this.config.Bind<bool>("cfg_Elevator", false);
@@ -171,51 +173,59 @@ namespace TheEscort{
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgMeanLizards, new Vector2(xo + (xp * 0), yo - (yp * 2))){
-                    description = OptionInterface.Translate("When enabled, lizards will spawn at full aggression when playing Escort... the behaviour may not carry over in coop sessions. (Default=false)"),
+                    description = OptionInterface.Translate("When enabled, lizards will spawn at full aggression when playing Escort (and target Escort upon sight)... the behaviour may not carry over in coop sessions. (Default=false)"),
                     colorEdge = tempColor
                 },
 
-                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 3), "Lifting Power Multiplier"),
-                new OpUpdown(this.cfgHeavyLift, new Vector2(xo + (xp * 0), yo - (yp * 3) - tp), 100, 2){
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Vengeful Lizards [Beta]"){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgVengefulLizards, new Vector2(xo + (xp * 0), yo - (yp * 3))){
+                    description = OptionInterface.Translate("Upon killing too many lizards, lizards may begin hunting Escort down. (Default=false)"),
+                    colorEdge = tempColor
+                },
+
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), "Lifting Power Multiplier"),
+                new OpUpdown(this.cfgHeavyLift, new Vector2(xo + (xp * 0), yo - (yp * 4) - tp), 100, 2){
                     description = OptionInterface.Translate("Determines how heavy (X times Escort's weight) of an object Escort can carry before being burdened. (Default=3.0, Normal=0.6)")
                 },
-                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), "Drop Kick Multiplier"),
-                new OpUpdown(this.cfgDKMult, new Vector2(xo + (xp * 0), yo - (yp * 4) - tp), 100, 2){
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 5), "Drop Kick Multiplier"),
+                new OpUpdown(this.cfgDKMult, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 100, 2){
                     description = OptionInterface.Translate("How much knockback does Escort's drop kick cause? Keep in mind it only affects creatures that aren't resiliant to knockback. (Default=3.0)"),
                 },
 
-                new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 5) - tp, "Battle-Hype Mechanic"),
+                new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 6) - tp, "Battle-Hype Mechanic"),
                 //hypableBtn, hypedSlide,
-                new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
+                new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp/2)){
                     description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
                 },
-                new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 6)), 400 - (int)xp - 7){
+                new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7){
                     min = 0,
                     max = 6,
                     description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
                 },
-                new OpLabel(440f + xp - 7, yo - (yp * 6), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
+                new OpLabel(440f + xp - 7, yo - (yp * 7), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Long Wall Jump"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Long Wall Jump"){
                     color = tempColor
                 },
-                new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 7))){
+                new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 8))){
                     description = OptionInterface.Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)"),
                     colorEdge = tempColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Flippy Pounce"),
-                new OpCheckBox(this.cfgPounce, new Vector2(xo + (xp * 0), yo - (yp * 8))){
+                new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Flippy Pounce"),
+                new OpCheckBox(this.cfgPounce, new Vector2(xo + (xp * 0), yo - (yp * 9))){
                     description = OptionInterface.Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump to achieve great vertical height. (Default=true)")
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Grab Stunned Lizards"),
-                new OpCheckBox(this.cfgDunkin, new Vector2(xo + (xp * 0), yo - (yp * 9))){
+                new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, "Grab Stunned Lizards"),
+                new OpCheckBox(this.cfgDunkin, new Vector2(xo + (xp * 0), yo - (yp * 10))){
                     description = OptionInterface.Translate("Allows Escort to grab stunned lizards and cause violence on them. (Default=true)")
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, "Super Spear"),
-                new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 10))){
+                new OpLabel(xo + (xp * 1), yo - (yp * 11) + tp/2, "Super Spear"),
+                new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 11))){
                     description = OptionInterface.Translate("Does additional movement tech when throwing spears. (Default=true)")
                 }
             };
@@ -427,11 +437,12 @@ namespace TheEscort{
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Keep Track of All Methods (for modders)"){
-                    color = tempColor
+                    color = tempColor * 0.75f
                 },
                 new OpCheckBox(this.cfgDeveloperMode, new Vector2(xo + (xp * 0), yo - (yp * 4))){
-                    colorEdge = tempColor,
-                    description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)")
+                    colorEdge = tempColor * 0.75f,
+                    description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)"),
+                    greyedOut = true
                 },
             };
             mainTab.AddItems(this.mainSet);
@@ -488,7 +499,9 @@ namespace TheEscort{
                 this.cfgSectret.Value = false;
                 Plugin.ins.L().christmas();
                 try{
-                    ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
+                    if (Plugin.Esconfig_SFX_Sectret != null){
+                        ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
+                    }
                 } catch (Exception err){
                     Debug.LogError("Couldn't play sound!");
                     Debug.LogException(err);

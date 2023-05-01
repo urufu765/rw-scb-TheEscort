@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using TheEscort;
+using static TheEscort.Plugin;
 
 
 namespace TheEscort{
@@ -52,6 +54,14 @@ namespace TheEscort{
         public bool isChunko;
         public float originalMass;
         public bool slideFromSpear;
+        public int playerKillCount;
+        public int lizzieVengenceClock;
+        public int lizzieVengenceTick;
+        public int lizzieVengenceCount;
+        public int lizzieVengenceTolerance;
+        public List<AbstractCreature> vengefulLizards;
+        public int vengefulLizardsCount;
+        public WorldCoordinate lizzieDestination;
 
         // Build stuff
         public bool Brawler;
@@ -136,6 +146,12 @@ namespace TheEscort{
             this.isChunko = false;
             this.originalMass = 0f;
             this.slideFromSpear = false;
+            this.lizzieVengenceClock = 400;
+            this.lizzieVengenceTick = 40;
+            this.vengefulLizards = new List<AbstractCreature>(18);
+            this.lizzieVengenceTolerance = UnityEngine.Random.Range(4, 14);
+            //this.lizzieVengenceTolerance = 1;
+            this.lizzieDestination = player.abstractCreature.pos;
 
             // Build specific
             this.Brawler = false;
@@ -272,5 +288,125 @@ namespace TheEscort{
             return c;
         }
 
+
+        public void Escat_ping_lizards(Player self){
+            if (self == null){
+                return;
+            }
+            if (self != null && self.room != null && self.room.game != null && self.room.game.paused){
+                return;
+            }
+            if (this.lizzieVengenceCount < this.lizzieVengenceTolerance || self.dead){
+                return;
+            }
+            if (this.vengefulLizards.Count == 0){
+                Ebug(self, "the lizards want VENGENCE!");
+                Escat_begin_pursuit(self);
+                return;
+            }
+            if (this.vengefulLizards.Count < this.vengefulLizardsCount){
+                Ebug(self, "more lizards want VENGENCE!");
+                Escat_replace_dead(self);
+                return;
+            }
+            try{
+                for (int j = 0; j < this.vengefulLizards.Count; j++){
+                    if (this.vengefulLizards[j].slatedForDeletion || this.vengefulLizards[j] == null){
+                        this.vengefulLizards[j] = null;
+                        this.vengefulLizards.Remove(this.vengefulLizards[j]);
+                    }
+                }
+            } catch (Exception err){
+                Ebug(err, "Something went wrong while removing lizards from list!");
+            }
+            int i = 0;
+            bool overrideTick = false;
+            // Track
+            foreach (AbstractCreature veggie in this.vengefulLizards){
+                i++;
+                if (!(self != null && self.room != null && self.room.game != null && self.abstractCreature != null && veggie != null)){
+                    return;
+                }
+                if (veggie.abstractAI == null || self.room.abstractRoom.shelter || self.room.abstractRoom.gate){
+                    break;
+                }
+                overrideTick = false;
+                if (veggie.pos.room == self.abstractCreature.pos.room){
+                    overrideTick = true;
+                }
+                if (overrideTick){  // Tick 10 times faster when creature is in the same room as player
+                    if (i != this.lizzieVengenceTick) continue;  // Ticks once per second
+                }
+                else{
+                    if (i != this.lizzieVengenceClock) continue;  // Ticks once per 10 seconds
+                }
+                try {  // Track player's room
+                    if (veggie.abstractAI.destination.room != self.abstractCreature.pos.room){
+                        Ebug(self, "Hunting lizard destination changed! From: " + veggie.abstractAI.destination.ResolveRoomName() + " to " + self.abstractCreature.pos.ResolveRoomName());
+                        veggie.abstractAI.SetDestination(self.abstractCreature.pos);
+                        //veggie.abstractAI.followCreature = self.abstractCreature;
+                    }
+                } catch (Exception err) {
+                    Ebug(err, "Couldn't set destination!", asregular: true);
+                }
+                try {  // Be aggressive towards Escort
+                    if (veggie.abstractAI.RealAI != null){
+                        foreach (Tracker.CreatureRepresentation tracked in veggie.abstractAI.RealAI.tracker.creatures){
+                            if (tracked == null || tracked.representedCreature == null){
+                                continue;
+                            }
+                            if (tracked.representedCreature != self.abstractCreature){
+                                veggie.abstractAI.RealAI.tracker.ForgetCreature(tracked.representedCreature);
+                            }
+                            else{
+                                veggie.abstractAI.RealAI.agressionTracker.SetAnger(tracked, 10f, 10f);
+                            }
+                        }
+                        veggie.abstractAI.RealAI.tracker.SeeCreature(self.abstractCreature);
+                    }
+                } catch (Exception err){
+                    Ebug(err, "Couldn't track Escort!", asregular: true);
+                }
+            }
+        }
+
+        public void Escat_begin_pursuit(Player self){
+            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null){
+                this.vengefulLizardsCount = UnityEngine.Random.Range(5, 18);
+                for (int i = 0; i < this.vengefulLizardsCount; i++){
+                    this.vengefulLizards.Add(new AbstractCreature(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID()));
+                    this.vengefulLizards[i].saveCreature = false;
+                    this.vengefulLizards[i].ignoreCycle = true;
+                    self.room.abstractRoom.AddEntity(this.vengefulLizards[i]);
+                }
+            }
+        }
+
+        public void Escat_replace_dead(Player self){
+            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null){
+                AbstractCreature ac = new AbstractCreature(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID());
+                ac.saveCreature = false;
+                ac.ignoreCycle = true;
+
+                this.vengefulLizards.Add(ac);
+                self.room.abstractRoom.AddEntity(ac);
+            }
+        }
+
+        public WorldCoordinate Escat_get_cornerable_rooms(Player self){
+            WorldCoordinate coordi = self.room.abstractRoom.RandomNodeInRoom();
+            List<int> l = new List<int>();
+            for (int i = 0; i < self.room.game.world.NumberOfRooms; i++){
+                AbstractRoom ar = self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + i);
+                if (ar != null && !ar.shelter && !ar.gate && ar.name != self.room.abstractRoom.name && ar.NodesRelevantToCreature(StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard)) > 0){
+                    l.Add(i);
+                }
+            }
+            if (l.Count > 0){
+                return self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
+                //return self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
+            }
+            return coordi;
+        }
     }
 }

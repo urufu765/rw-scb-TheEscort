@@ -9,8 +9,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 * ### Planned (Immediate)...
   * **(0.2.8)** Parry Upgrade update
 
-  * **(0.2.7)** Extra (Extra) EXTRA mean lizards: After a certain amount of time, they start tracking you (also reenabled extra mean lizards as default)
-
   * **(0.2.X)** Idea backlog...
     * Changed how settings are applied in game (you shouldn't notice any changes)
     * Escort can throw better in water. 
@@ -27,11 +25,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Socks grapple works in ZeroG properly
     * Socks can have different grapples for different effects (tonguing a shocky thing gives it electric tongue)
     * Make Socks grapple have less... elasticness and not be grabbable by wormgrass
-    * Reduce Socks' spear damage to 0.8 flat
     * Socks has reduced movement bonuses when tired
     * Give Deflector throwskill of 1 to make ricochets possible... and also let the roll throws travel
+    * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
+    * Properly implement Grapple Backpack template
 
 * ### 0.2 - The Escort
+  * **(0.2.7)** Custom conversations! And Sock's speed and skills are highly dependent on how tired they are now (more tired = slower). Sock's spear damage also changes depending on tiredness. New feature: Vengeful lizards... After a certain amount of time, they start tracking you. Fixed a bug with Socks' grapple worm despawning other grapples (outside shelter).
+
   * **(0.2.6.3)** Fixed the grapple worm not respawning and reduced respawn timer
 
   * **(0.2.6.2)** Fixed one of the insults so it doesn't go off the button, added grapple respawn if detached. Killed the check tracker for now

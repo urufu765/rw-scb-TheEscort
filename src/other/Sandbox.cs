@@ -14,13 +14,34 @@ namespace TheEscort
         /// <summary>
         /// Implementing an artificer parry... electric style!
         /// </summary>
-        private void Estest_1_Update(Player self){    
+        private void Estest_1_Update(On.Player.orig_Update orig, Player self, bool eu){    
+            orig(self, eu);
             if (!eCon.TryGetValue(self, out Escort e)){
                 return;
             }
             // Parry
             e.UpdateParryCD(self);
-            if (self.Consious && (self.canJump > 0 || self.wantToJump > 0) && self.input[0].pckp && (self.input[0].y < 0 || self.bodyMode == Player.BodyModeIndex.Crawl)){
+
+            // Air input
+            bool airParry = (self.input[0].pckp && !self.input[1].pckp) && self.wantToJump > 0;
+            
+            // Ground input
+            int tolerance = 3;
+            bool gParryLeanPckp = false, gParryLeanJmp = false;
+            if (!airParry){
+                for (int i = 0; i <= tolerance; i++){
+                    if (self.input[i].pckp){
+                        gParryLeanPckp = i < tolerance;
+                    }
+                    if (self.input[i].jmp){
+                        gParryLeanJmp = i < tolerance;
+                    }
+                }
+            }
+            bool groundParry = self.input[0].y < 0 && self.bodyChunks[1].contactPoint.y < 0 && gParryLeanJmp && gParryLeanPckp;
+            if (self.Consious && (airParry || groundParry)){
+                Debug.Log("Input - Air: " + airParry);
+                Debug.Log("Input - Ground: " + groundParry);
                 e.ThundahParry(self);
             }
 
@@ -82,7 +103,7 @@ namespace TheEscort
             try{
                 // Null slugcat check (you never know)
                 if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null)){
-                    Ebug(self, "Attempted to access a nulled player when updating!", 0);
+                    Debug.Log("Attempted to access a nulled player when updating!");
                     return;
                 }
                 // Custom Scug check
@@ -97,19 +118,21 @@ namespace TheEscort
                     return;
                 }
             } catch (Exception err){
-                Ebug(self, err);  // LOG!
+                Debug.LogException(err);  // LOG!
                 return;
             }
             // When player presses the pickup button after grabbing a creature (the self.noPickUpOnRelease prevents the player from applying the medic thing on the same button press as when they picked up the creature)
             if (self.input[0].pckp && !self.input[1].pckp && self.noPickUpOnRelease < 1){
+                Debug.Log("Attempt at medic");
                 for (int i = 0; i < self.grasps.Length; i++){
                     if (self.grasps[i] != null && self.grasps[i].grabbed != null && self.grasps[i].grabbed is Creature c){
+                        Debug.Log("Found injured creature!");
                         // Creature health check (assumes their health is 1 or their healthstate is based on 0%-100%)
                         if ((c.abstractCreature.state as HealthState).health > 0 && (c.abstractCreature.state as HealthState).health < 1){
-
+                            Debug.Log("Holding injured creature!");
                             //replace this with item usage... I'm using food pips for now
                             if (self.playerState.foodInStomach >= 1){
-                                Ebug(self, "Apply medic!", ignoreRepetition: true);  // LOG!
+                                Debug.Log("Apply medic!");  // LOG!
                                 self.SubtractFood(1);  // remove food
 
                                 // Apply health 

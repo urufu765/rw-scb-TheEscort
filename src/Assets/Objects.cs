@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using BepInEx;
 using UnityEngine;
-using System.Runtime.CompilerServices;
-using SlugBase.Features;
-using static SlugBase.Features.FeatureTypes;
-using RWCustom;
 
 namespace TheEscort
 {
-    
+
     public class GrappleBackpack : TubeWorm
     {
         public static readonly CreatureTemplate.Type GrapplingPack = new CreatureTemplate.Type("BackpackWorm", register:true);
@@ -60,6 +53,7 @@ namespace TheEscort
 
         public override void Update(bool eu)
         {
+        
             this.sleeping = false;
             // Destroy worm upon resting in shelter
             if (this.grabbedBy.Count == 0){
@@ -112,7 +106,7 @@ namespace TheEscort
 
     public class GrappleBackpackGraphics : TubeWormGraphics
     {
-        public Color ringColor = Color.gray;
+        public Color ringColor = Color.white;
         public Color tongueColor = Color.gray;
         public GrappleBackpackGraphics(PhysicalObject ow) : base(ow)
         {

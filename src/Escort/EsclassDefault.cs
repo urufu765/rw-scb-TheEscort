@@ -128,6 +128,20 @@ namespace TheEscort
                     e.superWallFlip--;
                 }
             }
+
+            if (e.lizzieVengenceClock > 0){
+                e.lizzieVengenceClock--;
+            }
+            else{
+                e.lizzieVengenceClock = 400;
+            }
+
+            if (e.lizzieVengenceTick > 0){
+                e.lizzieVengenceTick--;
+            }
+            else{
+                e.lizzieVengenceTick = 40;
+            }
         }
 
 
@@ -215,6 +229,21 @@ namespace TheEscort
                 //Ebug(self, "Normalized direction: " + self.bodyChunks[0].vel.normalized);
             } catch (Exception err){
                 Ebug(self, err, "Caught error when updating and console logging");
+            }
+
+            // Vengeful Lizards
+            if (Esconfig_Vengeful_Lizards()){
+                if (e.playerKillCount < self.SessionRecord.kills.Count){
+                    int a = 0;
+                    foreach (PlayerSessionRecord.KillRecord killz in self.SessionRecord.kills){
+                        if (killz.lizard) a++;
+                    }
+                    if (e.lizzieVengenceCount < a){
+                        e.lizzieVengenceCount = a;
+                    }
+                    e.playerKillCount = self.SessionRecord.kills.Count;
+                }
+                e.Escat_ping_lizards(self);
             }
 
             // vfx
@@ -970,7 +999,7 @@ namespace TheEscort
                                 }
                             }
                             if (self.room != null){
-                                self.room.PlaySound(Escort_SFX_Impact, self.firstChunk, false, 1f, 1.2f);
+                                self.room.PlaySound(Escort_SFX_Impact, self.firstChunk, false, 0.85f, 1.4f);
                                 self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk, false, 0.7f, 0.9f);
                             }
                             self.vibrate = 0;

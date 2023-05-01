@@ -39,9 +39,12 @@
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "EsTemp",
 		"sleep_scene": "Sleep_EscortMe",
+		"the_mark": false,
 
 		"playescort/realtime_edits": false,
 		"gameescort/realtime_edits": false,
+
+		"theescort/converse": true,
 
 		"theescort/insta_hype": false,
 		"theescort/better_crawl": [3.5, 4.3, 3.7],
