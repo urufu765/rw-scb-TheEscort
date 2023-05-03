@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -127,6 +127,7 @@ namespace TheEscort
         public void OnEnable()
         {
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
+            On.RainWorld.OnModsInit += Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please;
             On.RainWorld.PostModsInit += Escort_PostInit;
 
             //IL.AbstractCreature.Realize += Backpack_ILRealize;
@@ -177,6 +178,7 @@ namespace TheEscort
             On.Player.CanIPickThisUp += Socks_Grabby;
             On.Creature.LoseAllGrasps += Socks_DontLoseBackpack;
             On.Player.Die += Socks_Death;
+            On.Player.Jump += Socks_Jump;
 
             On.Rock.HitSomething += Escort_RockHit;
             On.Rock.Thrown += Escort_RockThrow;
@@ -202,9 +204,23 @@ namespace TheEscort
             //On.Player.Update += Estest_1_Update;
             //On.Player.GrabUpdate += Estest_3_GrabUpdate;
             Escort_Conversation.Attach();
+            On.TubeWorm.GrabbedByPlayer += GrappleBackpack.BackpackGrabbedByPlayer;
+            On.TubeWorm.GrabbedByPlayer += LauncherBackpack.BackpackGrabbedByPlayer;
 
             On.TubeWorm.Update += Socks_Sticky_Immune;
             //ReJollyCoop.Hooker();
+        }
+
+        private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
+        {
+            orig(self);
+            try{
+                if (this.config != null){
+                    MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
+                }
+            } catch (Exception err){
+                Ebug(err, "Oh dear.");
+            }
         }
 
 

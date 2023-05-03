@@ -32,6 +32,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Bombs do explosive punches (Brawler)
 
 * ### 0.2 - The Escort
+  * **(0.2.7.2)** Socks movement nerfed, added grapple movement buffs, added new grapple (not gonna reveal yet due to how janky it is), changed speartech so Escort doesn't yeet themselves off the cliff when throwing a spear while standing still, changed slidestun behaviour when caused by longslide (launch on second hit). Added additional effect when rolling onto poles with poletech and added new grapple variety. Buffed Deflector's longslide speed. Also made hype option actually disables the slider
+
   * **(0.2.7.1)** Increased spear spawn rate in DM Leg, fixed softcrash in arena when new feature is on, fixed lizard punt not working on other builds (other than brawler), decreased the number of kills required to trigger Vengeful Lizards event, disallowed grapple worms from grabbing onto Socks, and code reorganization
 
   * **(0.2.7)** Custom conversations! And Sock's speed and skills are highly dependent on how tired they are now (more tired = slower). Sock's spear damage also changes depending on tiredness. New feature: Vengeful lizards... After a certain amount of time, they start tracking you. Fixed a bug with Socks' grapple worm despawning other grapples (outside shelter).

@@ -31,7 +31,7 @@
   * **Escapis:** 00:00:00, 0 Deaths
   * **Railgun:** 00:00:00, 0 Deaths  
   * **Speedst:** 00:00:00, 0 Deaths
-* Long Route 3 "Scenic" - CC -> HI -> SH -> UW *(Shelter before FP)*
+* Long Route 3 "Scenic" - CC -> HI -> SH -> UW *(Shelter before FP (Bottom entrance))*
   * **Default:** 00:00:00, 0 Deaths
   * **Brawler:** 00:00:00, 0 Deaths
   * **Deflect:** 00:00:00, 0 Deaths

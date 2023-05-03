@@ -327,14 +327,15 @@ namespace TheEscort
             if (config.cfgPoleBounce.Value && self.input[0].jmp && !self.input[1].jmp){
                 // Normally rivulet check
                 try {
-                    bool flipperoni = self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll;
+                    bool flipperoni = self.animation == Player.AnimationIndex.Flip;
                     bool kickeroni = self.animation == Player.AnimationIndex.RocketJump;
+                    bool rollaunch = self.animation == Player.AnimationIndex.Roll;
                     if (
                         Mathf.Abs(self.bodyChunks[1].lastPos.y - self.bodyChunks[1].pos.y) < 35f && 
                         self.bodyChunks[1].vel.y < 9f &&
                         (
                             self.animation == Player.AnimationIndex.None ||
-                            flipperoni || kickeroni
+                            flipperoni || kickeroni || rollaunch
                         ) &&
                         self.bodyMode == Player.BodyModeIndex.Default &&
                         self.bodyChunks[1].contactPoint.y == 0 &&
@@ -366,16 +367,23 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.x *= 1.2f;
                                 self.jumpBoost += 7f;
                             }
+                            else if (rollaunch){
+                                self.bodyChunks[0].vel.y = 14f;
+                                self.bodyChunks[1].vel.y = 13f;
+                                self.bodyChunks[0].vel.x *= 1.3f;
+                                self.bodyChunks[1].vel.x *= 1.45f;
+                                self.jumpBoost += 9f;
+                            }
                             else{
                                 self.bodyChunks[0].vel.y = 5f;
                                 self.bodyChunks[1].vel.y = 4f;
                                 self.jumpBoost += 6f;
                             }
                             if (self.animation != Player.AnimationIndex.None){
-                                for (int num8 = 0; num8 < 7; num8++){
+                                for (int num8 = 0; num8 < (rollaunch? 14 : 6); num8++){
                                     self.room.AddObject(new WaterDrip(self.mainBodyChunk.pos + new Vector2(self.mainBodyChunk.rad * self.mainBodyChunk.vel.x, 0f), Custom.DegToVec(UnityEngine.Random.value * 180f * (0f - self.mainBodyChunk.vel.x)) * Mathf.Lerp(10f, 17f, UnityEngine.Random.value), waterColor: false));
                                 }
-                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk);
+                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk, false, 1f, rollaunch? 0.5f: 1f);
                             } else {
                                 self.room.PlaySound(SoundID.Slugcat_From_Horizontal_Pole_Jump, e.SFXChunk);
                             }
@@ -871,7 +879,7 @@ namespace TheEscort
                             self.rollCounter = 0;
                             if (self.canJump != 0){
                                 self.whiplashJump = true;
-                                if (self.animation != Player.AnimationIndex.BellySlide){
+                                if (self.animation != Player.AnimationIndex.BellySlide && self.input[0].x != 0){
                                     self.animation = Player.AnimationIndex.BellySlide;
                                     e.slideFromSpear = true;
                                 }
@@ -1583,6 +1591,7 @@ namespace TheEscort
                                 tossModifier = eSlideMod;
                             }
                             self.animation = Player.AnimationIndex.BellySlide;
+                            self.longBellySlide = false;
                             self.bodyChunks[1].vel = new Vector2((float)self.slideDirection * tossModifier, slideMod[1]);
                             self.bodyChunks[0].vel = new Vector2((float)self.slideDirection * tossModifier, slideMod[2]);
                         } else {
@@ -1599,6 +1608,10 @@ namespace TheEscort
                         }
                         if (e.Escapist){
                             self.mainBodyChunk.vel.y *= eSlideFac;
+                        }
+                        if (self.rocketJumpFromBellySlide){
+                            Ebug(self, "No more no control!");
+                            self.rocketJumpFromBellySlide = false;
                         }
                         self.WallJump(direction);
                         self.animation = Player.AnimationIndex.Flip;

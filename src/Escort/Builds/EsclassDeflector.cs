@@ -87,7 +87,7 @@ namespace TheEscort
                     self.rollCounter--;
                     //self.exitBellySlideCounter--;
                 }
-                self.mainBodyChunk.vel.x *= Mathf.Lerp(1.1f, 1.3f, Mathf.InverseLerp(0, (self.longBellySlide?20:10), e.DeflSlideCom));
+                self.mainBodyChunk.vel.x *= Mathf.Lerp(1.1f, (self.longBellySlide?1.5f:1.3f), Mathf.InverseLerp(0, (self.longBellySlide?20:10), e.DeflSlideCom));
             }
             else if (e.DeflSlideKick && self.animation == Player.AnimationIndex.RocketJump){
                 self.mainBodyChunk.vel.x *= 1.4f;

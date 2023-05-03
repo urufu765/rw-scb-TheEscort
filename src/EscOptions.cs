@@ -45,6 +45,9 @@ namespace TheEscort{
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
+        private OpCheckBox hypeableBox;
+        private OpSliderTick hypeableTick;
+        //private OpLabelLong hypableText;
         private UIelement[] mainSet;
         private UIelement[] buildSet;
         private UIelement[] buildText;
@@ -147,6 +150,15 @@ namespace TheEscort{
             //this.hypableBtn.OnDeactivate += setTheHype;
             //this.hypableBtn.OnReactivate += killTheHype;
             */
+            this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp/2)){
+                description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
+            };
+            this.hypeableBox.OnValueChanged += toggleDisableHyped;
+            this.hypeableTick = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7){
+                min = 0,
+                max = 6,
+                description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
+            };
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
@@ -196,14 +208,8 @@ namespace TheEscort{
 
                 new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 6) - tp, "Battle-Hype Mechanic"),
                 //hypableBtn, hypedSlide,
-                new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp/2)){
-                    description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
-                },
-                new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7){
-                    min = 0,
-                    max = 6,
-                    description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
-                },
+                this.hypeableBox,
+                this.hypeableTick,
                 new OpLabel(440f + xp - 7, yo - (yp * 7), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Long Wall Jump"){
@@ -459,7 +465,6 @@ namespace TheEscort{
             base.Update();
         }*/
 
-
         private void longDevLogChange()
         {
             if (this.cfgDeveloperMode.Value){
@@ -512,6 +517,17 @@ namespace TheEscort{
         private void makeSomeNoiseEsconfig(){
             ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
         }
+
+        private void toggleDisableHyped(UIconfig config, string value, string oldValue)
+        {
+            if (value == "true"){
+                this.hypeableTick.greyedOut = false;
+            }
+            else {
+                this.hypeableTick.greyedOut = true;
+            }
+        }
+
 
     }
 }

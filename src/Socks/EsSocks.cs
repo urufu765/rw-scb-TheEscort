@@ -60,6 +60,13 @@ namespace TheEscort
             self.slugcatStats.poleClimbSpeedFac = es.Escat_socks_climbspd(self.Malnourished, self.aerobicLevel, self.Adrenaline);
             self.slugcatStats.corridorClimbSpeedFac = es.Escat_socks_corrspd(self.Malnourished, self.aerobicLevel, self.Adrenaline);
             self.slugcatStats.throwingSkill = es.Escat_socks_skillz(self.Malnourished, self.aerobicLevel - self.Adrenaline);
+            if (self.aerobicLevel > 0.99f && !self.exhausted){
+                self.exhausted = true;
+            }
+            if (self.aerobicLevel < 0.34f && self.exhausted){
+                self.exhausted = false;
+            }
+
 
             // Generate backpack!
             if (self.animation != Player.AnimationIndex.DeepSwim && es.backpack == null && es.Escat_clock_backpackReGen()){
@@ -68,7 +75,7 @@ namespace TheEscort
             }
 
             // Force respawn backpack when it dies
-            if (self.grasps.Length == 3 && self.grasps[2] != null && self.grasps[2].grabbed != null && (self.grasps[2].grabbed as GrappleBackpack).dead){
+            if (self.grasps.Length == 3 && self.grasps[2] != null && self.grasps[2].grabbed != null && (self.grasps[2].grabbed as TubeWorm).dead){
                 Ebug("Backpack is dead. Rip");
                 self.ReleaseGrasp(2);
             }
@@ -80,12 +87,35 @@ namespace TheEscort
                 es.Escat_clock_backpackReGen(10);
             }
 
+            // Swap backpacks!
+            if (self.bodyMode == Player.BodyModeIndex.ZeroG || self.standing || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam){
+                es.Escat_swap_backpack(self);
+            }
+
             // Allow the backpack to actually be used lol (change this later so that it's compatible with remap mods)
             if (self.input[0].jmp && !self.input[1].jmp){
                 if (self.grasps[2] != null && self.grasps[2].grabbed is GrappleBackpack){
                     (self.grasps[2].grabbed as GrappleBackpack).JumpButton(self);
                 }
+                if (self.grasps[2] != null && self.grasps[2].grabbed is LauncherBackpack){
+                    (self.grasps[2].grabbed as LauncherBackpack).JumpButton(self);
+                }
+
             }
+        }
+
+        private void Socks_Jump(On.Player.orig_Jump orig, Player self)
+        {
+            orig(self);
+            try{
+                if (self.slugcatStats.name != EscortSocks){
+                    return;
+                }
+            } catch (Exception err){
+                Ebug(self, err, "Couldn't do Socks update!");
+                return;
+            }
+            self.aerobicLevel = Mathf.Min(0, self.aerobicLevel - 0.07f);
         }
 
         private void Socks_GMU(On.Player.orig_GraphicsModuleUpdated orig, Player self, bool actuallyViewed, bool eu)

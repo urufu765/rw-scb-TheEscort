@@ -61,7 +61,7 @@ namespace TheEscort
                 }
             }
 
-            public void EquipBackpack(GrappleBackpack gb){
+            public void EquipBackpack(TubeWorm gb){
                 backpack = gb;
                 if (abstractBackpack != null){
                     abstractBackpack.Deactivate();
@@ -78,10 +78,12 @@ namespace TheEscort
         //public Morebackpacks.SlugNPCAI sAI;
         public readonly int sID = 3118;
 
+        private int swapBackpack;
+        private int backpackID;
         private int makeBackpackWait;
-        private readonly float[] tunnelSpd = new float[]{0.7f, 1f, 1.4f};
-        private readonly float[] climbSpd = new float[]{0.75f, 1.1f, 1.5f};
-        private readonly float[] walkSpd = new float[]{0.8f, 1.2f, 1.6f};
+        private readonly float[] tunnelSpd = new float[]{0.55f, 1f, 1.24f};
+        private readonly float[] climbSpd = new float[]{0.6f, 1.07f, 1.33f};
+        private readonly float[] walkSpd = new float[]{0.65f, 1.14f, 1.42f};
 
         public World world { get; set; }
 
@@ -90,6 +92,7 @@ namespace TheEscort
             this.customSprites = 0;
             this.coopMode = false;
             this.makeBackpackWait = 20;
+            this.swapBackpack = 40;
         }
 
         public void Escat_kill_backpack(){
@@ -125,25 +128,45 @@ namespace TheEscort
         }
 
         public void Escat_generate_backpack(Player owner){
-            if (this.backpack != null && this.backpack.abstractBackpack != null && this.backpack.backpack != null){
-                this.backpack.abstractBackpack.Deactivate();
-                this.backpack.abstractBackpack = null;
-                this.backpack.backpack.Destroy();
-                this.backpack = null;
+            if (this.backpack != null){
+                Escat_kill_backpack();
             }
             Debug.Log("-> Essocks: GET PACK!");
             this.backpack = new Backpack(owner);
             AbstractCreature ac = new AbstractCreature(
                 this.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.TubeWorm), 
                 null, owner.abstractCreature.pos, owner.room.game.GetNewID());
-            ac.saveCreature = false;
+            //ac.saveCreature = false;
             owner.room.abstractRoom.AddEntity(ac);
-            ac.creatureTemplate = new CreatureTemplate(ac.creatureTemplate);
-            ac.creatureTemplate.name = GrappleBackpack.GrapplingPack.value;
-            ac.realizedCreature = new GrappleBackpack(ac, this.world, owner);
+            //ac.creatureTemplate = new CreatureTemplate(ac.creatureTemplate);
+            //ac.creatureTemplate.name = GrappleBackpack.GrapplingPack.value;
+            ac.realizedCreature = this.backpackID switch{
+                1 => new LauncherBackpack(ac, this.world, owner),
+                _ => new GrappleBackpack(ac, this.world, owner)
+            };
             ac.InitiateAI();
             ac.RealizeInRoom();
-            this.backpack.EquipBackpack((GrappleBackpack)ac.realizedCreature);
+            this.backpack.EquipBackpack((TubeWorm)ac.realizedCreature);
+        }
+
+        public void Escat_swap_backpack(Player owner){
+            if (!(this.backpack != null && this.backpack.backpack != null)){
+                return;
+            }
+            if (this.swapBackpack > 0){
+                if (owner.input[0].pckp && owner.input[0].jmp){
+                    this.swapBackpack--;
+                }
+                else {
+                    this.swapBackpack = 40;
+                }
+                return;
+            }
+            if (this.backpack.backpack is GrappleBackpack) this.backpackID = 1;
+            else if (this.backpack.backpack is LauncherBackpack) this.backpackID = 0;
+            Escat_kill_backpack();
+            Escat_clock_backpackReGen(5);
+            this.swapBackpack = 40;
         }
 
         public bool Escat_clock_backpackReGen(int refresh=0){
