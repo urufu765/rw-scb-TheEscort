@@ -21,7 +21,7 @@
 		},
 		"karma": 4,
 		"karma_cap": 9,
-		"start_room": "SB_TOPSIDE",
+		"start_room": ["SB_TOPSIDE", "SU_CAVE01"],
 		"food_min": 3,
 		"food_max": 6,
 		"world_state": "Artificer",

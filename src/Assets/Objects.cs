@@ -210,6 +210,7 @@ namespace TheEscort
         {
             public LauncherTongue(TubeWorm worm, int tongueNum) : base(worm, tongueNum)
             {
+                this.idealRopeLength = 300f;
                 this.ropeExtendSpeed += 1f;
             }
 
@@ -225,8 +226,8 @@ namespace TheEscort
                     this.room.PlaySound(SoundID.Tube_Worm_Shoot_Tongue, this.baseChunk);
                     dir = ((this.worm.grabbedBy.Count <= 0 || !(this.worm.grabbedBy[0].grabber is Player)) ? CheapAutoAim(dir) : ProperAutoAim(dir));
                     this.pos = baseChunk.pos + dir * 5f;
-                    this.vel = dir * 40f;
-                    this.elastic = 0.5f;
+                    this.vel = dir * 50f;
+                    this.elastic = 0.85f;
                     this.requestedRopeLength = 280f;
                     this.returning = false;
                 }
@@ -253,7 +254,7 @@ namespace TheEscort
         public LauncherBackpack(AbstractCreature abstractCreature, World world, Player owner) : base(abstractCreature, world)
         {
             for (int i = 0; i < this.bodyChunks.Length; i++){
-                this.bodyChunks[i].mass *= 0.01f;
+                this.bodyChunks[i].mass *= 0.1f;
             }
             this.canBeHitByWeapons = false;
             this.CollideWithObjects = false;
@@ -304,10 +305,10 @@ namespace TheEscort
             for (int j = 0; j < this.grabbedBy.Count; j++){
                 if (this.tongues[1].Attached){
                     if (grabbedBy[j].grabber is Player p){
-                        p.mainBodyChunk.vel.x = Mathf.Clamp(p.mainBodyChunk.vel.x, -15f, 15f);
-                        p.mainBodyChunk.vel.y = Mathf.Clamp(p.mainBodyChunk.vel.y, -15f, 15f);
-                        this.mainBodyChunk.vel.x = Mathf.Clamp(this.mainBodyChunk.vel.x, -15f, 15f);
-                        this.mainBodyChunk.vel.y = Mathf.Clamp(this.mainBodyChunk.vel.y, -15f, 15f);
+                        p.mainBodyChunk.vel.x = Mathf.Clamp(p.mainBodyChunk.vel.x, -12f, 12f);
+                        p.mainBodyChunk.vel.y = Mathf.Clamp(p.mainBodyChunk.vel.y, -24f, 24f);
+                        this.mainBodyChunk.vel.x = Mathf.Clamp(this.mainBodyChunk.vel.x, -12f, 12f);
+                        this.mainBodyChunk.vel.y = Mathf.Clamp(this.mainBodyChunk.vel.y, -24f, 24f);
                     }
                 }
             }
@@ -413,7 +414,7 @@ namespace TheEscort
                 (true, false) => Mathf.Min(1f, self.onRopePos + 0.1f),
                 (false, true) => Mathf.Max(0f, self.onRopePos - 0.1f),
                 (false, false) => (self.onRopePos < 0.5f? Mathf.Min(0.49f, self.onRopePos + 0.025f) : Mathf.Max(0.5f, self.onRopePos - 0.025f)),
-                (true, true) => Mathf.Clamp(self.onRopePos + 0.015f * changer, 0.01f, 0.99f)
+                (true, true) => Mathf.Clamp(self.onRopePos + 0.035f * changer, 0.01f, 0.99f)
             };
             //Ebug("OnRopePos: " + self.onRopePos);
 

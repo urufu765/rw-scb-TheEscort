@@ -270,6 +270,30 @@ namespace TheEscort
             }
         }
 
+        private static bool Escort_Jolly_Sprite(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_HasUniqueSprite orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
+        {
+            Ebug("Woof woof");
+            if (self.symbolNameOff.Contains("escortme")) return true;
+            return orig(self);
+        }
+
+        private static string Escort_Jolly_Name(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_GetPupButtonOffName orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
+        {
+            SlugcatStats.Name playerClass = self.JollyOptions(self.index).playerClass;
+            if (playerClass != null && playerClass.value.Equals("EscortMe")){
+                return "escortme_pup_off";
+            }
+            return orig(self);
+        }
+
+        private static Color Escort_Please_Just_Kill_Me(On.PlayerGraphics.orig_JollyUniqueColorMenu orig, SlugcatStats.Name slugName, SlugcatStats.Name reference, int playerNumber)
+        {
+            if ((RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.DEFAULT || (playerNumber == 0 && RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.AUTO)) && slugName == EscortMe){
+                return new Color(0.796f, 0.549f, 0.27843f);
+            }
+            return orig(slugName, reference, playerNumber);
+        }
+
 
 
 

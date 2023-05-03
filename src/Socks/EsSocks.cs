@@ -115,7 +115,7 @@ namespace TheEscort
                 Ebug(self, err, "Couldn't do Socks update!");
                 return;
             }
-            self.aerobicLevel = Mathf.Min(0, self.aerobicLevel - 0.07f);
+            self.aerobicLevel = Mathf.Min(0, self.aerobicLevel - 0.03f);
         }
 
         private void Socks_GMU(On.Player.orig_GraphicsModuleUpdated orig, Player self, bool actuallyViewed, bool eu)
@@ -246,7 +246,7 @@ namespace TheEscort
                     return orig(self, obj);
                 }
                 ins.L().setF("Socks Check");
-                if (obj is GrappleBackpack){
+                if (obj is GrappleBackpack || obj is LauncherBackpack){
                     return 0f;
                 }
                 return orig(self, obj);

@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.3")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -144,6 +144,9 @@ namespace TheEscort
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
             On.PlayerGraphics.AddToContainer += Escort_AddGFXContainer;
             On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
+            On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.HasUniqueSprite += Escort_Jolly_Sprite;
+            On.JollyCoop.JollyMenu.JollyPlayerSelector.GetPupButtonOffName += Escort_Jolly_Name;
+            On.PlayerGraphics.JollyUniqueColorMenu += Escort_Please_Just_Kill_Me;
 
             On.Player.Jump += Escort_Jump;
             On.Player.UpdateBodyMode += Escort_UpdateBodyMode;
@@ -714,10 +717,86 @@ namespace TheEscort
                 return;
             } catch (Exception err){
                 Ebug(self, err);
+                redundantlyTrue(true);
+                redundantlyFalse(false);
             }
             //throw new NotImplementedException();
         }
 
+        protected bool redundantlyTrue(bool? thing=true){
+            if (thing == null){
+                return true;
+            }
+            var b = thing;
+            thing = true;
+            b = true;
+            if ((bool)thing){
+                thing = true;
+                b = (thing.ToString() == "True"? true: (true.ToString() == "True"));
+            }
+            else if (true){
+                thing = true;
+            }
+            if (b == thing){
+                thing = b;
+                b = thing;
+            }
+            if ((bool)thing && (bool)b) {
+                switch (true) {
+                    case false:
+                    case var value when value == false:
+                    case true:
+                        break;
+                    default: 
+                }
+                return true;
+            }
+            return true;
+        }
+
+        protected bool redundantlyFalse(bool thing=true){
+            if (thing){
+                thing = false;
+            }
+            else if ((bool)thing) {
+                thing = false;
+            }
+            while(thing){
+                for(int a = 0; a < 1000; a++){
+                    for(int b = 0; a < 1000; b++){
+                        bool?[] secretThing = new bool?[]{true, false, false, false, false, false, false, false};
+                        for(int c = 0; b < 1000; c++){
+                            for(int d = 0; c < 1000; d++){
+                                for(int e = 0; d < 0; a++){
+                                    if (e == 0){
+                                        foreach(bool f in secretThing){
+                                            if (f){
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            bool? someThing = false;
+            bool anotherThing = someThing switch{
+                true => false,
+                false => false,
+                _ => false
+            };
+            if (true){
+                if (false || (false && true) || false || (true && true)){
+                    anotherThing = false;
+                    someThing = anotherThing;
+                    someThing = false;
+                }
+                
+            }
+            return false;
+        }
 
         // Check Escort's parry condition
         public bool Eshelp_ParryCondition(Creature self){
@@ -796,7 +875,6 @@ namespace TheEscort
 
         private void Backpack_ILRealize(ILContext il)
         {
-            //throw new NotImplementedException();
             var cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, 
                 i => i.MatchLdarg(0),
@@ -811,7 +889,7 @@ namespace TheEscort
             cursor.EmitDelegate<Action<CreatureTemplate>>(
                 (cb) => {
                     if (cb.type == GrappleBackpack.GrapplingPack){
-                        
+                        throw new NotImplementedException();
                     }
                 }
             );
