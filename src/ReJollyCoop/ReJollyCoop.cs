@@ -6,7 +6,9 @@ using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using JollyCoop;
 using RWCustom;
+using Menu;
 
 namespace TheEscort
 {
@@ -18,6 +20,9 @@ namespace TheEscort
         public static void Hooker(){
             On.PlayerGraphics.PopulateJollyColorArray += PopulateTheJollyMan;
         }
+
+
+
 
         public static void PopulateTheJollyMan(On.PlayerGraphics.orig_PopulateJollyColorArray orig, SlugcatStats.Name reference)
         {

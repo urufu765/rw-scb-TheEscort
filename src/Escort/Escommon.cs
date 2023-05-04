@@ -6,6 +6,10 @@ using System.Runtime.CompilerServices;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using JollyCoop;
+using Menu;
+using Menu.Remix;
+using Menu.Remix.MixedUI;
 using RWCustom;
 
 namespace TheEscort
@@ -15,6 +19,11 @@ namespace TheEscort
     /// </summary>
     partial class Plugin : BaseUnityPlugin
     {
+        public static Dictionary<int, string> selectionable2 = new Dictionary<int, string>(){{0, "Default"}, {-1, "Brawler"}, {-2, "Deflector"}, {-3, "Escapist"}, {-4, "Railgunner"}, {-5, "Speedster"}};
+        public static UIelementWrapper[] hackyWrapper;
+        public static UIelementWrapper[] fairlyIllegalWrapper;
+
+
         private void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
         {
             ins.L().set();
@@ -292,6 +301,156 @@ namespace TheEscort
                 return new Color(0.796f, 0.549f, 0.27843f);
             }
             return orig(slugName, reference, playerNumber);
+        }
+
+        private static void EscortBuildSelectFromJollyMenu(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_ctor orig, JollyCoop.JollyMenu.JollySlidingMenu self, JollyCoop.JollyMenu.JollySetupDialog menu, MenuObject owner, Vector2 pos)
+        {
+            orig(self, menu, owner, pos);
+            // I'm not calculating this crap.
+            int num = 100;
+            float num2 = (1024f - (float)num * 4f) / 5f;
+            float num3 = 171f;
+            Vector2 vector = new Vector2(num3 + num2, 0f);
+            Vector2 vector2 = vector + new Vector2(0f, menu.manager.rainWorld.screenSize.y * 0.55f) + new Vector2(0f, -106.5f);
+
+            // Creates custom buttons that are independent from Configurables such that they don't have to have conflicts and such. It's janky but it's also flexible and very compatible. The button and the remix option can share a configurable!
+            ins.config.jollyEscortBuilds = new OpSimpleButton[4];
+            ins.config.jollyEscortEasies = new OpSimpleButton[4];
+            hackyWrapper = new UIelementWrapper[4];  // UIElementwrapper to make it work with jolly coop menu lol
+            fairlyIllegalWrapper = new UIelementWrapper[4];
+
+            for (int i = 0; i < 4; i++){
+                ins.config.jollyEscortBuilds[i] = new OpSimpleButton(  // Set up build switching button
+                    vector2, new Vector2(100f, 30f)
+                ){
+                    text = i switch{
+                        0 => selectionable2[ins.config.cfgBuildP1.Value],
+                        1 => selectionable2[ins.config.cfgBuildP2.Value],
+                        2 => selectionable2[ins.config.cfgBuildP3.Value],
+                        _ => selectionable2[ins.config.cfgBuildP4.Value]
+                    },
+                    description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!",
+                    greyedOut = true
+                };
+                ins.config.jollyEscortBuilds[i].OnClick += Eshelp_Set_Jolly_To_Remix;
+                hackyWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortBuilds[i]);
+                self.subObjects.Add(hackyWrapper[i]);
+                ins.config.jollyEscortEasies[i] = new OpSimpleButton(  // Set up easier mode toggle button
+                    vector2 + new Vector2(105.5f, 0f), new Vector2(30f, 30f)
+                ){
+                    text = i switch{
+                        0 => ins.config.cfgEasyP1.Value? "X": "",
+                        1 => ins.config.cfgEasyP2.Value? "X": "",
+                        2 => ins.config.cfgEasyP3.Value? "X": "",
+                        _ => ins.config.cfgEasyP4.Value? "X": ""
+                    },
+                    description = "Easier Mode: While midair and moving, press Jump + Grab to do a dropkick!",
+                    colorEdge = ins.config.easyColor,
+                    greyedOut = true
+                };
+                ins.config.jollyEscortEasies[i].OnClick += Eshelp_Set_Jolly_To_Easier_Remix;
+                vector2 += new Vector2(num2 + (float)num, 0f);
+                fairlyIllegalWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortEasies[i]);
+                
+                self.subObjects.Add(fairlyIllegalWrapper[i]);
+
+            }
+        }
+
+        private static void Eshelp_Set_Jolly_To_Easier_Remix(UIfocusable trigger)
+        {
+            int index = -1;
+            for (int i = 0; i < ins.config.jollyEscortEasies.Length; i++){
+                if (ins.config.jollyEscortEasies[i].bumpBehav == trigger.bumpBehav){
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1){
+                Ebug("Couldn't find button!");
+                return;
+            }
+            switch(index){
+                case 0:
+                    ins.config.cfgEasyP1.Value = !ins.config.cfgEasyP1.Value;
+                    ins.config.jollyEscortEasies[0].text = ins.config.cfgEasyP1.Value? "X": "";
+                    break;
+                case 1:
+                    ins.config.cfgEasyP2.Value = !ins.config.cfgEasyP2.Value;
+                    ins.config.jollyEscortEasies[1].text = ins.config.cfgEasyP2.Value? "X": "";
+                    break;
+                case 2:
+                    ins.config.cfgEasyP3.Value = !ins.config.cfgEasyP3.Value;
+                    ins.config.jollyEscortEasies[2].text = ins.config.cfgEasyP3.Value? "X": "";
+                    break;
+                case 3:
+                    ins.config.cfgEasyP4.Value = !ins.config.cfgEasyP4.Value;
+                    ins.config.jollyEscortEasies[3].text = ins.config.cfgEasyP4.Value? "X": "";
+                    break;
+            }
+        }
+
+        private void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
+        {
+            orig(self, pIndex);
+            if (!(ins != null && ins.config != null && ins.config.jollyEscortBuilds != null && ins.config.jollyEscortEasies != null && ins.config.jollyEscortBuilds.Length > 0 && ins.config.jollyEscortEasies.Length > 0)){
+                return;
+            }
+            for (int j = 0; j < ins.config.jollyEscortBuilds.Length; j++){
+                ins.config.jollyEscortBuilds[j].greyedOut = false;
+                ins.config.jollyEscortEasies[j].greyedOut = false;
+            }
+            for (int i = 3; i > pIndex; i--){
+                ins.config.jollyEscortBuilds[i].greyedOut = true;
+                ins.config.jollyEscortEasies[i].greyedOut = true;
+            }
+        }
+
+
+
+        private static void Eshelp_Set_Jolly_To_Remix(UIfocusable trigger)
+        {
+            int index = -1;
+            for (int i = 0; i < ins.config.jollyEscortBuilds.Length; i++){
+                if (ins.config.jollyEscortBuilds[i].bumpBehav == trigger.bumpBehav){
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1){
+                Ebug("Couldn't find button!");
+                return;
+            }
+            switch(index){
+                case 0:
+                    if (ins.config.cfgBuildP1.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP1.Value = 0;
+                    else ins.config.cfgBuildP1.Value--;
+                    ins.config.jollyEscortBuilds[0].text = selectionable2[ins.config.cfgBuildP1.Value];
+                    break;
+                case 1:
+                    if (ins.config.cfgBuildP2.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP2.Value = 0;
+                    else ins.config.cfgBuildP2.Value--;
+                    ins.config.jollyEscortBuilds[1].text = selectionable2[ins.config.cfgBuildP2.Value];
+                    break;
+                case 2:
+                    if (ins.config.cfgBuildP3.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP3.Value = 0;
+                    else ins.config.cfgBuildP3.Value--;
+                    ins.config.jollyEscortBuilds[2].text = selectionable2[ins.config.cfgBuildP3.Value];
+                    break;
+                case 3:
+                    if (ins.config.cfgBuildP4.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP4.Value = 0;
+                    else ins.config.cfgBuildP4.Value--;
+                    ins.config.jollyEscortBuilds[3].text = selectionable2[ins.config.cfgBuildP4.Value];
+                    break;
+            }
+        }
+
+        private void EscortHideShowBuildCopium(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_Update orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
+        {
+            orig(self);
+            if (ins.config.jollyEscortBuilds.Length > 0){
+                if (self.slugName == EscortMe){ins.config.jollyEscortBuilds[self.index].Reactivate();ins.config.jollyEscortEasies[self.index].Reactivate();}else{ins.config.jollyEscortBuilds[self.index].Deactivate();ins.config.jollyEscortEasies[self.index].Deactivate();}
+            }
         }
 
 

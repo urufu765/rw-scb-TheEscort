@@ -9,10 +9,11 @@ using static SlugBase.Features.FeatureTypes;
 using RWCustom;
 using MonoMod.Cil;
 using static TheEscort.Eshelp;
+using Menu.Remix.MixedUI;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.7.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -147,6 +148,10 @@ namespace TheEscort
             On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.HasUniqueSprite += Escort_Jolly_Sprite;
             On.JollyCoop.JollyMenu.JollyPlayerSelector.GetPupButtonOffName += Escort_Jolly_Name;
             On.PlayerGraphics.JollyUniqueColorMenu += Escort_Please_Just_Kill_Me;
+            On.JollyCoop.JollyMenu.JollySlidingMenu.ctor += EscortBuildSelectFromJollyMenu;
+            On.JollyCoop.JollyMenu.JollyPlayerSelector.Update += EscortHideShowBuildCopium;
+            On.JollyCoop.JollyMenu.JollySlidingMenu.UpdatePlayerSlideSelectable += EscortGrayedOutLikeAnIdiot;
+
 
             On.Player.Jump += Escort_Jump;
             On.Player.UpdateBodyMode += Escort_UpdateBodyMode;
@@ -749,6 +754,8 @@ namespace TheEscort
                         break;
                     default: 
                 }
+                if (1 == 0){
+                }
                 return true;
             }
             return true;
@@ -761,12 +768,13 @@ namespace TheEscort
             else if ((bool)thing) {
                 thing = false;
             }
+            if (!true){}
             while(thing){
                 for(int a = 0; a < 1000; a++){
-                    for(int b = 0; a < 1000; b++){
+                    for(int b = 0; a < 10000; b++){
                         bool?[] secretThing = new bool?[]{true, false, false, false, false, false, false, false};
-                        for(int c = 0; b < 1000; c++){
-                            for(int d = 0; c < 1000; d++){
+                        for(int c = 0; b < 100000; c++){
+                            for(int d = 0; c < 1000000; d++){
                                 for(int e = 0; d < 0; a++){
                                     if (e == 0){
                                         foreach(bool f in secretThing){
@@ -793,7 +801,6 @@ namespace TheEscort
                     someThing = anotherThing;
                     someThing = false;
                 }
-                
             }
             return false;
         }

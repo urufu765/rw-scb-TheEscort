@@ -32,6 +32,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Bombs do explosive punches (Brawler)
 
 * ### 0.2 - The Escort
+  * **(0.2.8)** New Remix Menu!
+
   * **(0.2.7.3)** Got the jolly pup icon working, added an additional spawn area for Socks to actually make them exist. Buffed Launcher backpack and made them stop causing an aneurism
 
   * **(0.2.7.2)** Socks movement nerfed, added grapple movement buffs, added new grapple (not gonna reveal yet due to how janky it is), changed speartech so Escort doesn't yeet themselves off the cliff when throwing a spear while standing still, changed slidestun behaviour when caused by longslide (launch on second hit). Added additional effect when rolling onto poles with poletech and added new grapple variety. Buffed Deflector's longslide speed. Also made hype option actually disables the slider

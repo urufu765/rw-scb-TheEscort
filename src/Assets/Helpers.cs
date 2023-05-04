@@ -21,7 +21,7 @@ namespace TheEscort
          3: Method pings
          4: Ebug errors (done by design)
         */
-        private static int logImportance = 3;
+        private static int logImportance = 4;
         private static string[] prevLogs = new string[4];
         private static int[] logRepetitions = new int[4];
 
