@@ -4,8 +4,47 @@
     <LangVersion>11</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="../lib/*.dll">
+    <Reference Include="..\lib\Assembly-CSharp-firstpass.dll">
       <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\BepInEx.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\HOOKS-Assembly-CSharp.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\Mono.Cecil.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\Mono.Cecil.Rocks.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\MonoMod.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\MonoMod.RuntimeDetour.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\MonoMod.Utils.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\PUBLIC-Assembly-CSharp.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\SlugBase.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\UnityEngine.CoreModule.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\UnityEngine.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="..\lib\UnityEngine.UnityWebRequestWWWModule.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DressMySlugcat">
+      <HintPath>..\lib\DressMySlugcat.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">

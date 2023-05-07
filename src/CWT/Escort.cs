@@ -1,15 +1,13 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml.Serialization;
-using TheEscort;
-using static TheEscort.Plugin;
+using UnityEngine;
 using static TheEscort.Eshelp;
 
 
-namespace TheEscort{
-    public partial class Escort{
+namespace TheEscort
+{
+    public partial class Escort
+    {
         //public readonly SlugcatStats.Name name;
         //public String EsbuildName;
         public string Eskie = "Escort";
@@ -103,8 +101,9 @@ namespace TheEscort{
         public int RailgunLimit;
         public bool RailIReady;
         public bool RailBombJump;
-      
-        public Escort(Player player){
+
+        public Escort(Player player)
+        {
             /*
             if (ExtEnumBase.TryParse(typeof(SlugcatStats.Name), "EscortMe", true, out var r)){
                 name = r as SlugcatStats.Name;
@@ -201,175 +200,239 @@ namespace TheEscort{
         }
 
 
-        public void Escat_setSFX_roller(SoundID sound){
-            try{
-                this.Rollin = new ChunkDynamicSoundLoop(SFXChunk);
-                this.Rollin.sound = sound;
-            } catch (Exception err){
+        public void Escat_setSFX_roller(SoundID sound)
+        {
+            try
+            {
+                this.Rollin = new ChunkDynamicSoundLoop(SFXChunk)
+                {
+                    sound = sound
+                };
+            }
+            catch (Exception err)
+            {
                 Debug.Log("-> Escwt: Something went horribly wrong when setting up the rolling sound!");
                 Debug.LogException(err);
             }
         }
 
-        public void Escat_setSFX_lizgrab(SoundID sound){
-            try{
-                this.LizGet = new ChunkDynamicSoundLoop(SFXChunk);
-                this.LizGet.sound = sound;
-            } catch (Exception err){
+        public void Escat_setSFX_lizgrab(SoundID sound)
+        {
+            try
+            {
+                this.LizGet = new ChunkDynamicSoundLoop(SFXChunk)
+                {
+                    sound = sound
+                };
+            }
+            catch (Exception err)
+            {
                 Debug.Log("-> Escwt: Something went horribly wrong when setting up the lizard grab sound!");
                 Debug.LogException(err);
             }
         }
 
-        public void Escat_setLight_hype(Player self, Color c, float alpha=0f){
-            try{
-                if (this.hypeLight == null){
-                    this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self);
-                    this.hypeLight.submersible = true;
-                    this.hypeLight.noGameplayImpact = true;
-                    //this.hypeLight.requireUpKeep = true;
-                    this.hypeLight.setRad = 50f;
-                    this.hypeLight.setAlpha = alpha;
-                    this.hypeLight.flat = true;
+        public void Escat_setLight_hype(Player self, Color c, float alpha = 0f)
+        {
+            try
+            {
+                if (this.hypeLight == null)
+                {
+                    this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self)
+                    {
+                        submersible = true,
+                        noGameplayImpact = true,
+                        //this.hypeLight.requireUpKeep = true;
+                        setRad = 50f,
+                        setAlpha = alpha,
+                        flat = true
+                    };
                 }
-                else{
+                else
+                {
                     Debug.Log("-> Escwt: Hypelight Rebuild!");
                     this.hypeLight.Destroy();
                     this.hypeLight = null;
-                    this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self);
-                    this.hypeLight.submersible = true;
-                    this.hypeLight.noGameplayImpact = true;
-                    //this.hypeLight.requireUpKeep = true;
-                    this.hypeLight.setRad = 50f;
-                    this.hypeLight.setAlpha = alpha;
-                    this.hypeLight.flat = true;
+                    this.hypeLight = new LightSource(self.mainBodyChunk.pos, environmentalLight: true, c, self)
+                    {
+                        submersible = true,
+                        noGameplayImpact = true,
+                        //this.hypeLight.requireUpKeep = true;
+                        setRad = 50f,
+                        setAlpha = alpha,
+                        flat = true
+                    };
                 }
-                if (this.hypeSurround == null){
-                    this.hypeSurround = new LightSource(self.bodyChunks[0].pos, environmentalLight: false, c, self);
-                    this.hypeSurround.submersible = true;
-                    this.hypeSurround.setRad = 120f;
-                    this.hypeSurround.setAlpha = alpha * 5f;
+                if (this.hypeSurround == null)
+                {
+                    this.hypeSurround = new LightSource(self.bodyChunks[0].pos, environmentalLight: false, c, self)
+                    {
+                        submersible = true,
+                        setRad = 120f,
+                        setAlpha = alpha * 5f
+                    };
                 }
-                else {
+                else
+                {
                     Debug.Log("-> Escwt: Hypesurround Rebuild!");
                     this.hypeSurround.Destroy();
                     this.hypeSurround = null;
-                    this.hypeSurround = new LightSource(self.bodyChunks[0].pos, environmentalLight: false, c, self);
-                    this.hypeSurround.submersible = true;
-                    this.hypeSurround.setRad = 120f;
-                    this.hypeSurround.setAlpha = alpha * 5f;
+                    this.hypeSurround = new LightSource(self.bodyChunks[0].pos, environmentalLight: false, c, self)
+                    {
+                        submersible = true,
+                        setRad = 120f,
+                        setAlpha = alpha * 5f
+                    };
                 }
                 self.room.AddObject(this.hypeLight);
                 self.room.AddObject(this.hypeSurround);
-            } catch (Exception e){
+            }
+            catch (Exception e)
+            {
                 Debug.Log("-> Escwt: Something went horribly wrong when setting up the hyped light!");
                 Debug.LogException(e);
             }
         }
 
-        public void Escat_setIndex_sprite_cue(int cue){
-            if (this.spriteQueue == -1){
+        public void Escat_setIndex_sprite_cue(int cue)
+        {
+            if (this.spriteQueue == -1)
+            {
                 this.spriteQueue = cue;
             }
-            else{
+            else
+            {
                 Debug.Log("-> Escwt: Cue is already set for sprites!");
             }
         }
 
-        public Color Escat_runit_thru_RGB(Color c, float progression=1f){
-            if (this.secretRGB){
-                this.hypeColor = Eshelp_cycle_dat_RGB(ref rgbTick, lightness:(progression > 5f? 0.67f : 0.5f), increment:progression);
+        public Color Escat_runit_thru_RGB(Color c, float progression = 1f)
+        {
+            if (this.secretRGB)
+            {
+                this.hypeColor = Eshelp_cycle_dat_RGB(ref rgbTick, lightness: (progression > 5f ? 0.67f : 0.5f), increment: progression);
                 return hypeColor;
             }
             return c;
         }
 
 
-        public void Escat_ping_lizards(Player self){
-            if (self == null){
+        public void Escat_ping_lizards(Player self)
+        {
+            if (self == null)
+            {
                 return;
             }
-            if (self != null && self.room != null && self.room.game != null && self.room.game.paused){
+            if (self != null && self.room != null && self.room.game != null && self.room.game.paused)
+            {
                 return;
             }
-            if (this.lizzieVengenceCount < this.lizzieVengenceTolerance || self.dead){
+            if (this.lizzieVengenceCount < this.lizzieVengenceTolerance || self.dead)
+            {
                 return;
             }
-            if (this.vengefulLizards.Count == 0){
+            if (this.vengefulLizards.Count == 0)
+            {
                 Ebug(self, "the lizards want VENGENCE!");
                 Escat_begin_pursuit(self);
                 return;
             }
-            if (this.vengefulLizards.Count < this.vengefulLizardsCount){
+            if (this.vengefulLizards.Count < this.vengefulLizardsCount)
+            {
                 Ebug(self, "more lizards want VENGENCE!");
                 Escat_replace_dead(self);
                 return;
             }
-            try{
-                for (int j = 0; j < this.vengefulLizards.Count; j++){
-                    if (this.vengefulLizards[j].slatedForDeletion || this.vengefulLizards[j] == null){
+            try
+            {
+                for (int j = 0; j < this.vengefulLizards.Count; j++)
+                {
+                    if (this.vengefulLizards[j].slatedForDeletion || this.vengefulLizards[j] == null)
+                    {
                         this.vengefulLizards[j] = null;
                         this.vengefulLizards.Remove(this.vengefulLizards[j]);
                     }
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something went wrong while removing lizards from list!");
             }
             int i = 0;
-            bool overrideTick = false;
             // Track
-            foreach (AbstractCreature veggie in this.vengefulLizards){
+            foreach (AbstractCreature veggie in this.vengefulLizards)
+            {
                 i++;
-                if (!(self != null && self.room != null && self.room.game != null && self.abstractCreature != null && veggie != null)){
+                if (!(self != null && self.room != null && self.room.game != null && self.abstractCreature != null && veggie != null))
+                {
                     return;
                 }
-                if (veggie.abstractAI == null || self.room.abstractRoom.shelter || self.room.abstractRoom.gate){
+                if (veggie.abstractAI == null || self.room.abstractRoom.shelter || self.room.abstractRoom.gate)
+                {
                     break;
                 }
-                overrideTick = false;
-                if (veggie.pos.room == self.abstractCreature.pos.room){
+                bool overrideTick = false;
+                if (veggie.pos.room == self.abstractCreature.pos.room)
+                {
                     overrideTick = true;
                 }
-                if (overrideTick){  // Tick 10 times faster when creature is in the same room as player
+                if (overrideTick)
+                {  // Tick 10 times faster when creature is in the same room as player
                     if (i != this.lizzieVengenceTick) continue;  // Ticks once per second
                 }
-                else{
+                else
+                {
                     if (i != this.lizzieVengenceClock) continue;  // Ticks once per 10 seconds
                 }
-                try {  // Track player's room
-                    if (veggie.abstractAI.destination.room != self.abstractCreature.pos.room){
+                try
+                {  // Track player's room
+                    if (veggie.abstractAI.destination.room != self.abstractCreature.pos.room)
+                    {
                         Ebug(self, "Hunting lizard destination changed! From: " + veggie.abstractAI.destination.ResolveRoomName() + " to " + self.abstractCreature.pos.ResolveRoomName());
                         veggie.abstractAI.SetDestination(self.abstractCreature.pos);
                         //veggie.abstractAI.followCreature = self.abstractCreature;
                     }
-                } catch (Exception err) {
+                }
+                catch (Exception err)
+                {
                     Ebug(err, "Couldn't set destination!", asregular: true);
                 }
-                try {  // Be aggressive towards Escort
-                    if (veggie.abstractAI.RealAI != null){
-                        foreach (Tracker.CreatureRepresentation tracked in veggie.abstractAI.RealAI.tracker.creatures){
-                            if (tracked == null || tracked.representedCreature == null){
+                try
+                {  // Be aggressive towards Escort
+                    if (veggie.abstractAI.RealAI != null)
+                    {
+                        foreach (Tracker.CreatureRepresentation tracked in veggie.abstractAI.RealAI.tracker.creatures)
+                        {
+                            if (tracked == null || tracked.representedCreature == null)
+                            {
                                 continue;
                             }
-                            if (tracked.representedCreature != self.abstractCreature){
+                            if (tracked.representedCreature != self.abstractCreature)
+                            {
                                 veggie.abstractAI.RealAI.tracker.ForgetCreature(tracked.representedCreature);
                             }
-                            else{
+                            else
+                            {
                                 veggie.abstractAI.RealAI.agressionTracker.SetAnger(tracked, 10f, 10f);
                             }
                         }
                         veggie.abstractAI.RealAI.tracker.SeeCreature(self.abstractCreature);
                     }
-                } catch (Exception err){
+                }
+                catch (Exception err)
+                {
                     Ebug(err, "Couldn't track Escort!", asregular: true);
                 }
             }
         }
 
-        public void Escat_begin_pursuit(Player self){
-            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null){
+        public void Escat_begin_pursuit(Player self)
+        {
+            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null)
+            {
                 this.vengefulLizardsCount = UnityEngine.Random.Range(5, 18);
-                for (int i = 0; i < this.vengefulLizardsCount; i++){
+                for (int i = 0; i < this.vengefulLizardsCount; i++)
+                {
                     this.vengefulLizards.Add(new AbstractCreature(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID()));
                     this.vengefulLizards[i].saveCreature = false;
                     this.vengefulLizards[i].ignoreCycle = true;
@@ -378,27 +441,35 @@ namespace TheEscort{
             }
         }
 
-        public void Escat_replace_dead(Player self){
-            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null){
-                AbstractCreature ac = new AbstractCreature(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID());
-                ac.saveCreature = false;
-                ac.ignoreCycle = true;
+        public void Escat_replace_dead(Player self)
+        {
+            if (self != null && self.room != null && self.room.game != null && self.room.game.world != null)
+            {
+                AbstractCreature ac = new(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID())
+                {
+                    saveCreature = false,
+                    ignoreCycle = true
+                };
 
                 this.vengefulLizards.Add(ac);
                 self.room.abstractRoom.AddEntity(ac);
             }
         }
 
-        public WorldCoordinate Escat_get_cornerable_rooms(Player self){
+        public WorldCoordinate Escat_get_cornerable_rooms(Player self)
+        {
             WorldCoordinate coordi = self.room.abstractRoom.RandomNodeInRoom();
-            List<int> l = new List<int>();
-            for (int i = 0; i < self.room.game.world.NumberOfRooms; i++){
+            List<int> l = new();
+            for (int i = 0; i < self.room.game.world.NumberOfRooms; i++)
+            {
                 AbstractRoom ar = self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + i);
-                if (ar != null && !ar.shelter && !ar.gate && ar.name != self.room.abstractRoom.name && ar.NodesRelevantToCreature(StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard)) > 0){
+                if (ar != null && !ar.shelter && !ar.gate && ar.name != self.room.abstractRoom.name && ar.NodesRelevantToCreature(StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard)) > 0)
+                {
                     l.Add(i);
                 }
             }
-            if (l.Count > 0){
+            if (l.Count > 0)
+            {
                 return self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
                 //return self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
             }

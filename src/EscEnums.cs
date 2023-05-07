@@ -1,17 +1,21 @@
-using System;
-
-namespace TheEscort{
-    public static class EscEnums{
+namespace TheEscort
+{
+    public static class EscEnums
+    {
         private static bool registered = false;
 
-        public static void RegisterValues(){
-            if (!EscEnums.registered){
+        public static void RegisterValues()
+        {
+            if (!EscEnums.registered)
+            {
                 EscEnums.registered = true;
             }
         }
 
-        public static void UnregisterValues(){
-            if (EscEnums.registered){
+        public static void UnregisterValues()
+        {
+            if (EscEnums.registered)
+            {
                 EscEnums.registered = false;
             }
         }
