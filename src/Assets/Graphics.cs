@@ -427,7 +427,7 @@ namespace TheEscort
                         _ => selectionable[ins.config.cfgBuildP4.Value]
                     },
                     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!",
-                    greyedOut = i < menu.manager.rainWorld.options.JollyPlayerCount
+                    greyedOut = i >= menu.manager.rainWorld.options.JollyPlayerCount
 
                 };
                 ins.config.jollyEscortBuilds[i].OnClick += Eshelp_Set_Jolly_To_Remix;
@@ -444,7 +444,7 @@ namespace TheEscort
                     },
                     description = "Easier Mode: While midair and moving, press Jump + Grab to do a dropkick!",
                     colorEdge = ins.config.easyColor,
-                    greyedOut = i < menu.manager.rainWorld.options.JollyPlayerCount
+                    greyedOut = i >= menu.manager.rainWorld.options.JollyPlayerCount
                 };
                 ins.config.jollyEscortEasies[i].OnClick += Eshelp_Set_Jolly_To_Easier_Remix;
                 fairlyIllegalWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortEasies[i]);
@@ -580,10 +580,10 @@ namespace TheEscort
             {
                 if (self.slugName == EscortMe) { 
                     ins.config.jollyEscortBuilds[self.index].Reactivate(); 
-                    //ins.config.jollyEscortEasies[self.index].Reactivate(); 
+                    ins.config.jollyEscortEasies[self.index].Reactivate(); 
                 } else { 
                     ins.config.jollyEscortBuilds[self.index].Deactivate(); 
-                    //ins.config.jollyEscortEasies[self.index].Deactivate(); 
+                    ins.config.jollyEscortEasies[self.index].Deactivate(); 
                 }
             }
         }
