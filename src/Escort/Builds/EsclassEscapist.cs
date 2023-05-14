@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using BepInEx;
-using UnityEngine;
-using System.Runtime.CompilerServices;
 using SlugBase.Features;
+using System;
+using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
-using RWCustom;
 
 namespace TheEscort
 {
@@ -18,50 +15,63 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> escapist = PlayerFloats("theescort/escapist/");
         public static readonly PlayerFeature<float> escapistSlideLaunchMod = PlayerFloat("theescort/escapist/slide_launch_mod");
         public static readonly PlayerFeature<float> escapistSlideLaunchFac = PlayerFloat("theescort/escapist/slide_launch_fac");
-        public static readonly PlayerFeature<float> escapistSpearVelFac= PlayerFloat("theescort/escapist/spear_vel_fac");
-        public static readonly PlayerFeature<float> escapistSpearDmgFac= PlayerFloat("theescort/escapist/spear_dmg_fac");
+        public static readonly PlayerFeature<float> escapistSpearVelFac = PlayerFloat("theescort/escapist/spear_vel_fac");
+        public static readonly PlayerFeature<float> escapistSpearDmgFac = PlayerFloat("theescort/escapist/spear_dmg_fac");
         public static readonly PlayerFeature<int[]> escapistNoGrab = PlayerInts("theescort/escapist/no_grab");
         public static readonly PlayerFeature<int> escapistCD = PlayerInt("theescort/escapist/cd");
         public static readonly PlayerFeature<float> escapistColor = PlayerFloat("theescort/escapist/color");
 
-        public void Esclass_EC_Tick(Player self, ref Escort e){
-            if (e.EscDangerExtend < 10){
+        public void Esclass_EC_Tick(Player self, ref Escort e)
+        {
+            if (e.EscDangerExtend < 10)
+            {
                 e.EscDangerExtend++;
-                if (self.dangerGraspTime > 3 && self.dangerGraspTime < 29){
+                if (self.dangerGraspTime > 3 && self.dangerGraspTime < 29)
+                {
                     self.dangerGraspTime--;
                 }
-            } else {
-                if (e.EscUnGraspTime > 4 && e.EscUnGraspTime < e.EscUnGraspLimit){
+            }
+            else
+            {
+                if (e.EscUnGraspTime > 4 && e.EscUnGraspTime < e.EscUnGraspLimit)
+                {
                     e.EscUnGraspTime++;
                 }
                 e.EscDangerExtend = 0;
             }
 
-            if (e.EscUnGraspTime > 0 && !self.dead && e.EscUnGraspCD == 0){
+            if (e.EscUnGraspTime > 0 && !self.dead && e.EscUnGraspCD == 0)
+            {
                 Player.InputPackage iP = RWInput.PlayerInput(self.playerState.playerNumber, self.room.game.rainWorld);
-                if (iP.thrw){
+                if (iP.thrw)
+                {
                     e.EscUnGraspTime--;
                 }
             }
 
-            if (e.EscUnGraspCD > 0 && self.stun < 5){
+            if (e.EscUnGraspCD > 0 && self.stun < 5)
+            {
                 e.EscUnGraspCD--;
             }
         }
 
-        private void Esclass_EC_Update(Player self, ref Escort e){
+        private void Esclass_EC_Update(Player self, ref Escort e)
+        {
             if (
                 !escapistColor.TryGet(self, out float eC) ||
                 !escapistCD.TryGet(self, out int esCD) ||
                 !escapistNoGrab.TryGet(self, out int[] esNoGrab)
-            ){
+            )
+            {
                 return;
             }
             // VFX
-            if(self != null && self.room != null){
+            if (self != null && self.room != null)
+            {
                 // Escapist escape progress VFX
-                if (e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0){
-                    Color escapistColor = new Color(0.42f, 0.75f, 0.1f);
+                if (e.EscUnGraspCD == 0 && e.EscUnGraspLimit > 0)
+                {
+                    Color escapistColor = new(0.42f, 0.75f, 0.1f);
                     // Progress fill ring
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 16, 10f, 3f, 20f, Mathf.Lerp(2, 16, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)), escapistColor * Mathf.Lerp(0.4f, 1f, 1 - Mathf.InverseLerp(0, e.EscUnGraspLimit, e.EscUnGraspTime)) * eC));
 
@@ -76,15 +86,19 @@ namespace TheEscort
 
 
             // Implement Escapist's getaway
-            try{
-                if (e.EscDangerGrasp == null){
+            try
+            {
+                if (e.EscDangerGrasp == null)
+                {
                     e.EscUnGraspLimit = 0;
                     e.EscUnGraspTime = 0;
                 }
-                else if (e.EscDangerGrasp.discontinued){
+                else if (e.EscDangerGrasp.discontinued)
+                {
                     e.EscDangerGrasp = null;
                 }
-                else if (e.EscUnGraspTime == 0){
+                else if (e.EscUnGraspTime == 0)
+                {
                     Ebug(self, "Attempted to take off grabber", 2);
                     e.EscDangerGrasp.grabber.LoseAllGrasps();
                     e.EscUnGraspLimit = 0;
@@ -94,21 +108,26 @@ namespace TheEscort
                     e.EscUnGraspCD = esCD;
                 }
 
-                if (e.EscUnGraspCD > 0){
-                    self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.22f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
-                    self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.26f, Mathf.InverseLerp(0f, 120f, (float)(e.EscUnGraspCD)));
+                if (e.EscUnGraspCD > 0)
+                {
+                    self.bodyChunks[0].vel.x *= 1f - Mathf.Lerp(0f, 0.22f, Mathf.InverseLerp(0f, 120f, e.EscUnGraspCD));
+                    self.bodyChunks[1].vel.x *= 1f - Mathf.Lerp(0f, 0.26f, Mathf.InverseLerp(0f, 120f, e.EscUnGraspCD));
                     self.Blink(5);
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(self, err, "UPDATE: Escapist's getaway error!");
             }
 
         }
 
 
-        private void Esclass_EC_ThrownSpear(Player self, Spear spear){
+        private void Esclass_EC_ThrownSpear(Player self, Spear spear)
+        {
             if (!escapistSpearVelFac.TryGet(self, out float eSpearVel) ||
-                !escapistSpearDmgFac.TryGet(self, out float eSpearDmg)){
+                !escapistSpearDmgFac.TryGet(self, out float eSpearDmg))
+            {
                 return;
             }
             spear.firstChunk.vel *= eSpearVel;
@@ -116,41 +135,54 @@ namespace TheEscort
         }
 
 
-        private void Esclass_EC_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp){
+        private void Esclass_EC_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp)
+        {
             orig(self, grasp);
-            try{
-                if (self.slugcatStats.name.value != "EscortMe"){
+            try
+            {
+                if (self.slugcatStats.name.value != "EscortMe")
+                {
                     return;
                 }
-                if(
+                if (
                     !eCon.TryGetValue(self, out Escort e)
-                    ){
+                    )
+                {
                     return;
                 }
 
-                if (e.Escapist){
+                if (e.Escapist)
+                {
                     e.EscUnGraspLimit = 120;
                     e.EscDangerGrasp = grasp;
-                    if (grasp.grabber is Lizard){
+                    if (grasp.grabber is Lizard)
+                    {
                         e.EscUnGraspLimit = 80;
                     }
-                    else if (grasp.grabber is Vulture){
+                    else if (grasp.grabber is Vulture)
+                    {
                         e.EscUnGraspLimit = 60;
                     }
-                    else if (grasp.grabber is BigSpider){
+                    else if (grasp.grabber is BigSpider)
+                    {
                         e.EscUnGraspLimit = 150;
                     }
-                    else if (grasp.grabber is DropBug){
+                    else if (grasp.grabber is DropBug)
+                    {
                         e.EscUnGraspLimit = 90;
                     }
-                    else if (grasp.grabber is Centipede){
+                    else if (grasp.grabber is Centipede)
+                    {
                         e.EscUnGraspLimit = 40;
                     }
-                    else if (grasp.grabber is Player){
-                        if (!(ModManager.CoopAvailable && !RWCustom.Custom.rainWorld.options.friendlyFire)){
+                    else if (grasp.grabber is Player)
+                    {
+                        if (!(ModManager.CoopAvailable && !RWCustom.Custom.rainWorld.options.friendlyFire))
+                        {
                             e.EscUnGraspLimit = 60;
                         }
-                        else {
+                        else
+                        {
                             e.EscUnGraspLimit = 0;
                             e.EscDangerGrasp = null;
                         }
@@ -158,7 +190,9 @@ namespace TheEscort
                     e.EscUnGraspTime = e.EscUnGraspLimit;
                 }
 
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(self, err);
                 return;
             }

@@ -1,15 +1,14 @@
-﻿using System;
+﻿using BepInEx;
+using MonoMod.Cil;
+using SlugBase.Features;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using BepInEx;
-using UnityEngine;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using SlugBase.Features;
+using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
-using RWCustom;
-using MonoMod.Cil;
 using static TheEscort.Eshelp;
-using Menu.Remix.MixedUI;
 
 namespace TheEscort
 {
@@ -19,15 +18,19 @@ namespace TheEscort
         public static Plugin ins;
         public EscOptions config;
         private const string MOD_ID = "urufudoggo.theescort";
-        public Plugin(){
-            try{
+        public Plugin()
+        {
+            try
+            {
                 Plugin.ins = this;
-            } catch (Exception e){
+            }
+            catch (Exception e)
+            {
                 base.Logger.LogError(e);
             }
         }
 
-
+#region Declare Features
         public static readonly PlayerFeature<bool> pRTEdits = PlayerBool("playescort/realtime_edits");
         public static readonly GameFeature<bool> gRTEdits = GameBool("gameescort/realtime_edits");
         public static readonly PlayerFeature<bool> BtrPounce = PlayerBool("theescort/better_pounce");
@@ -74,14 +77,15 @@ namespace TheEscort
         /* JSON VALUES
         [Rotation val, X val, Y val]
         */
-        public static readonly PlayerFeature<float[]>headDraw = PlayerFloats("theescort/headthing");
-        public static readonly PlayerFeature<float[]>bodyDraw = PlayerFloats("theescort/bodything");
+        public static readonly PlayerFeature<float[]> headDraw = PlayerFloats("theescort/headthing");
+        public static readonly PlayerFeature<float[]> bodyDraw = PlayerFloats("theescort/bodything");
 
         public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
+        #endregion
 
-
-        public static readonly SlugcatStats.Name EscortMe = new SlugcatStats.Name("EscortMe");
-        public static readonly SlugcatStats.Name EscortSocks = new SlugcatStats.Name("EscortSocks");
+#region Plugin Variable Declarations
+        public static readonly SlugcatStats.Name EscortMe = new("EscortMe");
+        public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
 
 
         public static SoundID Escort_SFX_Death;
@@ -103,7 +107,7 @@ namespace TheEscort
         //public DynamicSoundLoop escortRollin;
 
         // Miscellanious things
-        private bool nonArena = false;
+        private readonly bool nonArena = false;  // Sets Escort's marking colors to the main color instead of Arena
         //public static readonly String EscName = "EscortMe";
 
         // Escort instance stuff
@@ -118,8 +122,10 @@ namespace TheEscort
         // Patches
         private static bool escPatch_revivify = false;
         private static bool escPatch_rotundness = false;
+        private static bool escPatch_dms = false;
         //private static bool escPatch_DMS = false;
         //private bool escPatch_emeraldTweaks = false;
+#endregion
 
 
         // Debug Logger (Beautified!)
@@ -145,12 +151,19 @@ namespace TheEscort
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
             On.PlayerGraphics.AddToContainer += Escort_AddGFXContainer;
             On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
+
+            // Jolly UI
             On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.HasUniqueSprite += Escort_Jolly_Sprite;
             On.JollyCoop.JollyMenu.JollyPlayerSelector.GetPupButtonOffName += Escort_Jolly_Name;
             On.PlayerGraphics.JollyUniqueColorMenu += Escort_Please_Just_Kill_Me;
             On.JollyCoop.JollyMenu.JollySlidingMenu.ctor += EscortBuildSelectFromJollyMenu;
             On.JollyCoop.JollyMenu.JollyPlayerSelector.Update += EscortHideShowBuildCopium;
             On.JollyCoop.JollyMenu.JollySlidingMenu.UpdatePlayerSlideSelectable += EscortGrayedOutLikeAnIdiot;
+            On.JollyCoop.JollyMenu.JollySetupDialog.RequestClose += EscortPleaseSaveTheGoddamnConfigs;
+            //On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.Update += Escort_RGBRGBRGB_GoesBrr;
+
+            // Arena UI
+            //On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
 
 
             On.Player.Jump += Escort_Jump;
@@ -179,7 +192,7 @@ namespace TheEscort
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
 
-            On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm; 
+            On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
             On.Player.Update += Socks_Update;
             On.Player.GraphicsModuleUpdated += Socks_GMU;
             On.Player.SlugcatGrab += Socks_Mine;
@@ -207,7 +220,7 @@ namespace TheEscort
 
             //On.PlayerGraphics.PopulateJollyColorArray += ReJollyCoop.PopulateTheJollyMan;
             //,
-			//{"name": "Glow", "story": "ffffff"}
+            //{"name": "Glow", "story": "ffffff"}
 
             //On.Player.Update += Estest_1_Update;
             //On.Player.GrabUpdate += Estest_3_GrabUpdate;
@@ -222,11 +235,15 @@ namespace TheEscort
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
         {
             orig(self);
-            try{
-                if (this.config != null){
+            try
+            {
+                if (this.config != null)
+                {
                     MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Oh dear.");
             }
         }
@@ -234,16 +251,17 @@ namespace TheEscort
 
 
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
-        public void OnApplicationQuit() {
-            ins.L().letItRip();
-            
+        public void OnApplicationQuit()
+        {
+            ins.L().LetItRip();
+
         }
 
 
         // Load any resources, such as sprites or sounds
         private void LoadResources(RainWorld rainWorld)
         {
-            ins.L().set();
+            ins.L().Set();
             Escort_SFX_Death = new SoundID("Escort_Failure", true);
             Escort_SFX_Flip = new SoundID("Escort_Flip", true);
             Escort_SFX_Roll = new SoundID("Escort_Roll", true);
@@ -261,7 +279,8 @@ namespace TheEscort
             FAtlas aB, aH;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
-            if (aB == null || aH == null){
+            if (aB == null || aH == null)
+            {
                 Ebug("Oh no. Sprites dead.", 0);
             }
             //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
@@ -269,279 +288,343 @@ namespace TheEscort
             EscEnums.RegisterValues();  // TODO: do something with this
             this.config = new EscOptions(rainWorld);
             MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
-            ins.L().christmas(config.cfgSectret.Value);
+            ins.L().Christmas(config.cfgSectret.Value);
             Ebug("All loaded!", 1);
         }
 
-
-        private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self){
-            ins.L().set();
+#region Mod Patches
+        private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
+        {
+            ins.L().Set();
             orig(self);
 
             // Look for mods...
-            try{
-                if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify")){
-                    ins.L().set("Patch: Revivify");
+            try
+            {
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify"))
+                {
+                    ins.L().Set("Patch: Revivify");
                     Ebug("Found Revivify! Applying patch...", 1);
                     escPatch_revivify = true;
                 }
-                if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat")){
-                    ins.L().set("Patch: DressMySlugcat");
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat"))
+                {
+                    ins.L().Set("Patch: DressMySlugcat");
                     Ebug("Found Dress My Slugcat!", 1);
                     ModManager.Mod DMS_Mod = ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat");
                     //escPatch_DMS = true;
                     Ebug("Found DMS Version: " + DMS_Mod.version, 1);
-                    String[] dmsVer = DMS_Mod.version.Split('.');
-                    if(int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3){
+                    string[] dmsVer = DMS_Mod.version.Split('.');
+                    if (int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3)
+                    {
                         Ebug("Applying patch!...", 1);
-                        Espatch_DMS(DMS_Mod, verMaj, verMin);
-                    } else {
+                        Espatch_DMS(verMaj, verMin);
+                    }
+                    else
+                    {
                         Ebug("Applying dud patch...", 1);
                         Espatch_DMS();
                     }
+                    escPatch_dms = true;
+                    Ebug("Patched: " + escPatch_dms, 4);
                 }
-                if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus")){
-                    ins.L().set("Patch: Rotund World");
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus"))
+                {
+                    ins.L().Set("Patch: Rotund World");
                     Ebug("Found Rotund World! Applying custom patch...", 1);
                     escPatch_rotundness = true;
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened while searching for mods!");
             }
         }
 
-        private static void Espatch_DMS(ModManager.Mod dms, int verMaj, int verMin){
-            try{// Dress My Slugcat Patch
+        private static void Espatch_DMS(int verMaj, int verMin)
+        {
+            try
+            {// Dress My Slugcat Patch
                 //if (dms.version)
-                if(verMaj == 1 && verMin == 3){
-                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+
+                if (verMaj == 1 && verMin == 3)
+                {
+                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite
+                    {
                         Name = "WHY DO YOU HAVE THIS PATCH",
                         Description = "Please update DMS",
                         GallerySprite = "escortHipT",
-                        RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                        Slugcats = new List<string>{"EscortMe"}
+                        RequiredSprites = new List<string> { "escortHeadT", "escortHipT" },
+                        Slugcats = new List<string> { "EscortMe" }
                     });
                 }
-                else {
-                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                else
+                {
+                    DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite
+                    {
                         Name = "MARKINGS",
                         Description = "Markings",
                         GallerySprite = "escortHipT",
-                        RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                        Slugcats = new List<string>{"EscortMe"}
+                        RequiredSprites = new List<string> { "escortHeadT", "escortHipT" },
+                        Slugcats = new List<string> { "EscortMe" }
                     });
                 }
-            } catch (Exception merr){
+            }
+            catch (Exception merr)
+            {
                 //escPatch_DMS = false;
                 Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
             }
         }
 
         // Legacy
-        private static void Espatch_DMS(){
-            try{// Dress My Slugcat Patch
+        private static void Espatch_DMS()
+        {
+            try
+            {// Dress My Slugcat Patch
                 //if (dms.version)
                 Ebug("Using dud patch...", 1);
-                DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite{
+                DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite
+                {
                     //Name = "UPDATEYOURDMS!",
                     //Description = "Update Your DMS",
                     Name = "MARKINGS",
                     Description = "Markings",
                     GallerySprite = "escortHipT",
-                    RequiredSprites = new List<string> {"escortHeadT", "escortHipT"},
-                    Slugcats = new List<string>{"EscortMe"}
+                    RequiredSprites = new List<string> { "escortHeadT", "escortHipT" },
+                    Slugcats = new List<string> { "EscortMe" }
                 });
-            } catch (Exception merr){
+            }
+            catch (Exception merr)
+            {
                 //escPatch_DMS = false;
                 Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
             }
         }
 
-                    //Ebug(self, "Using dud patch... (update your DMS!)", 1);
+        //Ebug(self, "Using dud patch... (update your DMS!)", 1);
+#endregion
 
+
+#region Escort Legacy Configurations
+        // TODO: Replace or make it better by using out keyword
         /*
         Configurations!
         */
-        private bool Esconfig_Mean_Lizards(){
-            return config.cfgMeanLizards.Value;
-        }
-
-        private bool Esconfig_Vengeful_Lizards(){
+        private bool Esconfig_Vengeful_Lizards()
+        {
             return config.cfgVengefulLizards.Value;
         }
 
-        private bool Esconfig_Mean_Lizards(World self){
-            if (!gRTEdits.TryGet(self.game, out bool RT) || !SupahMeanLizards.TryGet(self.game, out bool meanLizard)){
+        private bool Esconfig_Mean_Lizards(World self)
+        {
+            if (!gRTEdits.TryGet(self.game, out bool RT) || !SupahMeanLizards.TryGet(self.game, out bool meanLizard))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return meanLizard;
-            } else {
+            }
+            else
+            {
                 return config.cfgMeanLizards.Value;
             }
         }
 
-        private bool Esconfig_Heavylift(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !LiftHeavy.TryGet(self, out float power)){
+        private bool Esconfig_Heavylift(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !LiftHeavy.TryGet(self, out float power))
+            {
                 ratioed = 3f;
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 ratioed = power;
-            } else {
+            }
+            else
+            {
                 ratioed = config.cfgHeavyLift.Value;
             }
             return true;
         }
 
-        private bool Esconfig_DKMulti(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !DKM.TryGet(self, out float dk)){
+        private bool Esconfig_DKMulti(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !DKM.TryGet(self, out float dk))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 DKMultiplier = dk;
-            } else {
+            }
+            else
+            {
                 DKMultiplier = config.cfgDKMult.Value;
             }
             return true;
         }
 
-        private bool Esconfig_Elevator(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !Elvator.TryGet(self, out bool yeet)){
+        private bool Esconfig_Elevator(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !Elvator.TryGet(self, out bool yeet))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return yeet;
-            } else {
+            }
+            else
+            {
                 return config.cfgElevator.Value;
             }
         }
 
-        private bool Esconfig_Hypable(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !HypeSys.TryGet(self, out bool hm)){
+        private bool Esconfig_Hypable(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !HypeSys.TryGet(self, out bool hm))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return hm;
-            } else {
+            }
+            else
+            {
                 return config.cfgHypable.Value;
             }
         }
 
-        private bool Esconfig_HypeReq(Player self, float require=0.8f){
-            if (!pRTEdits.TryGet(self, out bool RT) || !HypeReq.TryGet(self, out float req)){
+        private bool Esconfig_HypeReq(Player self, float require = 0.8f)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !HypeReq.TryGet(self, out float req))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 requirement = req;
-            } else {
-                switch(config.cfgHypeReq.Value){
-                    case 0:
-                        requirement = -1f; break;
-                    case 1:
-                        requirement = 0.5f; break;
-                    case 2:
-                        requirement = 0.66f; break;
-                    case 3:
-                        requirement = 0.75f; break;
-                    case 4:
-                        requirement = 0.8f; break;
-                    case 5:
-                        requirement = 0.87f; break;
-                    case 6:
-                        requirement = 0.92f; break;
-                    default:
-                        requirement = require; break;
+            }
+            else
+            {
+                requirement = config.cfgHypeReq.Value switch
+                {
+                    0 => -1f,
+                    1 => 0.5f,
+                    2 => 0.66f,
+                    3 => 0.75f,
+                    4 => 0.8f,
+                    5 => 0.87f,
+                    6 => 0.92f,
+                    _ => require,
                 };
+                ;
             }
             return true;
         }
 
-        private bool Esconfig_SFX(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !soundAhoy.TryGet(self, out bool soundFX)){
+        private bool Esconfig_SFX(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !soundAhoy.TryGet(self, out bool soundFX))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return soundFX;
-            } else {
+            }
+            else
+            {
                 return config.cfgSFX.Value;
             }
         }
 
-        private bool Esconfig_WallJumps(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !LWallJump.TryGet(self, out bool wallJumper)){
+        private bool Esconfig_WallJumps(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !LWallJump.TryGet(self, out bool wallJumper))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return wallJumper;
-            } else {
+            }
+            else
+            {
                 return config.cfgLongWallJump.Value;
             }
         }
 
-        private bool Esconfig_Pouncing(Player self){
-            if (!pRTEdits.TryGet(self, out bool RT) || !BtrPounce.TryGet(self, out bool pouncing)){
+        private bool Esconfig_Pouncing(Player self)
+        {
+            if (!pRTEdits.TryGet(self, out bool RT) || !BtrPounce.TryGet(self, out bool pouncing))
+            {
                 return false;
             }
-            if (RT){
+            if (RT)
+            {
                 return pouncing;
-            } else {
+            }
+            else
+            {
                 return config.cfgPounce.Value;
             }
         }
 
-        private bool Esconfig_Dunkin(Player self){
+        private bool Esconfig_Dunkin()
+        {
             return config.cfgDunkin.Value;
         }
 
-        private bool Esconfig_Spears(Player self){
-            try {
-                if (!eCon.TryGetValue(self, out Escort e)){
+        private bool Esconfig_Spears(Player self)
+        {
+            try
+            {
+                if (!eCon.TryGetValue(self, out Escort e))
+                {
                     return false;
                 }
-                if (config.cfgSpears.Value){
+                if (config.cfgSpears.Value)
+                {
                     return e.tossEscort;
                 }
                 return false;
             }
-            catch (Exception err){
+            catch (Exception err)
+            {
                 Ebug(self, err, "Something went wrong when setting an Escort build!");
                 return false;
             }
         }
 
-        private bool Esconfig_Build(Player self){
-            try {
-                if (!eCon.TryGetValue(self, out Escort e)){
+        private bool Esconfig_Build(Player self)
+        {
+            try
+            {
+                if (!eCon.TryGetValue(self, out Escort e))
+                {
                     return false;
                 }
-                int pal = 0;
-                bool help = false;
-                switch (self.playerState.playerNumber){
-                    case 0:
-                        pal = config.cfgBuildP1.Value;
-                        help = config.cfgEasyP1.Value;
-                        break;
-                    case 1:
-                        pal = config.cfgBuildP2.Value;
-                        help = config.cfgEasyP2.Value;
-                        break;
-                    case 2:
-                        pal = config.cfgBuildP3.Value;
-                        help = config.cfgEasyP3.Value;
-                        break;
-                    case 3:
-                        pal = config.cfgBuildP4.Value;
-                        help = config.cfgEasyP4.Value;
-                        break;
-                }
-                switch (pal){
+                //int pal = 0;
+                //bool help = false;
+                (int pal, bool help) = self.playerState.playerNumber switch {
+                    0 => (config.cfgBuildP1.Value, config.cfgEasyP1.Value),
+                    1 => (config.cfgBuildP2.Value, config.cfgEasyP2.Value),
+                    2 => (config.cfgBuildP3.Value, config.cfgEasyP3.Value),
+                    _ => (config.cfgBuildP4.Value, config.cfgEasyP4.Value)
+                };
+                switch (pal)
+                {
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
                     // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
                     case -7:  // Testing build
-                        e.EsTest  = true;
+                        e.EsTest = true;
                         break;
                     case -6:
                     case -5:  // Speedstar build
@@ -596,46 +679,50 @@ namespace TheEscort
                         break;
                 }
                 e.easyMode = help;
-                if (e.easyMode){
+                if (e.easyMode)
+                {
                     Ebug(self, "Easy Mode active!");
                 }
-                self.slugcatStats.lungsFac += self.Malnourished? 0.15f : -0.1f;
+                self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : -0.1f;
                 self.buoyancy -= 0.05f;
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
                 Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
                 return true;
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(self, err, "Something went wrong when setting an Escort build!");
                 return false;
             }
         }
+#endregion
+
 
         /*
         Escort code!
         */
-        private SoundID Eshelp_SFX_Flip(){
+        private SoundID Eshelp_SFX_Flip()
+        {
             float r = UnityEngine.Random.value;
-            switch (r){
-                case var _ when r > 0.5f:
-                    return Escort_SFX_Flip;
-                case var _ when r > 0.3f:
-                    return Escort_SFX_Flip2;
-                case var _ when r > 0:
-                    return Escort_SFX_Flip3;
-            }
-            return Escort_SFX_Flip;
+            return r switch
+            {
+                > 0.5f => Escort_SFX_Flip,
+                > 0.3f => Escort_SFX_Flip2,
+                > 0f => Escort_SFX_Flip3,
+                _ => Escort_SFX_Railgunner_Death,
+            };
         }
 
         // Implement lizard aggression (edited from template)
         private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
         {
-            ins.L().setF();
+            ins.L().SetF();
             orig(self, abstractCreature, world);
 
-            if(Esconfig_Mean_Lizards(world))
+            if (Esconfig_Mean_Lizards(world))
             {
-                ins.L().setF(true);
+                ins.L().SetF(true);
                 Ebug("Lizard Ctor Triggered!");
                 self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
             }
@@ -659,26 +746,36 @@ namespace TheEscort
         }*/
 
 
+private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
+    orig(self, abstractCreature, world);
+    if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
+        self.slugcatStats.lungsFac = 0.0001f;
+    }
+}
+
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
-            ins.L().set();
+            ins.L().Set();
             Ebug("Ctor Triggered!");
             orig(self, abstractCreature, world);
-            if (self.slugcatStats.name == EscortMe){
-                ins.L().set("Escort Check");
+            if (self.slugcatStats.name == EscortMe)
+            {
+                ins.L().Set("Escort Check");
                 eCon.Add(self, new Escort(self));
-                if (!eCon.TryGetValue(self, out Escort e)){
+                if (!eCon.TryGetValue(self, out Escort e))
+                {
                     Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
                     return;
                 }
                 Esconfig_Build(self);
                 e.originalMass = self.TotalMass;
-                try {
+                try
+                {
                     Ebug(self, "Setting silly sounds", 2);
                     e.Escat_setSFX_roller(Escort_SFX_Roll);
                     e.Escat_setSFX_lizgrab(Escort_SFX_Lizard_Grab);
                     Ebug(self, "All done! Awaiting activation.", 2);
-                    
+
                     /*
                     Color col = new Color(0.796f, 0.549f, 0.27843f);
                     e.Esclass_set_hypeLight(self, col);
@@ -688,97 +785,130 @@ namespace TheEscort
                     //self.setPupStatus(set: true);
                     //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
                     //Ebug(new NullReferenceException(), "Test");
-                } catch (Exception err){
+                }
+                catch (Exception err)
+                {
                     Ebug(self, err, "Error while constructing!");
-                } finally {
+                }
+                finally
+                {
                     Ebug(self, "All ctor'd", 1);
                 }
             }
-            if (self.slugcatStats.name == EscortSocks) {
-                ins.L().set("Socks Check");
+            if (self.slugcatStats.name == EscortSocks)
+            {
+                ins.L().Set("Socks Check");
                 sCon.Add(self, new Socks(self));
-                if (!sCon.TryGetValue(self, out Socks es)){
+                if (!sCon.TryGetValue(self, out Socks es))
+                {
                     Ebug(self, "Something happened while initializing then accessing Socks instance!", 0);
                     return;
                 }
                 Socks_ctor(self);
-                es.world = world;
-                try{
+                es.SockWorld = world;
+                try
+                {
                     Creature.Grasp[] tempGrasps = self.grasps;
                     Array.Resize(ref tempGrasps, self.grasps.Length + 1);
                     self.grasps = tempGrasps;
                     //es.Escat_kill_backpack();
                     //es.Escat_generate_backpack(self);
-                } catch (Exception err){
+                }
+                catch (Exception err)
+                {
                     Ebug(self, err, "Error while constructing!");
                 }
             }
         }
 
-
-        private void Eshelp_ExpressoDepresso(Player self){
-            try{
+#region Escort Has A Public Github Repo You Know
+        private void Eshelp_ExpressoDepresso(Player self)
+        {
+            try
+            {
                 Eshelp_ExpressoDepresso(self);
                 return;
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(self, err);
-                redundantlyTrue(true);
-                redundantlyFalse(false);
+                RedundantlyTrue(true);
+                RedundantlyFalse(false);
             }
             //throw new NotImplementedException();
         }
 
-        protected bool redundantlyTrue(bool? thing=true){
-            if (thing == null){
+        protected bool RedundantlyTrue(bool? thing = true)
+        {
+            if (thing == null)
+            {
                 return true;
             }
-            var b = thing;
+
             thing = true;
-            b = true;
-            if ((bool)thing){
+            bool? b = true;
+            if ((bool)thing)
+            {
                 thing = true;
-                b = (thing.ToString() == "True"? true: (true.ToString() == "True"));
+                b = thing.ToString() == "True" || (true.ToString() == "True");
             }
-            else if (true){
+            else if (true)
+            {
                 thing = true;
             }
-            if (b == thing){
+            if (b == thing)
+            {
                 thing = b;
                 b = thing;
             }
-            if ((bool)thing && (bool)b) {
-                switch (true) {
+            if ((bool)thing && (bool)b)
+            {
+                switch (true)
+                {
                     case false:
                     case var value when value == false:
                     case true:
                         break;
-                    default: 
+                    default:
                 }
-                if (1 == 0){
+                if (1 == 0)
+                {
                 }
                 return true;
             }
             return true;
         }
 
-        protected bool redundantlyFalse(bool thing=true){
-            if (thing){
+        protected bool RedundantlyFalse(bool thing = true)
+        {
+            if (thing)
+            {
                 thing = false;
             }
-            else if ((bool)thing) {
+            else if (thing)
+            {
                 thing = false;
             }
-            if (!true){}
-            while(thing){
-                for(int a = 0; a < 1000; a++){
-                    for(int b = 0; a < 10000; b++){
-                        bool?[] secretThing = new bool?[]{true, false, false, false, false, false, false, false};
-                        for(int c = 0; b < 100000; c++){
-                            for(int d = 0; c < 1000000; d++){
-                                for(int e = 0; d < 0; a++){
-                                    if (e == 0){
-                                        foreach(bool f in secretThing){
-                                            if (f){
+            if (!true) { }
+            while (thing)
+            {
+                for (int a = 0; a < 1000; a++)
+                {
+                    for (int b = 0; a < 10000; b++)
+                    {
+                        bool?[] secretThing = new bool?[] { true, false, false, false, false, false, false, false };
+                        for (int c = 0; b < 100000; c++)
+                        {
+                            for (int d = 0; c < 1000000; d++)
+                            {
+                                for (int e = 0; d < 0; a++)
+                                {
+                                    if (e == 0)
+                                    {
+                                        foreach (bool f in secretThing.Select(v => (bool)v))
+                                        {
+                                            if (f)
+                                            {
                                                 break;
                                             }
                                         }
@@ -790,13 +920,16 @@ namespace TheEscort
                 }
             }
             bool? someThing = false;
-            bool anotherThing = someThing switch{
+            bool anotherThing = someThing switch
+            {
                 true => false,
                 false => false,
                 _ => false
             };
-            if (true){
-                if (false || (false && true) || false || (true && true)){
+            if (true)
+            {
+                if (false || (false && true) || false || (true && true))
+                {
                     anotherThing = false;
                     someThing = anotherThing;
                     someThing = false;
@@ -804,22 +937,30 @@ namespace TheEscort
             }
             return false;
         }
+#endregion
+
 
         // Check Escort's parry condition
-        public bool Eshelp_ParryCondition(Creature self){
-            if (self is Player player){
-                if (!eCon.TryGetValue(player, out Escort e)){
+        public bool Eshelp_ParryCondition(Creature self)
+        {
+            if (self is Player player)
+            {
+                if (!eCon.TryGetValue(player, out Escort e))
+                {
                     return false;
                 }
-                if (e.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll)){
+                if (e.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
+                {
                     Ebug(player, "Parryteched condition!", 2);
                     return true;
                 }
-                else if (player.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0){
+                else if (player.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
+                {
                     Ebug(player, "Regular parry condition!", 2);
                     return true;
                 }
-                else {
+                else
+                {
                     Ebug(player, "Not in parry condition", 2);
                     Ebug(player, "Parry leniency: " + e.parryAirLean, 2);
                     return e.parrySlideLean > 0;
@@ -827,19 +968,24 @@ namespace TheEscort
             }
             return false;
         }
-        public bool Eshelp_ParryCondition(Player self){ 
-            if (!eCon.TryGetValue(self, out Escort e)){
+        public bool Eshelp_ParryCondition(Player self)
+        {
+            if (!eCon.TryGetValue(self, out Escort e))
+            {
                 return false;
             }
-            if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll)){
+            if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
+            {
                 Ebug(self, "Parryteched condition!", 2);
                 return true;
             }
-            else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0){
+            else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
+            {
                 Ebug(self, "Regular parry condition!", 2);
                 return true;
             }
-            else {
+            else
+            {
                 Ebug(self, "Not in parry condition", 2);
                 Ebug(self, "Parry leniency: " + e.parryAirLean);
                 return e.parrySlideLean > 0;
@@ -847,33 +993,41 @@ namespace TheEscort
         }
 
         // Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
-        public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie){
-            if (!eCon.TryGetValue(self, out Escort e)){
+        public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie)
+        {
+            if (!eCon.TryGetValue(self, out Escort e))
+            {
                 Ebug(self, "Saving throw failed because Scug is not Escort!", 0);
                 return false;
             }
-            if (!(self != null && offender != null && ouchie != null)){
+            if (!(self != null && offender != null && ouchie != null))
+            {
                 Ebug(self, "Saving throw failed due to null values!", 0);
                 return false;
             }
-            if (offender.owner is not Creature){
+            if (offender.owner is not Creature)
+            {
                 Ebug(self, "Saving throw failed due to the offender not being a creature!", 2);
                 return false;
             }
-            if (e.easyKick){
+            if (e.easyKick)
+            {
                 Ebug(self, "Saving throw don't work on easier dropkicks!", 2);
                 return false;
             }
             // Deflector isn't allowed a saving throw because they don't need it ;)
-            if (!e.Deflector){
+            if (!e.Deflector)
+            {
                 // For now, saving throws only apply to bites
-                if (ouchie == Creature.DamageType.Bite && self.animation == Player.AnimationIndex.RocketJump){
+                if (ouchie == Creature.DamageType.Bite && self.animation == Player.AnimationIndex.RocketJump)
+                {
                     Ebug(self, "Escort won a saving throw!", 2);
                     e.savingThrowed = true;
                     return true;
                 }
             }
-            else {
+            else
+            {
                 Ebug(self, "Saving throw failed: Deflector Build Moment.", 2);
             }
             return false;
@@ -883,19 +1037,22 @@ namespace TheEscort
         private void Backpack_ILRealize(ILContext il)
         {
             var cursor = new ILCursor(il);
-            while (cursor.TryGotoNext(MoveType.After, 
+            while (cursor.TryGotoNext(MoveType.After,
                 i => i.MatchLdarg(0),
                 i => i.MatchLdarg(0),
                 i => i.MatchLdarg(0),
                 i => i.MatchLdfld<AbstractWorldEntity>("world"),
                 i => i.MatchNewobj<TubeWorm>(),
                 i => i.MatchCall<AbstractCreature>("set_realizedCreature")
-            )){
-                
+            ))
+            {
+
             }
             cursor.EmitDelegate<Action<CreatureTemplate>>(
-                (cb) => {
-                    if (cb.type == GrappleBackpack.GrapplingPack){
+                (cb) =>
+                {
+                    if (cb.type == GrappleBackpack.GrapplingPack)
+                    {
                         throw new NotImplementedException();
                     }
                 }
@@ -905,19 +1062,25 @@ namespace TheEscort
         private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
         {
             orig(self);
-            try{
-                if (!(self != null && self.world != null && self.world.game != null)){
+            try
+            {
+                if (!(self != null && self.world != null && self.world.game != null))
+                {
                     return;
                 }
-                else if (replaceGrapple != null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG){
+                else if (replaceGrapple != null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG)
+                {
                     return;
                 }
-                if (self.Room != null && self.Room.shelter && self.realizedCreature != null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack){
+                if (self.Room != null && self.Room.shelter && self.realizedCreature != null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack)
+                {
                     Ebug("Replaced Grapple with Backpack!");
                     self.realizedCreature.Destroy();
                     self.realizedCreature = new GrappleBackpack(self, self.world);
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened while replacing Tubeworm with GrappleBackpack!");
             }
         }
@@ -933,25 +1096,31 @@ namespace TheEscort
 
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
         {
-            ins.L().set();
-            try{
-                if (i == null){
+            ins.L().Set();
+            try
+            {
+                if (i == null)
+                {
                     Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", 1);
                     return orig(i, rainWorld);
                 }
-                ins.L().set("Null Check");
-                if (i == EscortMe){
-                    ins.L().set("Escort Check");
+                ins.L().Set("Null Check");
+                if (i == EscortMe)
+                {
+                    ins.L().Set("Escort Check");
                     return true;
                     // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
                 }
-                if (i == EscortSocks){
-                    ins.L().set("Socks Check");
+                if (i == EscortSocks)
+                {
+                    ins.L().Set("Socks Check");
                     // TODO: Find a way to check if Escort has been beaten or not
-                    return !unplayableSocks;
+                    return !UnplayableSocks;
                     // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened when setting whether slugcat is playable or not!");
             }
             return orig(i, rainWorld);
@@ -959,31 +1128,38 @@ namespace TheEscort
 
         private static SlugcatStats.Name[] Escort_Time(On.SlugcatStats.orig_getSlugcatTimelineOrder orig)
         {
-            ins.L().set();
+            ins.L().Set();
             SlugcatStats.Name[] timeline = orig();
-            try{
+            try
+            {
                 SlugcatStats.Name[] newTimeline = new SlugcatStats.Name[timeline.Length + 1];
                 int j = 0;
-                for (int i = 0; i < timeline.Length; i++){
-                    if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear){
-                        ins.L().set("Escort Check");
+                for (int i = 0; i < timeline.Length; i++)
+                {
+                    if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear)
+                    {
+                        ins.L().Set("Escort Check");
                         newTimeline[j] = timeline[i];
                         j++;
                         newTimeline[j] = EscortMe;
                     }
-                    else if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer){
-                        ins.L().set("Socks Check");
+                    else if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer)
+                    {
+                        ins.L().Set("Socks Check");
                         newTimeline[j] = EscortSocks;
                         j++;
                         newTimeline[j] = timeline[i];
                     }
-                    else {
+                    else
+                    {
                         newTimeline[j] = timeline[i];
                     }
                     j++;
                 }
                 return newTimeline;
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Couldn't set timeline!");
             }
             return timeline;
@@ -991,15 +1167,18 @@ namespace TheEscort
 
         private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
         {
-            ins.L().set();
-            try {
-                if (i == null){
+            ins.L().Set();
+            try
+            {
+                if (i == null)
+                {
                     Ebug("Found nulled cat when searching for regions!");
                     return orig(i);
                 }
-                ins.L().set("Null Check");
-                if (i == EscortMe){
-                    ins.L().set("Escort Check");
+                ins.L().Set("Null Check");
+                if (i == EscortMe)
+                {
+                    ins.L().Set("Escort Check");
                     return new string[]{
                         "SU",
                         "HI",
@@ -1018,8 +1197,9 @@ namespace TheEscort
                         "OE"
                     };
                 }
-                if (i == EscortSocks){
-                    ins.L().set("Socks Check");
+                if (i == EscortSocks)
+                {
+                    ins.L().Set("Socks Check");
                     return new string[]
                     {
                         "SU",
@@ -1038,7 +1218,9 @@ namespace TheEscort
                         "OE"
                     };
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something went wrong when getting story regions!");
             }
             return orig(i);
@@ -1046,45 +1228,57 @@ namespace TheEscort
 
         private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
         {
-            ins.L().setF();
-            try{
-                if (index == null){
+            ins.L().SetF();
+            try
+            {
+                if (index == null)
+                {
                     Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
                     return orig(index);
                 }
-                ins.L().setF("Null Check");
-                if (index == EscortMe){
-                    ins.L().setF("Escort Check");
+                ins.L().SetF("Null Check");
+                if (index == EscortMe)
+                {
+                    ins.L().SetF("Escort Check");
                     return 0.012f;
                 }
-                if (index == EscortSocks){
-                    ins.L().setF("Socks Check");
+                if (index == EscortSocks)
+                {
+                    ins.L().SetF("Socks Check");
                     return 0.01f;
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened when setting exploding spear chance!");
             }
             return orig(index);
         }
 
         private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
-        {   
-            ins.L().setF();
-            try{
-                if (index == null){
+        {
+            ins.L().SetF();
+            try
+            {
+                if (index == null)
+                {
                     Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
                     return orig(index);
                 }
-                ins.L().setF("Null Check");
-                if (index == EscortMe){
-                    ins.L().setF("Escort Check");
+                ins.L().SetF("Null Check");
+                if (index == EscortMe)
+                {
+                    ins.L().SetF("Escort Check");
                     return 0.078f;
                 }
-                if (index == EscortSocks){
-                    ins.L().setF("Socks Check");
+                if (index == EscortSocks)
+                {
+                    ins.L().SetF("Socks Check");
                     return 0.03f;
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened when setting electric spear spawn chance!");
             }
             return orig(index);
@@ -1092,22 +1286,28 @@ namespace TheEscort
 
         private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
         {
-            ins.L().setF();
-            try{
-                if (index == null){
+            ins.L().SetF();
+            try
+            {
+                if (index == null)
+                {
                     Ebug("Found nulled slugcat name when applying spear spawn chance!", 1);
                     return orig(index, originalSpearChance);
                 }
-                ins.L().setF("Null Check");
-                if (index == EscortMe){
-                    ins.L().setF("Escort Check");
+                ins.L().SetF("Null Check");
+                if (index == EscortMe)
+                {
+                    ins.L().SetF("Escort Check");
                     return Mathf.Pow(originalSpearChance, 1.1f);
                 }
-                if (index == EscortSocks){
-                    ins.L().setF("Socks Check");
+                if (index == EscortSocks)
+                {
+                    ins.L().SetF("Socks Check");
                     return Mathf.Pow(originalSpearChance, 0.83f);
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened when spawning spears!");
             }
             return orig(index, originalSpearChance);
@@ -1115,30 +1315,38 @@ namespace TheEscort
 
         private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
         {
-            ins.L().setF();
+            ins.L().SetF();
             orig(self);
-            try{
-                if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null)){
+            try
+            {
+                if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null))
+                {
                     Ebug("Found nulled slugcat name when replacing spears!", 1);
                     return;
                 }
-                ins.L().setF("Null Check");
-                if (self.game.StoryCharacter.value != "EscortMe"){  
+                ins.L().SetF("Null Check");
+                if (self.game.StoryCharacter.value != "EscortMe")
+                {
                     Ebug("... That's not Escort... nice try", 1);
                     return;
                 }
-                ins.L().setF("Escort Check");
-                if (self.abstractRoom.shelter){
+                ins.L().SetF("Escort Check");
+                if (self.abstractRoom.shelter)
+                {
                     Ebug("Spear swap ignores shelters!", 1);
                     return;
                 }
-                ins.L().setF("Is not shelter");
+                ins.L().SetF("Is not shelter");
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 int j = 0;
-                for (int i = 0; i < self.abstractRoom.entities.Count; i++){
-                    if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear){
-                        if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric){
-                            self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false){
+                for (int i = 0; i < self.abstractRoom.entities.Count; i++)
+                {
+                    if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
+                    {
+                        if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric)
+                        {
+                            self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
+                            {
                                 needle = true
                             };
                             j++;
@@ -1156,61 +1364,82 @@ namespace TheEscort
                     }
                 }*/
                 Ebug("Swapped " + j + " spears!");
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened while swapping spears!");
             }
         }
 
         private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
         {
-            ins.L().setF();
-            try{
-                if (index == null){
+            ins.L().SetF();
+            try
+            {
+                if (index == null)
+                {
                     Ebug("Transplant failed due to nulled slugcat name!");
                     return orig(self, index);
                 }
-                ins.L().setF("Null Check");
-                if (self == null || self.name == null){
+                ins.L().SetF("Null Check");
+                if (self == null || self.name == null)
+                {
                     Ebug("Transplant failed due to nulled roomSettings name");
                     return orig(self, index);
                 }
-                ins.L().setF("Roomsetting presence Check");
-                if (index == EscortMe){
-                    ins.L().setF("Escort Check");
+                ins.L().SetF("Roomsetting presence Check");
+                if (index == EscortMe)
+                {
+                    ins.L().SetF("Escort Check");
                     Ebug("Roomsetting name: " + self.name);
                     string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
-                    if (File.Exists(p)){
+                    if (File.Exists(p))
+                    {
                         Ebug("Escort Transplanted!", 4);
                         self.filePath = p;
-                    } else {
+                    }
+                    else
+                    {
                         p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
-                        if (File.Exists(p)){
+                        if (File.Exists(p))
+                        {
                             Ebug("Spearmaster Transplanted!", 4);
                             self.filePath = p;
-                        } else {
+                        }
+                        else
+                        {
                             Ebug("No Transplant, gone default", 4);
                         }
                     }
                 }
-                if (index == EscortSocks){
-                    ins.L().setF("Socks Check");
+                if (index == EscortSocks)
+                {
+                    ins.L().SetF("Socks Check");
                     Ebug("Roomsetting name: " + self.name);
                     string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
-                    if (File.Exists(p)){
+                    if (File.Exists(p))
+                    {
                         Ebug("Socks Transplanted!", 4);
                         self.filePath = p;
-                    } else {
+                    }
+                    else
+                    {
                         p = WorldLoader.FindRoomFile(self.name, false, "_settings-artificer.txt");
-                        if (File.Exists(p)){
+                        if (File.Exists(p))
+                        {
                             Ebug("Artificer Transplanted!", 4);
                             self.filePath = p;
-                        } else {
+                        }
+                        else
+                        {
                             Ebug("No Transplant, gone default", 4);
                         }
                     }
 
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Something happened while replacing room setting file paths!");
             }
             return orig(self, index);

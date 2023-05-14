@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using BepInEx.Logging;
-using Menu;
 using Menu.Remix;
 using Menu.Remix.MixedUI;
+using Menu.Remix.MixedUI.ValueTypes;
+using System;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
 
-namespace TheEscort{
+namespace TheEscort
+{
     /*
     class EscCusOpt : Dialog, SelectOneButton.SelectOneButtonOwner
     {
@@ -57,7 +56,8 @@ namespace TheEscort{
         }
     }*/
 
-    class EscOptions : OptionInterface{
+    class EscOptions : OptionInterface
+    {
 
 
         //public readonly Plugin instance;
@@ -97,9 +97,9 @@ namespace TheEscort{
         private UIelement[] mainSet;
         private UIelement[] buildSet, buildTitle, buildText, buildShadow;
         //private OpCheckBox buildEasyP1, buildEasyP2, buildEasyP3, buildEasyP4;
-        private OpCheckBox[] buildEasy;
+        public OpCheckBox[] buildEasy;
         //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
-        private OpSliderTick[] buildPlayer;
+        public OpSliderTick[] buildPlayer;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private Color[] buildColors;
@@ -110,13 +110,19 @@ namespace TheEscort{
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDiv = -5;
-        public readonly Color easyColor = new Color(0.42f, 0.75f, 0.5f);
-    
-        // Jolly Coop
+        public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
+
+        // Jolly Coop button stuff don't worry about it
         public OpSimpleButton[] jollyEscortBuilds;
         public OpSimpleButton[] jollyEscortEasies;
+        //public bool[] jollyEasierState = new bool[4];
 
-        public EscOptions(RainWorld rainworld){
+        // Arena button stuff
+        //public OpSimpleButton[] arenaEscortBuilds;
+        //public OpSimpleButton[] arenaEscortEasies;
+
+        public EscOptions(RainWorld rainworld)
+        {
             this.rainworld = rainworld;
             this.cfgMeanLizards = this.config.Bind<bool>("cfg_Mean_Lizards", false);
             this.cfgVengefulLizards = this.config.Bind<bool>("cfg_Vengeful_Lizards", false);
@@ -150,15 +156,16 @@ namespace TheEscort{
             this.cfgPoleBounce = this.config.Bind<bool>("cfg_Pole_Bounce", false);
             this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
             this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
-            this.cfgDeveloperMode.OnChange += longDevLogChange;
-            this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 1000, new ConfigAcceptableRange<int>(1000, 99999));
+            this.cfgDeveloperMode.OnChange += LongDevLogChange;
+            this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 765, new ConfigAcceptableRange<int>(0, 99999));
             this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
             //this.cfgSecret.OnChange += inputSecret;
             this.buildEasy = new OpCheckBox[4];
             this.buildPlayer = new OpSliderTick[4];
         }
 
-        private static string swapper(string text, string with=""){
+        private static string Swapper(string text, string with = "")
+        {
             text = text.Replace("<LINE>", System.Environment.NewLine);
             text = text.Replace("<REPLACE>", with);
             return text;
@@ -172,8 +179,8 @@ namespace TheEscort{
             float yp = this.ypadding;
             float tp = this.tpadding;
 
-            Color tempColor = new Color(0.5f, 0.5f, 0.55f);
-            Color descColor = new Color(0.53f, 0.48f, 0.59f);
+            Color tempColor = new(0.5f, 0.5f, 0.55f);
+            Color descColor = new(0.53f, 0.48f, 0.59f);
 
             p1Color = new Color(1f, 1f, 1f);
             p2Color = new Color(1f, 1f, 0.451f);
@@ -188,21 +195,23 @@ namespace TheEscort{
             Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
+            Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
             Color bUltKill = new Color(0.7f, 0.2f, 0.2f);
             this.buildColors = new Color[]{
-                bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, Color.grey
+                bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
             // I'm so done with this shit, may we never remotely reach 1.5k
 
 
-            this.secretText = new OpTextBox(this.cfgSecret, new Vector2(xo + (xp * 14f), yo - (yp * 14)), 60){
+            this.secretText = new OpTextBox(this.cfgSecret, new Vector2(xo + (xp * 14f), yo - (yp * 14)), 60)
+            {
                 description = OptionInterface.Translate("Hmm? What's this?"),
-                colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.6f),
-                colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.6f),
-                colorText = new Color(0.9294f, 0.898f, 0.98f, 0.6f),
+                colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+                colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+                colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
                 maxLength = 5
             };
-            this.secretText.OnValueChanged += inputTheSecret;
+            this.secretText.OnValueChanged += InputTheSecret;
             /*
             this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
                 description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
@@ -215,19 +224,23 @@ namespace TheEscort{
             //this.hypableBtn.OnDeactivate += setTheHype;
             //this.hypableBtn.OnReactivate += killTheHype;
             */
-            this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp/2)){
+            this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp / 2))
+            {
                 description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
             };
-            this.hypeableBox.OnValueChanged += toggleDisableHyped;
-            this.hypeableTick = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7){
+            this.hypeableBox.OnValueChanged += ToggleDisableHyped;
+            this.hypeableTick = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7)
+            {
                 min = 0,
                 max = 6,
                 description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
             };
-            this.hypeableTick.OnValueUpdate += runItThruHyped;
+            this.hypeableTick.OnValueUpdate += RunItThruHyped;
             this.hypeableText = new OpLabel[7];
-            for (int i = 0; i < this.hypeableText.Length; i++){
-                this.hypeableText[i] = new OpLabel(440f + xp - tp, yo - (yp * 6) - (tp * 2 * i), i switch{
+            for (int i = 0; i < this.hypeableText.Length; i++)
+            {
+                this.hypeableText[i] = new OpLabel(440f + xp - tp, yo - (yp * 6) - (tp * 2 * i), i switch
+                {
                     1 => "1=50% tiredness",
                     2 => "2=66% tiredness",
                     3 => "3=75% tiredness",
@@ -235,13 +248,12 @@ namespace TheEscort{
                     5 => "5=87% tiredness",
                     6 => "6=92% tiredness",
                     _ => "0=Always on"
-                }){
-                    color = this.cfgHypeReq.Value == i && !this.hypeableTick.greyedOut? Menu.MenuColorEffect.rgbMediumGrey : Menu.MenuColorEffect.rgbDarkGrey
+                })
+                {
+                    color = this.cfgHypeReq.Value == i && !this.hypeableTick.greyedOut ? Menu.MenuColorEffect.rgbMediumGrey : Menu.MenuColorEffect.rgbDarkGrey
                 };
             }
 
-
-            string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
 
 
             /*
@@ -273,10 +285,10 @@ namespace TheEscort{
 
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             base.Initialize();
-            OpTab mainTab = new OpTab(this, "Main");
-            OpTab buildTab = new OpTab(this, "Builds");
-            OpTab gimmickTab = new OpTab(this, "Gimmicks");
-            OpTab accessibilityTab = new OpTab(this, "Accessibility");
+            OpTab mainTab = new(this, "Main");
+            OpTab buildTab = new(this, "Builds");
+            OpTab gimmickTab = new(this, "Gimmicks");
+            OpTab accessibilityTab = new(this, "Accessibility");
             this.Tabs = new OpTab[]{
                 mainTab,
                 buildTab,
@@ -287,7 +299,7 @@ namespace TheEscort{
 
             this.mainSet = new UIelement[]{
                 new OpLabel(xo, yo, "Options", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), swapper("These options change Escort's main abilities and how they play.<LINE>You can find the easy mode and builds in BUILDS and additional funny shenanigans in GIMMICKS")){
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper("These options change Escort's main abilities and how they play.<LINE>You can find the easy mode and builds in BUILDS and additional funny shenanigans in GIMMICKS")){
                     color = descColor
                 },
 
@@ -346,7 +358,7 @@ namespace TheEscort{
                     description = OptionInterface.Translate("Does additional movement tech when throwing spears. (Default=true)")
                 }
             };
-            
+
             this.buildTitle = new OpLabel[]{
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default {***__}", true){
                     color = bDefault * 0.75f
@@ -366,8 +378,8 @@ namespace TheEscort{
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
                     color = bSpeedster * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Coming Soon...", true){
-                    color = Color.grey * 0.75f
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {?????}", true){
+                    color = bGilded * 0.75f
                 },
             };
             this.buildText = new UIelement[]{
@@ -387,7 +399,7 @@ namespace TheEscort{
                     color = bEscapist
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), Swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
                     color = bRailgunner
                 },
 
@@ -395,40 +407,56 @@ namespace TheEscort{
                     color = bSpeedster
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), "  More details when this mod reaches 1.5k subs!"){
-                    color = Color.gray
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), Swapper("  Closer to attunement like he wanted, grasp the powers of <REPLACE>.", catBeat? "the guardians" : "mysterious entities")){
+                    color = bGilded
                 },
             };
             this.buildShadow = new UIelement[this.buildText.Length];
-            for(int i = 0; i < this.buildShadow.Length; i++){
-                this.buildShadow[i] = new OpLabel(this.buildText[i].PosX - 1f, this.buildText[i].PosY, this.buildText[i].description){
+            for (int i = 0; i < this.buildShadow.Length; i++)
+            {
+                this.buildShadow[i] = new OpLabel(this.buildText[i].PosX - 1f, this.buildText[i].PosY, this.buildText[i].description)
+                {
                     color = bShadow
                 };
             }
             // Checkbox/buildtick and it's fancy functions
-            for (int j = 0; j < this.buildEasy.Length; j++){
+            for (int j = 0; j < this.buildEasy.Length; j++)
+            {
                 this.buildEasy[j] = new OpCheckBox(
-                    j switch {
+                    j switch
+                    {
                         0 => this.cfgEasyP1,
                         1 => this.cfgEasyP2,
                         2 => this.cfgEasyP3,
                         _ => this.cfgEasyP4
-                    }, new Vector2(xo - (tp * (5 - 4 * j)) + 3f, yo - 3f - (yp * 2))
-                ){
-                    description = OptionInterface.Translate(j switch{
+                    }, new Vector2(xoffset - (tpadding * (5 - 4 * j)) + 3f, yoffset - 3f - (ypadding * 2))
+                )
+                {
+                    description = OptionInterface.Translate(j switch
+                    {
                         0 => "[P1] ",
                         1 => "[P2] ",
                         2 => "[P3] ",
                         _ => "[P4] "
-                    } + easyText),
+                    } + "Enable the ability to dropkick by pressing Jump + Grab while midair."),
                     colorEdge = easyColor,
-                    colorFill = j switch {
+                    colorFill = j switch
+                    {
                         0 => p1Color * 0.45f,
                         1 => p2Color * 0.45f,
                         2 => p3Color * 0.7f,
                         _ => p4Color
                     },
                 };
+                // this.buildEasy[j].SetValueBool(this.jollyEasierState[j]);
+                // this.buildEasy[j].SetValueBool(
+                //     j switch {
+                //         0 => this.cfgEasyP1.Value,
+                //         1 => this.cfgEasyP2.Value,
+                //         2 => this.cfgEasyP3.Value,
+                //         _ => this.cfgEasyP4.Value
+                //     }
+                // );
                 // try {
                 //     this.buildEasy.SetValue(j switch {
                 //         0 => this.cfgEasyP1.Value,
@@ -440,89 +468,113 @@ namespace TheEscort{
                 //     Ebug(err, "Oh no not my remix menu");
                 // }
                 this.buildPlayer[j] = new OpSliderTick(
-                    j switch {
+                    j switch
+                    {
                         0 => this.cfgBuildP1,
                         1 => this.cfgBuildP2,
                         2 => this.cfgBuildP3,
                         _ => this.cfgBuildP4
                     }, new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true
-                ){
-                    value = j switch {
-                        0 => this.cfgBuildP1.Value.ToString(),
-                        1 => this.cfgBuildP2.Value.ToString(),
-                        2 => this.cfgBuildP3.Value.ToString(),
-                        _ => this.cfgBuildP4.Value.ToString()
-                    }
+                )
+                {
+                    /*
+                    value = j switch
+                    {
+                        0 => ValueConverter.ConvertToString(this.cfgBuildP1.Value, this.cfgBuildP1.settingType),
+                        1 => ValueConverter.ConvertToString(this.cfgBuildP2.Value, this.cfgBuildP2.settingType),
+                        2 => ValueConverter.ConvertToString(this.cfgBuildP3.Value, this.cfgBuildP3.settingType),
+                        _ => ValueConverter.ConvertToString(this.cfgBuildP4.Value, this.cfgBuildP4.settingType)
+                    },*/
                 };
-                (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch{
-                    0 => (p1Color*0.8f, p1Color*0.9f),
-                    1 => (p2Color*0.8f, p2Color*0.9f),
-                    2 => (p3Color*0.9f, p3Color),
-                    _ => (p4Color*2.4f, p4Color*2.8f)
+                (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
+                {
+                    0 => (p1Color * 0.8f, p1Color * 0.9f),
+                    1 => (p2Color * 0.8f, p2Color * 0.9f),
+                    2 => (p3Color * 0.9f, p3Color),
+                    _ => (p4Color * 2.4f, p4Color * 2.8f)
                 };
-                this.buildEasy[j].OnValueChanged += (UIconfig config, string value, string oldValue) => {
+                this.buildEasy[j].OnValueChanged += (UIconfig config, string value, string oldValue) =>
+                {
                     int target = -1;
-                    for (int s = 0; s < this.buildEasy.Length; s++){
-                        if (this.buildEasy[s].cfgEntry.BoundUIconfig == config){
+                    for (int s = 0; s < this.buildEasy.Length; s++)
+                    {
+                        if (this.buildEasy[s].cfgEntry.BoundUIconfig == config)
+                        {
                             target = s;
                             break;
                         }
                     }
-                    if (target == -1){
+                    if (target == -1)
+                    {
                         Ebug("Config index not found!");
                         return;
                     }
-                    this.buildPlayer[target].colorFill = value == "true"? easyColor * 0.5f : Menu.MenuColorEffect.rgbBlack;
+                    this.buildPlayer[target].colorFill = value == "true" ? easyColor * 0.5f : Menu.MenuColorEffect.rgbBlack;
                 };
-                this.buildPlayer[j].OnValueUpdate += (UIconfig config, string value, string oldValue) => {  // Only starts applying once the slider is moved
+                /*
+                this.buildPlayer[j].OnValueUpdate += (UIconfig config, string value, string oldValue) =>
+                {  // Only starts applying once the slider is moved
                     int target = -1;
-                    for (int s = 0; s < this.buildPlayer.Length; s++){
-                        if (this.buildPlayer[s].cfgEntry.BoundUIconfig == config){
+                    for (int s = 0; s < this.buildPlayer.Length; s++)
+                    {
+                        if (this.buildPlayer[s].cfgEntry.BoundUIconfig == config)
+                        {
                             target = s;
                             break;
                         }
                     }
-                    if (target == -1){
+                    if (target == -1)
+                    {
                         Ebug("Config index not found!");
                         return;
                     }
-                    if (this.buildPlayer.Length < 4){
+                    if (this.buildPlayer.Length < 4)
+                    {
                         Ebug("Index error?! " + this.buildPlayer.Length + "  Target: " + target);
                         return;
                     }
-                    doTheBuildColorThing(target, value);
+                    DoTheBuildColorThing(target, value);
                 };
 
-                this.buildPlayer[j].OnHeld += (bool isHeld) => {  // Only applies on selecting/deselecting the slider
-                    if (!isHeld){
-                        for(int m = 0; m < this.buildTitle.Length; m++){
-                            (this.buildTitle[m] as OpLabel).color = this.buildColors[m];
+                this.buildPlayer[j].OnHeld += (bool isHeld) =>
+                {  // Only applies on selecting/deselecting the slider
+                    if (!isHeld)
+                    {
+                        for (int m = 0; m < this.buildTitle.Length; m++)
+                        {
+                            (this.buildTitle[m] as OpLabel).color = this.buildColors[m] * 0.75f;
                             (this.buildText[m] as OpLabel).color = this.buildColors[m];
                         }
                     }
-                    else {
+                    else
+                    {
                         int target = -1;
-                        for (int s = 0; s < this.buildPlayer.Length; s++){
-                            if (this.buildPlayer[s].held){
+                        for (int s = 0; s < this.buildPlayer.Length; s++)
+                        {
+                            if (this.buildPlayer[s].held)
+                            {
                                 target = s;
                                 break;
                             }
                         }
-                        if (target == -1){
+                        if (target == -1)
+                        {
                             Ebug("Config index not found!");
                             return;
                         }
-                        if (this.buildPlayer.Length < 4){
+                        if (this.buildPlayer.Length < 4)
+                        {
                             Ebug("Index error?! " + this.buildPlayer.Length + "  Target: " + target);
                             return;
                         }
-                        doTheBuildColorThing(target, this.buildPlayer[target].value);
+                        DoTheBuildColorThing(target, this.buildPlayer[target].value);
                     }
                 };
+                */
             }
             this.buildSet = new UIelement[]{
                 new OpLabel(xo, yo, "Builds", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), swapper("These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.")){
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper("These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.")){
                     color = descColor
                 },
 
@@ -645,89 +697,99 @@ namespace TheEscort{
             base.Update();
         }*/
 
-        private void longDevLogChange()
+        private void LongDevLogChange()
         {
-            if (this.cfgDeveloperMode.Value){
-                Plugin.ins.L().turnOnLog();
+            if (this.cfgDeveloperMode.Value)
+            {
+                Plugin.ins.L().TurnOnLog();
             }
-            else {
-                Plugin.ins.L().turnOffLog();
+            else
+            {
+                Plugin.ins.L().TurnOffLog();
             }
         }
-/*
-        private void inputSecret()
-        {
-            int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            string[] insult = new string[1];
-            Action[] doThing = new Action[1]{
-                makeSomeNoiseEsconfig
-            };
-            insult[0] = "Ur not my mum.";
-            switch(UnityEngine.Random.Range(0, 5)){
-                case 1: insult[0] = "F#@k off."; break;
-                case 2: insult[0] = "Skill issue."; break;
-                case 3: insult[0] = "I don't care."; break;
-                case 4: insult[0] = "Shut the f$&k up."; break;
-            }
-            if (this.cfgSecret.Value == num){
-                if (!this.cfgSectret.Value){
-                    this.cfgSectret.Value = true;
-                    ConfigConnector.CreateDialogBoxMultibutton(
-                        swapper(
-                            "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
-                        ), insult, doThing
-                    );
-                }
-                Plugin.ins.L().christmas(this.cfgSectret.Value);
-            }
-            else {
-                this.cfgSectret.Value = false;
-                Plugin.ins.L().christmas();
-                try{
-                    if (Plugin.Esconfig_SFX_Sectret != null){
-                        ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
+        /*
+                private void inputSecret()
+                {
+                    int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
+                    string[] insult = new string[1];
+                    Action[] doThing = new Action[1]{
+                        makeSomeNoiseEsconfig
+                    };
+                    insult[0] = "Ur not my mum.";
+                    switch(UnityEngine.Random.Range(0, 5)){
+                        case 1: insult[0] = "F#@k off."; break;
+                        case 2: insult[0] = "Skill issue."; break;
+                        case 3: insult[0] = "I don't care."; break;
+                        case 4: insult[0] = "Shut the f$&k up."; break;
                     }
-                } catch (Exception err){
-                    Debug.LogError("Couldn't play sound!");
-                    Debug.LogException(err);
+                    if (this.cfgSecret.Value == num){
+                        if (!this.cfgSectret.Value){
+                            this.cfgSectret.Value = true;
+                            ConfigConnector.CreateDialogBoxMultibutton(
+                                swapper(
+                                    "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
+                                ), insult, doThing
+                            );
+                        }
+                        Plugin.ins.L().christmas(this.cfgSectret.Value);
+                    }
+                    else {
+                        this.cfgSectret.Value = false;
+                        Plugin.ins.L().christmas();
+                        try{
+                            if (Plugin.Esconfig_SFX_Sectret != null){
+                                ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
+                            }
+                        } catch (Exception err){
+                            Debug.LogError("Couldn't play sound!");
+                            Debug.LogException(err);
+                        }
+                    }
                 }
-            }
-        }
-*/
-        private void inputTheSecret(UIconfig config, string value, string oldValue)
+        */
+        private void InputTheSecret(UIconfig config, string value, string oldValue)
         {
             int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             string notNum = num.ToString();
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
-                makeSomeNoiseEsconfig
+                MakeSomeNoiseEsconfig
             };
             insult[0] = "Ur not my mum.";
-            switch(UnityEngine.Random.Range(0, 5)){
+            switch (UnityEngine.Random.Range(0, 5))
+            {
                 case 1: insult[0] = "F#@k off."; break;
                 case 2: insult[0] = "Skill issue."; break;
                 case 3: insult[0] = "I don't care."; break;
                 case 4: insult[0] = "Shut the f$&k up."; break;
             }
-            if (value == notNum){
-                if (!this.cfgSectret.Value && this.cfgSecret.Value != num){
+            if (value == notNum)
+            {
+                if (!this.cfgSectret.Value && this.cfgSecret.Value != num)
+                {
                     this.cfgSectret.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
-                        swapper(
+                        Swapper(
                             "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
                         ), insult, doThing
                     );
                 }
-                Plugin.ins.L().christmas(this.cfgSectret.Value);
+                Plugin.ins.L().Christmas(this.cfgSectret.Value);
             }
-            else {
+            else
+            {
                 this.cfgSectret.Value = false;
-                Plugin.ins.L().christmas();
-                try{
-                    if (Plugin.Esconfig_SFX_Sectret != null){
+                Plugin.ins.L().Christmas();
+                try
+                {
+                    if (Plugin.Esconfig_SFX_Sectret != null)
+                    {
                         ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
                     }
-                } catch (Exception err){
+                }
+                catch (Exception err)
+                {
                     Debug.LogError("Couldn't play sound!");
                     Debug.LogException(err);
                 }
@@ -736,32 +798,40 @@ namespace TheEscort{
 
 
 
-        private void makeSomeNoiseEsconfig(){
+        private void MakeSomeNoiseEsconfig()
+        {
             ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
         }
 
-        private void toggleDisableHyped(UIconfig config, string value, string oldValue)
+        private void ToggleDisableHyped(UIconfig config, string value, string oldValue)
         {
-            if (value == "true"){
+            if (value == "true")
+            {
                 int.TryParse(this.hypeableTick.value, out int i);
                 this.hypeableTick.greyedOut = false;
-                for (int j = 0; j < this.hypeableText.Length; j++){
-                    if (i == j){
+                for (int j = 0; j < this.hypeableText.Length; j++)
+                {
+                    if (i == j)
+                    {
                         this.hypeableText[j].color = Menu.MenuColorEffect.rgbMediumGrey;
-                    } else {
+                    }
+                    else
+                    {
                         this.hypeableText[j].color = Menu.MenuColorEffect.rgbDarkGrey;
                     }
                 }
             }
-            else {
+            else
+            {
                 this.hypeableTick.greyedOut = true;
-                foreach(OpLabel l in this.hypeableText){
+                foreach (OpLabel l in this.hypeableText)
+                {
                     l.color = Menu.MenuColorEffect.rgbVeryDarkGrey;
                 }
             }
         }
 
-        private void runItThruHyped(UIconfig config, string value, string oldValue)
+        private void RunItThruHyped(UIconfig config, string value, string oldValue)
         {
             int.TryParse(value, out int n);
             int.TryParse(oldValue, out int o);
@@ -769,15 +839,21 @@ namespace TheEscort{
             this.hypeableText[o].color = Menu.MenuColorEffect.rgbDarkGrey;
         }
 
-        private void doTheBuildColorThing(int index, string value){
-            if (!int.TryParse(value, out int r)){
+        private void DoTheBuildColorThing(int index, string value)
+        {
+            if (!int.TryParse(value, out int r))
+            {
                 Ebug("Couldn't get value of Player Build!", 0);
                 return;
             }
-            try{
-                for(int k = 0; k < this.buildTitle.Length; k++){
-                    if (k == -r){
-                        (this.buildTitle[k] as OpLabel).color = index switch{
+            try
+            {
+                for (int k = 0; k < this.buildTitle.Length; k++)
+                {
+                    if (k == -r)
+                    {
+                        (this.buildTitle[k] as OpLabel).color = index switch
+                        {
                             0 => this.buildColors[k] * (this.p1Color * 0.8f),
                             1 => this.buildColors[k] * (this.p2Color * 0.8f),
                             2 => this.buildColors[k] * (this.p3Color * 0.9f),
@@ -785,12 +861,15 @@ namespace TheEscort{
                         };
                         (this.buildText[k] as OpLabel).color = this.buildColors[k];
                     }
-                    else {
+                    else
+                    {
                         (this.buildTitle[k] as OpLabel).color = Menu.MenuColorEffect.rgbDarkGrey;
                         (this.buildText[k] as OpLabel).color = Menu.MenuColorEffect.rgbMediumGrey;
                     }
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Error on Focus Gain");
             }
         }

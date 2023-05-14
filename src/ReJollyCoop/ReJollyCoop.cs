@@ -1,14 +1,8 @@
+using RWCustom;
 using System;
 using System.Collections.Generic;
-using BepInEx;
 using UnityEngine;
-using System.Runtime.CompilerServices;
-using SlugBase.Features;
-using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
-using JollyCoop;
-using RWCustom;
-using Menu;
 
 namespace TheEscort
 {
@@ -17,7 +11,8 @@ namespace TheEscort
     /// </summary>
     class ReJollyCoop
     {
-        public static void Hooker(){
+        public static void Hooker()
+        {
             On.PlayerGraphics.PopulateJollyColorArray += PopulateTheJollyMan;
         }
 
@@ -26,11 +21,13 @@ namespace TheEscort
 
         public static void PopulateTheJollyMan(On.PlayerGraphics.orig_PopulateJollyColorArray orig, SlugcatStats.Name reference)
         {
-            try{
+            try
+            {
                 PlayerGraphics.jollyColors = new Color?[4][];
                 JollyCoop.JollyCustom.Log("Initializing colors... reference " + reference);
                 int size = 3;
-                if (PlayerGraphics.ColoredBodyPartList(reference).Count > 0){
+                if (PlayerGraphics.ColoredBodyPartList(reference).Count > 0)
+                {
                     size = PlayerGraphics.ColoredBodyPartList(reference).Count;
                 }
                 for (int i = 0; i < PlayerGraphics.jollyColors.Length; i++)
@@ -52,12 +49,14 @@ namespace TheEscort
                             List<string> list = PlayerGraphics.DefaultBodyPartColorHex(reference);
                             PlayerGraphics.jollyColors[0][0] = Color.white;
                             PlayerGraphics.jollyColors[0][1] = Color.black;
-                            for (int a = 2; a < size; a++){
+                            for (int a = 2; a < size; a++)
+                            {
                                 PlayerGraphics.jollyColors[0][a] = Color.green;
                             }
 
-                            for (int b = 0; b < size; b++){
-                                
+                            for (int b = 0; b < size; b++)
+                            {
+
                             }
                             if (list.Count >= 1)
                             {
@@ -89,7 +88,9 @@ namespace TheEscort
                         }
                     }
                 }
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Error when replacing jolly coop color array lol");
                 orig(reference);
             }

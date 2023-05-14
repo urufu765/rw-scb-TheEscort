@@ -1,21 +1,23 @@
 # About
 **The Escort.**
-Y'all are free to adapt the code for your own usage as long as the original authors (who developed the Slugbase and Rain World and the DLC) are fine with it.
+Y'all are free to ada pt the code for your own usage as long as the original authors (who developed the Slugbase and Rain World and the DLC) are fine with it.
 
 # Version History (Newest to Oldest):
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### Planned (Immediate)...
-  * **(0.2.8)** Parry Upgrade update
+  * **(0.2.X)** Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
+
+  * **(0.2.X)** Parry Upgrade update
 
   * **(0.2.X)** Idea backlog...
     * Changed how settings are applied in game (you shouldn't notice any changes)
-    * Escort can throw better in water. 
+    * Escort can throw better in water.
     * Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
-    * Brawler can no longer dualwield any weapon. 
+    * Brawler can no longer dualwield any weapon.
     * Escapist can no longer throw spears? But unique backspear.
-    * Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Brawler also no longer stuns creatures when grabbing onto them. 
+    * Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). Brawler also no longer stuns creatures when grabbing onto them.
     * Railgunner gets double the amount of slowstun
     * Kickflips are done with slide pounces but not on roll pounces
     * VFX for punches are different from shanks
@@ -32,7 +34,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Bombs do explosive punches (Brawler)
 
 * ### 0.2 - The Escort
-  * **(0.2.8)** New Remix Menu!
+  * **(0.2.8)** Slightly fancier remix menu, 1.5k reward revealed (and will be implemented), and Jolly UI has build selection! (Will add Arena later)
 
   * **(0.2.7.3)** Got the jolly pup icon working, added an additional spawn area for Socks to actually make them exist. Buffed Launcher backpack and made them stop causing an aneurism
 
@@ -92,7 +94,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
   * **(0.2.2.8)** Changed the bruiser build (part where it launches the player on spear throws) to a selectable option.
 
-  * **(0.2.2.7)** DMS Patch! (Will have to repatch later) 
+  * **(0.2.2.7)** DMS Patch! (Will have to repatch later)
 
   * **(0.2.2.6)** Added a check that prevents player from dying while dropkicking right into a lizard's maw and fixed parry sound triggering twice rapidly
 
@@ -117,7 +119,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.2)** Here marks the spot where I begin working on the appearance and art of Escort. For now there is no compatibility with DMS so your results may vary when using such mod.
 
 * ### 0.1 - Steam Workshopped
-  * **(0.1.10.1)** Sprites?! 
+  * **(0.1.10.1)** Sprites?!
 
   * **(0.1.10)** New Escort portraits!
 
@@ -272,7 +274,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
   * **(0.0.4.1)** Adjusted Slam Slide to launch Escort forward instead of bouncing back, giving them a unique movement tech that allows them to cover more horizontal distance
 
-  * **(0.0.4)** Implemented BodySlam *(Slam Slide and Super Stun Pounce)*, allowing Escort to slide into creatures to cause knockback. 
+  * **(0.0.4)** Implemented BodySlam *(Slam Slide and Super Stun Pounce)*, allowing Escort to slide into creatures to cause knockback.
 
   * **(0.0.3)** Implemented BetterCrawl, allowing Escort to crawl at different speeds.
 
