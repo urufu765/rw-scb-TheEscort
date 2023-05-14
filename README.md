@@ -34,6 +34,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Bombs do explosive punches (Brawler)
 
 * ### 0.2 - The Escort
+  * **(0.2.9)** Gilded Escort! 
+
   * **(0.2.8.1)** Fixed the easier mode toggle showing up always (forgot to enable the code that disables them lol).
 
   * **(0.2.8)** Slightly fancier remix menu, 1.5k reward revealed (and will be implemented), and Jolly UI has build selection! (Will add Arena later)

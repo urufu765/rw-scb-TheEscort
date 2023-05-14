@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -626,7 +626,10 @@ namespace TheEscort
                     case -7:  // Testing build
                         e.EsTest = true;
                         break;
-                    case -6:
+                    case -6:  // Gilded build
+                        e.Gilded = true;
+                        Ebug(self, "Gilded Build selected!", 2);
+                        break;
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
@@ -744,14 +747,6 @@ namespace TheEscort
                 Ebug(err, "Exception when lizard likes!");
             }
         }*/
-
-
-private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
-    orig(self, abstractCreature, world);
-    if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
-        self.slugcatStats.lungsFac = 0.0001f;
-    }
-}
 
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {

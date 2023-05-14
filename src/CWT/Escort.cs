@@ -101,6 +101,7 @@ namespace TheEscort
         public int RailgunLimit;
         public bool RailIReady;
         public bool RailBombJump;
+        public bool Gilded;
 
         public Escort(Player player)
         {
@@ -197,6 +198,8 @@ namespace TheEscort
             this.RailBombJump = false;
 
             EscortSS();
+
+            this.Gilded = false;
         }
 
 
