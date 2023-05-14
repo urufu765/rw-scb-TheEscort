@@ -99,7 +99,7 @@ namespace TheEscort
         //private OpCheckBox buildEasyP1, buildEasyP2, buildEasyP3, buildEasyP4;
         public OpCheckBox[] buildEasy;
         //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
-        private readonly OpSliderTick[] buildPlayer;
+        public OpSliderTick[] buildPlayer;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private Color[] buildColors;
@@ -115,11 +115,11 @@ namespace TheEscort
         // Jolly Coop button stuff don't worry about it
         public OpSimpleButton[] jollyEscortBuilds;
         public OpSimpleButton[] jollyEscortEasies;
-        public bool[] jollyEasierState = new bool[4];
+        //public bool[] jollyEasierState = new bool[4];
 
         // Arena button stuff
-        public OpSimpleButton[] arenaEscortBuilds;
-        public OpSimpleButton[] arenaEscortEasies;
+        //public OpSimpleButton[] arenaEscortBuilds;
+        //public OpSimpleButton[] arenaEscortEasies;
 
         public EscOptions(RainWorld rainworld)
         {
@@ -188,16 +188,17 @@ namespace TheEscort
             p4Color = new Color(0.09f, 0.1373f, 0.306f);
             //Color p4Color = RWCustom.Custom.HSL2RGB(0.63055557f, 0.54f, 0.2f);
 
-            Color bShadow = new(0.1f, 0.1f, 0.1f);
-            Color bDefault = new(0.75f, 0.75f, 0.75f);
-            Color bBrawler = new(0.8f, 0.4f, 0.6f);
-            Color bDeflector = new(0.69f, 0.55f, 0.9f);
-            Color bEscapist = new(0.42f, 0.75f, 0.1f);
-            Color bRailgunner = new(0.5f, 0.85f, 0.78f);
-            Color bSpeedster = new(0.76f, 0.78f, 0f);
-            Color bUltKill = new(0.7f, 0.2f, 0.2f);
+            Color bShadow = new Color(0.1f, 0.1f, 0.1f);
+            Color bDefault = new Color(0.75f, 0.75f, 0.75f);
+            Color bBrawler = new Color(0.8f, 0.4f, 0.6f);
+            Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
+            Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
+            Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
+            Color bSpeedster = new Color(0.76f, 0.78f, 0f);
+            Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
+            Color bUltKill = new Color(0.7f, 0.2f, 0.2f);
             this.buildColors = new Color[]{
-                bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, Color.grey
+                bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
             // I'm so done with this shit, may we never remotely reach 1.5k
 
@@ -253,8 +254,6 @@ namespace TheEscort
                 };
             }
 
-
-            string easyText = "Enable the ability to dropkick by pressing Jump + Grab while midair.";
 
 
             /*
@@ -379,8 +378,8 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
                     color = bSpeedster * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Coming Soon...", true){
-                    color = Color.grey * 0.75f
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {?????}", true){
+                    color = bGilded * 0.75f
                 },
             };
             this.buildText = new UIelement[]{
@@ -408,8 +407,8 @@ namespace TheEscort
                     color = bSpeedster
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), "  More details when this mod reaches 1.5k subs!"){
-                    color = Color.gray
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), Swapper("  Closer to attunement like he wanted, grasp the powers of <REPLACE>.", catBeat? "the guardians" : "mysterious entities")){
+                    color = bGilded
                 },
             };
             this.buildShadow = new UIelement[this.buildText.Length];
@@ -430,7 +429,7 @@ namespace TheEscort
                         1 => this.cfgEasyP2,
                         2 => this.cfgEasyP3,
                         _ => this.cfgEasyP4
-                    }, new Vector2(xo - (tp * (5 - 4 * j)) + 3f, yo - 3f - (yp * 2))
+                    }, new Vector2(xoffset - (tpadding * (5 - 4 * j)) + 3f, yoffset - 3f - (ypadding * 2))
                 )
                 {
                     description = OptionInterface.Translate(j switch
@@ -439,7 +438,7 @@ namespace TheEscort
                         1 => "[P2] ",
                         2 => "[P3] ",
                         _ => "[P4] "
-                    } + easyText),
+                    } + "Enable the ability to dropkick by pressing Jump + Grab while midair."),
                     colorEdge = easyColor,
                     colorFill = j switch
                     {
@@ -478,13 +477,14 @@ namespace TheEscort
                     }, new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true
                 )
                 {
+                    /*
                     value = j switch
                     {
-                        0 => this.cfgBuildP1.Value.ToString(),
-                        1 => this.cfgBuildP2.Value.ToString(),
-                        2 => this.cfgBuildP3.Value.ToString(),
-                        _ => this.cfgBuildP4.Value.ToString()
-                    }
+                        0 => ValueConverter.ConvertToString(this.cfgBuildP1.Value, this.cfgBuildP1.settingType),
+                        1 => ValueConverter.ConvertToString(this.cfgBuildP2.Value, this.cfgBuildP2.settingType),
+                        2 => ValueConverter.ConvertToString(this.cfgBuildP3.Value, this.cfgBuildP3.settingType),
+                        _ => ValueConverter.ConvertToString(this.cfgBuildP4.Value, this.cfgBuildP4.settingType)
+                    },*/
                 };
                 (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
                 {
@@ -511,6 +511,7 @@ namespace TheEscort
                     }
                     this.buildPlayer[target].colorFill = value == "true" ? easyColor * 0.5f : Menu.MenuColorEffect.rgbBlack;
                 };
+                /*
                 this.buildPlayer[j].OnValueUpdate += (UIconfig config, string value, string oldValue) =>
                 {  // Only starts applying once the slider is moved
                     int target = -1;
@@ -541,7 +542,7 @@ namespace TheEscort
                     {
                         for (int m = 0; m < this.buildTitle.Length; m++)
                         {
-                            (this.buildTitle[m] as OpLabel).color = this.buildColors[m] * 0.5f;
+                            (this.buildTitle[m] as OpLabel).color = this.buildColors[m] * 0.75f;
                             (this.buildText[m] as OpLabel).color = this.buildColors[m];
                         }
                     }
@@ -569,6 +570,7 @@ namespace TheEscort
                         DoTheBuildColorThing(target, this.buildPlayer[target].value);
                     }
                 };
+                */
             }
             this.buildSet = new UIelement[]{
                 new OpLabel(xo, yo, "Builds", true),

@@ -11,12 +11,12 @@ namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        public static Dictionary<int, string> selectionable2 = new() { { 0, "Default" }, { -1, "Brawler" }, { -2, "Deflector" }, { -3, "Escapist" }, { -4, "Railgunner" }, { -5, "Speedster" } };
+        public static Dictionary<int, string> selectionable = new() { { 0, "Default" }, { -1, "Brawler" }, { -2, "Deflector" }, { -3, "Escapist" }, { -4, "Railgunner" }, { -5, "Speedster" } };
         public static UIelementWrapper[] hackyWrapper;
         public static UIelementWrapper[] fairlyIllegalWrapper;
-        public static UIelementWrapper[] wackyWrapper;
-        public static UIelementWrapper[] somewhatIllegalWrapper;
-        private static float escortRGBTick;
+        //public static UIelementWrapper[] wackyWrapper;
+        //public static UIelementWrapper[] somewhatIllegalWrapper;
+        private static float[] escortRGBTick = new float[4];
         private static Color[] escortRGBStore = new Color[4];
 
 #region Escort Graphics
@@ -265,12 +265,12 @@ namespace TheEscort
                             float alphya = 1f;
                             if (requirement > self.player.aerobicLevel)
                             {
-                                alphya = Mathf.Lerp((self.player.dead ? 0f : 0.57f), 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
                             }
                             for (int a = e.spriteQueue; a < s.sprites.Length; a++)
                             {
                                 s.sprites[a].alpha = alphya;
-                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, (requirement < self.player.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel)))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, requirement < self.player.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
                             s.sprites[e.spriteQueue + 1].scaleX = e.hipScaleX;
                             s.sprites[e.spriteQueue + 1].scaleY = e.hipScaleY;
@@ -378,20 +378,22 @@ namespace TheEscort
             orig(self);
             if (self.HasUniqueSprite() && self.symbolNameOff == "escortme_pup_off")
             {
-                if (!int.TryParse("" + self.signalText[self.signalText.Length - 1], out int index))
+                string[] signalTexts = self.signalText.Split('_');
+                if (!int.TryParse("" + signalTexts[signalTexts.Length - 2], out int index))
                 {
-                    Ebug("RGB Failed! Try parsed: " + self.signalText + " " + self.signalText[self.signalText.Length - 1]);
+                    Ebug("RGB Failed! Try parsed: ");
+                    Ebug(signalTexts);
                     return;
                 }
-                if (escortRGBStore[index - 1].r < 0.05f &&
-                    escortRGBStore[index - 1].g < 0.05f &&
-                    escortRGBStore[index - 1].b < 0.05f
+                if (escortRGBStore[index].r < 0.05f &&
+                    escortRGBStore[index].g < 0.05f &&
+                    escortRGBStore[index].b < 0.05f
                 ){
-                    Ebug("Not RGB state!");
+                    self.uniqueSymbol.color = Eshelp_cycle_dat_RGB(ref escortRGBTick[index]);
+                    //Ebug("GUESS WHAT? RGB!");
                     return;
                 }
-                self.uniqueSymbol.color = Eshelp_cycle_dat_RGB(ref escortRGBTick);
-                Ebug("GUESS WHAT? RGB!");
+                //Ebug("Not RGB state!");
             }
         }
 
@@ -419,10 +421,10 @@ namespace TheEscort
                 {
                     text = i switch
                     {
-                        0 => selectionable2[ins.config.cfgBuildP1.Value],
-                        1 => selectionable2[ins.config.cfgBuildP2.Value],
-                        2 => selectionable2[ins.config.cfgBuildP3.Value],
-                        _ => selectionable2[ins.config.cfgBuildP4.Value]
+                        0 => selectionable[ins.config.cfgBuildP1.Value],
+                        1 => selectionable[ins.config.cfgBuildP2.Value],
+                        2 => selectionable[ins.config.cfgBuildP3.Value],
+                        _ => selectionable[ins.config.cfgBuildP4.Value]
                     },
                     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!",
                     greyedOut = i < menu.manager.rainWorld.options.JollyPlayerCount
@@ -445,14 +447,31 @@ namespace TheEscort
                     greyedOut = i < menu.manager.rainWorld.options.JollyPlayerCount
                 };
                 ins.config.jollyEscortEasies[i].OnClick += Eshelp_Set_Jolly_To_Easier_Remix;
-                vector2 += new Vector2(num2 + num, 0f);
-                hackyWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortBuilds[i]);
                 fairlyIllegalWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortEasies[i]);
-                self.subObjects.Add(hackyWrapper[i]);
                 self.subObjects.Add(fairlyIllegalWrapper[i]);
+                hackyWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortBuilds[i]);
+                vector2 += new Vector2(num2 + num, 0f);
+                self.subObjects.Add(hackyWrapper[i]);
             }
             self.UpdatePlayerSlideSelectable(menu.manager.rainWorld.options.JollyPlayerCount - 1);
         }
+
+        private static void EscortPleaseSaveTheGoddamnConfigs(On.JollyCoop.JollyMenu.JollySetupDialog.orig_RequestClose orig, JollyCoop.JollyMenu.JollySetupDialog self)
+        {
+            try{
+                if (!self.closing){
+                    ins.config._SaveConfigFile();
+                    Ebug("Saving configs!");
+                }
+            } catch (NullReferenceException nre){
+                Ebug(nre, "EscortsavingJOLLYCONFIGS: OH CRAP A NULL EXCEPTOIN");
+            } catch (Exception err){
+                Ebug(err, "EscortsavingJOLLYCONFIGS: Oh god an different error help me");
+            } finally {
+                orig(self);
+            }
+        }
+
 
         private static void Eshelp_Set_Jolly_To_Easier_Remix(UIfocusable trigger)
         {
@@ -473,23 +492,19 @@ namespace TheEscort
             switch (index)
             {  // Still doesn't work. Perhaps I can tackle this by changing the value of the button later down the line? After innit? Or perhaps I can initialize the checkbox first, then set the value that way.
                 case 0:
-                    ins.config.cfgEasyP1._typedValue = !ins.config.cfgEasyP1.Value;
-                    ins.config.jollyEasierState[index] = ins.config.cfgEasyP1._typedValue;
+                    ins.config.cfgEasyP1.Value = !ins.config.cfgEasyP1.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP1._typedValue ? "X" : "";
                     break;
                 case 1:
-                    ins.config.cfgEasyP2._typedValue = !ins.config.cfgEasyP2.Value;
-                    ins.config.jollyEasierState[index] = ins.config.cfgEasyP2._typedValue;
+                    ins.config.cfgEasyP2.Value = !ins.config.cfgEasyP2.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP2._typedValue ? "X" : "";
                     break;
                 case 2:
-                    ins.config.cfgEasyP3._typedValue = !ins.config.cfgEasyP3.Value;
-                    ins.config.jollyEasierState[index] = ins.config.cfgEasyP3._typedValue;
+                    ins.config.cfgEasyP3.Value = !ins.config.cfgEasyP3.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP3._typedValue ? "X" : "";
                     break;
                 case 3:
-                    ins.config.cfgEasyP4._typedValue = !ins.config.cfgEasyP4.Value;
-                    ins.config.jollyEasierState[index] = ins.config.cfgEasyP4._typedValue;
+                    ins.config.cfgEasyP4.Value = !ins.config.cfgEasyP4.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP4._typedValue ? "X" : "";
                     break;
             }
@@ -498,7 +513,7 @@ namespace TheEscort
         private static void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
         {
             orig(self, pIndex);
-            if (!(ins != null && ins.config != null && ins.config.jollyEscortBuilds != null && ins.config.jollyEscortEasies != null && ins.config.jollyEscortBuilds.Length > 0 && ins.config.jollyEscortEasies.Length > 0))
+            if (!(ins != null && ins.config != null && ins.config.jollyEscortBuilds != null && ins.config.jollyEscortBuilds.Length > 0))
             {
                 return;
             }
@@ -536,22 +551,24 @@ namespace TheEscort
                 case 0:
                     if (ins.config.cfgBuildP1.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP1.Value = 0;
                     else ins.config.cfgBuildP1.Value--;
-                    ins.config.jollyEscortBuilds[0].text = selectionable2[ins.config.cfgBuildP1.Value];
+                    //ins.config.cfgBuildP1.BoxedValue = ins.config.cfgBuildP1.Value;
+                    //ValueConverter.ConvertToString(ins.config.cfgBuildP1.Value, ins.config.cfgBuildP1.settingType);
+                    ins.config.jollyEscortBuilds[0].text = selectionable[ins.config.cfgBuildP1.Value];
                     break;
                 case 1:
                     if (ins.config.cfgBuildP2.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP2.Value = 0;
                     else ins.config.cfgBuildP2.Value--;
-                    ins.config.jollyEscortBuilds[1].text = selectionable2[ins.config.cfgBuildP2.Value];
+                    ins.config.jollyEscortBuilds[1].text = selectionable[ins.config.cfgBuildP2.Value];
                     break;
                 case 2:
                     if (ins.config.cfgBuildP3.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP3.Value = 0;
                     else ins.config.cfgBuildP3.Value--;
-                    ins.config.jollyEscortBuilds[2].text = selectionable2[ins.config.cfgBuildP3.Value];
+                    ins.config.jollyEscortBuilds[2].text = selectionable[ins.config.cfgBuildP3.Value];
                     break;
                 case 3:
                     if (ins.config.cfgBuildP4.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP4.Value = 0;
                     else ins.config.cfgBuildP4.Value--;
-                    ins.config.jollyEscortBuilds[3].text = selectionable2[ins.config.cfgBuildP4.Value];
+                    ins.config.jollyEscortBuilds[3].text = selectionable[ins.config.cfgBuildP4.Value];
                     break;
             }
         }
@@ -561,34 +578,44 @@ namespace TheEscort
             orig(self);
             if (ins.config.jollyEscortBuilds.Length > 0)
             {
-                if (self.slugName == EscortMe) { ins.config.jollyEscortBuilds[self.index].Reactivate(); ins.config.jollyEscortEasies[self.index].Reactivate(); } else { ins.config.jollyEscortBuilds[self.index].Deactivate(); ins.config.jollyEscortEasies[self.index].Deactivate(); }
+                if (self.slugName == EscortMe) { 
+                    ins.config.jollyEscortBuilds[self.index].Reactivate(); 
+                    //ins.config.jollyEscortEasies[self.index].Reactivate(); 
+                } else { 
+                    ins.config.jollyEscortBuilds[self.index].Deactivate(); 
+                    //ins.config.jollyEscortEasies[self.index].Deactivate(); 
+                }
             }
         }
 #endregion
 
-
+/*
 #region Arena Mode UI
         private static void Escort_Arena_Class_Changer(On.Menu.MultiplayerMenu.orig_InitiateGameTypeSpecificButtons orig, Menu.MultiplayerMenu self)
         {
             orig(self);
             ins.config.arenaEscortBuilds = new OpSimpleButton[4];
-            ins.config.arenaEscortEasies = new OpSimpleButton[4];
+            //ins.config.arenaEscortEasies = new OpSimpleButton[4];
             wackyWrapper = new UIelementWrapper[4];  // UIElementwrapper to make it work with jolly coop menu lol
             somewhatIllegalWrapper = new UIelementWrapper[4];
-            for (int i = 0; i < 4; i++){
-                ins.config.arenaEscortBuilds[i] = new(
-                    new Vector2(600f + (float)i * 120f, 500f) + new Vector2(106f, -60f) - new Vector2((120f - 120f) * (float)self.playerClassButtons.Length, 0f), new Vector2(100f, 30f)
-                ){
-                    text = i switch
-                    {
-                        0 => selectionable2[ins.config.cfgBuildP1.Value],
-                        1 => selectionable2[ins.config.cfgBuildP2.Value],
-                        2 => selectionable2[ins.config.cfgBuildP3.Value],
-                        _ => selectionable2[ins.config.cfgBuildP4.Value]
-                    },
-                    description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
-                };
-                ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
+            if (self.currentGameType == ArenaSetup.GameTypeID.Sandbox || self.currentGameType == ArenaSetup.GameTypeID.Competitive){
+                for (int i = 0; i < 4; i++){
+                    ins.config.arenaEscortBuilds[i] = new(
+                        new Vector2(580f + (float)i * 120f, 500f) + new Vector2(106f, -60f) - new Vector2((120f - 120f) * (float)self.playerClassButtons.Length, 0f), new Vector2(100f, 30f)
+                    ){
+                        text = i switch
+                        {
+                            0 => selectionable[ins.config.cfgBuildP1.Value],
+                            1 => selectionable[ins.config.cfgBuildP2.Value],
+                            2 => selectionable[ins.config.cfgBuildP3.Value],
+                            _ => selectionable[ins.config.cfgBuildP4.Value]
+                        },
+                        description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
+                    };
+                    ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
+                    wackyWrapper[i] = new UIelementWrapper(self.);
+                    self.pages[0].subObjects.Add(wackyWrapper[i]);
+                }
             }
         }
 
@@ -613,27 +640,28 @@ namespace TheEscort
                 case 0:
                     if (ins.config.cfgBuildP1.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP1.Value = 0;
                     else ins.config.cfgBuildP1.Value--;
-                    ins.config.arenaEscortBuilds[0].text = selectionable2[ins.config.cfgBuildP1.Value];
+                    ins.config.arenaEscortBuilds[0].text = selectionable[ins.config.cfgBuildP1.Value];
                     break;
                 case 1:
                     if (ins.config.cfgBuildP2.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP2.Value = 0;
                     else ins.config.cfgBuildP2.Value--;
-                    ins.config.arenaEscortBuilds[1].text = selectionable2[ins.config.cfgBuildP2.Value];
+                    ins.config.arenaEscortBuilds[1].text = selectionable[ins.config.cfgBuildP2.Value];
                     break;
                 case 2:
                     if (ins.config.cfgBuildP3.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP3.Value = 0;
                     else ins.config.cfgBuildP3.Value--;
-                    ins.config.arenaEscortBuilds[2].text = selectionable2[ins.config.cfgBuildP3.Value];
+                    ins.config.arenaEscortBuilds[2].text = selectionable[ins.config.cfgBuildP3.Value];
                     break;
                 case 3:
                     if (ins.config.cfgBuildP4.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP4.Value = 0;
                     else ins.config.cfgBuildP4.Value--;
-                    ins.config.arenaEscortBuilds[3].text = selectionable2[ins.config.cfgBuildP4.Value];
+                    ins.config.arenaEscortBuilds[3].text = selectionable[ins.config.cfgBuildP4.Value];
                     break;
             }
         }
 
 #endregion
+*/
     }
 }
 

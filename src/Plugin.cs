@@ -159,10 +159,11 @@ namespace TheEscort
             On.JollyCoop.JollyMenu.JollySlidingMenu.ctor += EscortBuildSelectFromJollyMenu;
             On.JollyCoop.JollyMenu.JollyPlayerSelector.Update += EscortHideShowBuildCopium;
             On.JollyCoop.JollyMenu.JollySlidingMenu.UpdatePlayerSlideSelectable += EscortGrayedOutLikeAnIdiot;
-            On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.Update += Escort_RGBRGBRGB_GoesBrr;
+            On.JollyCoop.JollyMenu.JollySetupDialog.RequestClose += EscortPleaseSaveTheGoddamnConfigs;
+            //On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.Update += Escort_RGBRGBRGB_GoesBrr;
 
             // Arena UI
-            On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
+            //On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
 
 
             On.Player.Jump += Escort_Jump;
@@ -313,7 +314,7 @@ namespace TheEscort
                     ModManager.Mod DMS_Mod = ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat");
                     //escPatch_DMS = true;
                     Ebug("Found DMS Version: " + DMS_Mod.version, 1);
-                    String[] dmsVer = DMS_Mod.version.Split('.');
+                    string[] dmsVer = DMS_Mod.version.Split('.');
                     if (int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3)
                     {
                         Ebug("Applying patch!...", 1);
@@ -744,6 +745,13 @@ namespace TheEscort
             }
         }*/
 
+
+private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
+    orig(self, abstractCreature, world);
+    if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
+        self.slugcatStats.lungsFac = 0.0001f;
+    }
+}
 
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
