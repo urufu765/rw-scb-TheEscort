@@ -74,8 +74,10 @@ namespace TheEscort
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
         public Configurable<int> cfgBuildNum;  // LEGACY!
-        public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;
-        public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;
+        public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
+        public Configurable<int>[] cfgBuild;
+        public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
+        public Configurable<bool>[] cfgEasy;
         public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
@@ -111,6 +113,14 @@ namespace TheEscort
         private readonly float tpadding = 6f;
         public readonly int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
+        private static readonly string VERSION = "0.2.8.2";
+        private readonly Configurable<string> cfgVersion;
+        private static string HelloWorld {
+            get{
+                return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
+                "Nerfed railgunner CD (so that you can actually use the boosted damage and actually have risk of blowing up). Nerfed brawler punch (gave more cooldown), buffed shank, and added alternative shank mode. Buffed Deflector's speed to hunter speed instead of survivor speed. Added version notes (and -what's new- page). Minor code tweaks.");
+            }
+        }
 
         // Jolly Coop button stuff don't worry about it
         public OpSimpleButton[] jollyEscortBuilds;
@@ -140,6 +150,12 @@ namespace TheEscort
             this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            this.cfgBuild = new Configurable<int>[4];
+            this.cfgEasy = new Configurable<bool>[4];
+            for (int x = 0; x < this.cfgBuild.Length; x++){
+                this.cfgBuild[x] = this.config.Bind<int>("cfg_Build_Player" + x, 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+                this.cfgEasy[x] = this.config.Bind<bool>("cfg_Easy_Player" + x, false);
+            }
             this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
             this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
             this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
@@ -162,6 +178,7 @@ namespace TheEscort
             //this.cfgSecret.OnChange += inputSecret;
             this.buildEasy = new OpCheckBox[4];
             this.buildPlayer = new OpSliderTick[4];
+            this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
         }
 
         private static string Swapper(string text, string with = "")
@@ -307,7 +324,7 @@ namespace TheEscort
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgMeanLizards, new Vector2(xo + (xp * 0), yo - (yp * 2))){
-                    description = OptionInterface.Translate("When enabled, lizards will spawn at full aggression when playing Escort (and target Escort upon sight)... the behaviour may not carry over in coop sessions. (Default=false)"),
+                    description = Translate("When enabled, lizards will spawn at full aggression when playing Escort (and target Escort upon sight)... the behaviour may not carry over in coop sessions. (Default=false)"),
                     colorEdge = tempColor
                 },
 
@@ -315,17 +332,17 @@ namespace TheEscort
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgVengefulLizards, new Vector2(xo + (xp * 0), yo - (yp * 3))){
-                    description = OptionInterface.Translate("Upon killing too many lizards, lizards may begin hunting Escort down. (Default=false)"),
+                    description = Translate("Upon killing too many lizards, lizards may begin hunting Escort down. (Default=false)"),
                     colorEdge = tempColor
                 },
 
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), "Lifting Power Multiplier"),
                 new OpUpdown(this.cfgHeavyLift, new Vector2(xo + (xp * 0), yo - (yp * 4) - tp), 100, 2){
-                    description = OptionInterface.Translate("Determines how heavy (X times Escort's weight) of an object Escort can carry before being burdened. (Default=3.0, Normal=0.6)")
+                    description = Translate("Determines how heavy (X times Escort's weight) of an object Escort can carry before being burdened. (Default=3.0, Normal=0.6)")
                 },
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 5), "Drop Kick Multiplier"),
                 new OpUpdown(this.cfgDKMult, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 100, 2){
-                    description = OptionInterface.Translate("How much knockback does Escort's drop kick cause? Keep in mind it only affects creatures that aren't resiliant to knockback. (Default=3.0)"),
+                    description = Translate("How much knockback does Escort's drop kick cause? Keep in mind it only affects creatures that aren't resiliant to knockback. (Default=3.0)"),
                 },
 
                 new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 6) - tp, "Battle-Hype Mechanic"),
@@ -339,23 +356,23 @@ namespace TheEscort
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 8))){
-                    description = OptionInterface.Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)"),
+                    description = Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)"),
                     colorEdge = tempColor
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Flippy Pounce"),
                 new OpCheckBox(this.cfgPounce, new Vector2(xo + (xp * 0), yo - (yp * 9))){
-                    description = OptionInterface.Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump to achieve great vertical height. (Default=true)")
+                    description = Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump to achieve great vertical height. (Default=true)")
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, "Grab Stunned Lizards"),
                 new OpCheckBox(this.cfgDunkin, new Vector2(xo + (xp * 0), yo - (yp * 10))){
-                    description = OptionInterface.Translate("Allows Escort to grab stunned lizards and cause violence on them. (Default=true)")
+                    description = Translate("Allows Escort to grab stunned lizards and cause violence on them. (Default=true)")
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 11) + tp/2, "Super Spear"),
                 new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 11))){
-                    description = OptionInterface.Translate("Does additional movement tech when throwing spears. (Default=true)")
+                    description = Translate("Does additional movement tech when throwing spears. (Default=true)")
                 }
             };
 
@@ -378,7 +395,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
                     color = bSpeedster * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {?????}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {Coming Soon!}", true){
                     color = bGilded * 0.75f
                 },
             };
@@ -423,13 +440,16 @@ namespace TheEscort
             for (int j = 0; j < this.buildEasy.Length; j++)
             {
                 this.buildEasy[j] = new OpCheckBox(
+                    /*
                     j switch
                     {
                         0 => this.cfgEasyP1,
                         1 => this.cfgEasyP2,
                         2 => this.cfgEasyP3,
                         _ => this.cfgEasyP4
-                    }, new Vector2(xoffset - (tpadding * (5 - 4 * j)) + 3f, yoffset - 3f - (ypadding * 2))
+                    }*/
+                    this.cfgEasy[j]
+                    , new Vector2(xoffset - (tpadding * (5 - 4 * j)) + 3f, yoffset - 3f - (ypadding * 2))
                 )
                 {
                     description = OptionInterface.Translate(j switch
@@ -467,6 +487,7 @@ namespace TheEscort
                 // } catch (Exception err){
                 //     Ebug(err, "Oh no not my remix menu");
                 // }
+                    /*
                 this.buildPlayer[j] = new OpSliderTick(
                     j switch
                     {
@@ -477,15 +498,16 @@ namespace TheEscort
                     }, new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true
                 )
                 {
-                    /*
                     value = j switch
                     {
                         0 => ValueConverter.ConvertToString(this.cfgBuildP1.Value, this.cfgBuildP1.settingType),
                         1 => ValueConverter.ConvertToString(this.cfgBuildP2.Value, this.cfgBuildP2.settingType),
                         2 => ValueConverter.ConvertToString(this.cfgBuildP3.Value, this.cfgBuildP3.settingType),
                         _ => ValueConverter.ConvertToString(this.cfgBuildP4.Value, this.cfgBuildP4.settingType)
-                    },*/
+                    },
                 };
+                    */
+                this.buildPlayer[j] = new OpSliderTick(this.cfgBuild[j], new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true);
                 (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
                 {
                     0 => (p1Color * 0.8f, p1Color * 0.9f),
@@ -688,6 +710,10 @@ namespace TheEscort
             buildTab.AddItems(this.buildText);
             gimmickTab.AddItems(this.gimmickSet);
             accessibilityTab.AddItems(this.accessibleSet);
+            if (cfgVersion.Value != VERSION){
+                ConfigConnector.CreateDialogBoxNotify(HelloWorld);
+                cfgVersion.Value = VERSION;
+            }
         }
 
         /*

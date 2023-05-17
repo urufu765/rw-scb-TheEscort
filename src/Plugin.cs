@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -611,13 +611,15 @@ namespace TheEscort
                 }
                 //int pal = 0;
                 //bool help = false;
+                /*
                 (int pal, bool help) = self.playerState.playerNumber switch {
                     0 => (config.cfgBuildP1.Value, config.cfgEasyP1.Value),
                     1 => (config.cfgBuildP2.Value, config.cfgEasyP2.Value),
                     2 => (config.cfgBuildP3.Value, config.cfgEasyP3.Value),
                     _ => (config.cfgBuildP4.Value, config.cfgEasyP4.Value)
                 };
-                switch (pal)
+                */
+                switch (config.cfgBuild[self.playerState.playerNumber].Value)
                 {
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
@@ -636,6 +638,7 @@ namespace TheEscort
                         self.slugcatStats.poleClimbSpeedFac += 0.6f;
                         self.slugcatStats.corridorClimbSpeedFac += 0.8f;
                         self.slugcatStats.runspeedFac += 0.35f;
+                        // Frictions do nothing lol
                         self.airFriction -= 0.5f;
                         self.waterFriction -= 0.5f;
                         self.surfaceFriction -= 0.5f;
@@ -659,10 +662,10 @@ namespace TheEscort
                         break;
                     case -2:  // Deflector build
                         e.Deflector = true;
-                        self.slugcatStats.runspeedFac = 1f;
-                        self.slugcatStats.corridorClimbSpeedFac = 1f;
-                        self.slugcatStats.poleClimbSpeedFac = 1f;
-                        self.slugcatStats.bodyWeightFac = 1f;
+                        self.slugcatStats.runspeedFac = 1.2f;
+                        self.slugcatStats.corridorClimbSpeedFac = 1.2f;
+                        self.slugcatStats.poleClimbSpeedFac = 1.25f;
+                        self.slugcatStats.bodyWeightFac += 0.12f;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
@@ -678,7 +681,7 @@ namespace TheEscort
                         Ebug(self, "Default Build selected!", 2);
                         break;
                 }
-                e.easyMode = help;
+                e.easyMode = config.cfgEasy[self.playerState.playerNumber].Value;
                 if (e.easyMode)
                 {
                     Ebug(self, "Easy Mode active!");
@@ -745,7 +748,7 @@ namespace TheEscort
             }
         }*/
 
-
+// to help with something, ignore this.
 private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
     orig(self, abstractCreature, world);
     if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){

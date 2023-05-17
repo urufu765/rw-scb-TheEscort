@@ -429,15 +429,15 @@ namespace TheEscort
             }
             if (e.RailgunCD == 0)
             {
-                e.RailgunCD = 200;
+                e.RailgunCD = 400;
             }
             else
             {
-                e.RailgunCD += (self.Malnourished ? 60 : 40) * addition;
+                e.RailgunCD += (self.Malnourished ? 100 : 80) * addition;
             }
-            if (e.RailgunCD > 600)
+            if (e.RailgunCD > 800)
             {
-                e.RailgunCD = 600;
+                e.RailgunCD = 800;
             }
             e.RailgunUse += addition;
             return true;
