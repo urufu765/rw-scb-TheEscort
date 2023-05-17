@@ -54,19 +54,25 @@ namespace TheEscort
                     {
                         self.Blink(30);
                     }
-                    self.slowMovementStun += 60;
+                    self.slowMovementStun += 20;
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
                 {
-                    self.slowMovementStun += 30;
+                    self.slowMovementStun += 40;
                     e.BrawPunch = false;
                 }
                 if (e.BrawMeleeWeapon.Peek() is Spear)
                 {
                     e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
+                    self.slowMovementStun += 40;
                 }
-                e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
-                self.SlugcatGrab(e.BrawMeleeWeapon.Pop(), e.BrawThrowUsed);
+                if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall){
+                    e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
+                    self.SlugcatGrab(e.BrawMeleeWeapon.Pop(), e.BrawThrowUsed);
+                }
+                else {
+                    e.BrawMeleeWeapon.Pop();
+                }
                 e.BrawThrowGrab = -1;
                 e.BrawThrowUsed = -1;
             }
@@ -195,6 +201,10 @@ namespace TheEscort
                 }
                 else
                 {
+                    if (e.BrawShank){
+                        e.BrawShank = false;
+                        self.room?.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
+                    }
                     if (e.BrawWallSpear.Count > 0)
                     {
                         e.BrawWallSpear.Pop().doNotTumbleAtLowSpeed = e.BrawWall;
@@ -263,7 +273,40 @@ namespace TheEscort
                     //self.SlugcatGrab(s, j);
                     return true;
                 }
-
+                // Alternate Shank
+                else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is Spear sa)
+                {
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Weapon)
+                    {
+                        continue;
+                    }
+                    self.aerobicLevel = Mathf.Max(0, self.aerobicLevel - 0.07f);
+                    if (self.slowMovementStun > 0)
+                    {
+                        Ebug(self, "Too tired to shank!");
+                        self.Blink(15);
+                        float intensity = 1f;
+                        Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
+                        vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
+                        self.bodyChunks[0].pos += vec;
+                        self.bodyChunks[0].vel += vec * 0.5f;
+                        return true;
+                    }
+                    Ebug(self, "SHANK!");
+                    e.BrawShank = true;
+                    e.BrawShankDir = sa.firstChunk.pos;
+                    if (e.BrawMeleeWeapon.Count > 0)
+                    {
+                        e.BrawMeleeWeapon.Pop().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
+                    }
+                    e.BrawShankSpearTumbler = sa.doNotTumbleAtLowSpeed;
+                    e.BrawMeleeWeapon.Push(sa);
+                    e.BrawThrowGrab = 6;
+                    e.BrawThrowUsed = j;
+                    sa.doNotTumbleAtLowSpeed = true;
+                    orig(self, j, eu);
+                    return true;
+                }
                 // Punch
                 else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is Rock r)
                 {
@@ -275,7 +318,7 @@ namespace TheEscort
                     {
                         break;
                     }
-                    self.aerobicLevel = Mathf.Max(0, self.aerobicLevel - 0.08f);
+                    self.aerobicLevel = Mathf.Max(0, self.aerobicLevel - 0.07f);
                     if (self.slowMovementStun > 0)
                     {
                         Ebug(self, "Too tired to punch!");

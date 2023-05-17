@@ -154,7 +154,7 @@ namespace TheEscort
                     (not 0, 0) => new Vector2(player.flipDirection, 0f),
                     (0, > 0) => new Vector2(0f, 1f),
                     (0, < 0) => new Vector2(0f, -1f),
-                    (_, _) => new Vector2(player.flipDirection, (player.input[0].y < 0 ? -0.7f : 0.7f)).normalized
+                    (_, _) => new Vector2(player.flipDirection, player.input[0].y < 0 ? -0.7f : 0.7f).normalized
                 };
             }
 
@@ -211,7 +211,7 @@ namespace TheEscort
         public int detatcherClock;
 
         //private Player Attachment { get; set; }
-        public class LauncherTongue : TubeWorm.Tongue
+        public class LauncherTongue : Tongue
         {
             public LauncherTongue(TubeWorm worm, int tongueNum) : base(worm, tongueNum)
             {

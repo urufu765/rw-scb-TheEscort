@@ -76,7 +76,7 @@
 		"theescort/brawler/slide_launch_fac": 0.25,
 		"theescort/brawler/dk_h_dmg": 2,
 		"theescort/brawler/spear_vel_fac": [0.73, 0.72, 0.71],
-		"theescort/brawler/spear_dmg_fac": [1.25, 5],
+		"theescort/brawler/spear_dmg_fac": [1.25, 7],
 		"theescort/brawler/spear_thrust": 0.5,
 		"theescort/brawler/spear_shank": [0.1, 120],
 		"theescort/brawler/rock_height": 0,

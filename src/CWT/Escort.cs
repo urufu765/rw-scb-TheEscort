@@ -66,6 +66,7 @@ namespace TheEscort
         public bool Brawler;
         public bool BrawWall;
         public bool BrawShankMode;
+        public bool BrawShank;
         public bool BrawPunch;
         public bool BrawShankSpearTumbler;
         public Vector2 BrawShankDir;

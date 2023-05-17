@@ -419,6 +419,8 @@ namespace TheEscort
                     vector2, new Vector2(100f, 30f)
                 )
                 {
+                    text = selectionable[ins.config.cfgBuild[i].Value],
+                    /*
                     text = i switch
                     {
                         0 => selectionable[ins.config.cfgBuildP1.Value],
@@ -426,6 +428,7 @@ namespace TheEscort
                         2 => selectionable[ins.config.cfgBuildP3.Value],
                         _ => selectionable[ins.config.cfgBuildP4.Value]
                     },
+                    */
                     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!",
                     greyedOut = i >= menu.manager.rainWorld.options.JollyPlayerCount
 
@@ -435,6 +438,8 @@ namespace TheEscort
                     vector2 + new Vector2(105.5f, 0f), new Vector2(30f, 30f)
                 )
                 {
+                    text = ins.config.cfgEasy[i].Value? "X" : "",
+                    /*
                     text = i switch
                     {
                         0 => ins.config.cfgEasyP1.Value ? "X" : "",
@@ -442,6 +447,7 @@ namespace TheEscort
                         2 => ins.config.cfgEasyP3.Value ? "X" : "",
                         _ => ins.config.cfgEasyP4.Value ? "X" : ""
                     },
+                    */
                     description = "Easier Mode: While midair and moving, press Jump + Grab to do a dropkick!",
                     colorEdge = ins.config.easyColor,
                     greyedOut = i >= menu.manager.rainWorld.options.JollyPlayerCount
@@ -489,8 +495,11 @@ namespace TheEscort
                 Ebug("Couldn't find button!");
                 return;
             }
+            ins.config.cfgEasy[index].Value = !ins.config.cfgEasy[index].Value;
+            ins.config.jollyEscortEasies[index].text = ins.config.cfgEasy[index].Value? "X" : "";
+            /*
             switch (index)
-            {  // Still doesn't work. Perhaps I can tackle this by changing the value of the button later down the line? After innit? Or perhaps I can initialize the checkbox first, then set the value that way.
+            {
                 case 0:
                     ins.config.cfgEasyP1.Value = !ins.config.cfgEasyP1.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP1._typedValue ? "X" : "";
@@ -507,7 +516,7 @@ namespace TheEscort
                     ins.config.cfgEasyP4.Value = !ins.config.cfgEasyP4.Value;
                     ins.config.jollyEscortEasies[index].text = ins.config.cfgEasyP4._typedValue ? "X" : "";
                     break;
-            }
+            }*/
         }
 
         private static void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
@@ -546,6 +555,10 @@ namespace TheEscort
                 Ebug("Couldn't find button!");
                 return;
             }
+            if (ins.config.cfgBuild[index].Value - 1 < ins.config.buildDiv) ins.config.cfgBuild[index].Value = 0;
+            else ins.config.cfgBuild[index].Value--;
+            ins.config.jollyEscortBuilds[index].text = selectionable[ins.config.cfgBuild[index].Value];
+            /*
             switch (index)
             {
                 case 0:
@@ -570,7 +583,7 @@ namespace TheEscort
                     else ins.config.cfgBuildP4.Value--;
                     ins.config.jollyEscortBuilds[3].text = selectionable[ins.config.cfgBuildP4.Value];
                     break;
-            }
+            }*/
         }
 
         private static void EscortHideShowBuildCopium(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_Update orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
