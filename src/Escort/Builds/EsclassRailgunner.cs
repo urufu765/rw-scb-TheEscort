@@ -246,7 +246,7 @@ namespace TheEscort
                                 e.RailFirstWeaped = false;
                             }
                             self.canBeHitByWeapons = false;
-                            e.RailBombJump = (p.animation == Player.AnimationIndex.Flip && p.input[0].x == 0 && p.input[0].y != 0);
+                            e.RailBombJump = p.animation == Player.AnimationIndex.Flip && p.input[0].x == 0 && p.input[0].y != 0;
                             if (!e.RailBombJump)
                             {
                                 self.floorBounceFrames += 20;

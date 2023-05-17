@@ -628,7 +628,10 @@ namespace TheEscort
                     case -7:  // Testing build
                         e.EsTest = true;
                         break;
-                    case -6:
+                    case -6:  // Gilded build
+                        e.Gilded = true;
+                        Ebug(self, "Gilded Build selected!", 2);
+                        break;
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
@@ -755,7 +758,6 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
         self.slugcatStats.lungsFac = 0.0001f;
     }
 }
-
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
             ins.L().Set();

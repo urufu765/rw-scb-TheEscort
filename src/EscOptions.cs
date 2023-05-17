@@ -111,7 +111,7 @@ namespace TheEscort
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        public readonly int buildDiv = -5;
+        public readonly int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.2.8.2";
         private readonly Configurable<string> cfgVersion;
