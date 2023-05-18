@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.3")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -237,7 +237,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (this.config != null)
+                if (this.config is null)
                 {
                     MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
                 }
@@ -751,13 +751,16 @@ namespace TheEscort
             }
         }*/
 
-// to help with something, ignore this.
-private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
-    orig(self, abstractCreature, world);
-    if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
-        self.slugcatStats.lungsFac = 0.0001f;
-    }
-}
+
+        // to help with something, ignore this.
+        private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
+            orig(self, abstractCreature, world);
+            if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
+                self.slugcatStats.lungsFac = 0.0001f;
+            }
+        }
+
+
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
         {
             ins.L().Set();
@@ -1005,7 +1008,7 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
                 Ebug(self, "Saving throw failed because Scug is not Escort!", 0);
                 return false;
             }
-            if (!(self != null && offender != null && ouchie != null))
+            if (self is null || offender is null || ouchie is null)
             {
                 Ebug(self, "Saving throw failed due to null values!", 0);
                 return false;
@@ -1069,15 +1072,11 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             orig(self);
             try
             {
-                if (!(self != null && self.world != null && self.world.game != null))
+                if (self?.world?.game is null || (replaceGrapple is not null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG))
                 {
                     return;
                 }
-                else if (replaceGrapple != null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG)
-                {
-                    return;
-                }
-                if (self.Room != null && self.Room.shelter && self.realizedCreature != null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack)
+                if (self.Room is not null && self.Room.shelter && self.realizedCreature is not null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack)
                 {
                     Ebug("Replaced Grapple with Backpack!");
                     self.realizedCreature.Destroy();
@@ -1104,7 +1103,7 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             ins.L().Set();
             try
             {
-                if (i == null)
+                if (i is null)
                 {
                     Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", 1);
                     return orig(i, rainWorld);
@@ -1175,7 +1174,7 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             ins.L().Set();
             try
             {
-                if (i == null)
+                if (i is null)
                 {
                     Ebug("Found nulled cat when searching for regions!");
                     return orig(i);
@@ -1236,7 +1235,7 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             ins.L().SetF();
             try
             {
-                if (index == null)
+                if (index is null)
                 {
                     Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
                     return orig(index);
@@ -1265,7 +1264,7 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             ins.L().SetF();
             try
             {
-                if (index == null)
+                if (index is null)
                 {
                     Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
                     return orig(index);
@@ -1381,13 +1380,13 @@ private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature
             ins.L().SetF();
             try
             {
-                if (index == null)
+                if (index is null)
                 {
                     Ebug("Transplant failed due to nulled slugcat name!");
                     return orig(self, index);
                 }
                 ins.L().SetF("Null Check");
-                if (self == null || self.name == null)
+                if (self is null || self.name is null)
                 {
                     Ebug("Transplant failed due to nulled roomSettings name");
                     return orig(self, index);

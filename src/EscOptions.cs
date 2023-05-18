@@ -113,12 +113,12 @@ namespace TheEscort
         private readonly float tpadding = 6f;
         public readonly int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.2";
+        private static readonly string VERSION = "0.2.8.3";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Nerfed railgunner CD (so that you can actually use the boosted damage and actually have risk of blowing up). Nerfed brawler punch (gave more cooldown), buffed shank, and added alternative shank mode. Buffed Deflector's speed to hunter speed instead of survivor speed. Added version notes (and -what's new- page). Minor code tweaks.");
+                "Brawler will throw explosive spears instead of trying to shank, shank now has a cooldown, and shank sound occurs only when successfully shanked. <LINE>Very slightly reduced range for punch and alt shank. <LINE>Increased Brawler Escort's rollpounce distance (and throwboosts while doing a dropkick/flip is increased to compensate for the terrible throwboosts)");
             }
         }
 

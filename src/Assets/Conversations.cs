@@ -43,7 +43,7 @@ namespace TheEscort
             {
                 //owner.getToWorking = 0f;
                 // owner.SlugcatEnterRoomReaction();
-                if (this.oracle.graphicsModule != null)
+                if (this.oracle.graphicsModule is not null)
                 {
                     (this.oracle.graphicsModule as OracleGraphics).halo.ChangeAllRadi();
                     (this.oracle.graphicsModule as OracleGraphics).halo.connectionsFireChance = 1f;
@@ -55,7 +55,7 @@ namespace TheEscort
             public override void Update()
             {
                 base.Update();
-                if (base.player == null)
+                if (base.player is null)
                 {
                     return;
                 }
@@ -81,11 +81,11 @@ namespace TheEscort
                         {
                             base.dialogBox.Interrupt(base.Translate("... what now?"), 20);
                         }
-                        if (this.inActionCounter == 50 && (this.owner.conversation == null || this.owner.conversation.id != Pebbles_Escort))
+                        if (this.inActionCounter == 50 && (this.owner?.conversation is null || this.owner.conversation.id != Pebbles_Escort))
                         {
                             this.owner.InitateConversation(Pebbles_Escort, this);
                         }
-                        if (this.inActionCounter > 50 && (this.owner.conversation == null || (this.owner.conversation != null && this.owner.conversation.id == Pebbles_Escort && this.owner.conversation.slatedForDeletion)))
+                        if (this.inActionCounter > 50 && (this.owner?.conversation is null || (this.owner.conversation is not null && this.owner.conversation.id == Pebbles_Escort && this.owner.conversation.slatedForDeletion)))
                         {
                             this.owner.conversation = null;
                             this.owner.NewAction(MeatEscort_marked);
@@ -96,13 +96,13 @@ namespace TheEscort
                         if (this.inActionCounter == 30)
                         {
                             base.movementBehavior = SSOracleBehavior.MovementBehavior.KeepDistance;
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_1, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_1, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                         if (this.inActionCounter == 140)
                         {
                             base.movementBehavior = SSOracleBehavior.MovementBehavior.Investigate;
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_3, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_3, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                         if (this.inActionCounter > 320)
@@ -116,11 +116,11 @@ namespace TheEscort
                 if (base.action == MeatEscort_marked)
                 {
                     base.movementBehavior = SSOracleBehavior.MovementBehavior.Investigate;
-                    if (this.inActionCounter == 120 && (this.owner.conversation == null || this.owner.conversation.id != Pebbles_Escort_Insult))
+                    if (this.inActionCounter == 120 && (this.owner?.conversation is null || this.owner.conversation.id != Pebbles_Escort_Insult))
                     {
                         this.owner.InitateConversation(Pebbles_Escort_Insult, this);
                     }
-                    if (this.inActionCounter > 120 && (this.owner.conversation == null || (this.owner.conversation != null && this.owner.conversation.id == Pebbles_Escort_Insult && this.owner.conversation.slatedForDeletion)))
+                    if (this.inActionCounter > 120 && (this.owner?.conversation is null || (this.owner.conversation is not null && this.owner.conversation.id == Pebbles_Escort_Insult && this.owner.conversation.slatedForDeletion)))
                     {
                         this.owner.conversation = null;
                         this.owner.NewAction(MeatEscort_angery);
@@ -133,11 +133,11 @@ namespace TheEscort
                     {
                         base.movementBehavior = SSOracleBehavior.MovementBehavior.KeepDistance;
 
-                        if (this.inActionCounter == 15 && (this.owner.conversation == null || this.owner.conversation.id != Pebbles_Escort_2))
+                        if (this.inActionCounter == 15 && (this.owner?.conversation is null || this.owner.conversation.id != Pebbles_Escort_2))
                         {
                             this.owner.InitateConversation(Pebbles_Escort_2, this);
                         }
-                        if (this.inActionCounter > 15 && (this.owner.conversation == null || (this.owner.conversation != null && this.owner.conversation.id == Pebbles_Escort_2 && this.owner.conversation.slatedForDeletion)))
+                        if (this.inActionCounter > 15 && (this.owner?.conversation is null || (this.owner.conversation is not null && this.owner.conversation.id == Pebbles_Escort_2 && this.owner.conversation.slatedForDeletion)))
                         {
                             this.owner.conversation = null;
                             this.owner.NewAction(MeatEscort_getout);
@@ -153,12 +153,12 @@ namespace TheEscort
                         }
                         if (this.inActionCounter == 140)
                         {
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_5, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_5, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                         if (this.inActionCounter == 20)
                         {
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_2, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_2, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                     }
@@ -169,7 +169,7 @@ namespace TheEscort
                     //this.owner.getToWorking = Mathf.InverseLerp(0, 200, this.inActionCounter);
                     if (base.oracle.room.game.GetStorySession.saveState.deathPersistentSaveData.theMark)
                     {
-                        if (this.inActionCounter == 15 && (this.owner.conversation == null || this.owner.conversation.id != Pebbles_Escort_Angery))
+                        if (this.inActionCounter == 15 && (this.owner?.conversation is null || this.owner.conversation.id != Pebbles_Escort_Angery))
                         {
                             this.owner.InitateConversation(Pebbles_Escort_Angery, this);
                         }
@@ -183,12 +183,12 @@ namespace TheEscort
                     {
                         if (this.inActionCounter == 80)
                         {
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_5, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_5, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                         if (this.inActionCounter == 500)
                         {
-                            this.owner.voice = base.oracle.room.PlaySound(SoundID.SS_AI_Talk_3, base.oracle.firstChunk);
+                            this.owner.voice = base.oracle.room?.PlaySound(SoundID.SS_AI_Talk_3, base.oracle.firstChunk);
                             this.owner.voice.requireActiveUpkeep = true;
                         }
                     }
@@ -239,7 +239,7 @@ namespace TheEscort
                     this.owner.LockShortcuts();
                     return;
                 }
-                if (this.owner.conversation != null)
+                if (this.owner.conversation is not null)
                 {
                     this.owner.conversation.Destroy();
                     this.owner.conversation = null;
@@ -273,13 +273,13 @@ namespace TheEscort
             public override void Update()
             {
                 base.Update();
-                if (base.player == null)
+                if (base.player is null)
                 {
                     return;
                 }
-                if (this.panic == null || this.panic.slatedForDeletetion)
+                if (this.panic is null || this.panic.slatedForDeletetion)
                 {
-                    if (this.panic != null)
+                    if (this.panic is not null)
                     {
                         this.owner.getToWorking = this.lastGetToWork;
                     }
@@ -310,7 +310,7 @@ namespace TheEscort
                     {
                         this.owner.NewAction(MeetEscort_unmarked);
                     }
-                    if (this.panic == null)
+                    if (this.panic is null)
                     {
                         this.lowGravity = -1f;
                         this.panicTimer++;
@@ -348,15 +348,15 @@ namespace TheEscort
                     this.owner.LockShortcuts();
                     base.movementBehavior = SSOracleBehavior.MovementBehavior.KeepDistance;
                     this.gravOn = true;
-                    if (this.inActionCounter == 80 && (this.owner.conversation == null || this.owner.conversation.id != Moon_Escort))
+                    if (this.inActionCounter == 80 && (this.owner?.conversation is null || this.owner.conversation.id != Moon_Escort))
                     {
                         this.owner.InitateConversation(Moon_Escort, this);
                     }
-                    if (this.inActionCounter > 80 && (this.owner.conversation == null || (this.owner.conversation != null && this.owner.conversation.id == Moon_Escort && this.owner.conversation.slatedForDeletion)))
+                    if (this.inActionCounter > 80 && (this.owner?.conversation is null || (this.owner.conversation is not null && this.owner.conversation.id == Moon_Escort && this.owner.conversation.slatedForDeletion)))
                     {
                         this.owner.conversation = null;
                         this.owner.NewAction(MeetEscort_markedpost);
-                        if (this.panic == null)
+                        if (this.panic is null)
                         {
                             this.panic = new MoreSlugcats.OraclePanicDisplay(base.oracle);
                             base.oracle.room.AddObject(this.panic);
@@ -369,11 +369,11 @@ namespace TheEscort
                     this.owner.LockShortcuts();
                     base.movementBehavior = SSOracleBehavior.MovementBehavior.KeepDistance;
                     this.gravOn = true;
-                    if (this.inActionCounter == 400 && (this.owner.conversation == null || this.owner.conversation.id != Moon_Escort_Post))
+                    if (this.inActionCounter == 400 && (this.owner?.conversation is null || this.owner.conversation.id != Moon_Escort_Post))
                     {
                         this.owner.InitateConversation(Moon_Escort_Post, this);
                     }
-                    if (this.inActionCounter > 400 && (this.owner.conversation == null || (this.owner.conversation != null && this.owner.conversation.id == Moon_Escort_Post && this.owner.conversation.slatedForDeletion)))
+                    if (this.inActionCounter > 400 && (this.owner?.conversation is null || (this.owner.conversation is not null && this.owner.conversation.id == Moon_Escort_Post && this.owner.conversation.slatedForDeletion)))
                     {
                         base.movementBehavior = SSOracleBehavior.MovementBehavior.Idle;
                         this.owner.UnlockShortcuts();
@@ -399,7 +399,7 @@ namespace TheEscort
 
         private static void Escort_Not_Interrupt_Pearl(On.HUD.DialogBox.orig_Interrupt orig, HUD.DialogBox self, string text, int extraLinger)
         {
-            if (text == "Yes, help yourself. They are not edible.")
+            if (text is "Yes, help yourself. They are not edible.")
             {
                 return;
             }

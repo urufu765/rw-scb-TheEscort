@@ -49,12 +49,10 @@ namespace TheEscort
                 Ebug("Weapon mode was: " + e.BrawMeleeWeapon.Peek().mode);
                 if (self.room != null && e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
                 {
+                    self.room.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
                     self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
-                    if (self.slowMovementStun > 0)
-                    {
-                        self.Blink(30);
-                    }
-                    self.slowMovementStun += 20;
+                    if (self.slowMovementStun > 0) self.Blink(30);
+                    else self.slowMovementStun += 20;
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
                 {
@@ -185,7 +183,12 @@ namespace TheEscort
                 {
                     spear.firstChunk.vel.x *= bSpearVel[2];
                 }
-                thrust *= 0.5f;
+                if (self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump){
+                    thrust *= 2;
+                }
+                else {
+                    thrust *= 0.4f;
+                }
                 if (e.BrawShankMode)
                 {
                     //spear.throwDir = new RWCustom.IntVector2(0, -1);
@@ -196,14 +199,12 @@ namespace TheEscort
                     //spear.doNotTumbleAtLowSpeed = true;
                     e.BrawShankMode = false;
                     spear.spearDamageBonus = bSpearDmg[1];
-                    spear.spearDamageBonus *= Mathf.Max(0.25f, Mathf.InverseLerp(0, 40, 40 - self.slowMovementStun));
-                    self.room?.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
+                    spear.spearDamageBonus *= Mathf.Max(0.15f, Mathf.InverseLerp(0, 20, 20 - self.slowMovementStun));
                 }
                 else
                 {
                     if (e.BrawShank){
                         e.BrawShank = false;
-                        self.room?.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
                     }
                     if (e.BrawWallSpear.Count > 0)
                     {
@@ -235,6 +236,7 @@ namespace TheEscort
                     self.grasps[j] != null &&
                     self.grasps[j].grabbed != null &&
                     self.grasps[j].grabbed is Spear s &&
+                    self.grasps[j].grabbed is not ExplosiveSpear &&
                     self.grasps[1 - j] != null &&
                     self.grasps[1 - j].grabbed != null &&
                     self.grasps[1 - j].grabbed is Creature cs
@@ -243,6 +245,16 @@ namespace TheEscort
                     if (cs.dead || cs.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || cs.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && cs is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
                     {
                         break;
+                    }
+                    if (self.slowMovementStun > 20){
+                        Ebug(self, "Too tired to shank!");
+                        self.Blink(15);
+                        float intensity = 1.4f;
+                        Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
+                        vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
+                        self.bodyChunks[0].pos += vec;
+                        self.bodyChunks[0].vel += vec * 0.5f;
+                        return true;
                     }
                     Creature c = cs;
                     //c.firstChunk.vel.y += 1f;
@@ -274,7 +286,7 @@ namespace TheEscort
                     return true;
                 }
                 // Alternate Shank
-                else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is Spear sa)
+                else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is Spear sa && self.grasps[j].grabbed is not ExplosiveSpear)
                 {
                     if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Weapon)
                     {
@@ -285,7 +297,7 @@ namespace TheEscort
                     {
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
-                        float intensity = 1f;
+                        float intensity = 1.2f;
                         Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
                         vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
                         self.bodyChunks[0].pos += vec;
@@ -301,7 +313,7 @@ namespace TheEscort
                     }
                     e.BrawShankSpearTumbler = sa.doNotTumbleAtLowSpeed;
                     e.BrawMeleeWeapon.Push(sa);
-                    e.BrawThrowGrab = 6;
+                    e.BrawThrowGrab = 5;
                     e.BrawThrowUsed = j;
                     sa.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
@@ -333,7 +345,7 @@ namespace TheEscort
                     Ebug(self, "PUNCH!");
                     e.BrawPunch = true;
                     e.BrawMeleeWeapon.Push(r);
-                    e.BrawThrowGrab = 5;
+                    e.BrawThrowGrab = 4;
                     e.BrawThrowUsed = j;
                     orig(self, j, eu);
                     return true;

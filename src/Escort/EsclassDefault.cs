@@ -553,7 +553,7 @@ namespace TheEscort
                 {
                     e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
                 }
-                self.rollCounter = 0;
+                self.rollCounter = e.Brawler? 15: 0;
                 self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount));
             }
 
