@@ -53,6 +53,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Tick(self, ref e);
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
+            if (e.Gilded) Esclass_GD_Tick(self, ref e);
 
 
             // Console ticker
@@ -220,6 +221,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
+            if (e.Gilded) Esclass_GD_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
             // Just for seeing what a variable does.

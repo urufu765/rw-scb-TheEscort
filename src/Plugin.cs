@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.3")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.4")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -619,7 +619,11 @@ namespace TheEscort
                     _ => (config.cfgBuildP4.Value, config.cfgEasyP4.Value)
                 };
                 */
-                switch (config.cfgBuild[self.playerState.playerNumber].Value)
+                int pal = config.cfgBuild[self.playerState.playerNumber].Value;
+                if (!ins.L().Eastabun){
+                    pal = -6;
+                }
+                switch (pal)
                 {
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
                     // Stylist build (Do combos that build up to a super move)
@@ -630,6 +634,7 @@ namespace TheEscort
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
+                        self.slugcatStats.bodyWeightFac = 1f;
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -830,11 +835,11 @@ namespace TheEscort
         }
 
 #region Escort Has A Public Github Repo You Know
-        private void Eshelp_ExpressoDepresso(Player self)
+        protected void Escort_Has_A_Public_Github_Repo_Lol(Player self)
         {
             try
             {
-                Eshelp_ExpressoDepresso(self);
+                Escort_Has_A_Public_Github_Repo_Lol(self);
                 return;
             }
             catch (Exception err)
@@ -842,6 +847,10 @@ namespace TheEscort
                 Ebug(self, err);
                 RedundantlyTrue(true);
                 RedundantlyFalse(false);
+            }
+            finally
+            {
+                이건_아무겄도_안함();
             }
             //throw new NotImplementedException();
         }
@@ -944,6 +953,12 @@ namespace TheEscort
                 }
             }
             return false;
+        }
+
+        protected void 이건_아무겄도_안함()
+        {
+            bool 모함 = false;
+            Ebug(모함);
         }
 #endregion
 

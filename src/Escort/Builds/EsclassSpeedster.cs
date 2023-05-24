@@ -173,6 +173,7 @@ namespace TheEscort
                         }
 
                         // Doing things while moving builds up charge
+                        /*
                         switch (self.animation)
                         {
                             case var value when value == Player.AnimationIndex.Flip:
@@ -194,6 +195,16 @@ namespace TheEscort
                                 e.SpeGain += 2f;
                                 break;
                         }
+                        */
+                        e.SpeGain += self.animation switch {
+                            var value when value == Player.AnimationIndex.Flip => 1,
+                            var value when value == Player.AnimationIndex.BellySlide => 5,
+                            var value when value == Player.AnimationIndex.Roll => 1.1f,
+                            var value when value == Player.AnimationIndex.StandOnBeam => 0.7f,
+                            var value when value == Player.AnimationIndex.SurfaceSwim => 1.2f,
+                            var value when value == Player.AnimationIndex.RocketJump => 2,
+                            _ => 0
+                        };
 
                         // Double the gain when in hyped
                         if (e.SpeGain > 0f && self.aerobicLevel > requirement)
@@ -375,6 +386,7 @@ namespace TheEscort
                 self.bodyChunks[0].vel.x += 3f * (float)self.flipDirection;
                 self.bodyChunks[1].vel.x += 2f * (float)self.flipDirection;
                 */
+                /*
                 if (self.animation == Player.AnimationIndex.None)
                 {
                     self.jumpBoost += 1f * n;
@@ -395,6 +407,16 @@ namespace TheEscort
                 {
                     self.jumpBoost += 4f * n;
                 }
+                */
+
+                self.jumpBoost += self.animation switch {
+                    var value when value == Player.AnimationIndex.None => 1 * n,
+                    var value when value == Player.AnimationIndex.Flip => 4 * n,
+                    var value when value == Player.AnimationIndex.Roll => 8 * n,
+                    var value when value == Player.AnimationIndex.SurfaceSwim => 2 * n,
+                    var value when value == Player.AnimationIndex.StandOnBeam => 4 * n,
+                    _ => 0,
+                };
             }
         }
 

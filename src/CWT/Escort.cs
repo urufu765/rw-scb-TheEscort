@@ -199,8 +199,7 @@ namespace TheEscort
             this.RailBombJump = false;
 
             EscortSS();
-
-            this.Gilded = false;
+            EscortGD();
         }
 
 

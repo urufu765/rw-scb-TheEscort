@@ -105,6 +105,9 @@
 		"theescort/railgunner/bomb_vel_fac": 3,
 
 		"theescort/speedster/custom_shader": "Basic",
-		"theescort/speedster/pole_rise": [0.8, 0.65]
+		"theescort/speedster/pole_rise": [0.8, 0.65],
+
+		"theescort/gilded/float_speed": 1.5,
+		"theescort/gilded/levitation": 1.75
 		}
 }

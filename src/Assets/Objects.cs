@@ -436,13 +436,13 @@ namespace TheEscort
             {
                 (true, false) => Mathf.Min(1f, self.onRopePos + 0.1f),
                 (false, true) => Mathf.Max(0f, self.onRopePos - 0.1f),
-                (false, false) => (self.onRopePos < 0.5f ? Mathf.Min(0.49f, self.onRopePos + 0.025f) : Mathf.Max(0.5f, self.onRopePos - 0.025f)),
+                (false, false) => self.onRopePos < 0.5f ? Mathf.Min(0.49f, self.onRopePos + 0.025f) : Mathf.Max(0.5f, self.onRopePos - 0.025f),
                 (true, true) => Mathf.Clamp(self.onRopePos + 0.035f * changer, 0.01f, 0.99f)
             };
             //Ebug("OnRopePos: " + self.onRopePos);
 
             // Get direction of tongue
-            bool doubleMode = (player.input[0].x == 0 && player.input[0].y == 0 || !(player.input[0].x != 0 && player.input[0].y != 0));
+            bool doubleMode = player.input[0].x == 0 && player.input[0].y == 0 || !(player.input[0].x != 0 && player.input[0].y != 0);
             (Vector2 v1, Vector2 v2) = (player.input[0].x, player.input[0].y) switch
             {
                 (0, 0) => (new Vector2(1f, 0f), new Vector2(-1f, 0f)),
@@ -558,17 +558,16 @@ namespace TheEscort
 
         public void SetColor(string name, Color color)
         {
-            if (name == "Backpack")
-            {
-                this.color = color;
-            }
-            else if (name == "Tongue")
-            {
-                this.tongueColor = color;
-            }
-            else if (name == "TongueTip")
-            {
-                this.tipColor = color;
+            switch (name){
+                case "Backpack":
+                    this.color = color; 
+                    break;
+                case "Tongue":
+                    tongueColor = color;
+                    break;
+                case "TongueTip":
+                    tipColor = color;
+                    break;
             }
         }
 

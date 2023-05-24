@@ -68,6 +68,7 @@ namespace TheEscort
             private static readonly bool NOLOG = true;
             private bool frequentLogMode = false;
             public bool Crispmunch { get; private set; }
+            public bool Eastabun { get; private set; }
 
             public EFC()
             {
@@ -91,6 +92,17 @@ namespace TheEscort
             public void Christmas(bool hasArrived = false)
             {
                 this.Crispmunch = !hasArrived;
+            }
+
+            public void Easter(bool hasArrived = false)
+            {
+                this.Eastabun = !hasArrived;
+            }
+
+            public void Holiday()
+            {
+                Christmas();
+                Easter();
             }
 
             public void Set(bool isChecked = false, [CallerMemberName] string callerName = "")

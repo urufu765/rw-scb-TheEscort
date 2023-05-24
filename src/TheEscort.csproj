@@ -43,7 +43,7 @@
     <Reference Include="..\lib\UnityEngine.UnityWebRequestWWWModule.dll">
       <Private>false</Private>
     </Reference>
-    <Reference Include="DressMySlugcat">
+    <Reference Include="..\lib\DressMySlugcat.dll">
       <HintPath>..\lib\DressMySlugcat.dll</HintPath>
     </Reference>
   </ItemGroup>
