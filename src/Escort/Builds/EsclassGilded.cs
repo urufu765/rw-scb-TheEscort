@@ -27,11 +27,13 @@ namespace TheEscort
                 !gilded_float.TryGet(self, out float floatingSpd) ||
                 !gilded_lev.TryGet(self, out float levitation)
                 ) return;
-            if (self.wantToJump > 0 && e.float_state){
+            if ((self.wantToJump > 0 || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && e.float_state){
+                Ebug(self, "Jump");
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
             }
-            else if (self.wantToJump > 0 && self.canJump > 0 && !e.float_state){
+            else if (self.input[0].jmp && !self.input[1].jmp && self.canJump > 0 && !(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && !e.float_state){
+                Ebug(self, "Jump Higher");
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
             }
@@ -47,7 +49,7 @@ namespace TheEscort
                 }
                 //self.gravity = 0;
                 self.airFriction = 0.8f;
-                //self.standing = true;
+                self.standing = false;
 
                 // Move
                 if (self.input[0].x != 0){

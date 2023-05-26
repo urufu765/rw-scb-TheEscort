@@ -37,6 +37,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Might remove Brawler shank for zeroG
 
 * ### 0.2 - The Escort
+  * **(0.2.8.6)** Fixed options. Fixed the gilded mechanics.
+
+  * **(0.2.8.5)** Fixed options? Fricked up the gilded mechanics
+
   * **(0.2.8.4)** Fixed Gilded being able to be selected even though it changes almost nothing. Is working on gilded and you can now try it out by a secret code.
 
   * **(0.2.8.3)** Brawler will throw explosive spears instead of trying to shank, shank now has a cooldown, and shank sound occurs only when successfully shanked. Very slightly reduced range for punch and alt shank. Increased Brawler Escort's rollpounce distance (and throwboosts while doing a dropkick/flip is increased to compensate for the terrible throwboosts). Simplified some nullchecks in a class.
