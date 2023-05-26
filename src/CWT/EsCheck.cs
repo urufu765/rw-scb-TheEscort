@@ -69,12 +69,15 @@ namespace TheEscort
             private bool frequentLogMode = false;
             public bool Crispmunch { get; private set; }
             public bool Eastabun { get; private set; }
+            public bool Vegetable { get; private set; }
 
             public EFC()
             {
                 this.EscheckFunctionDictionary = new Dictionary<string, EFD>(128);
                 this.EscheckFunctionLastChecks = new Queue<string>(32);
                 this.Crispmunch = true;
+                this.Eastabun = true;
+                this.Vegetable = true;
             }
 
             public void TurnOnLog()
@@ -99,10 +102,16 @@ namespace TheEscort
                 this.Eastabun = !hasArrived;
             }
 
+            public void Valentines(bool hasArrived = false)
+            {
+                this.Vegetable = !hasArrived;
+            }
+
             public void Holiday()
             {
                 Christmas();
                 Easter();
+                Valentines();
             }
 
             public void Set(bool isChecked = false, [CallerMemberName] string callerName = "")

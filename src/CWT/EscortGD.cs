@@ -11,6 +11,7 @@ namespace TheEscort
         {
             Gilded = false;
             float_state = false;
+            
         }
 
         public void Escat_float_state(Player self, bool status = true){

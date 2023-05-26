@@ -89,7 +89,7 @@ namespace TheEscort
         public Configurable<bool> cfgOldSpeedster;
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
-        public Configurable<bool> cfgSectret, cfgSectretBuild;
+        public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -114,12 +114,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.4";
+        private static readonly string VERSION = "0.2.8.5";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Fixed being able to select the new build (has been moved to a secret value AHEM1500AHEM). Some work has been done to the Gilded build but it is far from ready.");
+                "Fixed the secret build being turned on intensionally.");
             }
         }
 
@@ -177,6 +177,7 @@ namespace TheEscort
             this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 765, new ConfigAcceptableRange<int>(0, 99999));
             this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
             this.cfgSectretBuild = this.config.Bind<bool>("cfg_EscSectretBuild", false);
+            this.cfgSectretGod = this.config.Bind<bool>("cfg_EscSectretGod", false);
             //this.cfgSecret.OnChange += inputSecret;
             this.buildEasy = new OpCheckBox[4];
             this.buildPlayer = new OpSliderTick[4];
@@ -779,7 +780,7 @@ namespace TheEscort
         private void InputTheSecret(UIconfig config, string value, string oldValue)
         {
             int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            int nu2 = 1500;
+            int nu2 = 1500; int nu3 = 877769;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
@@ -791,6 +792,12 @@ namespace TheEscort
                 case 2: insult[0] = "Skill issue."; break;
                 case 3: insult[0] = "I don't care."; break;
                 case 4: insult[0] = "Shut the f$&k up."; break;
+            }
+            if (value != ValueConverter.ConvertToString(this.cfgSecret.Value, this.cfgSecret.settingType)){
+                this.cfgSectret.Value = false;
+                this.cfgSectretBuild.Value = false;
+                this.cfgSectretGod.Value = false;
+                Plugin.ins.L().Holiday();
             }
             if (value == num.ToString())
             {
@@ -818,11 +825,21 @@ namespace TheEscort
                 }
                 Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
             }
+            else if (value == nu3.ToString())
+            {
+                if (!this.cfgSectretGod.Value && this.cfgSecret.Value != nu3)
+                {
+                    this.cfgSectretGod.Value = true;
+                    ConfigConnector.CreateDialogBoxMultibutton(
+                        Swapper(
+                            "Invincible... but not really. You just won't take damage lol."
+                        ), insult, doThing
+                    );
+                }
+                Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
+            }
             else
             {
-                this.cfgSectret.Value = false;
-                this.cfgSectretBuild.Value = false;
-                Plugin.ins.L().Holiday();
                 try
                 {
                     if (Plugin.Esconfig_SFX_Sectret != null)

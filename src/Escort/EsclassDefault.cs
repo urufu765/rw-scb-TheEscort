@@ -1518,6 +1518,10 @@ namespace TheEscort
                 }
                 stunBonus = 0;
             }
+            if (!ins.L().Vegetable)
+            {
+                e.ParrySuccess = true;
+            }
             if (Eshelp_ParryCondition(player))
             {
                 // Parryslide (parry module)

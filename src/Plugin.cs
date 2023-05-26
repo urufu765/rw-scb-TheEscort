@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.4")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.5")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;

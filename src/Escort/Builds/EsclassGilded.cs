@@ -31,19 +31,23 @@ namespace TheEscort
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
             }
-            else if (self.wantToJump > 0 && self.input[0].thrw && self.canJump <= 0 && !e.float_state){
+            else if (self.wantToJump > 0 && self.canJump > 0 && !e.float_state){
                 e.Escat_float_state(self);
+                self.wantToJump = 0;
             }
             if (e.float_state){
                 self.buoyancy = 0f;
-                self.animation = Player.AnimationIndex.None;
+                bool swimmer = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
+                if (self.animation != Player.AnimationIndex.Flip){
+                    self.animation = Player.AnimationIndex.None;
+                }
                 self.bodyMode = Player.BodyModeIndex.Default;
                 if (self.dead || self.stun >= 10){
                     e.Escat_float_state(self, false);
                 }
                 //self.gravity = 0;
                 self.airFriction = 0.8f;
-                self.standing = true;
+                //self.standing = true;
 
                 // Move
                 if (self.input[0].x != 0){
@@ -63,8 +67,10 @@ namespace TheEscort
 
 
                 // Hover
-                self.bodyChunks[0].vel.y += levitation;
-                self.bodyChunks[1].vel.y += levitation - 1f;
+                if (!swimmer){
+                    self.bodyChunks[0].vel.y += levitation;
+                    self.bodyChunks[1].vel.y += levitation - 1f;
+                }
             }
         }
     }
