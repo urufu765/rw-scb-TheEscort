@@ -81,6 +81,7 @@ namespace TheEscort
         public int DeflSFXcd;
         public int DeflSlideCom;
         public bool DeflSlideKick;
+        public int DeflPowah;
         public bool Escapist;
         public int EscDangerExtend;
         public Creature.Grasp EscDangerGrasp;
@@ -174,6 +175,7 @@ namespace TheEscort
             this.DeflSFXcd = 0;
             this.DeflSlideCom = 0;
             this.DeflSlideKick = false;
+            this.DeflPowah = 0;
 
             this.Escapist = false;
             this.EscDangerExtend = 0;

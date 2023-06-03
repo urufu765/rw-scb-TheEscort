@@ -114,12 +114,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.6";
+        private static readonly string VERSION = "0.2.8.7";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Fixed the option some more.");
+                "Fixed version appearing every time you want to edit Escort settings. <LINE>Deflector mechanics addition (more parries = more damage) <LINE>Normal Escort lung capacity buff while rest of Escorts lung capacity nerf.");
             }
         }
 
@@ -716,6 +716,7 @@ namespace TheEscort
             if (cfgVersion.Value != VERSION){
                 ConfigConnector.CreateDialogBoxNotify(HelloWorld);
                 cfgVersion.Value = VERSION;
+                this._SaveConfigFile();
             }
         }
 
@@ -790,7 +791,7 @@ namespace TheEscort
         private void ResultsBaby(string value = "")
         {
             int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            int nu2 = 1500; int nu3 = 877769;
+            int nu2 = 1500; int nu3 = 87769;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig

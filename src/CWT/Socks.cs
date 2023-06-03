@@ -37,17 +37,9 @@ namespace TheEscort
                     backpack = null;
                     return;
                 }
-                // Vector2 vector = owner.mainBodyChunk.pos;
-                // Vector2 vector2 = owner.bodyChunks[1].pos;
-                // if (owner.graphicsModule != null)
-                // {
-                //     vector = Vector2.Lerp((owner.graphicsModule as PlayerGraphics).drawPositions[0, 0], (owner.graphicsModule as PlayerGraphics).head.pos, 0.2f);
-                //     vector2 = (owner.graphicsModule as PlayerGraphics).drawPositions[1, 0];
-                // }
                 ChangeOverlap(newOverlap: false);
                 backpack.mainBodyChunk.MoveFromOutsideMyUpdate(eu, (owner.graphicsModule != null) ? (owner.graphicsModule as PlayerGraphics).head.pos : owner.mainBodyChunk.pos);
                 backpack.mainBodyChunk.vel = owner.mainBodyChunk.vel;
-                //
             }
 
             public void ChangeOverlap(bool newOverlap)

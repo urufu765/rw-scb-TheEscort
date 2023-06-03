@@ -710,7 +710,7 @@ namespace TheEscort
         }
 
         /// <summary>
-        /// Implement Escort's slowed stamina increase
+        /// Implement Escort's slowed stamina increase. Due to the aerobic decrease found in some movements implemented in Escort, the AerobicIncrease actually does the original, and on top of that the additional to balance things out.
         /// </summary>
         private void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f)
         {
@@ -724,7 +724,12 @@ namespace TheEscort
             }
             if (self.slugcatStats.name.value == "EscortMe")
             {
-                // Due to the aerobic decrease found in some movements implemented in Escort, the AerobicIncrease actually does the original, and on top of that the additional to balance things out.
+                if (e.Gilded && !self.slugcatStats.malnourished){
+                    Esclass_GD_Breathing(self, f);
+                    return;
+                }
+
+
                 if (!e.Escapist)
                 {
                     orig(self, f);
@@ -949,8 +954,7 @@ namespace TheEscort
         // Implement Heavylifter
         private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj)
         {
-            try
-            {
+            try {
                 if (self.slugcatStats.name.value != "EscortMe")
                 {
                     return orig(self, obj);
@@ -996,8 +1000,8 @@ namespace TheEscort
                 }
                 return orig(self, obj);
             }
-            catch (Exception err)
-            {
+            
+            catch (Exception err) {
                 Ebug(self, err);
                 return orig(self, obj);
             }
@@ -1768,6 +1772,12 @@ namespace TheEscort
                         e.DeflSFXcd = 9;
                     }
                     e.DeflAmpTimer = 160;
+                    if (!e.DeflTrampoline && e.DeflPowah < 3){
+                        e.DeflPowah++;
+                    }
+                    else if (e.DeflTrampoline && e.DeflPowah < 2){
+                        e.DeflPowah = 1;
+                    }
                     e.DeflTrampoline = false;
                 }
                 else
@@ -1968,10 +1978,13 @@ namespace TheEscort
                         {
                             normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
                         }
+                        float deflectorSlidingDamage = dSlideDmg;
+                        if (e.DeflPowah == 2) deflectorSlidingDamage *= 1.4f;
+                        if (e.DeflPowah == 3) deflectorSlidingDamage *= 2.4f;
                         creature.Violence(
                             self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x / 4f, self.mainBodyChunk.vel.y / 4f)),
                             creature.firstChunk, null, (e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt),
-                            (e.DeflAmpTimer > 0 ? dSlideDmg : bodySlam[0]), normSlideStun
+                            (e.DeflAmpTimer > 0 ? deflectorSlidingDamage : bodySlam[0]), normSlideStun
                         );
                         /*
                         if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -2063,6 +2076,8 @@ namespace TheEscort
                                 if (e.DeflAmpTimer > 0)
                                 {
                                     normSlamDamage *= dDKHDmg[0];
+                                    if (e.DeflPowah == 2) normSlamDamage *= 2;
+                                    if (e.DeflPowah == 3) normSlamDamage = 100;
                                 }
                                 else
                                 {

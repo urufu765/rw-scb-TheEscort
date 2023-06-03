@@ -19,6 +19,9 @@ namespace TheEscort
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
+            if (e.float_float > 0){
+                e.float_float--;
+            }
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -74,6 +77,17 @@ namespace TheEscort
                     self.bodyChunks[1].vel.y += levitation - 1f;
                 }
             }
+        }
+
+
+        private static void Esclass_GD_Breathing(Player self, float f){
+            if (
+                self.animation == Player.AnimationIndex.BellySlide && 
+                self.aerobicLevel > 0.5f && 
+                self.aerobicLevel < 1f
+            ) { self.aerobicLevel = 1f; }
+            self.aerobicLevel = Mathf.Min(5.1f, self.aerobicLevel + (f / (self.aerobicLevel > 1? 6 : 8)));
+            if (self.aerobicLevel > 5f) { self.Die(); }
         }
     }
 }

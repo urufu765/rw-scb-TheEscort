@@ -7,11 +7,7 @@ Y'all are free to ada pt the code for your own usage as long as the original aut
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### Planned (Immediate)...
-  * **(0.2.X)** Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
-
-  * **(0.2.X)** Parry Upgrade update
-
-  * **(0.2.X)** Idea backlog...
+  * *(0.2.X)* Idea backlog...
     * Changed how settings are applied in game (you shouldn't notice any changes)
     * Escort can throw better in water.
     * Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
@@ -32,11 +28,38 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
     * Properly implement Grapple Backpack template
     * Bombs do explosive punches (Brawler)
+    * Parry Upgrade update
     * Fix Escapist wall spears
     * Remove reverb from shank noise
     * Might remove Brawler shank for zeroG
+    * Suplex
+    * Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
+    * Each escort build changes color if custom colors are off, or default jolly colors are on.
+    * Normal Escort cutscene: Swims up from the water, grabs two spears, and spears one in the weird jump.
+    * Brawler starts at Outskirts [SU-A02], cutscene: Shanks a freaking pink
+    * Deflector starts at Sky Islands [SI-C03], cutscene: Deflects king tusk harpoons, then upspears it
+    * Escapist starts at Exterior (Moon) [DM-LEG02], cutscene: Spider grabby and carry
+    * Railgunner starts at Garbage Wastes [GW-C02_PAST], cutscene: Waits, aims and shoots a lizard
+    * Speedster starts at Farms Array [LF-E03], cutscene: Running from lizor, boosts, but slams into a scav at the toll, and now scavs angy
+    * Gilded starts at Rubicon and ends at Rubicon there is no escape teehee
+    * Add/remove sound effect to tell if Escort is dropkicking a live creature or a dead one
+    * Add Railgunner knockback for other double-ups (maybe by having the knockback get introduced in frame 2 or 3)
+
+  * *(0.2.11)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
+
+  * *(0.2.10)* HUD!
+
+  * *(0.2.9)* Gilded.
+
 
 * ### 0.2 - The Escort
+
+  * *(0.2.8.9)* Headbutt batflies, and have batflies give half a pip instead of just a quarter
+
+  * *(0.2.8.8)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+
+  * **(0.2.8.7)** Fixed version appearing every time you want to edit Escort settings. Deflector mechanics addition, normal Escort lung capacity buff, rest of Escorts lung capacity nerf.
+
   * **(0.2.8.6)** Fixed options. Fixed the gilded mechanics.
 
   * **(0.2.8.5)** Fixed options? Fricked up the gilded mechanics

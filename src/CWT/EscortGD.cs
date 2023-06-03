@@ -7,11 +7,12 @@ namespace TheEscort
     public partial class Escort
     {
         public bool float_state;
+        public int float_float;
         public void EscortGD()
         {
             Gilded = false;
             float_state = false;
-            
+            float_float = 0;
         }
 
         public void Escat_float_state(Player self, bool status = true){

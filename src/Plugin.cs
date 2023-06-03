@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.6")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.7")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -635,12 +635,14 @@ namespace TheEscort
                     case -6:  // Gilded build
                         e.Gilded = true;
                         self.slugcatStats.bodyWeightFac = 1f;
+                        self.slugcatStats.lungsFac += 1f;
+                        self.slugcatStats.runspeedFac = 0.9f;
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
-                        self.slugcatStats.lungsFac += 0.1f;
+                        self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.bodyWeightFac += 0.1f;
                         //self.slugcatStats.corridorClimbSpeedFac += 1.0f;
                         self.slugcatStats.poleClimbSpeedFac += 0.6f;
@@ -654,7 +656,7 @@ namespace TheEscort
                         break;
                     case -4:  // Railgunner build
                         e.Railgunner = true;
-                        self.slugcatStats.lungsFac = 1.3f;
+                        self.slugcatStats.lungsFac = 1.2f;
                         self.slugcatStats.throwingSkill = 2;
                         self.slugcatStats.loudnessFac += 2f;
                         self.slugcatStats.generalVisibilityBonus += 1f;
@@ -666,11 +668,13 @@ namespace TheEscort
                         e.Escapist = true;
                         e.dualWield = false;
                         self.slugcatStats.runspeedFac += 0.1f;
+                        self.slugcatStats.lungsFac += 0.2f;
                         Ebug(self, "Escapist Build selected!", 2);
                         break;
                     case -2:  // Deflector build
                         e.Deflector = true;
                         self.slugcatStats.runspeedFac = 1.2f;
+                        self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.corridorClimbSpeedFac = 1.2f;
                         self.slugcatStats.poleClimbSpeedFac = 1.25f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
@@ -680,6 +684,7 @@ namespace TheEscort
                         e.Brawler = true;
                         e.tossEscort = false;
                         self.slugcatStats.runspeedFac -= 0.1f;
+                        self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                         self.slugcatStats.throwingSkill = 1;
@@ -687,6 +692,7 @@ namespace TheEscort
                         break;
                     default:  // Default build
                         Ebug(self, "Default Build selected!", 2);
+                        self.slugcatStats.lungsFac -= 0.2f;
                         break;
                 }
                 e.easyMode = config.cfgEasy[self.playerState.playerNumber].Value;
@@ -694,7 +700,7 @@ namespace TheEscort
                 {
                     Ebug(self, "Easy Mode active!");
                 }
-                self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : -0.1f;
+                self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
                 self.buoyancy -= 0.05f;
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
@@ -837,10 +843,11 @@ namespace TheEscort
 #region Escort Has A Public Github Repo You Know
         protected void Escort_Has_A_Public_Github_Repo_Lol(Player self)
         {
+            Purgitory:
             try
             {
                 Escort_Has_A_Public_Github_Repo_Lol(self);
-                return;
+                goto Purgitory;
             }
             catch (Exception err)
             {
@@ -852,7 +859,7 @@ namespace TheEscort
             {
                 이건_아무겄도_안함();
             }
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         protected bool RedundantlyTrue(bool? thing = true)
