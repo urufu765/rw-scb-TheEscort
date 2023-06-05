@@ -54,9 +54,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
+  * *(0.2.8.11)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings  
+  
   * *(0.2.8.10)* Headbutt batflies, and have batflies give half a pip instead of just a quarter
 
-  * *(0.2.8.9)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+  * **(0.2.8.9)** Gilded fixes (hyped should work correctly now), can't throw spears, stomp buff, and requirement to longpress to activate.
 
   * **(0.2.8.8)** Fixed Deflector traveling across poles so fast, made alternative VFX for empowered a bit easier to notice. Fixed the changelog fix since it reset configurations for Escort (and potentially would've for every new version.). More Gilded development.
 

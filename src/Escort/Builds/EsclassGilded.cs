@@ -35,14 +35,25 @@ namespace TheEscort
                 !gilded_lev.TryGet(self, out float levitation)
                 ) return;
 
+            if (self.aerobicLevel > 4){
+                self.Blink(5);
+            }
+
             if (!(self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)){
                 // Moon jump
                 if (!e.GildCrush){
-                    self.bodyChunks[0].vel.y += Mathf.Lerp(0, levitation, Mathf.InverseLerp(0, e.GildMoonJumpMax, e.GildMoonJump));
+                    self.bodyChunks[0].vel.y += Mathf.Lerp(0, levitation * (self.animation == Player.AnimationIndex.Flip? 1.5f : 1), Mathf.InverseLerp(0, e.GildMoonJumpMax, e.GildMoonJump));
                 }
 
                 // Crush
-                if (self.input[0].jmp && !self.input[1].jmp && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax / 2){
+                bool longpressJump = true;
+                for (int i = 0; i < 10; i++){
+                    if (!self.input[i].jmp){
+                        longpressJump = false;
+                        break;
+                    }
+                }
+                if (longpressJump && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax -5){
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
                 }
@@ -59,7 +70,7 @@ namespace TheEscort
                 }
                 else {
                     self.impactTreshhold = 200f;
-                    self.bodyChunks[1].vel.y -= 4f;
+                    self.bodyChunks[1].vel.y -= 3f;
                 }
             }
 
@@ -124,7 +135,7 @@ namespace TheEscort
                 self.aerobicLevel > 0.5f && 
                 self.aerobicLevel < 1f
             ) { self.aerobicLevel = 1f; }
-            self.aerobicLevel = Mathf.Min(5.1f, self.aerobicLevel + (f / (self.aerobicLevel > 1? 6 : 8)));
+            self.aerobicLevel = Mathf.Min(5.5f, self.aerobicLevel + (f / (self.aerobicLevel > 1? 10 : 8)));
         }
 
         private static void Esclass_GD_Jump(Player self, ref Escort e){
@@ -137,13 +148,14 @@ namespace TheEscort
             if (e.GildCrush){
                 creature.SetKillTag(self.abstractCreature);
                 creature.LoseAllGrasps();
+                float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 50, Mathf.Abs(self.bodyChunks[0].vel.y)));
                 creature.Violence(
                     self.bodyChunks[1], 
                     new Vector2?(new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * DKMultiplier)),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
-                    Mathf.Lerp(0, 3, Mathf.InverseLerp(0, 50, Mathf.Abs(self.bodyChunks[0].vel.y))),
-                    25
+                   dam,
+                    30
                 );
                 self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 1f, 1.1f);
                 self.room?.PlaySound(Escort_SFX_Impact, e.SFXChunk);
@@ -151,6 +163,7 @@ namespace TheEscort
                 self.bodyChunks[1].vel.y = Mathf.Max(self.bodyChunks[1].vel.y, 1);
                 self.impactTreshhold = 1f;
                 e.GildCrush = false;
+                Ebug(self, "Stomp! Damage: " + dam);
             }
         }
     }

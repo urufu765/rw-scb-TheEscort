@@ -1216,6 +1216,7 @@ namespace TheEscort
                 }
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Gilded && self.grasps[grasp]?.grabbed is Spear) self.TossObject(grasp, eu);
             }
             catch (Exception err)
             {

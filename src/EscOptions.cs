@@ -114,7 +114,7 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.8";
+        private static readonly string VERSION = "0.2.8.9";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
