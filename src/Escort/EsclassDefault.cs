@@ -1917,7 +1917,7 @@ namespace TheEscort
 
 
             if (otherObject is Creature creature &&
-                creature.abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
+                creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
             {
 
                 if (e.Escapist && self.aerobicLevel > 0.02f)
@@ -1963,7 +1963,7 @@ namespace TheEscort
                 int direction;
 
                 // Parryslide (stun module)
-                if (self.animation == Player.AnimationIndex.BellySlide)
+                if (creature.abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && self.animation == Player.AnimationIndex.BellySlide)
                 {
                     try
                     {
@@ -2054,7 +2054,7 @@ namespace TheEscort
                 }
 
                 // Dropkick
-                else if (self.animation == Player.AnimationIndex.RocketJump)
+                else if (creature.abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && self.animation == Player.AnimationIndex.RocketJump)
                 {
                     try
                     {

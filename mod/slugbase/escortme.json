@@ -27,7 +27,10 @@
 		"diet": {
 			"base": "Red",
 			"corpses": 0.75,
-			"plants": 0.75
+			"plants": 0.75,
+			"overrides": {
+				"Fly": 0.5
+			}
 		},
 		"karma": 2,
 		"karma_cap": 3,

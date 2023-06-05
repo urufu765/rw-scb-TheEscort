@@ -114,12 +114,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.9";
+        private static readonly string VERSION = "0.2.8.10";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Fixed Deflector traveling across poles so fast and made alternative VFX for empowered a bit easier to notice.<LINE>Fixed the changelog fix since it reset configurations for Escort (and potentially would for every new version.).<LINE><LINE>Gilded development continues...");
+                "Headbutt batflies, and have batflies give half a pip instead of just a quarter.");
             }
         }
 

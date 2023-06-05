@@ -48,7 +48,7 @@ namespace TheEscort
                 // Crush
                 bool longpressJump = true;
                 for (int i = 0; i < 10; i++){
-                    if (!self.input[i].jmp){
+                    if (i < 9 && !self.input[i].jmp || i == 9 && self.input[i].jmp){
                         longpressJump = false;
                         break;
                     }
