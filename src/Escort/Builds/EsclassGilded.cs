@@ -19,8 +19,12 @@ namespace TheEscort
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
-            if (e.float_float > 0){
-                e.float_float--;
+            if (e.GildFloatFloat > 0){
+                e.GildFloatFloat--;
+            }
+
+            if (e.GildMoonJump > 0){
+                e.GildMoonJump--;
             }
         }
 
@@ -30,17 +34,48 @@ namespace TheEscort
                 !gilded_float.TryGet(self, out float floatingSpd) ||
                 !gilded_lev.TryGet(self, out float levitation)
                 ) return;
-            if ((self.wantToJump > 0 || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && e.float_state){
+
+            if (!(self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)){
+                // Moon jump
+                if (!e.GildCrush){
+                    self.bodyChunks[0].vel.y += Mathf.Lerp(0, levitation, Mathf.InverseLerp(0, e.GildMoonJumpMax, e.GildMoonJump));
+                }
+
+                // Crush
+                if (self.input[0].jmp && !self.input[1].jmp && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax / 2){
+                    e.GildCrush = true;
+                    e.GildMoonJump = 0;
+                }
+            }
+            if (e.GildCrush){
+                // Code to have Escort stomp on some zonkerdoodles
+                if (self.bodyChunks[1].contactPoint.y == -1 || self.bodyChunks[1].contactPoint.x != 0 || self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam){
+                    self.bodyChunks[0].vel.y = Mathf.Max(self.bodyChunks[0].vel.y, 0);
+                    self.bodyChunks[1].vel.y = Mathf.Max(self.bodyChunks[1].vel.y, 1);
+                    self.impactTreshhold = 1f;
+                    e.GildCrush = false;
+                    self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
+
+                }
+                else {
+                    self.impactTreshhold = 200f;
+                    self.bodyChunks[1].vel.y -= 4f;
+                }
+            }
+
+            // Levitation
+            bool levitate = false;  // Disabled for now
+            if (levitate && (self.wantToJump > 0 || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && e.GildFloatState){
                 Ebug(self, "Jump");
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
             }
-            else if (self.input[0].jmp && !self.input[1].jmp && self.canJump > 0 && !(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && !e.float_state){
+            else if (levitate && self.input[0].jmp && !self.input[1].jmp && self.canJump > 0 && !(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam) && !e.GildFloatState){
                 Ebug(self, "Jump Higher");
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
             }
-            if (e.float_state){
+            if (levitate && e.GildFloatState){
                 self.buoyancy = 0f;
                 bool swimmer = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
                 if (self.animation != Player.AnimationIndex.Flip){
@@ -77,6 +112,9 @@ namespace TheEscort
                     self.bodyChunks[1].vel.y += levitation - 1f;
                 }
             }
+
+            // Death upon reaching too high of a hype level
+            if (self.aerobicLevel > 5f) { self.Die(); }
         }
 
 
@@ -87,7 +125,33 @@ namespace TheEscort
                 self.aerobicLevel < 1f
             ) { self.aerobicLevel = 1f; }
             self.aerobicLevel = Mathf.Min(5.1f, self.aerobicLevel + (f / (self.aerobicLevel > 1? 6 : 8)));
-            if (self.aerobicLevel > 5f) { self.Die(); }
+        }
+
+        private static void Esclass_GD_Jump(Player self, ref Escort e){
+            if (self.standing){
+                e.GildMoonJump = e.GildMoonJumpMax;
+            }
+        }
+
+        private void Esclass_GD_Collision(Player self, Creature creature, ref Escort e){
+            if (e.GildCrush){
+                creature.SetKillTag(self.abstractCreature);
+                creature.LoseAllGrasps();
+                creature.Violence(
+                    self.bodyChunks[1], 
+                    new Vector2?(new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * DKMultiplier)),
+                    creature.mainBodyChunk, null,
+                    Creature.DamageType.Blunt,
+                    Mathf.Lerp(0, 3, Mathf.InverseLerp(0, 50, Mathf.Abs(self.bodyChunks[0].vel.y))),
+                    25
+                );
+                self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 1f, 1.1f);
+                self.room?.PlaySound(Escort_SFX_Impact, e.SFXChunk);
+                self.bodyChunks[0].vel.y = Mathf.Max(self.bodyChunks[0].vel.y, 0);
+                self.bodyChunks[1].vel.y = Mathf.Max(self.bodyChunks[1].vel.y, 1);
+                self.impactTreshhold = 1f;
+                e.GildCrush = false;
+            }
         }
     }
 }

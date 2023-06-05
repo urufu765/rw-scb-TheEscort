@@ -444,8 +444,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (DKMultiplier) * (creature.TotalMass * 0.5f);
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (DKMultiplier) * (creature.TotalMass * 0.5f);
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * 0.5f);
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * 0.5f);
                     //self.WallJump(-self.flipDirection);
                     self.bodyChunks[0].vel.x *= -(e.SpeSecretSpeed ? 2.5f : 1.5f);
                     self.bodyChunks[1].vel.x *= -(e.SpeSecretSpeed ? 1.5f : 1f);

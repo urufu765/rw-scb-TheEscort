@@ -114,12 +114,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.7";
+        private static readonly string VERSION = "0.2.8.8";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Fixed version appearing every time you want to edit Escort settings. <LINE>Deflector mechanics addition (more parries = more damage) <LINE>Normal Escort lung capacity buff while rest of Escorts lung capacity nerf.");
+                "Fixed Deflector traveling across poles so fast and made alternative VFX for empowered a bit easier to notice.<LINE>Fixed the changelog fix since it reset configurations for Escort (and potentially would for every new version.).<LINE><LINE>Gilded development continues...");
             }
         }
 
@@ -716,16 +716,18 @@ namespace TheEscort
             if (cfgVersion.Value != VERSION){
                 ConfigConnector.CreateDialogBoxNotify(HelloWorld);
                 cfgVersion.Value = VERSION;
-                this._SaveConfigFile();
+                //this._SaveConfigFile();
             }
         }
 
-        /*
         public override void Update()
         {
-            this.cfgDeveloperMode.OnChange += longDevLogChange;
             base.Update();
-        }*/
+            if (cfgVersion.Value != VERSION){
+                cfgVersion.Value = VERSION;
+                this._SaveConfigFile();
+            }
+        }
 
         private void LongDevLogChange()
         {

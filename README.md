@@ -54,9 +54,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
-  * *(0.2.8.9)* Headbutt batflies, and have batflies give half a pip instead of just a quarter
+  * *(0.2.8.10)* Headbutt batflies, and have batflies give half a pip instead of just a quarter
 
-  * *(0.2.8.8)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+  * *(0.2.8.9)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+
+  * **(0.2.8.8)** Fixed Deflector traveling across poles so fast, made alternative VFX for empowered a bit easier to notice. Fixed the changelog fix since it reset configurations for Escort (and potentially would've for every new version.). More Gilded development.
 
   * **(0.2.8.7)** Fixed version appearing every time you want to edit Escort settings. Deflector mechanics addition, normal Escort lung capacity buff, rest of Escorts lung capacity nerf.
 

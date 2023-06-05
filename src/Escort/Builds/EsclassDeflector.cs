@@ -85,12 +85,12 @@ namespace TheEscort
                     }
                     else
                     {
-                        self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 15f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 3f, 24f, 3.5f, empoweredColor * 1.5f));
+                        self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 15f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 1.5f, 24f, 3.5f, empoweredColor * 1.5f));
                         if (e.DeflPowah <= 2){
-                            self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 20f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 3f, 24f, 3.5f, empoweredColor * 1.5f));
+                            self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 23f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 1.5f, 24f, 3.5f, empoweredColor * 1.5f));
                         }
                         if (e.DeflPowah <= 3){
-                            self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 25f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 3f, 24f, 3.5f, empoweredColor * 1.5f));
+                            self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[0].pos, 5, Mathf.Lerp(10f, 31f, Mathf.InverseLerp(0, 20, e.DeflAmpTimer % 20)), 1.5f, 24f, 3.5f, empoweredColor * 1.5f));
                         }
                     }
                 }

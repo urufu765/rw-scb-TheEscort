@@ -646,9 +646,9 @@ namespace TheEscort
             The slugcat apparently has a limit on how fast they can move on the beam while standing on it, leaning more and more foreward and getting more and more friction as a result...
             or to that degree.
             */
-            else if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
+            else if (!e.Deflector && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
             {
-                if (!e.Deflector && hypedMode)
+                if (hypedMode)
                 {
                     if (self.animation == Player.AnimationIndex.StandOnBeam)
                     {
@@ -805,6 +805,7 @@ namespace TheEscort
                 self.animation = Player.AnimationIndex.Flip;
             }
             if (e.Speedster) Esclass_SS_Jump(self, ref e);
+            if (e.Gilded) Esclass_GD_Jump(self, ref e);
         }
 
         /// <summary>
@@ -1923,6 +1924,7 @@ namespace TheEscort
                     self.aerobicLevel -= 0.01f;
                 }
                 if (e.Speedster) Esclass_SS_Collision(self, creature, ref e);
+                if (e.Gilded) Esclass_GD_Collision(self, creature, ref e);
 
                 // Creature Trampoline (or if enabled Escort's Elevator)
                 /*

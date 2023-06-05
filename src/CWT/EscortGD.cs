@@ -6,18 +6,24 @@ namespace TheEscort
 {
     public partial class Escort
     {
-        public bool float_state;
-        public int float_float;
+        public bool GildFloatState;
+        public int GildFloatFloat;
+        public int GildMoonJump;
+        public readonly int GildMoonJumpMax = 20;
+        public bool GildCrush;
+        
         public void EscortGD()
         {
             Gilded = false;
-            float_state = false;
-            float_float = 0;
+            GildFloatState = false;
+            GildFloatFloat = 0;
+            GildMoonJump = 0;
+            GildCrush = false;
         }
 
         public void Escat_float_state(Player self, bool status = true){
             if (status){
-                float_state = true;
+                GildFloatState = true;
                 self.wantToJump = 0;
                 self.room?.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, SFXChunk, false, 1f, 0.6f);
                 for (int i = 0; i < 7; i++){
@@ -26,7 +32,7 @@ namespace TheEscort
             }
             else{
                 self.room?.PlaySound(SoundID.HUD_Pause_Game, SFXChunk, loop: false, 1f, 0.5f);
-                float_state = false;
+                GildFloatState = false;
             }
         }
     }
