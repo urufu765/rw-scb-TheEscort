@@ -8,7 +8,6 @@ namespace TheEscort
     {
         private static string prevLog = "";
         private static int logRepetition;
-
         /*
         Log Priority:
         -1: No logs
@@ -18,7 +17,7 @@ namespace TheEscort
          3: Method pings
          4: Ebug errors (done by design)
         */
-        private static readonly int logImportance = 4;
+        public static int logImportance = 4;
         private static readonly string[] prevLogs = new string[4];
         private static readonly int[] logRepetitions = new int[4];
 

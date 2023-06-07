@@ -627,7 +627,7 @@ namespace TheEscort
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl)
             {
-                if (!e.Deflector && hypedMode)
+                if (!e.Gilded && hypedMode)
                 {
                     self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
                     self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
@@ -646,7 +646,7 @@ namespace TheEscort
             The slugcat apparently has a limit on how fast they can move on the beam while standing on it, leaning more and more foreward and getting more and more friction as a result...
             or to that degree.
             */
-            else if (!e.Deflector && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
+            else if (!e.Gilded && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
             {
                 if (hypedMode)
                 {

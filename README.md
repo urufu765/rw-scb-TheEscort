@@ -54,7 +54,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
-  * *(0.2.8.11)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings  
+  * *(0.2.8.12)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+
+  * **(0.2.8.11)** Buffed Railgunner's base double-up damage, buffed Deflector (removed speed limiter), reduced lag caused by this mod (console log only appears upon setting logging at certain values). Gilded gets crippled.
   
   * **(0.2.8.10)** Headbutt batflies, and have batflies give half a pip instead of just a quarter. Also fixed Gilded spamming stomp
 

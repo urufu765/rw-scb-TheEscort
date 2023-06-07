@@ -11,6 +11,7 @@ namespace TheEscort
         public int GildMoonJump;
         public readonly int GildMoonJumpMax = 20;
         public bool GildCrush;
+        public int GildCrushTime;
         
         public void EscortGD()
         {
@@ -19,6 +20,7 @@ namespace TheEscort
             GildFloatFloat = 0;
             GildMoonJump = 0;
             GildCrush = false;
+            GildCrushTime = 0;
         }
 
         public void Escat_float_state(Player self, bool status = true){

@@ -90,6 +90,8 @@ namespace TheEscort
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
         public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod;
+        public Configurable<float> cfgEscLaunchV, cfgEscLaunchH, cfgEscLaunchSH;
+        public Configurable<int> cfgLogImportance;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -114,12 +116,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.10";
+        private static readonly string VERSION = "0.2.8.11";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "Headbutt batflies, and have batflies give half a pip instead of just a quarter.");
+                "- Buffed Railgunner's base double-up damage<LINE>- Buffed Deflector (removed speed limiter)<LINE>- Reduced lag caused by this mod.<LINE>- Gilded Development continues...");
             }
         }
 
@@ -178,7 +180,12 @@ namespace TheEscort
             this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
             this.cfgSectretBuild = this.config.Bind<bool>("cfg_EscSectretBuild", false);
             this.cfgSectretGod = this.config.Bind<bool>("cfg_EscSectretGod", false);
+            this.cfgEscLaunchH = this.config.Bind<float>("cfg_Escort_Launch_Horizontal", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
+            this.cfgEscLaunchV = this.config.Bind<float>("cfg_Escort_Launch_Vertical", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
+            this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
+            this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.cfgSecret.OnChange += InputSecret;
+            this.cfgLogImportance.OnChange += SetLogImportance;
             this.buildEasy = new OpCheckBox[4];
             this.buildPlayer = new OpSliderTick[4];
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
@@ -375,8 +382,23 @@ namespace TheEscort
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 11) + tp/2, "Super Spear"),
                 new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 11))){
-                    description = Translate("Does additional movement tech when throwing spears. (Default=true)")
-                }
+                    description = Translate("Does additional movement tech when throwing spears to make combos easier. (Default=true)")
+                },
+                /*
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), "Lifting Power Multiplier"),
+                new OpUpdown(this.cfgEscLaunchH, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100, 2){
+                    description = Translate("Controls how far does Escort get launched horizontally when stunsliding. (Default=3.0)")
+                },
+
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 13), "Lifting Power Multiplier"),
+                new OpUpdown(this.cfgEscLaunchV, new Vector2(xo + (xp * 0), yo - (yp * 13) - tp), 100, 2){
+                    description = Translate("Controls how far does Escort get launched vertically when stunsliding. (Default=3.0)")
+                },
+
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 14), "Lifting Power Multiplier"),
+                new OpUpdown(this.cfgEscLaunchSH, new Vector2(xo + (xp * 0), yo - (yp * 14) - tp), 100, 2){
+                    description = Translate("Controls how far does Escort get launched horizontally when stunsliding caused by a spear throw. (Default=3.0)")
+                }*/
             };
 
             this.buildTitle = new OpLabel[]{
@@ -704,7 +726,7 @@ namespace TheEscort
                     colorEdge = tempColor * 0.75f,
                     description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)"),
                     greyedOut = true
-                },
+                }
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
@@ -939,6 +961,11 @@ namespace TheEscort
             {
                 Ebug(err, "Error on Focus Gain");
             }
+        }
+
+        private void SetLogImportance()
+        {
+            logImportance = cfgLogImportance.Value;
         }
     }
 }

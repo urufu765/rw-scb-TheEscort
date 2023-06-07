@@ -74,6 +74,7 @@ namespace TheEscort
         */
         public static readonly PlayerFeature<float[]> WallJumpVal = PlayerFloats("theescort/wall_jump_val");
 
+
         /* JSON VALUES
         [Rotation val, X val, Y val]
         */
@@ -635,8 +636,12 @@ namespace TheEscort
                     case -6:  // Gilded build
                         e.Gilded = true;
                         self.slugcatStats.bodyWeightFac = 1f;
-                        self.slugcatStats.lungsFac += 1f;
+                        self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.runspeedFac = 0.9f;
+                        self.slugcatStats.corridorClimbSpeedFac = 0.9f;
+                        self.slugcatStats.poleClimbSpeedFac = 0.9f;
+                        self.slugcatStats.bodyWeightFac -= 0.15f;
+
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -675,8 +680,6 @@ namespace TheEscort
                         e.Deflector = true;
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.corridorClimbSpeedFac = 1.2f;
-                        self.slugcatStats.poleClimbSpeedFac = 1.25f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
@@ -715,6 +718,21 @@ namespace TheEscort
         }
 #endregion
 
+#region Escort New Configurations
+        private bool Esconfig_Launch(Player self, out float value, string type="spear"){
+            value = 0;
+            if (!pRTEdits.TryGet(self, out bool RT) ||
+                !SlideLaunchMod.TryGet(self, out float[] launcher)) return false;
+            value = type switch
+            {
+                "horizontal" => RT ? launcher[0] : config.cfgEscLaunchH.Value,
+                "vertical" => RT ? launcher[0] : config.cfgEscLaunchV.Value,
+                _ => RT ? launcher[0] : config.cfgEscLaunchSH.Value,
+            };
+            Esconfig_Launch(self, out float thing); // Not implemented yet
+            return thing == 0;
+        }
+#endregion
 
         /*
         Escort code!

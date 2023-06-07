@@ -26,6 +26,13 @@ namespace TheEscort
             if (e.GildMoonJump > 0){
                 e.GildMoonJump--;
             }
+
+            if (self.input[0].jmp && e.GildCrushTime < 20 && !e.GildCrush){
+                e.GildCrushTime++;
+            }
+            else if (!self.input[0].jmp && e.GildCrushTime > 0){
+                e.GildCrushTime--;
+            }
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -46,14 +53,8 @@ namespace TheEscort
                 }
 
                 // Crush
-                bool longpressJump = true;
-                for (int i = 0; i < 10; i++){
-                    if (i < 9 && !self.input[i].jmp || i == 9 && self.input[i].jmp){
-                        longpressJump = false;
-                        break;
-                    }
-                }
-                if (longpressJump && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax -5){
+                if (e.GildCrushTime == 20 && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax -5){
+                    e.GildCrushTime = 0;
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
                 }
