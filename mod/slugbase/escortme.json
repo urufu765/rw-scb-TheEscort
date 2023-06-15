@@ -54,7 +54,7 @@
 		"theescort/better_polewalk": [3.9, 5.2, 5, 0.6],
 		"theescort/better_polehang": [1.35, 2.16, -0.55, -0.35, 1.9, -0.5],
 		"theescort/body_slam": [0.05, 45, 0.7, 15],
-		"theescort/slide_launch_mod": [18, 5, 7],
+		"theescort/slide_launch_mod": [18, 5, 7, 8, 21, 10],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
 		"theescort/exhausion": 90,

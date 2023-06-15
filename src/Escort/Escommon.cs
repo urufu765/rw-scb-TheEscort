@@ -114,7 +114,19 @@ namespace TheEscort
             }
         }
 
-
+        /// <summary>
+        /// Immitates a wall jump but not really
+        /// </summary>
+        private static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
+            self.bodyChunks[0].vel.y = boostUp;
+            self.bodyChunks[1].vel.y = boostUp - 1f;
+            self.bodyChunks[0].pos.y += yankUp;
+            self.bodyChunks[1].pos.y += yankUp;
+            if (direction != -2){
+                self.bodyChunks[0].vel.x = boostLR * direction;
+                self.bodyChunks[1].vel.x = (boostLR - 1) * direction;
+            }
+        }
 
 
         // Implement a different type of dropkick
@@ -195,6 +207,12 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Makes Escort eat held items twice as fast
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="self"></param>
+        /// <param name="eu"></param>
         private void Escort_Eated(On.Player.orig_BiteEdibleObject orig, Player self, bool eu)
         {
             try

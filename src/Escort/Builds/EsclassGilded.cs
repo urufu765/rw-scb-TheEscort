@@ -45,6 +45,7 @@ namespace TheEscort
             if (self.aerobicLevel > 4){
                 self.Blink(5);
             }
+            if (self.standing) e.GildCrushReady = true;
 
             if (!(self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)){
                 // Moon jump
@@ -53,7 +54,7 @@ namespace TheEscort
                 }
 
                 // Crush
-                if (e.GildCrushTime == 20 && !e.GildCrush && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax -5){
+                if (e.GildCrushTime == 20 && !e.GildCrush && e.GildCrushReady && self.bodyChunks[1].contactPoint.y != -1 && e.GildMoonJump < e.GildMoonJumpMax -5){
                     e.GildCrushTime = 0;
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
@@ -164,6 +165,7 @@ namespace TheEscort
                 self.bodyChunks[1].vel.y = Mathf.Max(self.bodyChunks[1].vel.y, 1);
                 self.impactTreshhold = 1f;
                 e.GildCrush = false;
+                e.GildCrushReady = false;
                 Ebug(self, "Stomp! Damage: " + dam);
             }
         }

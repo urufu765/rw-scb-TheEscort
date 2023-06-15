@@ -27,12 +27,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Give Deflector throwskill of 1 to make ricochets possible... and also let the roll throws travel
     * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
     * Properly implement Grapple Backpack template
-    * Bombs do explosive punches (Brawler)
     * Parry Upgrade update
     * Fix Escapist wall spears
     * Remove reverb from shank noise
     * Might remove Brawler shank for zeroG
-    * Suplex
     * Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
     * Each escort build changes color if custom colors are off, or default jolly colors are on.
     * Normal Escort cutscene: Swims up from the water, grabs two spears, and spears one in the weird jump.
@@ -44,17 +42,28 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Gilded starts at Rubicon and ends at Rubicon there is no escape teehee
     * Add/remove sound effect to tell if Escort is dropkicking a live creature or a dead one
     * Add Railgunner knockback for other double-ups (maybe by having the knockback get introduced in frame 2 or 3)
+    * Reduce stunslide uncontrollability by changeing it to a roll and balance it. Also have a new way to trigger the combo
 
-  * *(0.2.11)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
+  * *(0.2.12)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
+
+  * *(0.2.11)* Ability update!
+    * Regular Escort can Suplex
+    * Bombs do explosive punches (Brawler)
+    * Deflects weapons properly (sends them back to the sender) (Deflector)
+    * NONE-REWORK SOON(Escapist)
+    * Two rocks + one food pip = bomb, two spears + one food pip = fire spear (Railgunner)
+    * While in speeding state, sliding under enemy causes them to launch upwards (Speedster)
+    * NONE-TOO RECENT(Gilded)
 
   * *(0.2.10)* HUD!
 
-  * *(0.2.9)* Gilded.
+  * *(0.2.9)* Gilded. (another idea: Blast away the creatures for safety)
 
 
 * ### 0.2 - The Escort
+  * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
 
-  * *(0.2.8.12)* Reduced speartoss stun slide's horizontal distance and increased vertical distance for both stun slides. Make them both an option in remix settings
+  * **(0.2.8.12)** Changed the behaviour of stunslide (activated by spears) such that it no longer sends Escort flying into oblivion uncontrollably and increased height in general. Added log options for those who want to see the logs. Fixed Gilded multi-stomp if they can't touch the ground. Railgunner has a 100% chance to die when bitten while malnourished(vulnerable) and will spasm upon getting stunned in any way.
 
   * **(0.2.8.11)** Buffed Railgunner's base double-up damage, buffed Deflector (removed speed limiter), reduced lag caused by this mod (console log only appears upon setting logging at certain values). Gilded gets crippled.
   

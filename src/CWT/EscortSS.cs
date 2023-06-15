@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,6 +40,7 @@ namespace TheEscort
             this.SpeOldSpeed = useOld;
         }
 
+        [Obsolete ("Switch to IDrawable")]
         public class SpeedTrail : ISingleCameraDrawable
         {
             private Vector2 pos;

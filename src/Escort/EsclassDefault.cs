@@ -194,6 +194,17 @@ namespace TheEscort
                 {
                     return;
                 }
+                // ONE OF THESE WILL TELL ME WHY THE FUCK THE SCUG'S CONTROLLER GETS YEETED OUT THE WINDOW I SWEAR TO FUCKING GOD
+                if (false && (bool)!self.room?.game?.paused){
+                    Ebug(new object[]{
+                             "X: ", self.input[0].x,
+                           "| Y: ", self.input[0].y,
+                         "| Jmp: ", self.input[0].jmp,
+                          "| JS: ", self.jumpStun,
+                          "| FC: ", self.freezeControls
+                    });
+                }
+                //self.jumpStun = 0;
             }
             catch (Exception err)
             {
@@ -695,13 +706,13 @@ namespace TheEscort
                 {
                     self.mainBodyChunk.vel *= new Vector2(
                         Mathf.Lerp(1f, theGut[0], (float)Math.Pow(viscoDance, theGut[6])),
-                        Mathf.Lerp(1f, (self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2]), (float)Math.Pow(viscoDance, theGut[7])));
+                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2], (float)Math.Pow(viscoDance, theGut[7])));
                 }
                 else if (self.animation == Player.AnimationIndex.SurfaceSwim)
                 {
                     self.mainBodyChunk.vel *= new Vector2(
                         Mathf.Lerp(1f, theGut[3], (float)Math.Pow(viscoDance, theGut[8])),
-                        Mathf.Lerp(1f, (self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5]), (float)Math.Pow(viscoDance, theGut[9])));
+                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5], (float)Math.Pow(viscoDance, theGut[9])));
                     self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(viscoDance, theGut[12]));
                 }
             }
@@ -1449,7 +1460,7 @@ namespace TheEscort
                     }
                     if (e.Railgunner)
                     {
-                        biteMult += 0.35f;
+                        biteMult = self.Malnourished? 10000f : 0.85f;
                     }
                     if (e.Escapist)
                     {
@@ -1457,7 +1468,7 @@ namespace TheEscort
                     }
                     if (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump))
                     {
-                        biteMult = 100f;
+                        biteMult = 10000f;
                     }
                     Ebug(self, "Lizard bites with multiplier: " + biteMult);
                     return biteMult;
@@ -1466,6 +1477,11 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
+            }
+            catch (NullReferenceException nerr)
+            {
+                Ebug(self, nerr, "Found null while setting deathbitemultiplier!");
+                return orig(self);
             }
             catch (Exception err)
             {
@@ -1962,7 +1978,7 @@ namespace TheEscort
 
                 int direction;
 
-                // Parryslide (stun module)
+                // Stunslide/Parryslide (stun module)
                 if (creature.abstractCreature.creatureTemplate.type != CreatureTemplate.Type.Fly && self.animation == Player.AnimationIndex.BellySlide)
                 {
                     try
@@ -1976,7 +1992,7 @@ namespace TheEscort
                         }
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
 
-                        float normSlideStun = (hypedMode || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1]);
+                        float normSlideStun = hypedMode || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1];
                         if (hypedMode && self.aerobicLevel > requirement)
                         {
                             normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
@@ -1986,8 +2002,8 @@ namespace TheEscort
                         if (e.DeflPowah == 3) deflectorSlidingDamage *= 2.4f;
                         creature.Violence(
                             self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x / 4f, self.mainBodyChunk.vel.y / 4f)),
-                            creature.firstChunk, null, (e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt),
-                            (e.DeflAmpTimer > 0 ? deflectorSlidingDamage : bodySlam[0]), normSlideStun
+                            creature.firstChunk, null, e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt,
+                            e.DeflAmpTimer > 0 ? deflectorSlidingDamage : bodySlam[0], normSlideStun
                         );
                         /*
                         if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -1995,14 +2011,17 @@ namespace TheEscort
                         }*/
 
                         self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 5f, 5.5f, 40f, new Color(0f, 0.35f, 1f, 0f)));
+
+                        // Long belly slide slidestun. Usually caused by throwing a spear midair while hyped.
                         if (self.longBellySlide)
                         {
                             direction = self.rollDirection;
-                            self.animation = Player.AnimationIndex.Flip;
-                            self.WallJump(direction);
+                            //self.WallJump(direction);
+                            //Escort_FakeWallJump(self, direction, boostUp:slideMod[5], yankUp: slideMod[6], boostLR:slideMod[7]);
                             if (Esconfig_Spears(self))
                             {
                                 float tossModifier = slideMod[0];
+                                self.animation = Player.AnimationIndex.Roll;
                                 if (e.Deflector)
                                 {
                                     tossModifier = dSlideMod;
@@ -2010,15 +2029,18 @@ namespace TheEscort
                                 else if (e.Escapist)
                                 {
                                     tossModifier = eSlideMod;
+                                    self.animation = Player.AnimationIndex.BellySlide;
+                                    self.longBellySlide = false;
                                 }
-                                self.animation = Player.AnimationIndex.BellySlide;
-                                self.longBellySlide = false;
-                                self.bodyChunks[1].vel = new Vector2(self.slideDirection * tossModifier, slideMod[1]);
-                                self.bodyChunks[0].vel = new Vector2(self.slideDirection * tossModifier, slideMod[2]);
+                                //self.mainBodyChunk.vel.x *= tossModifier;
+                                self.bodyChunks[1].vel.x = self.slideDirection * tossModifier - 1;
+                                self.bodyChunks[0].vel.x = self.slideDirection * tossModifier;
+                                Escort_FakeWallJump(self, boostUp:slideMod[4], yankUp:slideMod[5]);
                             }
                             else
                             {
-                                self.animation = Player.AnimationIndex.Flip;
+                                self.animation = Player.AnimationIndex.BellySlide;
+                                self.longBellySlide = false;
                             }
                             Ebug(self, "Greatdadstance stunslide!", 2);
                         }
@@ -2042,7 +2064,12 @@ namespace TheEscort
                                 Ebug(self, "No more no control!");
                                 self.rocketJumpFromBellySlide = false;
                             }
+
                             self.WallJump(direction);
+                            //Escort_FakeWallJump(self, boostUp: slideMod[4]);
+
+                            //self.animation = Player.AnimationIndex.None;
+                            self.jumpBoost += slideMod[3];
                             self.animation = Player.AnimationIndex.Flip;
                             Ebug(self, "Stunslided!", 2);
                         }
@@ -2137,7 +2164,7 @@ namespace TheEscort
                         creature.Violence(
                             self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass)),
                             creature.mainBodyChunk, null, Creature.DamageType.Blunt,
-                            0f, 15f
+                            creature.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly? 1f: 0f, 15f
                         );
                         creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass;
                         creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass;

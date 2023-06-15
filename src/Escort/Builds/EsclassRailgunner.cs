@@ -571,5 +571,32 @@ namespace TheEscort
             }
             return false;
         }
+
+        private void Esclass_RG_Spasm(On.Player.orig_Stun orig, Player self, int st)
+        {
+            orig(self, st);
+            try
+            {
+                if (self.slugcatStats.name.value != "EscortMe")
+                {
+                    return;
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(self, err, "Stun!");
+                return;
+            }
+            if (
+                !eCon.TryGetValue(self, out Escort e)
+                )
+            {
+                return;
+            }
+            if (!e.Railgunner) return;
+
+            self?.room?.AddObject(new CreatureSpasmer(self, true, st));
+            self.exhausted = true;
+        }
     }
 }

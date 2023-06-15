@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.10")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.12")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -192,6 +192,7 @@ namespace TheEscort
             On.Player.CanIPickThisUp += Escort_SpearGet;
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
+            On.Player.Stun += Esclass_RG_Spasm;
 
             On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
             On.Player.Update += Socks_Update;

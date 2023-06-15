@@ -12,6 +12,7 @@ namespace TheEscort
         public readonly int GildMoonJumpMax = 20;
         public bool GildCrush;
         public int GildCrushTime;
+        public bool GildCrushReady;
         
         public void EscortGD()
         {
@@ -19,8 +20,9 @@ namespace TheEscort
             GildFloatState = false;
             GildFloatFloat = 0;
             GildMoonJump = 0;
-            GildCrush = false;
-            GildCrushTime = 0;
+            GildCrush = false;  // Stomping state
+            GildCrushTime = 0;  // Chargeup
+            GildCrushReady = false;  // Stops Gilded from stomping multiple times in the air
         }
 
         public void Escat_float_state(Player self, bool status = true){

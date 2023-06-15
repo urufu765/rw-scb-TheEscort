@@ -54,8 +54,8 @@ namespace TheEscort
             {
                 if (separated)
                 {
-                    String message = "";
-                    foreach (String msg in messages)
+                    string message = "";
+                    foreach (string msg in messages)
                     {
                         message += ", " + msg;
                     }

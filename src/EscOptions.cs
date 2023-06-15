@@ -73,12 +73,12 @@ namespace TheEscort
         public Configurable<bool> cfgSFX;
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
-        public Configurable<int> cfgBuildNum;  // LEGACY!
-        public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
+        [Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
+        [Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
         public Configurable<int>[] cfgBuild;
-        public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
+        [Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
         public Configurable<bool>[] cfgEasy;
-        public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
+        [Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
         public Configurable<bool> cfgDKAnimation;
@@ -116,12 +116,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.8.11";
+        private static readonly string VERSION = "0.2.8.12";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Buffed Railgunner's base double-up damage<LINE>- Buffed Deflector (removed speed limiter)<LINE>- Reduced lag caused by this mod.<LINE>- Gilded Development continues...");
+                "- GILDED WILL BE DELAYED! I need to work on something first before I can work on the rest of Gilded... sorry about that.<LINE>- Changed the behaviour of stunslide (activated by spears) such that it no longer sends Escort flying into oblivion uncontrollably and increased height in general. <LINE>-Added log options for those who want to see the logs. <LINE>-Fixed Gilded multi-stomp if they can't touch the ground. <LINE>-Railgunner has a 100% chance to die when bitten while malnourished(vulnerable) and will spasm upon getting stunned in any way.");
             }
         }
 
@@ -420,7 +420,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
                     color = bSpeedster * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {Coming Soon!}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {Delayed}", true){
                     color = bGilded * 0.75f
                 },
             };
@@ -726,7 +726,16 @@ namespace TheEscort
                     colorEdge = tempColor * 0.75f,
                     description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)"),
                     greyedOut = true
+                },
+
+                new OpLabel(xo + (xp * 8) + 7f, yo - (yp * 5) + tp, "Developer Logging"),
+                new OpSliderTick(this.cfgLogImportance, new Vector2(xo + (xp * 0) + 7f, yo - (yp * 5)), 300 - (int)xp - 7)
+                {
+                    min = -1,
+                    max = 4,
+                    description = OptionInterface.Translate("Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs. (Default=0)"),
                 }
+
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
@@ -814,7 +823,8 @@ namespace TheEscort
 
         private void ResultsBaby(string value = "")
         {
-            int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
+            if (rainworld.processManager.currentMainLoop is not Menu.ModdingMenu) return;
+            int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
@@ -885,11 +895,14 @@ namespace TheEscort
                     Debug.LogError("Couldn't play sound!");
                     Debug.LogException(err);
                 }
-            }        }
+            }        
+        }
 
         private void MakeSomeNoiseEsconfig()
         {
-            ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
+            if (SoundID.MENU_Next_Slugcat != null){
+                ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
+            }
         }
 
         private void ToggleDisableHyped(UIconfig config, string value, string oldValue)
