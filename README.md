@@ -44,9 +44,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Add Railgunner knockback for other double-ups (maybe by having the knockback get introduced in frame 2 or 3)
     * Reduce stunslide uncontrollability by changeing it to a roll and balance it. Also have a new way to trigger the combo
 
-  * *(0.2.12)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
+  * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
 
-  * *(0.2.11)* Ability update!
+  * *(0.2.12)* Ability update!
     * Regular Escort can Suplex
     * Bombs do explosive punches (Brawler)
     * Deflects weapons properly (sends them back to the sender) (Deflector)
@@ -55,13 +55,16 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * While in speeding state, sliding under enemy causes them to launch upwards (Speedster)
     * NONE-TOO RECENT(Gilded)
 
-  * *(0.2.10)* HUD!
+  * *(0.2.11)* Fleshed Out Story (Part 2) Update
 
-  * *(0.2.9)* Gilded. (another idea: Blast away the creatures for safety)
+  * *(0.2.10)* Gilded. (another idea: Blast away the creatures for safety)
 
+  * *(0.2.9)* HUD & Story (Part 1) Update!
+
+  * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
 
 * ### 0.2 - The Escort
-  * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
+  * **(0.2.9)** Each Escort has a different food requirement, and has different spawns.
 
   * **(0.2.8.12)** Changed the behaviour of stunslide (activated by spears) such that it no longer sends Escort flying into oblivion uncontrollably and increased height in general. Added log options for those who want to see the logs. Fixed Gilded multi-stomp if they can't touch the ground. Railgunner has a 100% chance to die when bitten while malnourished(vulnerable) and will spasm upon getting stunned in any way.
 

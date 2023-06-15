@@ -340,6 +340,24 @@ namespace TheEscort
                 Ebug(self.player, err, "Something happened while trying to draw sprites!");
             }
         }
+
+        private Color Escort_Colorz(On.PlayerGraphics.orig_DefaultSlugcatColor orig, SlugcatStats.Name i)
+        {
+            try {
+                if (i == EscortMe){
+                    return new Color(0.255f, 0.412f, 0.882f);
+                }
+                return orig(i);
+            } catch (NullReferenceException nre) {
+                Ebug(nre, "Null found when setting default scug flavor!");
+                return orig(i);
+            } catch (Exception err) {
+                Ebug(err, "Generic error found when setting scug flavor!");
+                return orig(i);
+            }
+        }
+
+
 #endregion
 
 #region Escort Jolly UI

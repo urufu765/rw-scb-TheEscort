@@ -12,7 +12,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.8.12")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -138,6 +138,10 @@ namespace TheEscort
             On.RainWorld.OnModsInit += Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please;
             On.RainWorld.PostModsInit += Escort_PostInit;
 
+            On.RainWorldGame.ctor += EscortChangingRoom;
+
+            On.SaveState.setDenPosition += Escort_ChangingRoom;
+
             //IL.AbstractCreature.Realize += Backpack_ILRealize;
             //On.AbstractCreature.Realize += Backpack_Realize;
             //On.StaticWorld.InitCustomTemplates += Custom_Stuff;
@@ -152,6 +156,7 @@ namespace TheEscort
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
             On.PlayerGraphics.AddToContainer += Escort_AddGFXContainer;
             On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
+            On.PlayerGraphics.DefaultSlugcatColor += Escort_Colorz;
 
             // Jolly UI
             On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.HasUniqueSprite += Escort_Jolly_Sprite;
@@ -625,6 +630,8 @@ namespace TheEscort
                 if (!ins.L().Eastabun){
                     pal = -6;
                 }
+                int maximumPips = self.slugcatStats.maxFood;
+                int minimumPips = self.slugcatStats.foodToHibernate;
                 switch (pal)
                 {
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
@@ -642,6 +649,8 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac = 0.9f;
                         self.slugcatStats.poleClimbSpeedFac = 0.9f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
+                        maximumPips += 0;
+                        minimumPips -= 0;
 
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
@@ -658,6 +667,8 @@ namespace TheEscort
                         self.airFriction -= 0.5f;
                         self.waterFriction -= 0.5f;
                         self.surfaceFriction -= 0.5f;
+                        maximumPips -= 3;
+                        minimumPips -= 2;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -668,6 +679,8 @@ namespace TheEscort
                         self.slugcatStats.generalVisibilityBonus += 1f;
                         self.slugcatStats.visualStealthInSneakMode = 0f;
                         self.slugcatStats.bodyWeightFac += 0.3f;
+                        maximumPips -= 4;
+                        minimumPips -= 0;
                         Ebug(self, "Railgunner Build selected!", 2);
                         break;
                     case -3:  // Escapist build
@@ -675,6 +688,9 @@ namespace TheEscort
                         e.dualWield = false;
                         self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
+                        self.slugcatStats.bodyWeightFac -= 0.15f;
+                        maximumPips -= 3;
+                        minimumPips -= 3;
                         Ebug(self, "Escapist Build selected!", 2);
                         break;
                     case -2:  // Deflector build
@@ -682,6 +698,8 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
+                        maximumPips += 1;
+                        minimumPips -= 2;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
@@ -692,6 +710,8 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                         self.slugcatStats.throwingSkill = 1;
+                        maximumPips += 3;
+                        self.slugcatStats.foodToHibernate += 2;
                         Ebug(self, "Brawler Build selected!", 2);
                         break;
                     default:  // Default build
@@ -706,6 +726,11 @@ namespace TheEscort
                 }
                 self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
                 self.buoyancy -= 0.05f;
+                if (self.room?.game?.StoryCharacter == EscortMe){
+                    Ebug(self, "Session is Escort!", 1);
+                    self.slugcatStats.maxFood = maximumPips;
+                    self.slugcatStats.foodToHibernate = minimumPips;
+                }
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
                 Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
@@ -1136,7 +1161,38 @@ namespace TheEscort
         }
 
 
+        private void EscortChangingRoom(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
+        {
+            orig(self, manager);
+            Ebug(self.startingRoom);
+            if (self.StoryCharacter == EscortMe){
+                self.startingRoom = config.cfgBuild[0].Value switch {
+                    -1 => "SU_A02",  // Brawler
+                    -2 => "SI_C03",  // Deflector
+                    -3 => "DM_LEG02",  // Escapist
+                    -4 => "GW_C02_PAST",  // Railgunner
+                    -5 => "LF_E03",  // Speedster
+                    _ => "CC_SUMP02"  // Default/unspecified
+                };
+                Ebug("It's time UwU");
+                Ebug(self.startingRoom);
+            }
+        }
 
+        private void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
+            orig(self);
+
+            if(self.saveStateNumber == EscortMe){
+                self.denPosition = config.cfgBuild[0].Value switch {
+                    -1 => "SU_A02",  // Brawler
+                    -2 => "SI_C03",  // Deflector
+                    -3 => "DM_LEG02",  // Escapist
+                    -4 => "GW_C02_PAST",  // Railgunner
+                    -5 => "LF_E03",  // Speedster
+                    _ => "CC_SUMP02"  // Default/unspecified
+                };
+            }
+        }
 
 
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
