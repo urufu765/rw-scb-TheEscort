@@ -651,7 +651,6 @@ namespace TheEscort
                         self.slugcatStats.bodyWeightFac -= 0.15f;
                         maximumPips += 0;
                         minimumPips -= 0;
-
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -698,7 +697,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
-                        maximumPips += 1;
+                        maximumPips += 0;
                         minimumPips -= 2;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
