@@ -185,13 +185,9 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null))
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     Ebug(self, "Attempted to access a nulled player when updating!", 0);
-                    return;
-                }
-                if (self.slugcatStats.name != EscortMe)
-                {
                     return;
                 }
                 // ONE OF THESE WILL TELL ME WHY THE FUCK THE SCUG'S CONTROLLER GETS YEETED OUT THE WINDOW I SWEAR TO FUCKING GOD
@@ -238,7 +234,7 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (e.consoleTick == 0)
+                if (false && e.consoleTick == 0)
                 {
                     Ebug(self, "Clocked.");
                     Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
@@ -537,7 +533,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -554,27 +550,34 @@ namespace TheEscort
             if (e.Deflector) Esclass_DF_UpdateAnimation(self, ref e);
 
             //Ebug(self, "UpdateAnimation Triggered!");
+
             // Infiniroll
-            if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection))
+            try
             {
-                e.RollinCount++;
-                if (e.consoleTick == 0)
+                if (self.animation == Player.AnimationIndex.Roll && !((self.input[0].y > -1 && self.input[0].downDiagonal == 0) || self.input[0].x == -self.rollDirection))
                 {
-                    Ebug(self, "Rollin at: " + e.RollinCount, 2);
+                    e.RollinCount++;
+                    if (e.consoleTick == 0)
+                    {
+                        Ebug(self, "Rollin at: " + e.RollinCount, 2);
+                    }
+                    if (Esconfig_SFX(self) && e.Rollin != null)
+                    {
+                        e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
+                    }
+                    self.rollCounter = e.Brawler? 15: 0;
+                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount));
                 }
-                if (Esconfig_SFX(self) && e.Rollin != null)
-                {
-                    e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
-                }
-                self.rollCounter = e.Brawler? 15: 0;
-                self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount));
-            }
 
-            if (self.animation != Player.AnimationIndex.Roll)
+                if (self.animation != Player.AnimationIndex.Roll)
+                {
+                    e.RollinCount = 0f;
+                }
+            }
+            catch (NullReferenceException nerr)
             {
-                e.RollinCount = 0f;
+                Ebug(self, nerr, "Caught null error in updateAnimation!");
             }
-
             // Implement dropkick animation
             if (self.animation == Player.AnimationIndex.RocketJump && config.cfgDKAnimation.Value)
             {
@@ -610,7 +613,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -733,7 +736,7 @@ namespace TheEscort
                 orig(self, f);
                 return;
             }
-            if (self.slugcatStats.name.value == "EscortMe")
+            if (Eshelp_IsMe(self.slugcatStats.name, false))
             {
                 if (e.Gilded && !self.slugcatStats.malnourished){
                     Esclass_GD_Breathing(self, f);
@@ -774,7 +777,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -831,7 +834,7 @@ namespace TheEscort
             }*/
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     orig(self, direction);
                     return;
@@ -938,7 +941,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, source, dmg, chunk, appPos, direction);
                 }
@@ -967,7 +970,7 @@ namespace TheEscort
         private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj)
         {
             try {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1025,7 +1028,7 @@ namespace TheEscort
             orig(self, spear);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -1214,7 +1217,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     orig(self, grasp, eu);
                     return;
@@ -1379,7 +1382,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1451,7 +1454,7 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
-                if (self.slugcatStats.name.value == "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     float biteMult = 0.5f;
                     if (e.Brawler)
@@ -1874,7 +1877,7 @@ namespace TheEscort
             orig(self, otherObject, myChunk, otherChunk);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -2197,7 +2200,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }

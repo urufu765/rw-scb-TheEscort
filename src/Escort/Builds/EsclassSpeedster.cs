@@ -488,7 +488,7 @@ namespace TheEscort
             orig(self, chunk, direction, speed, firstContact);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }

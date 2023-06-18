@@ -824,7 +824,7 @@ namespace TheEscort
             ins.L().Set();
             Ebug("Ctor Triggered!");
             orig(self, abstractCreature, world);
-            if (self.slugcatStats.name == EscortMe)
+            if (Eshelp_IsMe(self.slugcatStats.name, false))
             {
                 ins.L().Set("Escort Check");
                 eCon.Add(self, new Escort(self));

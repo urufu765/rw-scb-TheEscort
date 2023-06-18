@@ -136,7 +136,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, grabCheck);
                 }

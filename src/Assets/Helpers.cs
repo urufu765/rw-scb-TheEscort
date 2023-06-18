@@ -314,5 +314,51 @@ namespace TheEscort
             }
             return new HSLColor(Mathf.InverseLerp(0f, cycleDuration, t), saturation, lightness).rgb;
         }
+
+        /// <summary>
+        /// Checks if the slugcat is an Escort or not.
+        /// </summary>
+        /// <param name="theSlugcat">Slugcat's name</param>
+        /// <param name="nullCheck">For nullchecks (inverts result)</param>
+        /// <returns>Whether the slugcat is an Escort or not</returns>
+        public static bool Eshelp_IsMe(SlugcatStats.Name theSlugcat, bool nullCheck = true)
+        {
+            try 
+            {
+                if (theSlugcat is null)
+                {
+                    return nullCheck;
+                }
+                // Specific check
+                if (
+                    theSlugcat.value == "EscortMe" ||
+                    theSlugcat.value == "EscortBriish" ||
+                    theSlugcat.value == "EscortGamer" ||
+                    theSlugcat.value == "EscortMagician" ||
+                    theSlugcat.value == "EscortRizzgayer" ||
+                    theSlugcat.value == "EscortSugarrush" ||
+                    theSlugcat.value == "EscortDrip"
+                    )
+                {
+                    return !nullCheck; // it IS an Escort!
+                }
+
+                // In case I get lazy
+                if (theSlugcat.value.Length > 6 && theSlugcat.value.Substring(0, 6) == "Escort")
+                {
+                    Ebug("Stop being lazy you ass");
+                    return !nullCheck;
+                }
+            }
+            catch (NullReferenceException nerr) 
+            {
+                Ebug(nerr, "Null value slipped through the gaps somehow. What the actual fuck.");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when checking whether the following scug is an Escort or not.");
+            }
+            return nullCheck;
+        }
     }
 }

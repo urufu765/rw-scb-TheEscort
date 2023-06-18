@@ -117,14 +117,9 @@ namespace TheEscort
             try
             {
                 // Null slugcat check (you never know)
-                if (!(self != null && self.slugcatStats != null && self.slugcatStats.name != null))
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     Debug.Log("Attempted to access a nulled player when updating!");
-                    return;
-                }
-                // Custom Scug check
-                if (self.slugcatStats.name != EscortMe)
-                {
                     return;
                 }
                 // CWT access just to check for if character is for testing purposes (legacy code go brr)

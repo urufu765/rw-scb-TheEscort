@@ -140,7 +140,7 @@ namespace TheEscort
             orig(self, grasp);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }

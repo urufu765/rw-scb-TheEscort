@@ -23,7 +23,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -82,7 +82,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -135,7 +135,7 @@ namespace TheEscort
             orig(self, grasp, eu);
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -171,7 +171,7 @@ namespace TheEscort
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -210,14 +210,14 @@ namespace TheEscort
         /// <summary>
         /// Makes Escort eat held items twice as fast
         /// </summary>
-        /// <param name="orig"></param>
-        /// <param name="self"></param>
-        /// <param name="eu"></param>
+        /// <param name="orig">Original function call (pass the method along)</param>
+        /// <param name="self">Player instance</param>
+        /// <param name="eu">Even Updates</param>
         private void Escort_Eated(On.Player.orig_BiteEdibleObject orig, Player self, bool eu)
         {
             try
             {
-                if (self.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;
