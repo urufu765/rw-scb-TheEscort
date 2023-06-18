@@ -76,6 +76,7 @@ namespace TheEscort
         [Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
         [Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
         public Configurable<int>[] cfgBuild;
+        public Configurable<int> camBuild;
         [Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
         public Configurable<bool>[] cfgEasy;
         [Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
@@ -366,7 +367,7 @@ namespace TheEscort
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 8))){
-                    description = Translate("Allows Escort to do long jumps (hold jump) but on walls as well. May affect how normal wall jumping feels. (Default=false)"),
+                    description = Translate("Allows Escort to do long jumps (hold jump) but on walls as well. Will affect how wall jumping in general feels. Recommended off. (Default=false)"),
                     colorEdge = tempColor
                 },
 

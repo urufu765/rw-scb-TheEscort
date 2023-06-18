@@ -553,7 +553,8 @@ namespace TheEscort
                 else
                 {
                     room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
-                    self.stun += (self.Malnourished ? 320 : 160);
+                    //self.stun += self.Malnourished ? 320 : 160;
+                    self.Stun(self.Malnourished ? 320 : 160);
                     self.SetMalnourished(true);
                     e.RailgunUse = e.RailgunLimit - 3;
                 }

@@ -1,4 +1,5 @@
 using BepInEx;
+using IL.MoreSlugcats;
 using System;
 using UnityEngine;
 using static TheEscort.Eshelp;
@@ -99,8 +100,8 @@ namespace TheEscort
                 es.Escat_clock_backpackReGen(10);
             }
 
-            // Swap backpacks!
-            if (self.bodyMode == Player.BodyModeIndex.ZeroG || self.standing || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
+            // Swap backpacks! (disabled for now)
+            if (false && (self.bodyMode == Player.BodyModeIndex.ZeroG || self.standing || self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam))
             {
                 es.Escat_swap_backpack(self);
             }
@@ -372,6 +373,41 @@ namespace TheEscort
                 return;
             }
         }
+
+
+        /// <summary>
+        /// Allows Socks to use the grapple worm with legacy controls
+        /// </summary>
+        /// <param name="orig">Original Function call</param>
+        /// <param name="self">Player instance</param>
+        /// <param name="eu">Even Update</param>
+        private void Socks_Legacy(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        {
+            orig(self, eu);
+            try
+            {
+                if (self.slugcatStats.name != EscortSocks)
+                {
+                    return;
+                }
+
+                // Checks for the third grasp which Socks will definitely have. Controls will be similar to Saint with legacy tongue controls.
+                if (self.wantToThrow > 0 && ModManager.MMF && MoreSlugcats.MMF.cfgOldTongue.Value && self.grasps[0] is null && self.grasps[1] is null && self.grasps.Length == 3 && self.grasps[2]?.grabbed is TubeWorm)
+                {
+                    self.ThrowObject(2, eu);
+                    self.wantToThrow = 0;
+                }
+            }
+            catch (NullReferenceException nerr)
+            {
+                Ebug(self, nerr, "Null exception while doing socks grab update!");
+            }
+            catch (Exception err)
+            {
+                Ebug(self, err, "Couldn't do Socks Grab Update!");
+            }
+        }
+
 
     }
 }

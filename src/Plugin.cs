@@ -150,7 +150,7 @@ namespace TheEscort
             //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
             On.Room.Loaded += Escort_Hipbone_Replacement;
-            On.RoomSettings.Load += Escort_Transplant;
+            //On.RoomSettings.Load += Escort_Transplant;
 
             On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -172,6 +172,7 @@ namespace TheEscort
             //On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
 
 
+            // Escort stuff
             On.Player.Jump += Escort_Jump;
             On.Player.UpdateBodyMode += Escort_UpdateBodyMode;
             On.Player.UpdateAnimation += Escort_UpdateAnimation;
@@ -199,6 +200,8 @@ namespace TheEscort
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
             On.Player.Stun += Esclass_RG_Spasm;
 
+
+            // Socks stuff
             On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
             On.Player.Update += Socks_Update;
             On.Player.GraphicsModuleUpdated += Socks_GMU;
@@ -207,6 +210,7 @@ namespace TheEscort
             On.Creature.LoseAllGrasps += Socks_DontLoseBackpack;
             On.Player.Die += Socks_Death;
             On.Player.Jump += Socks_Jump;
+            On.Player.GrabUpdate += Socks_Legacy;
 
             On.Rock.HitSomething += Escort_RockHit;
             On.Rock.Thrown += Escort_RockThrow;
@@ -649,8 +653,8 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac = 0.9f;
                         self.slugcatStats.poleClimbSpeedFac = 0.9f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        maximumPips += 0;
-                        minimumPips -= 0;
+                        maximumPips -= 6;
+                        minimumPips -= 4;
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -1163,15 +1167,17 @@ namespace TheEscort
         private void EscortChangingRoom(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
         {
             orig(self, manager);
+            Ebug("Changing room!");
             Ebug(self.startingRoom);
             if (self.StoryCharacter == EscortMe){
                 self.startingRoom = config.cfgBuild[0].Value switch {
+                    0 => "CC_SUMP02", // Default
                     -1 => "SU_A02",  // Brawler
                     -2 => "SI_C03",  // Deflector
                     -3 => "DM_LEG02",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
-                    _ => "CC_SUMP02"  // Default/unspecified
+                    _ => "SB_C09"  // Unspecified
                 };
                 Ebug("It's time UwU");
                 Ebug(self.startingRoom);
@@ -1180,16 +1186,20 @@ namespace TheEscort
 
         private void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
             orig(self);
-
+            Ebug("Changing room 2!");
+            Ebug(self.denPosition);
             if(self.saveStateNumber == EscortMe){
                 self.denPosition = config.cfgBuild[0].Value switch {
+                    0 => "CC_SUMP02",  // Default
                     -1 => "SU_A02",  // Brawler
                     -2 => "SI_C03",  // Deflector
                     -3 => "DM_LEG02",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
-                    _ => "CC_SUMP02"  // Default/unspecified
+                    _ => "SB_C09"  // Unspecified
                 };
+                Ebug("It's time OwO");
+                Ebug(self.denPosition);
             }
         }
 

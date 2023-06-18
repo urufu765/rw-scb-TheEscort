@@ -382,13 +382,22 @@ namespace TheEscort
         {
             if ((RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.DEFAULT || (playerNumber == 0 && RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.AUTO)) && slugName == EscortMe)
             {
+                return new Color(0.796f, 0.549f, 0.27843f);
+            }
+            else
+            {
+               return orig(slugName, reference, playerNumber);
+            }
+            /*
+            if ((RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.DEFAULT || (playerNumber == 0 && RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.AUTO)) && slugName == EscortMe)
+            {
                 escortRGBStore[playerNumber] = new Color(0.796f, 0.549f, 0.27843f);
             }
             else
             {
                 escortRGBStore[playerNumber] = orig(slugName, reference, playerNumber);
             }
-            return escortRGBStore[playerNumber];
+            return escortRGBStore[playerNumber];*/
         }
 
         private static void Escort_RGBRGBRGB_GoesBrr(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_Update orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
@@ -485,6 +494,7 @@ namespace TheEscort
             try{
                 if (!self.closing){
                     ins.config._SaveConfigFile();
+                    
                     Ebug("Saving configs!");
                 }
             } catch (NullReferenceException nre){
