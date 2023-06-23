@@ -9,6 +9,7 @@ public abstract class Trackrr<T>
     private T _limit;
     public readonly int playerNumber;
     public readonly int trackerNumber;
+    public readonly string trackerName;
 
     public virtual T Value
     {
@@ -47,10 +48,11 @@ public abstract class Trackrr<T>
 
     public abstract void UpdateTracker();
 
-    public Trackrr(int playerNumber, int trackerNumber)
+    public Trackrr(int playerNumber, int trackerNumber, string trackerName)
     {
         this.playerNumber = playerNumber;
         this.trackerNumber = trackerNumber;
+        this.trackerName = trackerName;
     }
 }
 
@@ -59,7 +61,7 @@ public static class ETrackrr
     public class HypeTraction : Trackrr<float>
     {
         public Player player;
-        public HypeTraction(Player player, int playerNumber, int trackerNumber, float limiter) : base( playerNumber, trackerNumber )
+        public HypeTraction(Player player, int playerNumber, int trackerNumber, float limiter) : base( playerNumber, trackerNumber, "hype")
         {
             this.player = player;
             Max = 1f;

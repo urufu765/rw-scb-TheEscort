@@ -64,7 +64,7 @@ namespace TheEscort
         public WorldCoordinate lizzieDestination;
         public Stack<Trackrr<float>> floatTrackers;
         public Stack<Trackrr<int>> intTrackers;
-        public EscortHUD.ProgressionRing progressionRing;
+        public EscortHUD.GenericRing progressionRing;
 
         // Build stuff
         public bool Brawler;
