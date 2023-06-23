@@ -62,9 +62,8 @@ namespace TheEscort
         public List<AbstractCreature> vengefulLizards;
         public int vengefulLizardsCount;
         public WorldCoordinate lizzieDestination;
-        public Stack<Trackrr<float>> floatTrackers;
-        public Stack<Trackrr<int>> intTrackers;
-        public EscortHUD.GenericRing progressionRing;
+        public List<Trackrr<float>> floatTrackers;
+        public List<Trackrr<int>> intTrackers;
 
         // Build stuff
         public bool Brawler;
@@ -159,14 +158,19 @@ namespace TheEscort
             this.lizzieVengenceTolerance = UnityEngine.Random.Range(3, 7);
             //this.lizzieVengenceTolerance = 1;
             this.lizzieDestination = player.abstractCreature.pos;
-            this.floatTrackers = new Stack<Trackrr<float>>();
-            this.intTrackers = new Stack<Trackrr<int>>();
+            this.floatTrackers = new List<Trackrr<float>>();
+            this.intTrackers = new List<Trackrr<int>>();
             int n = 0;
             if (player.playerState?.playerNumber is not null)
             {
                 n = player.playerState.playerNumber;
             }
-            this.floatTrackers.Push(new ETrackrr.HypeTraction(player, n, 0, Plugin.ins.config.cfgHypeRequirement.Value));
+            this.floatTrackers.Add(new ETrackrr.HypeTraction(player, n, 0, Plugin.ins.config.cfgHypeRequirement.Value));
+            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 1));
+            this.floatTrackers.Add(new ETrackrr.TestTractoin2(n, 2));
+            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 3));
+            this.floatTrackers.Add(new ETrackrr.TestTractoin2(n, 4));
+            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 5));
 
 
             // Build specific

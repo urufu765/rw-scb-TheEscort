@@ -45,7 +45,9 @@ public static class EscortHUD
     {
         public Vector2 pos;
         public readonly FSprite progressSprite;
+        public readonly FSprite progressSprite2;
         public readonly FSprite progressBacking;
+        public readonly FSprite progressBacking2;
         public readonly Trackrr<float> tracked;
         public Color ringColor;
         public Color beyondLimitColor;
@@ -59,11 +61,20 @@ public static class EscortHUD
             this.pos = new Vector2(40f, 40f);
             this.ringColor = ringColor;
             this.beyondLimitColor = beyondLimitColor;
+
             this.progressSprite = new FSprite("Futile_White")
             {
                 x = pos.x,
                 y = pos.y,
-                scale = 3.1f,
+                scale = 2.4f + 1f * tracked.trackerNumber,
+                color = this.ringColor,
+                shader = hud.rainWorld.Shaders["HoldButtonCircle"]
+            };
+            this.progressSprite2 = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y,
+                scale = 2.4f + Mathf.Max(0.25f - 0.02f * Mathf.Pow(tracked.trackerNumber, 1.5f), 0f) + 1f * tracked.trackerNumber,
                 color = this.ringColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
@@ -71,12 +82,22 @@ public static class EscortHUD
             {
                 x = pos.x,
                 y = pos.y,
-                scale = 3.1f,
+                scale = 2.4f + 1f * tracked.trackerNumber,
+                color = this.beyondLimitColor,
+                shader = hud.rainWorld.Shaders["HoldButtonCircle"]
+            };
+            this.progressBacking2 = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y,
+                scale = 2.4f + Mathf.Max(0.25f - 0.02f * Mathf.Pow(tracked.trackerNumber, 1.5f), 0f) + 1f * tracked.trackerNumber,
                 color = this.beyondLimitColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             hud.fContainers[1].AddChild(progressBacking);
+            hud.fContainers[1].AddChild(progressBacking2);
             hud.fContainers[1].AddChild(progressSprite);
+            hud.fContainers[1].AddChild(progressSprite2);
         }
 
 
@@ -91,10 +112,18 @@ public static class EscortHUD
             progressBacking.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
             progressBacking.color = Color.Lerp(ringColor, beyondLimitColor, flashColor);
+            progressBacking2.x = DrawPos(timeStacker).x;
+            progressBacking2.y = DrawPos(timeStacker).y;
+            progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            progressBacking2.color = Color.Lerp(ringColor, beyondLimitColor, flashColor);
             progressSprite.x = DrawPos(timeStacker).x;
             progressSprite.y = DrawPos(timeStacker).y;
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
             progressSprite.color = ringColor;
+            progressSprite2.x = DrawPos(timeStacker).x;
+            progressSprite2.y = DrawPos(timeStacker).y;
+            progressSprite2.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
+            progressSprite2.color = ringColor;
 
         }
 

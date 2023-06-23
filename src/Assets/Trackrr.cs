@@ -10,6 +10,7 @@ public abstract class Trackrr<T>
     public readonly int playerNumber;
     public readonly int trackerNumber;
     public readonly string trackerName;
+    public bool force;
 
     public virtual T Value
     {
@@ -58,6 +59,36 @@ public abstract class Trackrr<T>
 
 public static class ETrackrr
 {
+    public class TestTractoin : Trackrr<float>
+    {
+        public TestTractoin(int playerNumber, int trackerNumber) : base(playerNumber, trackerNumber, "test")
+        {
+            this.Max = 160;
+            this.Limit = 80;
+        }
+
+        public override void UpdateTracker()
+        {
+            if (this.Value > 0) this.Value--;
+            else this.Value = Max;
+        }
+    }
+
+    public class TestTractoin2 : Trackrr<float>
+    {
+        public TestTractoin2(int playerNumber, int trackerNumber) : base(playerNumber, trackerNumber, "test")
+        {
+            this.Max = 200;
+            this.Limit = 120;
+        }
+
+        public override void UpdateTracker()
+        {
+            if (this.Value < Max) this.Value++;
+            else this.Value = 0;
+        }
+    }
+
     public class HypeTraction : Trackrr<float>
     {
         public Player player;
@@ -71,6 +102,9 @@ public static class ETrackrr
         public override void UpdateTracker()
         {
             this.Value = player.aerobicLevel;
+            force = Value > Limit;
         }
     }
+
+
 }
