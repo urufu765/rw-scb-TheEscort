@@ -115,7 +115,7 @@ namespace TheEscort
         public static ConditionalWeakTable<Player, Escort> eCon = new();
         public static ConditionalWeakTable<Player, Socks> sCon = new();
         //private Escort e;
-        private float requirement;
+        public float hypeRequirement;
         private float DKMultiplier;
         float ratioed;
 
@@ -236,6 +236,7 @@ namespace TheEscort
             //On.Player.Update += Estest_1_Update;
             //On.Player.GrabUpdate += Estest_3_GrabUpdate;
             Escort_Conversation.Attach();
+            EscortHUD.Attach();
             On.TubeWorm.GrabbedByPlayer += GrappleBackpack.BackpackGrabbedByPlayer;
             On.TubeWorm.GrabbedByPlayer += LauncherBackpack.BackpackGrabbedByPlayer;
 
@@ -510,7 +511,7 @@ namespace TheEscort
             }
         }
 
-        private bool Esconfig_HypeReq(Player self, float require = 0.8f)
+        public bool Esconfig_HypeReq(Player self, float require = 0.8f)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !HypeReq.TryGet(self, out float req))
             {
@@ -518,11 +519,11 @@ namespace TheEscort
             }
             if (RT)
             {
-                requirement = req;
+                hypeRequirement = req;
             }
             else
             {
-                requirement = config.cfgHypeReq.Value switch
+                hypeRequirement = config.cfgHypeReq.Value switch
                 {
                     0 => -1f,
                     1 => 0.5f,

@@ -70,6 +70,7 @@ namespace TheEscort
         public Configurable<bool> cfgElevator;
         public Configurable<bool> cfgHypable;
         public Configurable<int> cfgHypeReq;
+        public Configurable<float> cfgHypeRequirement;
         public Configurable<bool> cfgSFX;
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
@@ -145,6 +146,7 @@ namespace TheEscort
             this.cfgElevator = this.config.Bind<bool>("cfg_Elevator", false);
             this.cfgHypable = this.config.Bind<bool>("cfg_Hypable", true);
             this.cfgHypeReq = this.config.Bind<int>("cfg_Hype_Requirement", 3, new ConfigAcceptableRange<int>(0, 6));
+            this.cfgHypeRequirement = this.config.Bind<float>("cfg_Hype_Requirement_Value", 0.75f, new ConfigAcceptableRange<float>(-1, 1));
             this.cfgSFX = this.config.Bind<bool>("cfg_SFX", false);
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
@@ -154,8 +156,8 @@ namespace TheEscort
             this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuild = new Configurable<int>[4];
-            this.cfgEasy = new Configurable<bool>[4];
+            this.cfgBuild = new Configurable<int>[4];  // Make this expandable to more than 4 players by checking how many players are being logged in?
+            this.cfgEasy = new Configurable<bool>[4];  // This too
             for (int x = 0; x < this.cfgBuild.Length; x++){
                 this.cfgBuild[x] = this.config.Bind<int>("cfg_Build_Player" + x, 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
                 this.cfgEasy[x] = this.config.Bind<bool>("cfg_Easy_Player" + x, false);
@@ -939,6 +941,16 @@ namespace TheEscort
             int.TryParse(value, out int n);
             int.TryParse(oldValue, out int o);
             this.hypeableText[n].color = Menu.MenuColorEffect.rgbMediumGrey;
+            this.cfgHypeRequirement.Value = n switch {
+                0 => -1f,
+                1 => 0.5f,
+                2 => 0.66f,
+                3 => 0.75f,
+                4 => 0.8f,
+                5 => 0.87f,
+                6 => 0.92f,
+                _ => 1f
+            };
             this.hypeableText[o].color = Menu.MenuColorEffect.rgbDarkGrey;
         }
 

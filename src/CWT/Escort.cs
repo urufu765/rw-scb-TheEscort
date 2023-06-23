@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using UnityEngine;
 using static TheEscort.Eshelp;
@@ -61,6 +62,9 @@ namespace TheEscort
         public List<AbstractCreature> vengefulLizards;
         public int vengefulLizardsCount;
         public WorldCoordinate lizzieDestination;
+        public Stack<Trackrr<float>> floatTrackers;
+        public Stack<Trackrr<int>> intTrackers;
+        public EscortHUD.ProgressionRing progressionRing;
 
         // Build stuff
         public bool Brawler;
@@ -155,6 +159,15 @@ namespace TheEscort
             this.lizzieVengenceTolerance = UnityEngine.Random.Range(3, 7);
             //this.lizzieVengenceTolerance = 1;
             this.lizzieDestination = player.abstractCreature.pos;
+            this.floatTrackers = new Stack<Trackrr<float>>();
+            this.intTrackers = new Stack<Trackrr<int>>();
+            int n = 0;
+            if (player.playerState?.playerNumber is not null)
+            {
+                n = player.playerState.playerNumber;
+            }
+            this.floatTrackers.Push(new ETrackrr.HypeTraction(player, n, 0, Plugin.ins.config.cfgHypeRequirement.Value));
+
 
             // Build specific
             this.Brawler = false;
@@ -480,5 +493,18 @@ namespace TheEscort
             }
             return coordi;
         }
+
+        public void Escat_Update_Ring_Trackers()
+        {
+            foreach(Trackrr<float> t in this.floatTrackers)
+            {
+                t.UpdateTracker();
+            }
+            foreach(Trackrr<int> t2 in this.intTrackers)
+            {
+                t2.UpdateTracker();
+            }
+        }
+
     }
 }

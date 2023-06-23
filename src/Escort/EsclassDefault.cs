@@ -112,11 +112,11 @@ namespace TheEscort
             }
 
             // Smooth color/brightness transition
-            if (requirement <= self.aerobicLevel && e.smoothTrans < 15)
+            if (hypeRequirement <= self.aerobicLevel && e.smoothTrans < 15)
             {
                 e.smoothTrans++;
             }
-            else if (requirement > self.aerobicLevel && e.smoothTrans > 0)
+            else if (hypeRequirement > self.aerobicLevel && e.smoothTrans > 0)
             {
                 e.smoothTrans--;
             }
@@ -313,7 +313,7 @@ namespace TheEscort
                 Esconfig_HypeReq(self);
 
                 // Battle-hyped visual effect
-                if (config.cfgNoticeHype.Value && Esconfig_Hypable(self) && Esconfig_HypeReq(self) && self.aerobicLevel > requirement)
+                if (config.cfgNoticeHype.Value && Esconfig_Hypable(self) && Esconfig_HypeReq(self) && self.aerobicLevel > hypeRequirement)
                 {
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
@@ -375,9 +375,9 @@ namespace TheEscort
             }
 
             // Implement drug use
-            if (requirement >= 0 && self.aerobicLevel < Mathf.Lerp(0f, requirement + 0.01f, self.Adrenaline))
+            if (hypeRequirement >= 0 && self.aerobicLevel < Mathf.Lerp(0f, hypeRequirement + 0.01f, self.Adrenaline))
             {
-                self.aerobicLevel = Mathf.Lerp(0f, requirement + 0.01f, self.Adrenaline);
+                self.aerobicLevel = Mathf.Lerp(0f, hypeRequirement + 0.01f, self.Adrenaline);
             }
 
             // Implement Easy Mode
@@ -1059,7 +1059,7 @@ namespace TheEscort
                 }
                 if (Esconfig_Hypable(self))
                 {
-                    if (self.aerobicLevel > requirement)
+                    if (self.aerobicLevel > hypeRequirement)
                     {
                         spear.throwModeFrames = -1;
                         if (!e.Railgunner)
@@ -1463,7 +1463,7 @@ namespace TheEscort
                     }
                     if (e.Railgunner)
                     {
-                        biteMult = self.Malnourished? 10000f : 0.85f;
+                        biteMult = self.Malnourished? 10000f : 0.75f;
                     }
                     if (e.Escapist)
                     {
@@ -1996,7 +1996,7 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
 
                         float normSlideStun = hypedMode || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1];
-                        if (hypedMode && self.aerobicLevel > requirement)
+                        if (hypedMode && self.aerobicLevel > hypeRequirement)
                         {
                             normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
                         }
@@ -2103,7 +2103,7 @@ namespace TheEscort
                             self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
                             normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f));
                             creature.LoseAllGrasps();
-                            if (hypedMode && self.aerobicLevel > requirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
+                            if (hypedMode && self.aerobicLevel > hypeRequirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
                             if (e.Deflector)
                             {
                                 if (e.DeflAmpTimer > 0)

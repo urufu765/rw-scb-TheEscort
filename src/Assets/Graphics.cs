@@ -206,6 +206,25 @@ namespace TheEscort
                     s.sprites[e.spriteQueue + 1].MoveBehindOtherNode(s.sprites[3]);
                     //Ebug(self.player, "Restructure success.", 1);
                 }
+                /*
+                foreach (EscortHUD.Traction traction in e.ringTrackers)
+                {
+                    if (rCam is null){
+                        Ebug("Rcam is null!");
+                        break;
+                    }
+                    else if (rCam.hud is null)
+                    {
+                        Ebug("HUD is null!");
+                        break;
+                    }
+                    else if (rCam.hud.parts is null)
+                    {
+                        Ebug("Parts is null!");
+                        break;
+                    }
+                    rCam.hud.parts.Add(new EscortHUD.ProgressionRing(rCam.hud, traction));
+                }*/
             }
             catch (Exception err)
             {
@@ -263,14 +282,14 @@ namespace TheEscort
                         if (self.player != null && Esconfig_Hypable(self.player))
                         {
                             float alphya = 1f;
-                            if (requirement > self.player.aerobicLevel)
+                            if (hypeRequirement > self.player.aerobicLevel)
                             {
-                                alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
                             }
                             for (int a = e.spriteQueue; a < s.sprites.Length; a++)
                             {
                                 s.sprites[a].alpha = alphya;
-                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, requirement < self.player.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
+                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, hypeRequirement < self.player.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
                             s.sprites[e.spriteQueue + 1].scaleX = e.hipScaleX;
                             s.sprites[e.spriteQueue + 1].scaleY = e.hipScaleY;
@@ -279,10 +298,10 @@ namespace TheEscort
                                 float alpine = 0f;
                                 float alpite = 0f;
 
-                                if (requirement > self.player.aerobicLevel)
+                                if (hypeRequirement > self.player.aerobicLevel)
                                 {
-                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
-                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, requirement, self.player.aerobicLevel));
+                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
+                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
                                 }
                                 else
                                 {
@@ -333,6 +352,7 @@ namespace TheEscort
                     }
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
+                e.Escat_Update_Ring_Trackers();
             }
             catch (Exception err)
             {

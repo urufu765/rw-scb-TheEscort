@@ -207,7 +207,7 @@ namespace TheEscort
                         };
 
                         // Double the gain when in hyped
-                        if (e.SpeGain > 0f && self.aerobicLevel > requirement)
+                        if (e.SpeGain > 0f && self.aerobicLevel > hypeRequirement)
                         {
                             e.SpeGain *= 2;
                         }
