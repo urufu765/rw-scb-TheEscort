@@ -78,6 +78,7 @@ namespace TheEscort
         public int BrawThrowGrab;
         public int BrawRevertWall;
         public Stack<Spear> BrawWallSpear;
+        public string BrawLastWeapon;
         public bool Deflector;
         public int DeflAmpTimer;
         public bool DeflTrampoline;
@@ -160,18 +161,6 @@ namespace TheEscort
             this.lizzieDestination = player.abstractCreature.pos;
             this.floatTrackers = new List<Trackrr<float>>();
             this.intTrackers = new List<Trackrr<int>>();
-            int n = 0;
-            if (player.playerState?.playerNumber is not null)
-            {
-                n = player.playerState.playerNumber;
-            }
-            this.floatTrackers.Add(new ETrackrr.HypeTraction(player, n, 0, Plugin.ins.config.cfgHypeRequirement.Value));
-            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 1));
-            this.floatTrackers.Add(new ETrackrr.TestTractoin2(n, 2));
-            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 3));
-            this.floatTrackers.Add(new ETrackrr.TestTractoin2(n, 4));
-            this.floatTrackers.Add(new ETrackrr.TestTractoin(n, 5));
-
 
             // Build specific
             this.Brawler = false;
@@ -185,6 +174,7 @@ namespace TheEscort
             this.BrawShankSpearTumbler = false;
             this.BrawThrowGrab = -1;
             this.BrawThrowUsed = -1;
+            this.BrawLastWeapon = "";
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;
@@ -496,6 +486,37 @@ namespace TheEscort
                 //return self.room.game.world.GetAbstractRoom(self.room.game.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
             }
             return coordi;
+        }
+
+        public void Escat_Add_Ring_Trackers(Player self)
+        {
+            int n = 0;
+            if (self.playerState?.playerNumber is not null)
+            {
+                n = self.playerState.playerNumber;
+            }
+            this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this));
+
+            if (Brawler)
+            {
+                floatTrackers.Add(new ETrackrr.BrawlerMeleeTraction(n, 1, self, this));
+            }
+            if (Deflector)
+            {
+                floatTrackers.Add(new ETrackrr.DeflectorEmpowerTraction(n, 1, this));
+            }
+            if (Escapist)
+            {
+                floatTrackers.Add(new ETrackrr.EscapistUngraspTraction(n, 1, this));
+            }
+            if (Railgunner)
+            {
+
+            }
+            if (Speedster)
+            {
+                
+            }
         }
 
         public void Escat_Update_Ring_Trackers()

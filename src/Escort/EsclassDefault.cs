@@ -1792,13 +1792,18 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Snail_Warning_Click, self.mainBodyChunk, false, 1.6f, 0.65f);
                         e.DeflSFXcd = 9;
                     }
-                    e.DeflAmpTimer = 160;
                     if (!e.DeflTrampoline && e.DeflPowah < 3){
                         e.DeflPowah++;
                     }
                     else if (e.DeflTrampoline && e.DeflPowah < 2){
                         e.DeflPowah = 1;
                     }
+                    e.DeflAmpTimer = e.DeflPowah switch {
+                        1 => 160,
+                        2 => 240,
+                        3 => 320,
+                        _ => 0
+                    };
                     e.DeflTrampoline = false;
                 }
                 else

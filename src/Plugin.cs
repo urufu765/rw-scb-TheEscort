@@ -654,8 +654,8 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac = 0.9f;
                         self.slugcatStats.poleClimbSpeedFac = 0.9f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        maximumPips -= 6;
-                        minimumPips -= 4;
+                        maximumPips -= 4;
+                        minimumPips -= 3;
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -671,8 +671,7 @@ namespace TheEscort
                         self.airFriction -= 0.5f;
                         self.waterFriction -= 0.5f;
                         self.surfaceFriction -= 0.5f;
-                        maximumPips -= 3;
-                        minimumPips -= 2;
+                        minimumPips += 2;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -683,8 +682,7 @@ namespace TheEscort
                         self.slugcatStats.generalVisibilityBonus += 1f;
                         self.slugcatStats.visualStealthInSneakMode = 0f;
                         self.slugcatStats.bodyWeightFac += 0.3f;
-                        maximumPips -= 4;
-                        minimumPips -= 0;
+                        minimumPips -= 2;
                         Ebug(self, "Railgunner Build selected!", 2);
                         break;
                     case -3:  // Escapist build
@@ -693,7 +691,6 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        maximumPips -= 3;
                         minimumPips -= 3;
                         Ebug(self, "Escapist Build selected!", 2);
                         break;
@@ -702,8 +699,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
-                        maximumPips += 0;
-                        minimumPips -= 2;
+                        minimumPips -= 1;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
@@ -714,7 +710,7 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                         self.slugcatStats.throwingSkill = 1;
-                        maximumPips += 3;
+                        minimumPips += 4;
                         self.slugcatStats.foodToHibernate += 2;
                         Ebug(self, "Brawler Build selected!", 2);
                         break;
@@ -835,6 +831,7 @@ namespace TheEscort
                     return;
                 }
                 Esconfig_Build(self);
+                e.Escat_Add_Ring_Trackers(self);
                 e.originalMass = self.TotalMass;
                 try
                 {

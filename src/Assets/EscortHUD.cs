@@ -25,8 +25,8 @@ public static class EscortHUD
                     foreach(Trackrr<float> traction in e.floatTrackers){
                         self.AddPart(
                             traction.trackerName switch {
-                                "hype" => new HypeRing(self, traction, new Color(0.85f, 0.85f, 0.85f), new Color(0.58f, 0.55f, 0.57f), new Color(0.85f, 0.85f, 0.85f)),
-                                _ => new GenericRing(self, traction, ringColor: new Color(0.85f, 0.85f, 0.85f), beyondLimitColor: new Color(0.58f, 0.55f, 0.57f))
+                                "hype" => new HypeRing(self, traction),
+                                _ => new GenericRing(self, traction)
                             }
                         );
                     }
@@ -49,25 +49,22 @@ public static class EscortHUD
         public readonly FSprite progressBacking;
         public readonly FSprite progressBacking2;
         public readonly Trackrr<float> tracked;
-        public Color ringColor;
-        public Color beyondLimitColor;
         public Vector2 lastPos;
         public FoodMeter foodmeter;
         public float flashColor;
+        public bool staticFlash;
 
-        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Color ringColor = default, Color beyondLimitColor = default) : base(hud)
+        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, bool staticFlash = false) : base(hud)
         {
             this.tracked = tracked;
+            this.staticFlash = staticFlash;
             this.pos = new Vector2(40f, 40f);
-            this.ringColor = ringColor;
-            this.beyondLimitColor = beyondLimitColor;
 
             this.progressSprite = new FSprite("Futile_White")
             {
                 x = pos.x,
                 y = pos.y,
                 scale = 2.4f + 1f * tracked.trackerNumber,
-                color = this.ringColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             this.progressSprite2 = new FSprite("Futile_White")
@@ -75,7 +72,6 @@ public static class EscortHUD
                 x = pos.x,
                 y = pos.y,
                 scale = 2.4f + Mathf.Max(0.25f - 0.02f * Mathf.Pow(tracked.trackerNumber, 1.5f), 0f) + 1f * tracked.trackerNumber,
-                color = this.ringColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             this.progressBacking = new FSprite("Futile_White")
@@ -83,7 +79,6 @@ public static class EscortHUD
                 x = pos.x,
                 y = pos.y,
                 scale = 2.4f + 1f * tracked.trackerNumber,
-                color = this.beyondLimitColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             this.progressBacking2 = new FSprite("Futile_White")
@@ -91,7 +86,6 @@ public static class EscortHUD
                 x = pos.x,
                 y = pos.y,
                 scale = 2.4f + Mathf.Max(0.25f - 0.02f * Mathf.Pow(tracked.trackerNumber, 1.5f), 0f) + 1f * tracked.trackerNumber,
-                color = this.beyondLimitColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             hud.fContainers[1].AddChild(progressBacking);
@@ -111,19 +105,19 @@ public static class EscortHUD
             progressBacking.x = DrawPos(timeStacker).x;
             progressBacking.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking.color = Color.Lerp(ringColor, beyondLimitColor, flashColor);
+            progressBacking.color = Color.Lerp(tracked.trackerColor, Color.black, flashColor / 2f);
             progressBacking2.x = DrawPos(timeStacker).x;
             progressBacking2.y = DrawPos(timeStacker).y;
             progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking2.color = Color.Lerp(ringColor, beyondLimitColor, flashColor);
+            progressBacking2.color = Color.Lerp(tracked.trackerColor, Color.black, flashColor / 2f);
             progressSprite.x = DrawPos(timeStacker).x;
             progressSprite.y = DrawPos(timeStacker).y;
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
-            progressSprite.color = ringColor;
+            progressSprite.color = tracked.trackerColor;
             progressSprite2.x = DrawPos(timeStacker).x;
             progressSprite2.y = DrawPos(timeStacker).y;
             progressSprite2.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
-            progressSprite2.color = ringColor;
+            progressSprite2.color = tracked.trackerColor;
 
         }
 
@@ -147,12 +141,15 @@ public static class EscortHUD
                 }
             }
             lastPos = pos;
-            if (flashColor < 1f){
-                flashColor += 1f/20f;
-            } else {
-                flashColor = 0;
+            if (staticFlash) flashColor = 0.6f;
+            else
+            {
+                if (flashColor < 1f){
+                    flashColor += 1f/20f;
+                } else {
+                    flashColor = 0;
+                }
             }
-
         }
 
     }
@@ -166,16 +163,15 @@ public static class EscortHUD
         private readonly FSprite progressGlow;
         private readonly FSprite normalSprite;
         private readonly FSprite hypedSprite;
-        private readonly Color spriteColor;
 
-        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Color ringColor = default, Color beyondLimitColor = default, Color spriteColor = default) : base(hud, tracked, ringColor, beyondLimitColor)
+        public HypeRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
         {
-            this.spriteColor = spriteColor;
             this.progressGlow = new FSprite("Futile_White")
             {
                 x = pos.x,
                 y = pos.y,
                 scale = 6,
+                color = tracked.trackerColor,
                 shader = hud.rainWorld.Shaders["FlatLight"]
             };
             this.normalSprite = new FSprite("FriendA"){
@@ -183,14 +179,12 @@ public static class EscortHUD
                 y = pos.y,
                 alpha = 1,
                 scale = 1,
-                color = spriteColor
             };
             this.hypedSprite = new FSprite("FriendB"){
                 x = pos.x,
                 y = pos.y,
                 alpha = 0,
                 scale = 1,
-                color = spriteColor
             };
             hud.fContainers[1].AddChild(progressGlow);
             hud.fContainers[1].AddChild(normalSprite);
@@ -201,6 +195,8 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
+            normalSprite.color = tracked.trackerColor * Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
+            hypedSprite.color = Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor);
             progressGlow.x = DrawPos(timeStacker).x;
             progressGlow.y = DrawPos(timeStacker).y;
             progressGlow.alpha = 0.15f;

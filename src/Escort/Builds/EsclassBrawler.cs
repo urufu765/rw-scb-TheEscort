@@ -52,7 +52,11 @@ namespace TheEscort
                     self.room.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
                     self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
                     if (self.slowMovementStun > 0) self.Blink(30);
-                    else self.slowMovementStun += 20;
+                    else 
+                    {
+                        self.slowMovementStun += 40;
+                        e.BrawLastWeapon = "shank";
+                    }
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
                 {
@@ -62,7 +66,7 @@ namespace TheEscort
                 if (e.BrawMeleeWeapon.Peek() is Spear)
                 {
                     e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
-                    self.slowMovementStun += 40;
+                    self.slowMovementStun += 20;
                 }
                 if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall){
                     e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
@@ -80,6 +84,12 @@ namespace TheEscort
             {
                 e.BrawWallSpear.Pop().doNotTumbleAtLowSpeed = e.BrawWall;
                 e.BrawRevertWall = -1;
+            }
+
+            // HUD stuff
+            if (self.slowMovementStun == 0)
+            {
+                e.BrawLastWeapon = "";
             }
 
             // VFX
@@ -280,6 +290,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(s);
                     e.BrawThrowGrab = 5;
                     e.BrawThrowUsed = j;
+                    e.BrawLastWeapon = "shank";
                     s.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
                     //self.SlugcatGrab(s, j);
@@ -315,6 +326,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(sa);
                     e.BrawThrowGrab = 5;
                     e.BrawThrowUsed = j;
+                    e.BrawLastWeapon = "knife";
                     sa.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
                     return true;
@@ -347,6 +359,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(r);
                     e.BrawThrowGrab = 4;
                     e.BrawThrowUsed = j;
+                    e.BrawLastWeapon = "brass";
                     orig(self, j, eu);
                     return true;
                 }
