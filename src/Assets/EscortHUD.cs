@@ -23,7 +23,7 @@ public static class EscortHUD
                 if (cam.room.game.session.Players[i].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e)){
                     Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
                     foreach(Trackrr<float> traction in e.floatTrackers){
-                        self.AddPart(new ProgressionRing(self, traction, ringColor: new Color(1f, 1f, 1f), beyondLimitColor: new Color(1f, 0.5f, 1f)));
+                        self.AddPart(new ProgressionRing(self, traction, ringColor: new Color(0.85f, 0.85f, 0.85f), beyondLimitColor: new Color(1f, 0.5f, 0.0f)));
                     }
 
                 }
@@ -81,7 +81,7 @@ public static class EscortHUD
                 x = pos.x,
                 y = pos.y,
                 scale = 3.1f,
-                color = new(0.15f, 0.15f, 0.15f),
+                color = this.beyondLimitColor,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             this.progressGlow = new FSprite("Futile_White")
@@ -91,9 +91,9 @@ public static class EscortHUD
                 scale = 6,
                 shader = hud.rainWorld.Shaders["FlatLight"]
             };
-            hud.fContainers[1].AddChild(progressSprite);
-            hud.fContainers[1].AddChild(progressBacking);
             hud.fContainers[1].AddChild(progressGlow);
+            hud.fContainers[1].AddChild(progressBacking);
+            hud.fContainers[1].AddChild(progressSprite);
         }
 
 
@@ -104,21 +104,17 @@ public static class EscortHUD
             pos = DrawPos(timeStacker);
             pos.x = 60f + 80f * tracked.playerNumber;
             if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + 80f;
-            progressSprite.x = DrawPos(timeStacker).x;
-            progressSprite.y = DrawPos(timeStacker).y;
-            if (tracked.Value >= tracked.Limit){
-                progressSprite.color = beyondLimitColor;
-            }
-            else {
-                progressSprite.color = ringColor;
-            }
-            progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking.x = DrawPos(timeStacker).x;
-            progressBacking.y = DrawPos(timeStacker).y;
-            progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
             progressGlow.x = DrawPos(timeStacker).x;
             progressGlow.y = DrawPos(timeStacker).y;
             progressGlow.alpha = 0.1f;
+            progressBacking.x = DrawPos(timeStacker).x;
+            progressBacking.y = DrawPos(timeStacker).y;
+            progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            progressBacking.color = Color.Lerp(Color.white, Color.Lerp(beyondLimitColor, Color.grey, timeStacker), 0.7f);
+            progressSprite.x = DrawPos(timeStacker).x;
+            progressSprite.y = DrawPos(timeStacker).y;
+            progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
+            progressSprite.color = Color.Lerp(Color.white, ringColor, 0.7f);
             if (tracked.Value > 0.5f){
                 Ebug("SCREAMING");
             }
