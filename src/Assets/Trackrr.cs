@@ -264,4 +264,32 @@ public static class ETrackrr
             }
         }
     }
+
+    public class SpeedsterTraction : Trackrr<float>
+    {
+        private readonly Escort e;
+        private readonly int gear;
+        public SpeedsterTraction(int playerNumber, int trackerNumber, Escort escort, int gear) : base(playerNumber, trackerNumber, "speedster")
+        {
+            this.e = escort;
+            this.gear = gear;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            
+        }
+    }
+
+    public class SpeedsterOldTraction : Trackrr<float>
+    {
+        public SpeedsterOldTraction(int playerNumber, int trackerNumber, string trackerName, Color trackerColor = default) : base(playerNumber, trackerNumber, trackerName, trackerColor)
+        {
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
