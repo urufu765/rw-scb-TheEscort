@@ -150,7 +150,7 @@ namespace TheEscort
             //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
             On.Room.Loaded += Escort_Hipbone_Replacement;
-            //On.RoomSettings.Load += Escort_Transplant;
+            On.RoomSettings.Load += Escort_Transplant;
 
             On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -729,7 +729,9 @@ namespace TheEscort
                 if (self.room?.game?.StoryCharacter == EscortMe){
                     Ebug(self, "Session is Escort!", 1);
                     self.slugcatStats.maxFood = maximumPips;
-                    self.slugcatStats.foodToHibernate = minimumPips;
+                    if (!self.Malnourished){
+                        self.slugcatStats.foodToHibernate = minimumPips;
+                    }
                 }
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);

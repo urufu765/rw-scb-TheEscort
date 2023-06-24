@@ -189,12 +189,12 @@ public static class ETrackrr
                 this.trackerColor = escapistColor;
                 if (e.EscUnGraspLimit != 0) prevMax = e.EscUnGraspLimit;
                 this.Max = prevMax;
-                this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 30, transitioning));
+                this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning));
 
                 if (e.EscUnGraspLimit == 0 && transitioning > 0) {
                     this.transitioning -= timeStacker;
                 }
-                else if (e.EscUnGraspLimit > 0 && transitioning < 30) {
+                else if (e.EscUnGraspLimit > 0 && transitioning < 20) {
                     this.transitioning += timeStacker;
                 }
             }
@@ -203,7 +203,7 @@ public static class ETrackrr
                 this.Limit = 500;
                 this.Max = 480;
                 this.Value = e.EscUnGraspCD;
-                this.trackerColor = Color.Lerp(Color.Lerp(escapistColor, Color.black, 0.4f), escapistColor, Mathf.InverseLerp(0, 40, e.EscUnGraspCD));
+                this.trackerColor = Color.Lerp(Color.Lerp(escapistColor, Color.black, 0.6f), escapistColor, Mathf.InverseLerp(0, 40, e.EscUnGraspCD));
             }
         }
     }
@@ -244,7 +244,7 @@ public static class ETrackrr
 
         public override void DrawTracker(float timeStacker)
         {
-            if (setValue != Mathf.Min(e.RailgunUse, e.RailgunLimit) && preValue < setValue)
+            if (setValue != Mathf.Min(e.RailgunUse, e.RailgunLimit) && (preValue < setValue || e.RailgunCD == 0))
             {
                 transitioning = 0;
                 preValue = setValue;
