@@ -189,12 +189,12 @@ public static class ETrackrr
                 this.trackerColor = escapistColor;
                 if (e.EscUnGraspLimit != 0) prevMax = e.EscUnGraspLimit;
                 this.Max = prevMax;
-                this.Value = Mathf.Lerp(0, e.EscUnGraspLimit - e.EscUnGraspTime, Mathf.InverseLerp(0, 40, transitioning));
+                this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning));
 
                 if (e.EscUnGraspLimit == 0 && transitioning > 0) {
                     this.transitioning -= timeStacker;
                 }
-                else if (e.EscUnGraspLimit > 0 && transitioning < 40) {
+                else if (e.EscUnGraspLimit > 0 && transitioning < 20) {
                     this.transitioning += timeStacker;
                 }
             }
@@ -202,8 +202,8 @@ public static class ETrackrr
             {
                 this.Limit = 500;
                 this.Max = 480;
-                this.Value = this.Max - e.EscUnGraspCD;
-                this.trackerColor = Color.Lerp(escapistColor, Color.Lerp(escapistColor, Color.black, 0.4f), Mathf.InverseLerp(0, 60, e.EscUnGraspCD));
+                this.Value = e.EscUnGraspCD;
+                this.trackerColor = Color.Lerp(Color.Lerp(escapistColor, Color.black, 0.4f), escapistColor, Mathf.InverseLerp(0, 40, e.EscUnGraspCD));
             }
         }
     }
@@ -233,7 +233,7 @@ public static class ETrackrr
         private float setValue;
         private float transitioning;
         private readonly Escort e;
-        public RailgunnerUsageTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "RailgunnerUse")
+        public RailgunnerUsageTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "railgunnerUse")
         {
             trackerColor = new Color(0.5f, 0.85f, 0.78f);
             effectColor = new Color(1f, 0.45f, 0.0f);
@@ -252,7 +252,7 @@ public static class ETrackrr
             setValue = Mathf.Min(e.RailgunUse, e.RailgunLimit);
 
             // Smoothly transition the value with an ease out
-            this.Value = preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 40)) :  Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 40));
+            this.Value = preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 20)) :  Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 20));
 
             // Advance the transition, or reset transition ticker
             if (this.Value == setValue) {
