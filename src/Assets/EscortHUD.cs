@@ -26,6 +26,7 @@ public static class EscortHUD
                         self.AddPart(
                             traction.trackerName switch {
                                 "hype" => new HypeRing(self, traction),
+                                "railgunnerUse" => new RailRing(self, traction),
                                 _ => new GenericRing(self, traction)
                             }
                         );
@@ -214,6 +215,19 @@ public static class EscortHUD
                 hypedSprite.alpha = 0;
             }
         }
+    }
 
+    public class RailRing : GenericRing
+    {
+        public RailRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        {
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            progressBacking.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+            progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+        }
     }
 }

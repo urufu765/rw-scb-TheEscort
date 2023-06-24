@@ -352,7 +352,7 @@ namespace TheEscort
                     }
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
-                e.Escat_Update_Ring_Trackers();
+                e.Escat_Update_Ring_Trackers(t);
             }
             catch (Exception err)
             {

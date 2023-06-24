@@ -511,7 +511,8 @@ namespace TheEscort
             }
             if (Railgunner)
             {
-
+                floatTrackers.Add(new ETrackrr.RailgunnerCDTraction(n, 1, self, this));
+                floatTrackers.Add(new ETrackrr.RailgunnerUsageTraction(n, 2, this));
             }
             if (Speedster)
             {
@@ -519,15 +520,15 @@ namespace TheEscort
             }
         }
 
-        public void Escat_Update_Ring_Trackers()
+        public void Escat_Update_Ring_Trackers(float timeStacker)
         {
             foreach(Trackrr<float> t in this.floatTrackers)
             {
-                t.UpdateTracker();
+                t.DrawTracker(timeStacker);
             }
             foreach(Trackrr<int> t2 in this.intTrackers)
             {
-                t2.UpdateTracker();
+                t2.DrawTracker(timeStacker);
             }
         }
 
