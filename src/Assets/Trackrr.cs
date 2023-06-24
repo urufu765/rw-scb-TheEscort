@@ -189,12 +189,12 @@ public static class ETrackrr
                 this.trackerColor = escapistColor;
                 if (e.EscUnGraspLimit != 0) prevMax = e.EscUnGraspLimit;
                 this.Max = prevMax;
-                this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning));
+                this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 30, transitioning));
 
                 if (e.EscUnGraspLimit == 0 && transitioning > 0) {
                     this.transitioning -= timeStacker;
                 }
-                else if (e.EscUnGraspLimit > 0 && transitioning < 20) {
+                else if (e.EscUnGraspLimit > 0 && transitioning < 30) {
                     this.transitioning += timeStacker;
                 }
             }
@@ -252,7 +252,7 @@ public static class ETrackrr
             setValue = Mathf.Min(e.RailgunUse, e.RailgunLimit);
 
             // Smoothly transition the value with an ease out
-            this.Value = preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 20)) :  Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 20));
+            this.Value = preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 10)) :  Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 10));
 
             // Advance the transition, or reset transition ticker
             if (this.Value == setValue) {
