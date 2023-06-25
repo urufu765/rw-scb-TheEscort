@@ -271,14 +271,14 @@ public static class EscortHUD
             {
                 x = pos.x,
                 y = pos.y,
-                scale = 2.9f + 0.5f * tracked.trackerNumber,
+                scale = 2.9f + 0.4f * tracked.trackerNumber,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             this.progressBacking = new FSprite("Futile_White")
             {
                 x = pos.x,
                 y = pos.y,
-                scale = 2.9f + 0.5f * tracked.trackerNumber,
+                scale = 2.9f + 0.4f * tracked.trackerNumber,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
             hud.fContainers[1].AddChild(progressBacking);

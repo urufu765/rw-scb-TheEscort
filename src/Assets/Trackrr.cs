@@ -283,7 +283,7 @@ public static class ETrackrr
             {
                 Max = e.SpeExtraSpe;
                 Limit = 0;
-                if (e.SpeGear <= gear){
+                if (gear <= e.SpeGear){
                     Value = e.SpeSpeedin;
                 }
                 else 
@@ -332,13 +332,13 @@ public static class ETrackrr
             {
                 this.effectColor = Color.Lerp(trackerColor, Color.white, 0.35f);
                 Limit = escort.SpeSecretSpeed? 0 : Max;
-                Value = escort.SpeSecretSpeed? escort.SpeBuildup * 2 : escort.SpeExtraSpe;
+                Value = escort.SpeSecretSpeed? escort.SpeSpeedin * 2 : escort.SpeExtraSpe;
             }
             else 
             {
                 this.effectColor = escort.SpeSecretSpeed? Color.Lerp(trackerColor, Color.white, 0.35f) : Color.Lerp(trackerColor, Color.black, 0.35f);
                 Limit = escort.SpeDashNCrash? 0 : Max;
-                Value = escort.SpeBuildup;
+                Value = escort.SpeSpeedin;
             }
         }
     }
