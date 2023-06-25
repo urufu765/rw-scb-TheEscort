@@ -243,7 +243,7 @@ public static class EscortHUD
     }
 
     /// <summary>
-    /// Ring specifically for Railgunner's 
+    /// Ring specifically for Railgunner's using a solid bar
     /// </summary>
     public class RailRing : GenericRing
     {
@@ -259,6 +259,9 @@ public static class EscortHUD
         }
     }
 
+    /// <summary>
+    /// Ring for tracking the speedster's charge.
+    /// </summary>
     public class SpeedRing : RingMeter
     {
         private readonly Trackrr<float> tracked;

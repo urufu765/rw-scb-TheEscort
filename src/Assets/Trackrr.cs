@@ -124,7 +124,7 @@ public static class ETrackrr
             this.Value = player.aerobicLevel;
             force = Value > Limit;
             this.trackerColor = e.hypeColor;
-            this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.87f);
+            this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.5f);
         }
     }
 
@@ -173,21 +173,22 @@ public static class ETrackrr
     public class EscapistUngraspTraction : Trackrr<float>
     {
         private readonly Escort e;
-        private readonly Color escapistColor;
         private float transitioning;
         private int prevMax;
         public EscapistUngraspTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "escapist")
         {
             this.e = escort;
-            this.escapistColor = new Color(0.42f, 0.75f, 0.1f);
+            Color escapistColor = new Color(0.42f, 0.75f, 0.1f);
+            this.trackerColor = Color.Lerp(Color.Lerp(escapistColor, Color.black, 0.6f), escapistColor, Mathf.InverseLerp(0, 40, e.EscUnGraspCD));
+            this.effectColor = escapistColor;
+
         }
 
         public override void DrawTracker(float timeStacker)
         {
-            if (e.EscUnGraspCD == 0)
+            if (e.EscUnGraspCD <= 0)
             {
                 this.Limit = 0;
-                this.trackerColor = escapistColor;
                 if (e.EscUnGraspLimit != 0) prevMax = e.EscUnGraspLimit;
                 this.Max = prevMax;
                 this.Value = Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning));
@@ -204,7 +205,6 @@ public static class ETrackrr
                 this.Limit = 500;
                 this.Max = 480;
                 this.Value = e.EscUnGraspCD;
-                this.trackerColor = Color.Lerp(Color.Lerp(escapistColor, Color.black, 0.6f), escapistColor, Mathf.InverseLerp(0, 40, e.EscUnGraspCD));
             }
         }
     }
@@ -214,9 +214,10 @@ public static class ETrackrr
         private readonly Player player;
         private readonly Escort e;
 
-        public RailgunnerCDTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "RailgunnerCD", new Color(0.5f, 0.85f, 0.78f))
+        public RailgunnerCDTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "RailgunnerCD", new Color(0.35f, 0.7f, 0.63f))
         {
             this.player = player;
+            effectColor = new Color(0.85f, 0.3f, 0.0f);
             this.e = escort;
             this.Max = 800;
         }
@@ -286,6 +287,7 @@ public static class ETrackrr
                 Limit = 0;
                 if (gear <= e.SpeGear + 1){
                     Value = e.SpeSpeedin;
+                    oldValue = Value;
                 }
                 else 
                 {
