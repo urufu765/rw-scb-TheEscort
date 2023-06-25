@@ -144,11 +144,11 @@ public static class EscortHUD
             progressBacking.x = DrawPos(timeStacker).x;
             progressBacking.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, flashColor);
+            progressBacking.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
             progressBacking2.x = DrawPos(timeStacker).x;
             progressBacking2.y = DrawPos(timeStacker).y;
             progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking2.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, flashColor);
+            progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
             progressSprite.x = DrawPos(timeStacker).x;
             progressSprite.y = DrawPos(timeStacker).y;
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
@@ -237,6 +237,8 @@ public static class EscortHUD
                 normalSprite.alpha = 1;
                 hypedSprite.alpha = 0;
             }
+            progressBacking.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
+            progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
         }
     }
 
@@ -252,8 +254,8 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            progressBacking.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
-            progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+            progressBacking.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
+            progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
         }
     }
 

@@ -62,7 +62,7 @@ public abstract class Trackrr<T>
         this.trackerNumber = trackerNumber;
         this.trackerName = trackerName;
         this.trackerColor = trackerColor;
-        this.effectColor = Color.Lerp(trackerColor, Color.black, 0.35f);
+        this.effectColor = trackerColor;
     }
 }
 
@@ -124,6 +124,7 @@ public static class ETrackrr
             this.Value = player.aerobicLevel;
             force = Value > Limit;
             this.trackerColor = e.hypeColor;
+            this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.7f);
         }
     }
 
@@ -283,7 +284,7 @@ public static class ETrackrr
             {
                 Max = e.SpeExtraSpe;
                 Limit = 0;
-                if (gear <= e.SpeGear){
+                if (gear <= e.SpeGear + 1){
                     Value = e.SpeSpeedin;
                 }
                 else 
