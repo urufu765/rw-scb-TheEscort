@@ -124,7 +124,7 @@ public static class ETrackrr
             this.Value = player.aerobicLevel;
             force = Value > Limit;
             this.trackerColor = e.hypeColor;
-            this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.7f);
+            this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.87f);
         }
     }
 
