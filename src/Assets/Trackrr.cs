@@ -269,7 +269,9 @@ public static class ETrackrr
     {
         private readonly Escort e;
         private readonly int gear;
-        public SpeedsterTraction(int playerNumber, int trackerNumber, Escort escort, int gear) : base(playerNumber, trackerNumber, "speedster")
+        private float oldValue;
+        private float transitioning;
+        public SpeedsterTraction(int playerNumber, int trackerNumber, Escort escort, int gear) : base(playerNumber, trackerNumber, "speedster", new Color(0.76f, 0.78f, 0f))
         {
             this.e = escort;
             this.gear = gear;
@@ -277,19 +279,67 @@ public static class ETrackrr
 
         public override void DrawTracker(float timeStacker)
         {
-            
+            if (e.SpeDashNCrash)
+            {
+                Max = e.SpeExtraSpe;
+                Limit = 0;
+                if (e.SpeGear <= gear){
+                    Value = e.SpeSpeedin;
+                }
+                else 
+                {
+                    transitioning += timeStacker;
+                    Value = Mathf.Lerp(oldValue, 0, Mathf.InverseLerp(0, 20, transitioning));
+                }
+            }
+            else 
+            {
+                this.Max = 240;
+                if (e.SpeCharge == gear - 1)
+                {
+                    Value = e.SpeBuildup;
+                    Limit = 300;
+                }
+                else if (e.SpeCharge >= gear)
+                {
+                    Value = Max;
+                    Limit = 0;
+                }
+                else {
+                    Value = 0;
+                }
+                transitioning = 0;
+                oldValue = Value;
+            }
         }
     }
 
     public class SpeedsterOldTraction : Trackrr<float>
     {
-        public SpeedsterOldTraction(int playerNumber, int trackerNumber, string trackerName, Color trackerColor = default) : base(playerNumber, trackerNumber, trackerName, trackerColor)
+        private readonly Escort escort;
+        private readonly bool extra;
+        public SpeedsterOldTraction(int playerNumber, int trackerNumber, Escort escort, bool extra = false) : base(playerNumber, trackerNumber, "speedsterOld")
         {
+            this.escort = escort;
+            this.extra = extra;
+            this.trackerColor = extra? new Color(0.86f, 0.65f, 0f) : new Color(0.76f, 0.78f, 0f);
+            this.Max = extra? 480 : 240;
         }
 
         public override void DrawTracker(float timeStacker)
         {
-            throw new NotImplementedException();
+            if (extra) 
+            {
+                this.effectColor = Color.Lerp(trackerColor, Color.white, 0.35f);
+                Limit = escort.SpeSecretSpeed? 0 : Max;
+                Value = escort.SpeSecretSpeed? escort.SpeBuildup * 2 : escort.SpeExtraSpe;
+            }
+            else 
+            {
+                this.effectColor = escort.SpeSecretSpeed? Color.Lerp(trackerColor, Color.white, 0.35f) : Color.Lerp(trackerColor, Color.black, 0.35f);
+                Limit = escort.SpeDashNCrash? 0 : Max;
+                Value = escort.SpeBuildup;
+            }
         }
     }
 }

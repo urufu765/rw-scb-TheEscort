@@ -4,6 +4,7 @@ using HUD;
 using System.CodeDom;
 using System.Collections.Generic;
 using static TheEscort.Eshelp;
+using System.Diagnostics;
 
 namespace TheEscort;
 
@@ -27,6 +28,7 @@ public static class EscortHUD
                             traction.trackerName switch {
                                 "hype" => new HypeRing(self, traction),
                                 "railgunnerUse" => new RailRing(self, traction),
+                                "speedster" => new SpeedRing(self, traction),
                                 _ => new GenericRing(self, traction)
                             }
                         );
@@ -40,18 +42,57 @@ public static class EscortHUD
     }
 
     /// <summary>
-    /// Generic progression ring (meter)
+    /// The base for the RingMeter
     /// </summary>
-    public class GenericRing : HudPart
+    public class RingMeter : HudPart
     {
         public Vector2 pos;
+        public Vector2 lastPos;
+        public FoodMeter foodmeter;
+
+        public RingMeter(HUD.HUD hud) : base(hud) { 
+            this.pos = new Vector2(40f, 40f);
+        }
+
+		public Vector2 DrawPos(float timeStacker)
+		{
+			return Vector2.Lerp(this.lastPos, this.pos, timeStacker);
+		}
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            pos = DrawPos(timeStacker);
+            if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + 80f;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if (foodmeter == null)
+            {
+                for (int i = 0; i < hud.parts.Count; i++)
+                {
+                    if (hud.parts[i] is FoodMeter)
+                    {
+                        foodmeter = hud.parts[i] as FoodMeter;
+                    }
+                }
+            }
+            lastPos = pos;
+        }
+    }
+
+    /// <summary>
+    /// Generic progression float ring (meter)
+    /// </summary>
+    public class GenericRing : RingMeter
+    {
         public readonly FSprite progressSprite;
         public readonly FSprite progressSprite2;
         public readonly FSprite progressBacking;
         public readonly FSprite progressBacking2;
         public readonly Trackrr<float> tracked;
-        public Vector2 lastPos;
-        public FoodMeter foodmeter;
         public float flashColor;
         public bool staticFlash;
 
@@ -59,7 +100,6 @@ public static class EscortHUD
         {
             this.tracked = tracked;
             this.staticFlash = staticFlash;
-            this.pos = new Vector2(40f, 40f);
 
             this.progressSprite = new FSprite("Futile_White")
             {
@@ -100,17 +140,15 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
 
-            pos = DrawPos(timeStacker);
             pos.x = 60f + 80f * tracked.playerNumber;
-            if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + 80f;
             progressBacking.x = DrawPos(timeStacker).x;
             progressBacking.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking.color = Color.Lerp(tracked.trackerColor, Color.black, flashColor / 2f);
+            progressBacking.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, flashColor);
             progressBacking2.x = DrawPos(timeStacker).x;
             progressBacking2.y = DrawPos(timeStacker).y;
             progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking2.color = Color.Lerp(tracked.trackerColor, Color.black, flashColor / 2f);
+            progressBacking2.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, flashColor);
             progressSprite.x = DrawPos(timeStacker).x;
             progressSprite.y = DrawPos(timeStacker).y;
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
@@ -122,26 +160,11 @@ public static class EscortHUD
 
         }
 
-		public Vector2 DrawPos(float timeStacker)
-		{
-			return Vector2.Lerp(this.lastPos, this.pos, timeStacker);
-		}
 
 
         public override void Update()
         {
             base.Update();
-            if (foodmeter == null)
-            {
-                for (int i = 0; i < hud.parts.Count; i++)
-                {
-                    if (hud.parts[i] is FoodMeter)
-                    {
-                        foodmeter = hud.parts[i] as FoodMeter;
-                    }
-                }
-            }
-            lastPos = pos;
             if (staticFlash) flashColor = 0.6f;
             else
             {
@@ -217,6 +240,9 @@ public static class EscortHUD
         }
     }
 
+    /// <summary>
+    /// Ring specifically for Railgunner's 
+    /// </summary>
     public class RailRing : GenericRing
     {
         public RailRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
@@ -228,6 +254,61 @@ public static class EscortHUD
             base.Draw(timeStacker);
             progressBacking.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
             progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+        }
+    }
+
+    public class SpeedRing : RingMeter
+    {
+        private readonly Trackrr<float> tracked;
+        private readonly FSprite progressSprite;
+        private readonly FSprite progressBacking;
+        private float pulseColor;
+
+        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
+        {
+            this.tracked = tracked;
+            this.progressSprite = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y,
+                scale = 2.9f + 0.5f * tracked.trackerNumber,
+                shader = hud.rainWorld.Shaders["HoldButtonCircle"]
+            };
+            this.progressBacking = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y,
+                scale = 2.9f + 0.5f * tracked.trackerNumber,
+                shader = hud.rainWorld.Shaders["HoldButtonCircle"]
+            };
+            hud.fContainers[1].AddChild(progressBacking);
+            hud.fContainers[1].AddChild(progressSprite);
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            pos.x = 60f + 80f * tracked.playerNumber;
+            progressBacking.x = DrawPos(timeStacker).x;
+            progressBacking.y = DrawPos(timeStacker).y;
+            progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            progressBacking.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
+            progressSprite.x = DrawPos(timeStacker).x;
+            progressSprite.y = DrawPos(timeStacker).y;
+            progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
+            progressSprite.color = tracked.trackerColor;
+        }
+
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (pulseColor < 1f){
+                pulseColor += 1f/40f;
+            } else {
+                pulseColor = 0;
+            }
         }
     }
 }

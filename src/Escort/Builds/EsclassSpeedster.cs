@@ -354,6 +354,7 @@ namespace TheEscort
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
                     e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
+                    e.SpeExtraSpe = e.SpeSpeedin;
                     if (self.room != null)
                     {
                         for (int i = 0; i < 10; i++)

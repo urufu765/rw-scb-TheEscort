@@ -516,7 +516,18 @@ namespace TheEscort
             }
             if (Speedster)
             {
-                
+                if (!SpeOldSpeed)
+                {
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        floatTrackers.Add(new ETrackrr.SpeedsterTraction(n, i, this, i));
+                    }
+                }
+                else 
+                {
+                    floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 1, this));
+                    floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
+                }
             }
         }
 
