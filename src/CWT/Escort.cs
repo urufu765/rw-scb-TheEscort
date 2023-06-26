@@ -495,27 +495,31 @@ namespace TheEscort
             {
                 n = self.playerState.playerNumber;
             }
-            this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this));
-
+            string hypeSprite = "escort_hud_default";
             if (Brawler)
             {
+                hypeSprite = "escort_hud_brawler";
                 floatTrackers.Add(new ETrackrr.BrawlerMeleeTraction(n, 1, self, this));
             }
             if (Deflector)
             {
+                hypeSprite = "escort_hud_deflector";
                 floatTrackers.Add(new ETrackrr.DeflectorEmpowerTraction(n, 1, this));
             }
             if (Escapist)
             {
+                hypeSprite = "escort_hud_escapist";
                 floatTrackers.Add(new ETrackrr.EscapistUngraspTraction(n, 1, this));
             }
             if (Railgunner)
             {
+                hypeSprite = "escort_hud_railgunner";
                 floatTrackers.Add(new ETrackrr.RailgunnerCDTraction(n, 1, self, this));
                 floatTrackers.Add(new ETrackrr.RailgunnerUsageTraction(n, 2, this));
             }
             if (Speedster)
             {
+                hypeSprite = "escort_hud_speedster";
                 if (!SpeOldSpeed)
                 {
                     for (int i = 1; i <= 4; i++)
@@ -529,6 +533,7 @@ namespace TheEscort
                     floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
                 }
             }
+            this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
         }
 
         public void Escat_Update_Ring_Trackers(float timeStacker)

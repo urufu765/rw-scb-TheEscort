@@ -186,7 +186,6 @@ public static class EscortHUD
     {
         private readonly FSprite progressGlow;
         private readonly FSprite normalSprite;
-        private readonly FSprite hypedSprite;
 
         public HypeRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
         {
@@ -198,45 +197,26 @@ public static class EscortHUD
                 color = tracked.trackerColor,
                 shader = hud.rainWorld.Shaders["FlatLight"]
             };
-            this.normalSprite = new FSprite("FriendA"){
+            this.normalSprite = new FSprite(tracked.centerSprite){
                 x = pos.x,
                 y = pos.y,
                 alpha = 1,
                 scale = 1,
             };
-            this.hypedSprite = new FSprite("FriendB"){
-                x = pos.x,
-                y = pos.y,
-                alpha = 0,
-                scale = 1,
-            };
             hud.fContainers[1].AddChild(progressGlow);
             hud.fContainers[1].AddChild(normalSprite);
-            hud.fContainers[1].AddChild(hypedSprite);
         }
 
 
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            normalSprite.color = tracked.trackerColor * Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
-            hypedSprite.color = Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor);
+            normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
             progressGlow.x = DrawPos(timeStacker).x;
             progressGlow.y = DrawPos(timeStacker).y;
             progressGlow.alpha = 0.15f;
             normalSprite.x = DrawPos(timeStacker).x;
             normalSprite.y = DrawPos(timeStacker).y;
-            hypedSprite.x = DrawPos(timeStacker).x;
-            hypedSprite.y = DrawPos(timeStacker).y;
-            if (tracked.Value > tracked.Limit){
-                normalSprite.alpha = 0;
-                hypedSprite.alpha = 1;
-            }
-            else
-            {
-                normalSprite.alpha = 1;
-                hypedSprite.alpha = 0;
-            }
             progressBacking.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
             progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
         }

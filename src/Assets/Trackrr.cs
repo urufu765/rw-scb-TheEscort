@@ -11,6 +11,7 @@ public abstract class Trackrr<T>
     public readonly int playerNumber;
     public readonly int trackerNumber;
     public readonly string trackerName;
+    public readonly string centerSprite;
     public Color trackerColor;
     public Color effectColor;
     public bool force;
@@ -56,13 +57,14 @@ public abstract class Trackrr<T>
     {
     }
 
-    public Trackrr(int playerNumber, int trackerNumber, string trackerName, Color trackerColor = default)
+    public Trackrr(int playerNumber, int trackerNumber, string trackerName, Color trackerColor = default, string centerSprite = "")
     {
         this.playerNumber = playerNumber;
         this.trackerNumber = trackerNumber;
         this.trackerName = trackerName;
         this.trackerColor = trackerColor;
         this.effectColor = trackerColor;
+        this.centerSprite = centerSprite;
     }
 }
 
@@ -111,7 +113,7 @@ public static class ETrackrr
     {
         private readonly Player player;
         private readonly Escort e;
-        public HypeTraction(int playerNumber, int trackerNumber, float limiter, Player player, Escort e) : base( playerNumber, trackerNumber, "hype")
+        public HypeTraction(int playerNumber, int trackerNumber, float limiter, Player player, Escort e, string centerSprite) : base( playerNumber, trackerNumber, "hype", centerSprite: centerSprite)
         {
             this.player = player;
             this.e = e;
