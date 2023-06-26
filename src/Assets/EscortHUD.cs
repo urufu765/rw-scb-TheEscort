@@ -211,7 +211,7 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.4f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
+            normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.55f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
             progressGlow.x = DrawPos(timeStacker).x;
             progressGlow.y = DrawPos(timeStacker).y;
             progressGlow.alpha = 0.15f;
