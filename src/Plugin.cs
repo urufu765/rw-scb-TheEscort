@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -288,10 +289,11 @@ namespace TheEscort
             Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
             Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
             Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
-            FAtlas aB, aH;
+            FAtlas aB, aH, hM;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
-            if (aB == null || aH == null)
+            hM = Futile.atlasManager.LoadAtlas("atlases/escorthudmain");
+            if (aB == null || aH == null || hM == null)
             {
                 Ebug("Oh no. Sprites dead.", 0);
             }

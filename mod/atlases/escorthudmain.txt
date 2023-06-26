@@ -59,10 +59,10 @@
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "mainsprites.png",
+	"image": "escorthudmain.png",
 	"format": "RGBA8888",
 	"size": {"w":228,"h":36},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:7aeadb258ecc1ff20b39e7183cc13aa2:75fdc1d1a217f73773d71a5663d5a742:fab4c64dbaa2613f1cfb80a7a6d1d42e$"
+	"smartupdate": "$TexturePacker:SmartUpdate:af619e5a1f720544741b9defadfea6cf:75fdc1d1a217f73773d71a5663d5a742:d626f5337384747f603ce672d8b54546$"
 }
 }
