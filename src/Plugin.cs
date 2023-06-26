@@ -238,6 +238,7 @@ namespace TheEscort
             //On.Player.Update += Estest_1_Update;
             //On.Player.GrabUpdate += Estest_3_GrabUpdate;
             Escort_Conversation.Attach();
+            EscortRoomScript.Attach();
             EscortHUD.Attach();
             On.TubeWorm.GrabbedByPlayer += GrappleBackpack.BackpackGrabbedByPlayer;
             On.TubeWorm.GrabbedByPlayer += LauncherBackpack.BackpackGrabbedByPlayer;

@@ -1,0 +1,12 @@
+Template: CC_SettingsTemplate_Gutter
+DangerType: Flood
+WaveSpeed: 0.5908253
+WaveLength: 0.7045873
+WaveAmplitude: 0.04999999
+SecondWaveLength: 0.1666667
+SecondWaveAmplitude: 0
+Effects: SilenceWater-1-267-70, 
+PlacedObjects: DevToken><428.9349><266.076><-40~-71~0~0~0~~~0~0~0~1, 
+AmbientSounds: SPOT><SO_WAT-OpenFlow.ogg><840.3209><378.187><0.2391304><1><800.3209><138.187><-184.3553><20.64465><0><0.2739132, SPOT><SO_WAT-MoreDrips.ogg><846.3469><262.6287><0.4456522><0.823913><510.3469><710.6287><-30.35535><-367.3553><0><1, 
+FadePalette: 21, 0.6956522
+RoomSpecificScriptActive: ON

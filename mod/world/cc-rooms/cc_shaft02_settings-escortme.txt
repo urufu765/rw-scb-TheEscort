@@ -1,0 +1,18 @@
+Template: CC_SettingsTemplate_Gutter
+DangerType: Flood
+CeilingDrips: 0.5978261
+WaveSpeed: 0.3795597
+WaveLength: 0.8447798
+WaveAmplitude: 0.04377945
+SecondWaveLength: 0.1666667
+SecondWaveAmplitude: 0
+Clouds: 1
+Grime: 0.2826087
+RandomItemDensity: 0.7934783
+RandomItemSpearChance: 0.5804347
+Effects: Fog-0.2608696-20-20, 
+PlacedObjects: CustomDecal><362.5123><2304.801><-6~516~264~515~291~0~-432~39~0.1521739~1~0~WormGuts~1~0~1~0~0.6521739~0~0.6739131~0.1086956, 
+AmbientSounds: SPOT><SO_WAT-OpenFlow.ogg><833.389><376.0836><0.1521739><0.9413043><472.389><13.08362><347.6447><106.6447><0><1, OMNI><AM_WIN-StrongWnd2.ogg><835.8917><297.1089><0.326087><1.293478, SPOT><SO_NAT-WindTunnel.ogg><836.8592><184.8325><0.2608696><1.254348><503.8592><2621.833><-203.3553><132.6447><0><0.578261, OMNI><SO_WAT-MoreDrips.ogg><827.9359><635.6895><0.6956522><1.097826, SPOT><SO_WAT-OpenFlow.ogg><834.1634><72.3847><0.1304348><0.823913><463.1634><15.3847><123.6447><600.6447><0><1, 
+FadePalette: 21, 0.7717391, 0.75, 0.7391304, 0.7173913, 0.6956522
+WetTerrain: OFF
+RoomSpecificScriptActive: ON
