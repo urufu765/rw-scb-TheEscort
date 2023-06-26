@@ -1454,7 +1454,7 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Eshelp_IsMe(self.slugcatStats.name, false))
                 {
                     float biteMult = 0.5f;
                     if (e.Brawler)
@@ -1499,7 +1499,7 @@ namespace TheEscort
         {
             try
             {
-                if (self is Player && (self as Player).slugcatStats.name.value != "EscortMe")
+                if (self is Player p && Eshelp_IsMe(p.slugcatStats.name))
                 {
                     orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                     return;

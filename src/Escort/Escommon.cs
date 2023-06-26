@@ -193,12 +193,18 @@ namespace TheEscort
                     }
                     Ebug(self, "Failure.", 1);
                 }
-                else
+                else if (e.iFrames > 0)
                 {
                     self.dead = false;
-                    Ebug(self, "Player didn't die?", 1);
+                    Ebug(self, "Player didn't die? Due to Iframes", 1);
                     e.ParrySuccess = false;
+                    return;
                 }
+                else if (e.ParrySuccess)
+                {
+                    Ebug(self, "Player attempted to cheat death with the ParrySuccess card. Failed.");
+                }
+                orig(self);
             }
             catch (Exception err)
             {
