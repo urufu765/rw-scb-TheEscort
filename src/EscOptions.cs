@@ -2,6 +2,7 @@ using Menu.Remix;
 using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
@@ -94,12 +95,18 @@ namespace TheEscort
         public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod;
         public Configurable<float> cfgEscLaunchV, cfgEscLaunchH, cfgEscLaunchSH;
         public Configurable<int> cfgLogImportance;
+        public Configurable<string> cfgShowHud;
+        public List<ListItem> hudShowOptions;
+        public Configurable<bool> cfgNoMoreFlips;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
         private OpCheckBox hypeableBox;
         private OpSliderTick hypeableTick;
         private OpLabel[] hypeableText;
+        private OpCheckBox sillySFX;
+        private OpCheckBox shutUpFlip;
+        private OpLabel shutUpFlipText;
         private UIelement[] mainSet;
         private UIelement[] buildSet, buildTitle, buildText, buildShadow;
         //private OpCheckBox buildEasyP1, buildEasyP2, buildEasyP3, buildEasyP4;
@@ -110,6 +117,7 @@ namespace TheEscort
         private UIelement[] accessibleSet;
         private Color[] buildColors;
         private Color p1Color, p2Color, p3Color, p4Color;
+        private Color tempColor;
         private readonly float yoffset = 560f;
         private readonly float xoffset = 30f;
         private readonly float ypadding = 40f;
@@ -192,6 +200,15 @@ namespace TheEscort
             this.buildEasy = new OpCheckBox[4];
             this.buildPlayer = new OpSliderTick[4];
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
+            this.hudShowOptions = new()
+            {
+                new ListItem("hide", "Hide", 0),
+                new ListItem("map", "Show With Map", 1),
+                new ListItem("relevant", "Show When Relevant", 2),
+                new ListItem("always", "Always Show", 3)
+            };
+            this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[3].name);
+            this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
         }
 
         private static string Swapper(string text, string with = "")
@@ -209,7 +226,7 @@ namespace TheEscort
             float yp = this.ypadding;
             float tp = this.tpadding;
 
-            Color tempColor = new(0.5f, 0.5f, 0.55f);
+            tempColor = new(0.5f, 0.5f, 0.55f);
             Color descColor = new(0.53f, 0.48f, 0.59f);
 
             p1Color = new Color(1f, 1f, 1f);
@@ -284,7 +301,21 @@ namespace TheEscort
                 };
             }
 
+            this.sillySFX = new OpCheckBox(this.cfgSFX, new Vector2(xo + (xp * 0), yo - (yp * 2))){
+                colorEdge = tempColor,
+                description = OptionInterface.Translate("Replaces a few sound effects that on one hand will kill the immersion, but on the other hand... haha funny noises. (Default=false)")
+            };
 
+            this.sillySFX.OnValueChanged += TurnNoFlipOnAndOff;
+
+            this.shutUpFlipText = new OpLabel(xo + (xp * 4), yo - (yp * 2) * tp/2, "Disable 'Sick Flip' SFX"){
+                color = tempColor
+            };
+
+            this.shutUpFlip = new OpCheckBox(this.cfgNoMoreFlips, new Vector2(xo + (xp * 3), yo - (yp * 2))){
+                colorEdge = tempColor,
+                description = OptionInterface.Translate("Turns off the sick flip silly soundeffect in case it gets too annoying. (Default=false)")
+            };
 
             /*
             this.buildP1 = new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
@@ -655,10 +686,10 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable dumb SFX"){
                     color = tempColor
                 },
-                new OpCheckBox(this.cfgSFX, new Vector2(xo + (xp * 0), yo - (yp * 2))){
-                    colorEdge = tempColor,
-                    description = OptionInterface.Translate("Replaces a few sound effects that on one hand will kill the immersion, but on the other hand... haha funny noises. (Default=false)")
-                },
+                sillySFX,
+
+                shutUpFlipText,
+                shutUpFlip,
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Elevator"){
                     color = tempColor
@@ -737,8 +768,12 @@ namespace TheEscort
                     min = -1,
                     max = 4,
                     description = OptionInterface.Translate("Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs. (Default=0)"),
-                }
+                },
 
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 6), "Escort HUD"),
+                new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 100, hudShowOptions){
+                    description = Translate("Show HUD. [Other viewing options coming soon!] (Default='Show Always')")
+                }
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
@@ -935,6 +970,23 @@ namespace TheEscort
                 }
             }
         }
+
+
+        private void TurnNoFlipOnAndOff(UIconfig config, string value, string oldValue)
+        {
+            if (value == "true")
+            {
+                this.shutUpFlip.greyedOut = false;
+                this.shutUpFlipText.color = tempColor;
+            }
+            else
+            {
+                this.shutUpFlip.greyedOut = true;
+                this.shutUpFlipText.color = tempColor / 2;
+            }
+        }
+
+
 
         private void RunItThruHyped(UIconfig config, string value, string oldValue)
         {
