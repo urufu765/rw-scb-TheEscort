@@ -12,3 +12,4 @@
 [ADD]Escort_Pole_Bounce : escortpolebounce/vol=0.24/minPitch=0.9/maxPitch=1.75
 [ADD]Escort_Rotunded : escortrotund/vol=0.25/minPitch=0.8/maxPitch=1.05
 [ADD]Esconfig_Sectret : esconfigsec1/vol=0.24/minPitch=0.9/maxPitch=1.1, esconfigsec2/vol=0.3/pitch=0.94, esconfigsec3/vol=0.3/pitch=1
+[ADD]Esplaceholder : escortplaceholder/vol=0

@@ -203,11 +203,11 @@ namespace TheEscort
             this.hudShowOptions = new()
             {
                 new ListItem("hide", "Hide", 0),
-                new ListItem("map", "Show With Map", 1),
-                new ListItem("relevant", "Show When Relevant", 2),
+                //new ListItem("map", "Show With Map", 1),
+                //new ListItem("relevant", "Show When Relevant", 2),
                 new ListItem("always", "Always Show", 3)
             };
-            this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[3].name);
+            this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
         }
 
@@ -308,11 +308,11 @@ namespace TheEscort
 
             this.sillySFX.OnValueChanged += TurnNoFlipOnAndOff;
 
-            this.shutUpFlipText = new OpLabel(xo + (xp * 4), yo - (yp * 2) * tp/2, "Disable 'Sick Flip' SFX"){
+            this.shutUpFlipText = new OpLabel(xo + (xp * 6), yo - (yp * 2) + tp/2, "Disable 'Sick Flip' SFX"){
                 color = tempColor
             };
 
-            this.shutUpFlip = new OpCheckBox(this.cfgNoMoreFlips, new Vector2(xo + (xp * 3), yo - (yp * 2))){
+            this.shutUpFlip = new OpCheckBox(this.cfgNoMoreFlips, new Vector2(xo + (xp * 5), yo - (yp * 2))){
                 colorEdge = tempColor,
                 description = OptionInterface.Translate("Turns off the sick flip silly soundeffect in case it gets too annoying. (Default=false)")
             };
@@ -770,8 +770,8 @@ namespace TheEscort
                     description = OptionInterface.Translate("Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs. (Default=0)"),
                 },
 
-                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 6), "Escort HUD"),
-                new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 100, hudShowOptions){
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), "Escort HUD"),
+                new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudShowOptions){
                     description = Translate("Show HUD. [Other viewing options coming soon!] (Default='Show Always')")
                 }
             };

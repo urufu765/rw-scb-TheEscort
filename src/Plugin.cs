@@ -104,6 +104,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Pole_Bounce;
         public static SoundID Escort_SFX_Uhoh_Big;
         public static SoundID Esconfig_SFX_Sectret;
+        public static SoundID Escort_SFX_Placeholder;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -289,6 +290,7 @@ namespace TheEscort
             Escort_SFX_Pole_Bounce = new SoundID("Escort_Pole_Bounce", true);
             Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
             Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
+            Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
             FAtlas aB, aH, hM;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
@@ -767,14 +769,20 @@ namespace TheEscort
         /*
         Escort code!
         */
+
+        /// <summary>
+        /// Mixes up the escort sick flip sound effects! Or returns a silent thing if configured to do so
+        /// </summary>
+        /// <returns>a random flip sound effect or silent thing</returns>
         private SoundID Eshelp_SFX_Flip()
         {
+            if (config.cfgNoMoreFlips.Value) return Escort_SFX_Placeholder;
             float r = UnityEngine.Random.value;
             return r switch
             {
                 > 0.5f => Escort_SFX_Flip,
                 > 0.3f => Escort_SFX_Flip2,
-                > 0f => Escort_SFX_Flip3,
+                > 0.01f => Escort_SFX_Flip3,
                 _ => Escort_SFX_Railgunner_Death,
             };
         }

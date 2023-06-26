@@ -19,6 +19,7 @@ public static class EscortHUD
     private static void Escort_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
     {
         orig(self, cam);
+        if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
         if (self.owner is Player p){
             for (int i = 0; i < cam.room.game.session.Players.Count; i++){
                 if (cam.room.game.session.Players[i].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e)){
