@@ -12,6 +12,7 @@ namespace TheEscort
         //public readonly SlugcatStats.Name name;
         //public String EsbuildName;
         public string Eskie = "Escort";
+        public bool isDefault;
         public int DropKickCD;
         public float RollinCount;
         public int parrySlideLean;
@@ -161,6 +162,7 @@ namespace TheEscort
             this.lizzieDestination = player.abstractCreature.pos;
             this.floatTrackers = new List<Trackrr<float>>();
             this.intTrackers = new List<Trackrr<int>>();
+            this.isDefault = false;
 
             // Build specific
             this.Brawler = false;

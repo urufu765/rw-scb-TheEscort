@@ -407,7 +407,7 @@ namespace TheEscort
             }
 
             // optional Pole Tech
-            if (config.cfgPoleBounce.Value && self.input[0].jmp && !self.input[1].jmp)
+            if ((config.cfgPoleBounce.Value || e.isDefault) && self.input[0].jmp && !self.input[1].jmp)
             {
                 // Normally rivulet check
                 try

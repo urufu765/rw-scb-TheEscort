@@ -675,7 +675,7 @@ namespace TheEscort
                         self.airFriction -= 0.5f;
                         self.waterFriction -= 0.5f;
                         self.surfaceFriction -= 0.5f;
-                        minimumPips += 2;
+                        minimumPips += 1;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -720,6 +720,7 @@ namespace TheEscort
                         break;
                     default:  // Default build
                         Ebug(self, "Default Build selected!", 2);
+                        e.isDefault = true;
                         self.slugcatStats.lungsFac -= 0.2f;
                         break;
                 }

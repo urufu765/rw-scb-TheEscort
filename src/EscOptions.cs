@@ -309,11 +309,12 @@ namespace TheEscort
             this.sillySFX.OnValueChanged += TurnNoFlipOnAndOff;
 
             this.shutUpFlipText = new OpLabel(xo + (xp * 6), yo - (yp * 2) + tp/2, "Disable 'Sick Flip' SFX"){
-                color = tempColor
+                color = cfgSFX.Value? tempColor/2 : tempColor
             };
 
             this.shutUpFlip = new OpCheckBox(this.cfgNoMoreFlips, new Vector2(xo + (xp * 5), yo - (yp * 2))){
                 colorEdge = tempColor,
+                greyedOut = !cfgSFX.Value,
                 description = OptionInterface.Translate("Turns off the sick flip silly soundeffect in case it gets too annoying. (Default=false)")
             };
 
@@ -717,7 +718,7 @@ namespace TheEscort
                 },
                 new OpCheckBox(this.cfgPoleBounce, new Vector2(xo + (xp * 0), yo - (yp * 6))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Because someone requested it. Not quite Rivulet, but something along the lines ;). (Default=false)"),
+                    description = OptionInterface.Translate("Because someone requested it. Not quite Rivulet, but something along the lines ;). Default Escort has it by default. (Default=false)"),
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Old Speedster Mechanics"){

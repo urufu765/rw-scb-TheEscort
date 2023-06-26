@@ -60,7 +60,7 @@ namespace TheEscort
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
                 {
-                    self.slowMovementStun += 40;
+                    self.slowMovementStun += 30;
                     e.BrawPunch = false;
                 }
                 if (e.BrawMeleeWeapon.Peek() is Spear)

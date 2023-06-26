@@ -141,14 +141,17 @@ public static class ETrackrr
         {
             this.player = player;
             this.e = escort;
+            this.Max = 60;
         }
 
         public override void DrawTracker(float timeStacker)
         {
+#if false
             this.Max = e.BrawLastWeapon switch {
                 "shank" => 60,
-                _ => 40
+                _ => 30
             };
+#endif
             this.Value = Max - player.slowMovementStun;
             this.Limit = player.slowMovementStun > 0? 0 : 1000;
             this.force = player.slowMovementStun > 0;
