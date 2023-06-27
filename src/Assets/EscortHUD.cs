@@ -27,6 +27,7 @@ public static class EscortHUD
                     foreach(Trackrr<float> traction in e.floatTrackers){
                         self.AddPart(
                             traction.trackerName switch {
+                                "parry" => new ParryShield(self, traction),
                                 "hype" => new HypeRing(self, traction),
                                 "railgunnerUse" => new RailRing(self, traction),
                                 "speedster" => new SpeedRing(self, traction),
@@ -295,6 +296,35 @@ public static class EscortHUD
             } else {
                 pulseColor = 0;
             }
+        }
+    }
+
+    public class ParryShield : RingMeter
+    {
+        private readonly Trackrr<float> tracked;
+        private readonly FSprite normalSprite;
+
+        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr) : base(hud)
+        {
+            this.tracked = trackrr;
+            this.normalSprite = new FSprite(trackrr.centerSprite){
+                x = pos.x,
+                y = pos.y,
+                alpha = 1,
+                scale = 1,
+            };
+            hud.fContainers[1].AddChild(normalSprite);
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            pos.x = 60f + 80f * tracked.playerNumber;
+            normalSprite.x = base.DrawPos(timeStacker).x;
+            normalSprite.y = base.DrawPos(timeStacker).y;
+            normalSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, tracked.Limit);
+            normalSprite.alpha = Mathf.InverseLerp(0, 5, tracked.Value);
+            normalSprite.scale = 1 + 0.07f * tracked.Max;
         }
     }
 }

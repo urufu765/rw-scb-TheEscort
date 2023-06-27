@@ -14,7 +14,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -902,6 +902,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Each build gets different food requirements!
+        /// </summary>
         private IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
         {
             try
@@ -1062,7 +1065,11 @@ namespace TheEscort
 #endregion
 
 
-        // Check Escort's parry condition
+        /// <summary>
+        /// Check Escort's parry condition
+        /// </summary>
+        /// <param name="self">A creature</param>
+        /// <returns>false if not a player or Escort, true if in parry condition</returns>
         public bool Eshelp_ParryCondition(Creature self)
         {
             if (self is Player player)
@@ -1090,6 +1097,11 @@ namespace TheEscort
             }
             return false;
         }
+        /// <summary>
+        /// Check Escort's parry condition
+        /// </summary>
+        /// <param name="self">Player</param>
+        /// <returns>false if player is not escort, true if in parry condition</returns>
         public bool Eshelp_ParryCondition(Player self)
         {
             if (!eCon.TryGetValue(self, out Escort e))

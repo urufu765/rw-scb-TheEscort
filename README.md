@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.2 - The Escort
+  * **(0.2.9.2)** Implemented the parry condition sprite, adjusted Brawler alt shank to be faster and have less damage
+
   * **(0.2.9.1)** Deflector now does 1 million damage with a spear on full empower power. Fixed food meter not properly deducting the correct amount of food.
 
   * **(0.2.9)** Each Escort has a different food requirement, and has different spawns. Patched out an obsolete code that causes crashes if there's more than 4 players (full support for 8 players will come out when the mod does). Clarified Long Wall Jump and told players to keep it off. Disabled experimental backpack due to crashes. Added legacy controls for tongue thing. Added a new check that will check for any Escorts without needing to change each function whenever there's a new Escort ID. Reenabled the transplanter. Potentially fixed issue where sometimes Escort can just not die in death situations. Gave default Escort poletech by default. Brawler shank adjusted such that you can shank faster if it doesn't land 1s -> 0.5s, Brawler punch buffed by being able to punch faster 1s -> 0.75s. Deflector buffed by increasing empowered duration for higher power stages (up to 8 seconds). Railgunner's base bite lethality rate reduced from 0.85 -> 0.75. Gave option to disable the sick flip sfx separately from the rest of silly sfx.

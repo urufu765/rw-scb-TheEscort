@@ -350,4 +350,60 @@ public static class ETrackrr
             }
         }
     }
+
+    /// <summary>
+    /// Value: Alpha, Limit: Parried timer 
+    /// </summary>
+    public class DamageProtectionTraction : Trackrr<float>
+    {
+        private readonly Player player;
+        private readonly Escort escort;
+
+        public DamageProtectionTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "parry", centerSprite: "escort_hud_parry")
+        {
+            this.player = player;
+            this.escort = escort;
+            this.trackerColor = player.ShortCutColor();
+            if (this.trackerColor.r < 0.44f && this.trackerColor.g < 0.44f && this.trackerColor.b < 0.44f)
+            {
+                this.trackerColor = Color.Lerp(Color.white, this.trackerColor, 0.7f);
+            }
+            this.effectColor = Color.white;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            if (Value < 5 && ParryCondition())
+            {
+                Value += timeStacker;
+            }
+            else if (Value > 0 && Limit == 0 && !ParryCondition())
+            {
+                Value -= timeStacker;
+            }
+            Max = escort.iFrames;
+            if (Max > 0) Limit = 1;
+            if (Limit > 0) Limit -= timeStacker / 6;
+        }
+
+        /// <summary>
+        /// Check Escort's parry condition. For tracker use (minimal logggin)
+        /// </summary>
+        /// <param name="self">Player instance</param>
+        /// <param name="escort">Escort instance</param>
+        /// <returns>True if in parry condition</returns>
+        private bool ParryCondition()
+        {
+            if (escort.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
+            {
+                return true;
+            }
+            else if (player.animation == Player.AnimationIndex.BellySlide && escort.parryAirLean > 0)
+            {
+                return true;
+            }
+            return escort.parrySlideLean > 0;
+        }
+
+    }
 }

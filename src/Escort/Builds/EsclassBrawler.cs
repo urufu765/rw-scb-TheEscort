@@ -54,8 +54,8 @@ namespace TheEscort
                     if (self.slowMovementStun > 0) self.Blink(30);
                     else 
                     {
-                        self.slowMovementStun += 40;
-                        e.BrawLastWeapon = "shank";
+                        if (e.BrawLastWeapon == "shank") self.slowMovementStun += 40;
+                        else if (e.BrawLastWeapon == "knife") self.slowMovementStun += 20;
                     }
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
@@ -256,7 +256,7 @@ namespace TheEscort
                     {
                         break;
                     }
-                    if (self.slowMovementStun > 20){
+                    if (self.slowMovementStun > 40){
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
                         float intensity = 1.4f;
