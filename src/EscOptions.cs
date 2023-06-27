@@ -126,12 +126,13 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -5;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.9";
+        private static readonly string VERSION = "0.2.9.1";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "[HUD UPDATE!]<LINE>- Each Escort has a different food requirement, and has different spawns<LINE>- Patched out an obsolete code that causes crashes if there's more than 4 players (full support for 8 players will come out when the mod does)<LINE>- Clarified Long Wall Jump and told players to keep it off<LINE>- Disabled experimental backpack (secret slup) due to crashes<LINE>- Added legacy controls for tongue thing<LINE>- Gave option to disable the sick flip sfx separately from the rest of silly sfx<LINE>- Potentially fixed issue where sometimes Escort can just not die in death situations<LINE>- Gave default Escort poletech by default<LINE>- Brawler shank adjusted such that you can shank faster if it doesn't land 1s -> 0.5s, Brawler punch buffed by being able to punch faster 1s -> 0.75s<LINE>- Deflector buffed by increasing empowered duration for higher power stages (up to 8 seconds)<LINE>- Railgunner's base bite lethality rate reduced from 0.85 -> 0.75");
+                "- Fixed food meter to properly apply the correct amount of food taken and stuff.<LINE><LINE>" +
+                "[HUD UPDATE 0.2.9!]<LINE>- Each Escort has a different food requirement, and has different spawns<LINE>- Patched out an obsolete code that causes crashes if there's more than 4 players (full support for 8 players will come out when the mod does)<LINE>- Clarified Long Wall Jump and told players to keep it off<LINE>- Disabled experimental backpack (secret slup) due to crashes<LINE>- Added legacy controls for tongue thing<LINE>- Gave option to disable the sick flip sfx separately from the rest of silly sfx<LINE>- Potentially fixed issue where sometimes Escort can just not die in death situations<LINE>- Gave default Escort poletech by default<LINE>- Brawler shank adjusted such that you can shank faster if it doesn't land 1s -> 0.5s, Brawler punch buffed by being able to punch faster 1s -> 0.75s<LINE>- Deflector buffed by increasing empowered duration for higher power stages (up to 8 seconds)<LINE>- Railgunner's base bite lethality rate reduced from 0.85 -> 0.75");
             }
         }
 

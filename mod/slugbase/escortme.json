@@ -34,8 +34,6 @@
 		},
 		"karma": 2,
 		"karma_cap": 3,
-		"food_min": 9,
-		"food_max": 14,
 		"world_state": ["EscortMe", "Spear"],
 		"timeline_after": "Spear",
 		"select_menu_scene": "Slugcat_EscortMe",

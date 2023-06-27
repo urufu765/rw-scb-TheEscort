@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
+using RWCustom;
 using SlugBase.Features;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -229,6 +230,7 @@ namespace TheEscort
             On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
             On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
             On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
+            On.SlugcatStats.SlugcatFoodMeter += Escort_differentBuildsFoodz;
             //On.SlugcatStats.getSlugcatTimelineOrder += Escort_Time;
 
             //On.PlayerGraphics.PopulateJollyColorArray += ReJollyCoop.PopulateTheJollyMan;
@@ -640,8 +642,8 @@ namespace TheEscort
                 if (!ins.L().Eastabun){
                     pal = -6;
                 }
-                int maximumPips = self.slugcatStats.maxFood;
-                int minimumPips = self.slugcatStats.foodToHibernate;
+                //int maximumPips = self.slugcatStats.maxFood;
+                //int minimumPips = self.slugcatStats.foodToHibernate;
                 switch (pal)
                 {
                     // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
@@ -659,8 +661,8 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac = 0.9f;
                         self.slugcatStats.poleClimbSpeedFac = 0.9f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        maximumPips -= 4;
-                        minimumPips -= 3;
+                        //maximumPips -= 4;
+                        //minimumPips -= 3;
                         Ebug(self, "Gilded Build selected!", 2);
                         break;
                     case -5:  // Speedstar build
@@ -676,7 +678,7 @@ namespace TheEscort
                         self.airFriction -= 0.5f;
                         self.waterFriction -= 0.5f;
                         self.surfaceFriction -= 0.5f;
-                        minimumPips += 1;
+                        //minimumPips += 1;
                         Ebug(self, "Speedstar Build selected!", 2);
                         break;
                     case -4:  // Railgunner build
@@ -687,7 +689,7 @@ namespace TheEscort
                         self.slugcatStats.generalVisibilityBonus += 1f;
                         self.slugcatStats.visualStealthInSneakMode = 0f;
                         self.slugcatStats.bodyWeightFac += 0.3f;
-                        minimumPips -= 2;
+                        //minimumPips -= 2;
                         Ebug(self, "Railgunner Build selected!", 2);
                         break;
                     case -3:  // Escapist build
@@ -696,7 +698,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        minimumPips -= 3;
+                        //minimumPips -= 3;
                         Ebug(self, "Escapist Build selected!", 2);
                         break;
                     case -2:  // Deflector build
@@ -704,7 +706,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
-                        minimumPips -= 1;
+                        //minimumPips -= 1;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;
                     case -1:  // Brawler build
@@ -715,8 +717,7 @@ namespace TheEscort
                         self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                         self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                         self.slugcatStats.throwingSkill = 1;
-                        minimumPips += 4;
-                        self.slugcatStats.foodToHibernate += 2;
+                        //minimumPips += 4;
                         Ebug(self, "Brawler Build selected!", 2);
                         break;
                     default:  // Default build
@@ -732,6 +733,7 @@ namespace TheEscort
                 }
                 self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
                 self.buoyancy -= 0.05f;
+#if false
                 if (self.room?.game?.StoryCharacter == EscortMe){
                     Ebug(self, "Session is Escort!", 1);
                     self.slugcatStats.maxFood = maximumPips;
@@ -739,6 +741,7 @@ namespace TheEscort
                         self.slugcatStats.foodToHibernate = minimumPips;
                     }
                 }
+#endif
                 Ebug(self, "Set build complete!", 1);
                 Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
                 Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
@@ -898,6 +901,36 @@ namespace TheEscort
                 }
             }
         }
+
+        private IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
+        {
+            try
+            {
+                if (Eshelp_IsMe(slugcat)) return orig(slugcat);
+                return config.cfgBuild[0].Value switch{
+                    -6 => new(10, 6),  // Gilded
+                    -5 => new(14, 10),  // Speedster
+                    -4 => new(14, 7),  // Railgunner
+                    -3 => new(11, 7),  // Escapist
+                    -2 => new(14, 8),  // Deflector
+                    -1 => new(14, 12),  // Brawler
+                    _  => new(14, 9)  // Default and unspecified.
+                };
+
+            } 
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null error when setting food meters. Shouldn't be happening.");
+                return orig(slugcat);
+            }
+            catch (Exception err) 
+            {
+                Ebug(err, "Generic exception when setting food meter.");
+                return orig(slugcat);
+            }
+        }
+
+
 
 #region Escort Has A Public Github Repo You Know
         protected void Escort_Has_A_Public_Github_Repo_Lol(Player self)

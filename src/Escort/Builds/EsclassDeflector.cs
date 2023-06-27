@@ -162,7 +162,7 @@ namespace TheEscort
                     spear.spearDamageBonus *= dSpearDmg[0];
                     if (e.DeflPowah == 2) spear.spearDamageBonus += 1.5f;
                     if (e.DeflPowah == 3) {
-                        spear.spearDamageBonus = 10000f;
+                        spear.spearDamageBonus = 1000000f;
                         self.room?.ScreenMovement(null, default, 1.2f);
                     }
                     spear.firstChunk.vel *= dSpearVel[0];

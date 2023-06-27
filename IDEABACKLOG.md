@@ -50,6 +50,4 @@
 
 * *(0.2.10)* Gilded. (another idea: Blast away the creatures for safety)
 
-* *(0.2.9)* HUD & Story (Part 1) Update!
-
 * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
