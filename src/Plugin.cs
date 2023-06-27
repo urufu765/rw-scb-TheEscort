@@ -14,7 +14,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9.2")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.9.3")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
