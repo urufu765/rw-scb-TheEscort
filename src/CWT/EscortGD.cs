@@ -13,6 +13,10 @@ namespace TheEscort
         public bool GildCrush;
         public int GildCrushTime;
         public bool GildCrushReady;
+        public int GildPower;
+        public int GildLevitateLimit;
+        public int GildLaser;  // Laser
+        public int GildBlast;  // Cone
         
         public void EscortGD()
         {
@@ -23,6 +27,8 @@ namespace TheEscort
             GildCrush = false;  // Stomping state
             GildCrushTime = 0;  // Chargeup
             GildCrushReady = false;  // Stops Gilded from stomping multiple times in the air
+            GildPower = 2000;
+            GildLevitateLimit = 200;
         }
 
         public void Escat_float_state(Player self, bool status = true){

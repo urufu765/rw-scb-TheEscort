@@ -7,6 +7,10 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.2 - The Escort
+  * **(0.2.10)** Gilded Update
+
+  * **(0.2.9.3)** Fixed Brawler damage
+
   * **(0.2.9.2)** Implemented the parry condition sprite, adjusted Brawler alt shank to be faster and have less damage
 
   * **(0.2.9.1)** Deflector now does 1 million damage with a spear on full empower power. Fixed food meter not properly deducting the correct amount of food.

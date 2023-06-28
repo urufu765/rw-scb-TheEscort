@@ -33,6 +33,11 @@ namespace TheEscort
             else if (!self.input[0].jmp && e.GildCrushTime > 0){
                 e.GildCrushTime--;
             }
+
+            if (!self.Stunned && e.GildPower < 5000)
+            {
+                e.GildPower++;
+            }
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -127,7 +132,7 @@ namespace TheEscort
             }
 
             // Death upon reaching too high of a hype level
-            if (self.aerobicLevel > 5f) { self.Die(); }
+            if (e.GildPower > 5000) { self.Die(); }
         }
 
 
