@@ -29,6 +29,8 @@ namespace TheEscort
             GildCrushReady = false;  // Stops Gilded from stomping multiple times in the air
             GildPower = 2000;
             GildLevitateLimit = 200;
+            GildLaser = 0;
+            GildBlast = 0;
         }
 
         public void Escat_float_state(Player self, bool status = true){
