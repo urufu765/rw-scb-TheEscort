@@ -253,9 +253,9 @@ namespace TheEscort
                 if (!self.input[0].thrw)
                 {
                     self.TossObject(grasp, eu);
-                    self.ReleaseGrasp(grasp);
                     Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
                     self.dontGrabStuff = 15;
+                    self.ReleaseGrasp(grasp);
                 }
                 else
                 {
