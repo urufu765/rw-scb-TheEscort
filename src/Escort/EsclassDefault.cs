@@ -228,7 +228,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
-            if (e.Gilded) Esclass_GD_Update(self, ref e);
+            if (e.Gilded) Esclass_GD_Update(self, eu, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
             // Just for seeing what a variable does.
@@ -548,6 +548,7 @@ namespace TheEscort
                 return;
             }
             if (e.Deflector) Esclass_DF_UpdateAnimation(self, ref e);
+            if (e.Gilded) Esclass_GD_UpdateAnimation(self);
 
             //Ebug(self, "UpdateAnimation Triggered!");
 
@@ -637,19 +638,20 @@ namespace TheEscort
 
             bool hypedMode = Esconfig_Hypable(self);
 
+            float movementSlow = Mathf.Lerp(1, 4, Mathf.InverseLerp(0, 16, self.slowMovementStun));
 
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl)
             {
                 if (!e.Gilded && hypedMode)
                 {
-                    self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
-                    self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
+                    self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                    self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
                 }
                 else
                 {
-                    self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac;
-                    self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac;
+                    self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                    self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
                 }
             }
 
@@ -666,27 +668,27 @@ namespace TheEscort
                 {
                     if (self.animation == Player.AnimationIndex.StandOnBeam)
                     {
-                        self.dynamicRunSpeed[0] = Mathf.Lerp(poleWalk[0], poleWalk[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
-                        self.dynamicRunSpeed[1] = Mathf.Lerp(poleWalk[0], poleWalk[1], self.aerobicLevel) * self.slugcatStats.runspeedFac;
-                        self.bodyChunks[1].vel.x += Mathf.Lerp(0, poleWalk[3], self.aerobicLevel) * self.input[0].x;
+                        self.dynamicRunSpeed[0] = Mathf.Lerp(poleWalk[0], poleWalk[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = Mathf.Lerp(poleWalk[0], poleWalk[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.bodyChunks[1].vel.x += Mathf.Lerp(0, poleWalk[3], self.aerobicLevel) * self.input[0].x / movementSlow;
                     }
                     else if (self.animation == Player.AnimationIndex.HangFromBeam)
                     {
-                        self.bodyChunks[0].vel.x += Mathf.Lerp(poleHang[0], poleHang[1], self.aerobicLevel) * self.input[0].x;
-                        self.bodyChunks[1].vel.x += Mathf.Lerp(poleHang[2], poleHang[3], self.aerobicLevel) * self.input[0].x;
+                        self.bodyChunks[0].vel.x += Mathf.Lerp(poleHang[0], poleHang[1], self.aerobicLevel) * self.input[0].x / movementSlow;
+                        self.bodyChunks[1].vel.x += Mathf.Lerp(poleHang[2], poleHang[3], self.aerobicLevel) * self.input[0].x / movementSlow;
                     }
                 }
                 else
                 {
                     if (self.animation == Player.AnimationIndex.StandOnBeam)
                     {
-                        self.dynamicRunSpeed[0] = poleWalk[2] * self.slugcatStats.runspeedFac;
-                        self.dynamicRunSpeed[1] = poleWalk[2] * self.slugcatStats.poleClimbSpeedFac;
+                        self.dynamicRunSpeed[0] = poleWalk[2] * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = poleWalk[2] * self.slugcatStats.poleClimbSpeedFac / movementSlow;
                     }
                     else if (self.animation == Player.AnimationIndex.HangFromBeam)
                     {
-                        self.bodyChunks[0].vel.x += poleHang[4] * self.input[0].x;
-                        self.bodyChunks[1].vel.x += poleHang[5] * self.input[0].x;
+                        self.bodyChunks[0].vel.x += poleHang[4] * self.input[0].x / movementSlow;
+                        self.bodyChunks[1].vel.x += poleHang[5] * self.input[0].x / movementSlow;
                     }
                 }
             }
@@ -1230,7 +1232,7 @@ namespace TheEscort
                 }
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
-                if (e.Gilded && self.grasps[grasp]?.grabbed is Spear) self.TossObject(grasp, eu);
+                if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;
             }
             catch (Exception err)
             {

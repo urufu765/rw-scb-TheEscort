@@ -15,8 +15,20 @@ namespace TheEscort
         public bool GildCrushReady;
         public int GildPower;
         public int GildLevitateLimit;
-        public int GildLaser;  // Laser
-        public int GildBlast;  // Cone
+        public int GildLaser;  // Laser (UNUSED)
+        public int GildBlast;  // Cone (UNUSED)
+        public bool GildLockRecharge;
+        public bool GildCancel;
+        public int GildReservePower;
+        public int GildRequiredPower;
+        public int GildPowerUsage;
+        public int GildWantToThrow;
+        public const int GildCheckLevitate = 400;
+        public const int GildUseLevitate = 2;
+        public const int GildCheckCraftFirebomb = 1200;
+        public const int GildUseCraftFirebomb = 10;
+        public const int GildCheckCraftFirespear = 1600;
+        public const int GildUseCraftFirespear = 10;
         
         public void EscortGD()
         {
@@ -31,6 +43,7 @@ namespace TheEscort
             GildLevitateLimit = 200;
             GildLaser = 0;
             GildBlast = 0;
+
         }
 
         public void Escat_float_state(Player self, bool status = true){

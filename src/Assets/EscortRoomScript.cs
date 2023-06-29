@@ -16,9 +16,16 @@ public class EscortRoomScript
     {
         orig(room);
         string name = room.abstractRoom.name;
-        Player player;
-        if (room.PlayersInRoom.Count > 0){
-            player = room.PlayersInRoom[0];
+        Player player = null;
+        if (room?.game?.session?.Players is not null)
+        {
+            for (int i = 0; i < room.game.session.Players.Count; i++)
+            {
+                if (room.game.session.Players[i].realizedCreature != null && room.game.session.Players[i].realizedCreature is Player p){
+                    player = p;
+                    break;
+                }
+            }
         }
         else return;
         if (name is null) return;
