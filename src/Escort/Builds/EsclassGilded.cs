@@ -5,6 +5,8 @@ using System.IO;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using RWCustom;
+using IL.MoreSlugcats;
 
 namespace TheEscort
 {
@@ -61,7 +63,7 @@ namespace TheEscort
                 e.GildCancel = false;
             }
 
-            e.GildLockRecharge = false;
+            if (!self.dead) e.GildLockRecharge = false;
         }
 
         private void Esclass_GD_Update(Player self, bool eu, ref Escort e)
@@ -76,9 +78,10 @@ namespace TheEscort
             {
                 self.Blink(5);
             }
-            else if (e.GildPower > 5000)
+            if (e.GildPower > 5000 && !self.dead)
             {
                 self.Die();
+                e.GildLockRecharge = true;
             }
 
             // Check empty hand
@@ -147,7 +150,7 @@ namespace TheEscort
                 }
 
                 // Crush part 1
-                if (!e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw)
+                if (!hasSomething && !e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw)
                 {
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
@@ -228,7 +231,7 @@ namespace TheEscort
         /// </summary>
         private void Esclass_GD_UpdateAnimation(Player self)
         {
-            if (self.animation == Player.AnimationIndex.BellySlide)
+            if (self.animation == Player.AnimationIndex.BellySlide && self.rollCounter > 8)
             {
                 self.rollCounter++;
             }
@@ -239,36 +242,76 @@ namespace TheEscort
         /// </summary>
         private bool Esclass_GD_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort escort)
         {
-            if (self.grasps[grasp]?.grabbed is not null)
+            if (self.grasps[grasp]?.grabbed is null) return false;
+
+            if (
+                self.grasps[grasp].grabbed is Rock || 
+                self.grasps[grasp].grabbed is Spear spear && !spear.bugSpear || 
+                self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck
+            )
             {
-                if (self.grasps[grasp].grabbed is Rock rock)
+                if (!self.input[0].thrw)
                 {
-                    if (!self.input[0].thrw)
-                    {
-                        self.TossObject(grasp, eu);
-                    }
-                    else
-                    {
-                        escort.GildWantToThrow = grasp;
-                    }
-                    Ebug(self, "Rock rock rock!");
-                    return true;
+                    self.TossObject(grasp, eu);
+                    self.ReleaseGrasp(grasp);
+                    Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
+                    self.dontGrabStuff = 15;
                 }
-                if (self.grasps[grasp].grabbed is Spear spear && !spear.bugSpear)
+                else
                 {
-                    if (!self.input[0].thrw)
-                    {
-                        self.TossObject(grasp, eu);
-                    }
-                    else
-                    {
-                        escort.GildWantToThrow = grasp;
-                    }
-                    Ebug(self, "Spear spear spear!");
-                    return true;
+                    escort.GildWantToThrow = grasp;
                 }
+                return true;
             }
             return false;
+        }
+
+        private static void Esclass_GD_ReplicateThrowBodyPhysics(Player self, int grasp)
+        {
+            IntVector2 throwDir = new(self.ThrowDirection, 0);
+            bool upwardsEnabled = ModManager.MMF && MoreSlugcats.MMF.cfgUpwardsSpearThrow.Value;
+            if (
+                self.animation == Player.AnimationIndex.Flip &&
+                (self.input[0].y < 0 || (upwardsEnabled && self.input[0].y != 0)) &&
+                self.input[0].x == 0
+            )
+            {
+                throwDir = new(0, upwardsEnabled? self.input[0].y : -1);
+            }
+            if (upwardsEnabled && self.bodyMode == Player.BodyModeIndex.ZeroG && self.input[0].y != 0)
+            {
+                throwDir = new(0, self.input[0].y);
+            }
+
+
+            if (
+                self.animation == Player.AnimationIndex.BellySlide && 
+                self.rollCounter > 8 &&
+                self.rollCounter < 15 &&
+                throwDir.x == -self.rollDirection &&
+                !self.longBellySlide
+            )
+            {
+                self.grasps[grasp].grabbed.firstChunk.vel.y += 4;
+                (self.grasps[grasp].grabbed as Weapon).changeDirCounter = 0;
+            }
+
+            if (self.animation == Player.AnimationIndex.ClimbOnBeam && ModManager.MMF && MoreSlugcats.MMF.cfgClimbingGrip.Value)
+            {
+                self.bodyChunks[0].vel += throwDir.ToVector2() * 2f;
+                self.bodyChunks[1].vel -= throwDir.ToVector2() * 8f;
+            }
+            else
+            {
+                self.bodyChunks[0].vel += throwDir.ToVector2() * 8f;
+                self.bodyChunks[1].vel -= throwDir.ToVector2() * 4f;
+            }
+
+            if (self.graphicsModule is PlayerGraphics playerGraphics)
+            {
+                playerGraphics.ThrowObject(grasp, self.grasps[grasp].grabbed);
+            }
+            self.Blink(15);
         }
     }
 }
