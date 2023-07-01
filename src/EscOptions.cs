@@ -345,7 +345,7 @@ namespace TheEscort
                 min = this.buildDiv,
                 max = 0
             };*/
-
+            InputSecret();
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             base.Initialize();
             OpTab mainTab = new(this, "Main");

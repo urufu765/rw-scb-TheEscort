@@ -63,6 +63,8 @@ namespace TheEscort
                 }
             }
             if (!self.dead) e.GildLockRecharge = false;
+
+            if (e.secretRGB) e.Escat_RGB_firespear();
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -194,17 +196,17 @@ namespace TheEscort
                     if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
                     if (self.grasps[e.GildWantToThrow].grabbed is Rock r)
                     {
+                        e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
+                        e.GildPowerUsage = Escort.GildUseCraftFirebomb;
                         try
                         {
-                            e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
-                            e.GildPowerUsage = Escort.GildUseCraftFirebomb;
                             if (e.GildReservePower >= e.GildRequiredPower)
                             {
                                 Vector2 posi = r.firstChunk.pos;
                                 WorldCoordinate wPos = r.abstractPhysicalObject.pos;
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 r.Destroy();
-                                AbstractPhysicalObject apo = new AbstractPhysicalObject(self.abstractCreature.world, MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.FireEgg, null, wPos, self.room.game.GetNewID());
+                                AbstractPhysicalObject apo = new(self.abstractCreature.world, MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.FireEgg, null, wPos, self.room.game.GetNewID());
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
                                 self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
@@ -213,7 +215,7 @@ namespace TheEscort
                             }
                             else
                             {
-                                r.vibrate = 1;
+                                r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
                         } 
                         catch (NullReferenceException nre)
@@ -230,26 +232,30 @@ namespace TheEscort
                         e.GildPowerUsage = Escort.GildUseCraftFirespear;
                         try
                         {
-                            e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
-                            e.GildPowerUsage = Escort.GildUseCraftFirebomb;
                             if (e.GildReservePower >= e.GildRequiredPower)
                             {
                                 Vector2 posi = s.firstChunk.pos;
                                 WorldCoordinate wPos = s.abstractPhysicalObject.pos;
-                                float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
+                                //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
+                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                                if (hue == 0) hue = 1f/360f;
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 s.Destroy();
-                                AbstractSpear apo = new AbstractSpear(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
+                                AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
                                 self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
                                 self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                                if (e.secretRGB)
+                                {
+                                    e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
+                                }
                                 e.GildWantToThrow = -1;
                                 e.GildReservePower = 0;
                             }
                             else
                             {
-                                s.vibrate = 1;
+                                s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                             }
                         } 
                         catch (NullReferenceException nre)

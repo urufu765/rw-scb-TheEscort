@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using R = UnityEngine.Random;
+using static TheEscort.Eshelp;
 
 
 namespace TheEscort
@@ -23,6 +26,7 @@ namespace TheEscort
         public int GildRequiredPower;
         public int GildPowerUsage;
         public int GildWantToThrow;
+        public List<Spear> GildRainbowFirespear;
         public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
@@ -43,7 +47,7 @@ namespace TheEscort
             GildLevitateLimit = 200;
             GildLaser = 0;
             GildBlast = 0;
-
+            GildRainbowFirespear = new();
         }
 
         public void Escat_float_state(Player self, bool status = true){
@@ -52,12 +56,37 @@ namespace TheEscort
                 self.wantToJump = 0;
                 self.room?.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, SFXChunk, false, 1f, 0.6f);
                 for (int i = 0; i < 7; i++){
-                    self.room?.AddObject(new WaterDrip(self.bodyChunks[1].pos, RWCustom.Custom.DegToVec(Random.value * 360) * Mathf.Lerp(4, 20, Random.value), false));
+                    self.room?.AddObject(new WaterDrip(self.bodyChunks[1].pos, RWCustom.Custom.DegToVec(R.value * 360) * Mathf.Lerp(4, 20, R.value), false));
                 }
             }
             else{
                 self.room?.PlaySound(SoundID.HUD_Pause_Game, SFXChunk, loop: false, 1f, 0.5f);
                 GildFloatState = false;
+            }
+        }
+
+        public void Escat_RGB_firespear()
+        {
+            try
+            {
+                for (int i = 0; i < GildRainbowFirespear.Count; i++)
+                {
+                    if (GildRainbowFirespear[i] is null) 
+                    {
+                        GildRainbowFirespear.RemoveAt(i);
+                        continue;
+                    }
+                    GildRainbowFirespear[i].abstractSpear.hue += 1/360;
+                    if (GildRainbowFirespear[i].abstractSpear.hue >= 360) GildRainbowFirespear[i].abstractSpear.hue = 1/360;
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null exception when doing RGB spears?!");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic exception when doing RGB spears.");
             }
         }
     }
