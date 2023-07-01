@@ -32,22 +32,6 @@ namespace TheEscort
                 e.GildMoonJump--;
             }
 
-            if (e.GildRemoveRock is not null)
-            {
-                if (e.GildRemoveRockAfter > 0)
-                {
-                    e.GildRemoveRockAfter--;
-                }
-                else
-                {
-                    e.GildRemoveRock.Destroy();
-                }
-            }
-            else
-            {
-                e.GildRemoveRockAfter = 0;
-            }
-
             if (!e.GildLockRecharge) 
             {
                 e.GildRequiredPower = 0;
@@ -225,8 +209,7 @@ namespace TheEscort
                                 Ebug(self, "Rock init");
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 Ebug(self, "throwaway");
-                                e.GildRemoveRock = r;
-                                e.GildRemoveRockAfter = 2;
+                                r.Destroy();
                                 Ebug(self, "Destroy");
                                 FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue);
                                 self.room.abstractRoom.AddEntity(apo);
@@ -235,6 +218,7 @@ namespace TheEscort
                                 self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
                                 e.GildWantToThrow = -1;
                                 e.GildReservePower = 0;
+                                return;
                             }
                             else
                             {
@@ -280,6 +264,7 @@ namespace TheEscort
                                 #endif
                                 e.GildWantToThrow = -1;
                                 e.GildReservePower = 0;
+                                return;
                             }
                             else
                             {
