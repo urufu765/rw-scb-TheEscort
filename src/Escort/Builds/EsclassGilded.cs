@@ -122,7 +122,7 @@ namespace TheEscort
             if (e.GildLevitateLimit > 0 && self.input[0].jmp && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
-                self.mainBodyChunk.vel.y = Mathf.Sign(self.mainBodyChunk.vel.y) < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd / 2f, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd / 2f, 0);
+                self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
 
                 self.bodyChunks[0].vel.y += levitation;
                 self.bodyChunks[1].vel.y += levitation - 1f;
@@ -194,7 +194,7 @@ namespace TheEscort
                 else
                 {
                     if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
-                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildPower > Escort.GildCheckCraftFirebomb)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildPower >= Escort.GildUseCraftFirebomb)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
                         e.GildPowerUsage = Escort.GildUseCraftFirebomb;
@@ -234,7 +234,7 @@ namespace TheEscort
                             Ebug(self, err, "Generic exception when charging a rock!");
                         }
                     }
-                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildPower > Escort.GildCheckCraftFirespear)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildPower >= Escort.GildUseCraftFirespear)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirespear;
                         e.GildPowerUsage = Escort.GildUseCraftFirespear;
@@ -252,7 +252,7 @@ namespace TheEscort
                                 AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
-                                self.room.PlaySound(SoundID.Fire_Spear_Explode, posi, 0.7f, 1f);
+                                self.room.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
                                 self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
 
                                 // Doesn't work

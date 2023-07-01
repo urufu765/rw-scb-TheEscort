@@ -345,7 +345,10 @@ namespace TheEscort
                 min = this.buildDiv,
                 max = 0
             };*/
-            InputSecret();
+            Plugin.ins.L().Christmas(this.cfgSectret.Value);
+            Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
+            Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
+
             bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             base.Initialize();
             OpTab mainTab = new(this, "Main");
