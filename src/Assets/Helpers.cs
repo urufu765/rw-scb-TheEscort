@@ -141,7 +141,7 @@ namespace TheEscort
                 {
                     if (message != prevLogs[self.playerState.playerNumber] || ignoreRepetition)
                     {
-                        if (logRepetition > 0)
+                        if (logRepetitions[self.playerState.playerNumber] > 0)
                         {
                             Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetitions[self.playerState.playerNumber] + " times: " + prevLogs[self.playerState.playerNumber]);
                         }

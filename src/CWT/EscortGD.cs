@@ -26,7 +26,8 @@ namespace TheEscort
         public int GildRequiredPower;
         public int GildPowerUsage;
         public int GildWantToThrow;
-        public List<Spear> GildRainbowFirespear;
+        public Rock GildRemoveRock;
+        public int GildRemoveRockAfter;
         public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
@@ -47,7 +48,6 @@ namespace TheEscort
             GildLevitateLimit = 200;
             GildLaser = 0;
             GildBlast = 0;
-            GildRainbowFirespear = new();
         }
 
         public void Escat_float_state(Player self, bool status = true){
@@ -65,6 +65,7 @@ namespace TheEscort
             }
         }
 
+        #if false
         public void Escat_RGB_firespear()
         {
             try
@@ -89,5 +90,6 @@ namespace TheEscort
                 Ebug(err, "Generic exception when doing RGB spears.");
             }
         }
+        #endif
     }
 }

@@ -32,6 +32,22 @@ namespace TheEscort
                 e.GildMoonJump--;
             }
 
+            if (e.GildRemoveRock is not null)
+            {
+                if (e.GildRemoveRockAfter > 0)
+                {
+                    e.GildRemoveRockAfter--;
+                }
+                else
+                {
+                    e.GildRemoveRock.Destroy();
+                }
+            }
+            else
+            {
+                e.GildRemoveRockAfter = 0;
+            }
+
             if (!e.GildLockRecharge) 
             {
                 e.GildRequiredPower = 0;
@@ -206,9 +222,12 @@ namespace TheEscort
                                 WorldCoordinate wPos = r.abstractPhysicalObject.pos;
                                 Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
                                 if (hue == 0) hue = 1f/360f;
-
+                                Ebug(self, "Rock init");
                                 self.ReleaseGrasp(e.GildWantToThrow);
-                                r.Destroy();
+                                Ebug(self, "throwaway");
+                                e.GildRemoveRock = r;
+                                e.GildRemoveRockAfter = 2;
+                                Ebug(self, "Destroy");
                                 FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
