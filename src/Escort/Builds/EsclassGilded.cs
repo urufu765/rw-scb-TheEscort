@@ -194,7 +194,7 @@ namespace TheEscort
                 else
                 {
                     if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
-                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildPower > Escort.GildCheckCraftFirebomb)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
                         e.GildPowerUsage = Escort.GildUseCraftFirebomb;
@@ -204,7 +204,7 @@ namespace TheEscort
                             {
                                 Vector2 posi = r.firstChunk.pos;
                                 WorldCoordinate wPos = r.abstractPhysicalObject.pos;
-                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                                Color.RGBToHSV(e.hypeColor * 2, out float hue, out float sat, out float vib);
                                 if (hue == 0) hue = 1f/360f;
                                 Ebug(self, "Rock init");
                                 self.ReleaseGrasp(e.GildWantToThrow);
@@ -234,7 +234,7 @@ namespace TheEscort
                             Ebug(self, err, "Generic exception when charging a rock!");
                         }
                     }
-                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildPower > Escort.GildCheckCraftFirespear)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirespear;
                         e.GildPowerUsage = Escort.GildUseCraftFirespear;
@@ -245,14 +245,14 @@ namespace TheEscort
                                 Vector2 posi = s.firstChunk.pos;
                                 WorldCoordinate wPos = s.abstractPhysicalObject.pos;
                                 //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
-                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                                Color.RGBToHSV(e.hypeColor * 2, out float hue, out float sat, out float vib);
                                 if (hue == 0) hue = 1f/360f;
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 s.Destroy();
                                 AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
-                                self.room.PlaySound(SoundID.Fire_Spear_Pop, posi);
+                                self.room.PlaySound(SoundID.Fire_Spear_Explode, posi, 0.7f, 1f);
                                 self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
 
                                 // Doesn't work
