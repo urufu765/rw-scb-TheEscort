@@ -228,7 +228,7 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
-            if (e.Gilded) Esclass_GD_Update(self, eu, ref e);
+            if (e.Gilded) Esclass_GD_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
             // Just for seeing what a variable does.
@@ -724,6 +724,46 @@ namespace TheEscort
 
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
+
+        /// <summary>
+        /// Implements code that makes Escort drop something live if it grabs them. TODO.
+        /// <summary>
+        private static void Escort_GrabbyUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        {
+            try
+            {
+                if (Eshelp_IsMe(self.slugcatStats.name))
+                {
+                    orig(self, eu);
+                    return;
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(self, err, "Grab update!");
+                orig(self, eu);
+                return;
+            }
+            if (
+                !eCon.TryGetValue(self, out Escort e)
+                )
+            {
+                orig(self, eu);
+                return;
+            }
+            /* Eat meat faster?
+            int n = 0;
+            if ((self.grasps[0] == null || !(self.grasps[0].grabbed is Creature)) && self.grasps[1] != null && self.grasps[1].grabbed is Creature){
+                n = 1;
+            }
+            if (self.input[0].pckp && self.grasps[n] != null && self.grasps[n].grabbed is Creature && self.CanEatMeat(self.grasps[n].grabbed as Creature) && (self.grasps[n].grabbed as Creature).Template.meatPoints > 1){
+                //self.EatMeatUpdate(n);
+            }*/
+            orig(self, eu);
+            if (e.Railgunner) Esclass_RG_GrabUpdate(self, ref e);
+            if (e.Gilded) Esclass_GD_GrabUpdate(self, eu, ref e);
+        }
+
 
         /// <summary>
         /// Implement Escort's slowed stamina increase. Due to the aerobic decrease found in some movements implemented in Escort, the AerobicIncrease actually does the original, and on top of that the additional to balance things out.

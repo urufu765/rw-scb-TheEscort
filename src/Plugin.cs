@@ -196,12 +196,13 @@ namespace TheEscort
             On.Player.ThrowObject += Escort_ThrowObject;
             On.Player.SpearStick += Escort_StickySpear;
             On.Player.Grabbed += Esclass_EC_Grabbed;
-            On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
+            On.Player.GrabUpdate += Escort_GrabbyUpdate;
             On.Player.BiteEdibleObject += Escort_Eated;
             On.Player.CanIPickThisUp += Escort_SpearGet;
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
             On.Player.Stun += Esclass_RG_Spasm;
+            //On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
 
 
             // Socks stuff

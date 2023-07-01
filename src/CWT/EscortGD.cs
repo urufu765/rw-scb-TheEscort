@@ -23,10 +23,10 @@ namespace TheEscort
         public int GildRequiredPower;
         public int GildPowerUsage;
         public int GildWantToThrow;
-        public const int GildCheckLevitate = 400;
-        public const int GildUseLevitate = 2;
-        public const int GildCheckCraftFirebomb = 1200;
-        public const int GildUseCraftFirebomb = 10;
+        public const int GildCheckLevitate = 480;
+        public const int GildUseLevitate = 4;
+        public const int GildCheckCraftFirebomb = 800;
+        public const int GildUseCraftFirebomb = 5;
         public const int GildCheckCraftFirespear = 1600;
         public const int GildUseCraftFirespear = 10;
         

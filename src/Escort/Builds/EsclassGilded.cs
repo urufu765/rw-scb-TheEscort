@@ -45,28 +45,27 @@ namespace TheEscort
                 e.GildReservePower += e.GildPowerUsage;
             }
 
-            if (e.GildCancel && e.GildReservePower > 0)
+            if (e.GildCancel)
             {
-                if (e.GildReservePower > 50)
+                if (e.GildReservePower > 100)
                 {
-                    e.GildPower += 50;
-                    e.GildReservePower -= 50;
+                    e.GildPower += 100;
+                    e.GildReservePower -= 100;
                 }
-                else
+                else if (e.GildReservePower > 0)
                 {
                     e.GildPower += e.GildReservePower;
                     e.GildReservePower = 0;
                 }
+                else
+                {
+                    e.GildCancel = false;
+                }
             }
-            else if (e.GildCancel && e.GildReservePower <= 0)
-            {
-                e.GildCancel = false;
-            }
-
             if (!self.dead) e.GildLockRecharge = false;
         }
 
-        private void Esclass_GD_Update(Player self, bool eu, ref Escort e)
+        private void Esclass_GD_Update(Player self, ref Escort e)
         {
             if (
                 !gilded_float.TryGet(self, out float floatingSpd) ||
@@ -97,22 +96,15 @@ namespace TheEscort
             if (!hasSomething) e.GildWantToThrow = -1;
 
 
-            // Throw when letting go of the held button
-            if (e.GildWantToThrow != -1 && !self.input[0].thrw)
-            {
-                self.ThrowObject(e.GildWantToThrow, eu);
-                e.GildWantToThrow = -1;
-            }
-
-
             #region Temporary levitation code
-            if (self.canJump > 0) e.GildLevitateLimit = 200;
+            if (self.canJump > 0) e.GildLevitateLimit = 120;
 
             // Deactivate levitation
             if ((!self.input[0].jmp || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || e.GildLevitateLimit == 0) && e.GildFloatState)
             {
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
+                e.GildReservePower = 0;
             }
 
             // Activate levitation
@@ -185,6 +177,96 @@ namespace TheEscort
             #endregion
         }
 
+
+        private static void Esclass_GD_GrabUpdate(Player self, bool eu, ref Escort e)
+        {
+            if (e.GildWantToThrow != -1)
+            {
+                // Throw when letting go of the held button
+                if (!self.input[0].thrw)
+                {
+                    self.ThrowObject(e.GildWantToThrow, eu);
+                    e.GildCancel = true;
+                    e.GildWantToThrow = -1;
+                }
+                else
+                {
+                    if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
+                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r)
+                    {
+                        try
+                        {
+                            e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
+                            e.GildPowerUsage = Escort.GildUseCraftFirebomb;
+                            if (e.GildReservePower >= e.GildRequiredPower)
+                            {
+                                Vector2 posi = r.firstChunk.pos;
+                                WorldCoordinate wPos = r.abstractPhysicalObject.pos;
+                                self.ReleaseGrasp(e.GildWantToThrow);
+                                r.Destroy();
+                                AbstractPhysicalObject apo = new AbstractPhysicalObject(self.abstractCreature.world, MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.FireEgg, null, wPos, self.room.game.GetNewID());
+                                self.room.abstractRoom.AddEntity(apo);
+                                apo.RealizeInRoom();
+                                self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
+                                e.GildWantToThrow = -1;
+                                e.GildReservePower = 0;
+                            }
+                            else
+                            {
+                                r.vibrate = 1;
+                            }
+                        } 
+                        catch (NullReferenceException nre)
+                        {
+                            Ebug(self, nre, "Null when charging a rock!");
+                        }
+                        catch (Exception err) {
+                            Ebug(self, err, "Generic exception when charging a rock!");
+                        }
+                    }
+                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear)
+                    {
+                        e.GildRequiredPower = Escort.GildCheckCraftFirespear;
+                        e.GildPowerUsage = Escort.GildUseCraftFirespear;
+                        try
+                        {
+                            e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
+                            e.GildPowerUsage = Escort.GildUseCraftFirebomb;
+                            if (e.GildReservePower >= e.GildRequiredPower)
+                            {
+                                Vector2 posi = s.firstChunk.pos;
+                                WorldCoordinate wPos = s.abstractPhysicalObject.pos;
+                                float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
+                                self.ReleaseGrasp(e.GildWantToThrow);
+                                s.Destroy();
+                                AbstractSpear apo = new AbstractSpear(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
+                                self.room.abstractRoom.AddEntity(apo);
+                                apo.RealizeInRoom();
+                                self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
+                                self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                                e.GildWantToThrow = -1;
+                                e.GildReservePower = 0;
+                            }
+                            else
+                            {
+                                s.vibrate = 1;
+                            }
+                        } 
+                        catch (NullReferenceException nre)
+                        {
+                            Ebug(self, nre, "Null when charging a spear!");
+                        }
+                        catch (Exception err) {
+                            Ebug(self, err, "Generic exception when charging a spear!");
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+
         private static void Esclass_GD_Breathing(Player self, float f)
         {
             self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + (f / 8.2f));
@@ -231,9 +313,9 @@ namespace TheEscort
         /// </summary>
         private void Esclass_GD_UpdateAnimation(Player self)
         {
-            if (self.animation == Player.AnimationIndex.BellySlide && self.rollCounter > 8)
+            if (self.animation == Player.AnimationIndex.BellySlide && self.rollCounter < 8)
             {
-                self.rollCounter++;
+                self.rollCounter = 8;
             }
         }
 

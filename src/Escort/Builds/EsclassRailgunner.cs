@@ -443,74 +443,41 @@ namespace TheEscort
             return true;
         }
 
-        private void Esclass_RG_GrabUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        private static void Esclass_RG_GrabUpdate(Player self, ref Escort e)
         {
-            try
+            if (e.RailWeaping == 0)
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                e.RailDoubleSpear = false;
+                e.RailDoubleRock = false;
+                e.RailDoubleLilly = false;
+                e.RailDoubleBomb = false;
+            }
+            for (int b = 0; b < 2; b++)
+            {
+                if (self.grasps[b] == null)
                 {
-                    orig(self, eu);
                     return;
                 }
             }
-            catch (Exception err)
+            if (self.grasps[0].grabbed is Spear && self.grasps[1].grabbed is Spear)
             {
-                Ebug(self, err, "Grab update!");
-                orig(self, eu);
-                return;
+                e.RailDoubleSpear = true;
+                e.RailWeaping = 4;
             }
-            if (
-                !eCon.TryGetValue(self, out Escort e)
-                )
+            else if (self.grasps[0].grabbed is Rock && self.grasps[1].grabbed is Rock)
             {
-                orig(self, eu);
-                return;
+                e.RailDoubleRock = true;
+                e.RailWeaping = 4;
             }
-            /* Eat meat faster?
-            int n = 0;
-            if ((self.grasps[0] == null || !(self.grasps[0].grabbed is Creature)) && self.grasps[1] != null && self.grasps[1].grabbed is Creature){
-                n = 1;
-            }
-            if (self.input[0].pckp && self.grasps[n] != null && self.grasps[n].grabbed is Creature && self.CanEatMeat(self.grasps[n].grabbed as Creature) && (self.grasps[n].grabbed as Creature).Template.meatPoints > 1){
-                //self.EatMeatUpdate(n);
-            }*/
-            orig(self, eu);
-            if (e.Railgunner)
+            else if (self.grasps[0].grabbed is MoreSlugcats.LillyPuck && self.grasps[1].grabbed is MoreSlugcats.LillyPuck)
             {
-                if (e.RailWeaping == 0)
-                {
-                    e.RailDoubleSpear = false;
-                    e.RailDoubleRock = false;
-                    e.RailDoubleLilly = false;
-                    e.RailDoubleBomb = false;
-                }
-                for (int b = 0; b < 2; b++)
-                {
-                    if (self.grasps[b] == null)
-                    {
-                        return;
-                    }
-                }
-                if (self.grasps[0].grabbed is Spear && self.grasps[1].grabbed is Spear)
-                {
-                    e.RailDoubleSpear = true;
-                    e.RailWeaping = 4;
-                }
-                else if (self.grasps[0].grabbed is Rock && self.grasps[1].grabbed is Rock)
-                {
-                    e.RailDoubleRock = true;
-                    e.RailWeaping = 4;
-                }
-                else if (self.grasps[0].grabbed is MoreSlugcats.LillyPuck && self.grasps[1].grabbed is MoreSlugcats.LillyPuck)
-                {
-                    e.RailDoubleLilly = true;
-                    e.RailWeaping = 4;
-                }
-                else if (self.grasps[0].grabbed is ScavengerBomb && self.grasps[1].grabbed is ScavengerBomb)
-                {
-                    e.RailDoubleBomb = true;
-                    e.RailWeaping = 4;
-                }
+                e.RailDoubleLilly = true;
+                e.RailWeaping = 4;
+            }
+            else if (self.grasps[0].grabbed is ScavengerBomb && self.grasps[1].grabbed is ScavengerBomb)
+            {
+                e.RailDoubleBomb = true;
+                e.RailWeaping = 4;
             }
         }
 
