@@ -6,7 +6,7 @@ using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using RWCustom;
-using IL.MoreSlugcats;
+using MoreSlugcats;
 
 namespace TheEscort
 {
@@ -64,7 +64,7 @@ namespace TheEscort
             }
             if (!self.dead) e.GildLockRecharge = false;
 
-            if (e.secretRGB) e.Escat_RGB_firespear();
+            // if (e.secretRGB) e.Escat_RGB_firespear();
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -204,17 +204,22 @@ namespace TheEscort
                             {
                                 Vector2 posi = r.firstChunk.pos;
                                 WorldCoordinate wPos = r.abstractPhysicalObject.pos;
+                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                                if (hue == 0) hue = 1f/360f;
+
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 r.Destroy();
-                                AbstractPhysicalObject apo = new(self.abstractCreature.world, MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.FireEgg, null, wPos, self.room.game.GetNewID());
+                                FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
+                                apo.realizedObject.firstChunk.HardSetPosition(posi);
                                 self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
                                 e.GildWantToThrow = -1;
                                 e.GildReservePower = 0;
                             }
                             else
                             {
+                                e.GildLockRecharge = true;
                                 r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
                         } 
@@ -244,17 +249,22 @@ namespace TheEscort
                                 AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
-                                self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
+                                self.room.PlaySound(SoundID.Fire_Spear_Pop, posi);
                                 self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+
+                                // Doesn't work
+                                #if false
                                 if (e.secretRGB)
                                 {
                                     e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
                                 }
+                                #endif
                                 e.GildWantToThrow = -1;
                                 e.GildReservePower = 0;
                             }
                             else
                             {
+                                e.GildLockRecharge = true;
                                 s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                             }
                         } 
@@ -338,7 +348,7 @@ namespace TheEscort
                 self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck
             )
             {
-                if (!self.input[0].thrw)
+                if (!self.input[0].thrw || self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck)
                 {
                     self.TossObject(grasp, eu);
                     Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);

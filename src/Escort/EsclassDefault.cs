@@ -234,9 +234,18 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (false && e.consoleTick == 0)
+                if (e.consoleTick == 0)
                 {
                     Ebug(self, "Clocked.");
+                    if (e.Gilded)
+                    {
+                        Ebug(self, "Power: " + e.GildPower);
+                        Ebug(self, "Resrv: " + e.GildReservePower);
+                        Ebug(self, "Requi: " + e.GildRequiredPower);
+                        Ebug(self, "Float: " + e.GildLevitateLimit);
+                        Ebug(self, "WTThr: " + e.GildWantToThrow);
+                    }
+                    #if false
                     Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
                     Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
                     Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
@@ -278,6 +287,7 @@ namespace TheEscort
                         //Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
                         //Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
                     }
+                    #endif
                 }
                 //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
                 //Ebug(self, "Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
