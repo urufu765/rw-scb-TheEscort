@@ -118,6 +118,7 @@ namespace TheEscort
         private Color[] buildColors;
         private Color p1Color, p2Color, p3Color, p4Color;
         private Color tempColor;
+        private bool saitBeat;
         private readonly float yoffset = 560f;
         private readonly float xoffset = 30f;
         private readonly float ypadding = 40f;
@@ -216,6 +217,14 @@ namespace TheEscort
         {
             text = text.Replace("<LINE>", System.Environment.NewLine);
             text = text.Replace("<REPLACE>", with);
+            text = text.Replace("<DEFAULT>", Translate("Default"));
+            text = text.Replace("<BRAWLER>", Translate("Brawler"));
+            text = text.Replace("<DEFLECTOR>", Translate("Deflector"));
+            text = text.Replace("<ESCAPIST>", Translate("Escapist"));
+            text = text.Replace("<RAILGUNNER>", Translate("Railgunner"));
+            text = text.Replace("<SPEEDSTER>", Translate("Speedster"));
+            text = text.Replace("<GILDED>", Translate("Gilded"));
+
             return text;
         }
 
@@ -358,7 +367,7 @@ namespace TheEscort
             Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
 
             //bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
-            bool saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;
+            saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;
             base.Initialize();
             OpTab mainTab = new(this, Translate("Main"));
             OpTab buildTab = new(this, Translate("Builds"));
@@ -750,7 +759,7 @@ namespace TheEscort
                 },
                 new OpCheckBox(this.cfgFunnyDeflSlide, new Vector2(xo + (xp * 0), yo - (yp * 5))){
                     colorEdge = tempColor,
-                    description = Swapper(Translate("escoptions_deflslide_desc"), Translate("Deflector")) + SetDefault(cfgFunnyDeflSlide.defaultValue),
+                    description = Swapper(Translate("escoptions_deflslide_desc")) + SetDefault(cfgFunnyDeflSlide.defaultValue),
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 6) + tp/2, Translate("escoptions_poletech_text")){
@@ -761,37 +770,37 @@ namespace TheEscort
                     description = Swapper(Translate("escoptions_poletech_desc"), Translate("Rivulet")) + SetDefault(cfgPoleBounce.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, Swapper(Translate("escoptions_oldspeed_text"), Translate("Speedster"))){
+                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, Swapper(Translate("escoptions_oldspeed_text"))){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgOldSpeedster, new Vector2(xo + (xp * 0), yo - (yp * 7))){
                     colorEdge = tempColor,
-                    description = Swapper(Translate("escoptions_oldspeed_desc"), Translate("Speedster")) + SetDefault(cfgOldSpeedster.defaultValue),
+                    description = Swapper(Translate("escoptions_oldspeed_desc")) + SetDefault(cfgOldSpeedster.defaultValue),
                 },
 
 
                 secretText
             };
             this.accessibleSet = new UIelement[]{
-                new OpLabel(xo, yo, "Accessibility", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), "Change how some visual effects are displayed for easier understanding of what's going on."){
+                new OpLabel(xo, yo, Translate("Accessibility"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Translate("escoptions_accessibility")){
                     color = descColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Stronger Battle-hyped Indicator"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, Translate("escoptions_hypeindicator_text")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgNoticeHype, new Vector2(xo + (xp * 0), yo - (yp * 2))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Adds a visual effect to show more clearly whether Escort is in the battle-hyped state or not. (Default=false)")
+                    description = OptionInterface.Translate("escoptions_hypeindicator_desc") + SetDefault(cfgNoticeHype.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Different Empowered VFX for Deflector Build"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, Swapper(Translate("escoptions_deflaltvfx_text"))){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgNoticeEmpower, new Vector2(xo + (xp * 0), yo - (yp * 3))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Changes the empowered vfx for Deflector Escort from sparks to pulsing circle. (Default=false)")
+                    description = Swapper(Translate("escoptions_deflaltvfx_desc")) + SetDefault(cfgNoticeEmpower.defaultValue)
                 },
 
                 new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Keep Track of All Methods (for modders)"){
@@ -803,17 +812,17 @@ namespace TheEscort
                     greyedOut = true
                 },
 
-                new OpLabel(xo + (xp * 8) + 7f, yo - (yp * 5) + tp, "Developer Logging"),
+                new OpLabel(xo + (xp * 8) + 7f, yo - (yp * 5) + tp, Translate("escoptions_devlog_text")),
                 new OpSliderTick(this.cfgLogImportance, new Vector2(xo + (xp * 0) + 7f, yo - (yp * 5)), 300 - (int)xp - 7)
                 {
                     min = -1,
                     max = 4,
-                    description = OptionInterface.Translate("Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs. (Default=0)"),
+                    description = OptionInterface.Translate("escoptions_devlog_desc") + SetDefault(cfgLogImportance.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), "Escort HUD"),
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudshow_text") + Translate("[BETA]")),
                 new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudShowOptions){
-                    description = Translate("Show HUD. [Other viewing options coming soon!] (Default='Show Always')")
+                    description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
                 }
             };
             mainTab.AddItems(this.mainSet);
@@ -909,13 +918,13 @@ namespace TheEscort
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
             };
-            insult[0] = "Ur not my mum.";
+            insult[0] = Translate("escoptions_insult_a");
             switch (UnityEngine.Random.Range(0, 5))
             {
-                case 1: insult[0] = "F#@k off."; break;
-                case 2: insult[0] = "Skill issue."; break;
-                case 3: insult[0] = "I don't care."; break;
-                case 4: insult[0] = "Shut the f$&k up."; break;
+                case 1: insult[0] = Translate("escoptions_insult_b"); break;
+                case 2: insult[0] = Translate("escoptions_insult_c"); break;
+                case 3: insult[0] = Translate("escoptions_insult_d"); break;
+                case 4: insult[0] = Translate("escoptions_insult_e"); break;
             }
             if (value == num.ToString())
             {
@@ -924,7 +933,7 @@ namespace TheEscort
                     this.cfgSectret.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Swapper(
-                            "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
+                            Translate("escoptions_sectret_spuphaiku")
                         ), insult, doThing
                     );
                 }
@@ -937,7 +946,7 @@ namespace TheEscort
                     this.cfgSectretBuild.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Swapper(
-                            "Thank you for trying out the new build GildedTM!<LINE>It is still heavily in development but 1.5k!<LINE>ONE POINT FIVE KAY!!!...<LINE><LINE>passed at least 0.5k ago...<LINE><LINE>Please go back to the main menu and come back to the remix>Escort options>Gimmicks to test out upcoming builds."
+                            Translate("escoptions_sectret_gilded"), saitBeat? Translate("Rubicon") : Translate("escoptions_sectret_subgild")
                         ), insult, doThing
                     );
                 }
@@ -949,8 +958,8 @@ namespace TheEscort
                 {
                     this.cfgSectretGod.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
-                        Swapper(
-                            "Invincible... but not really. You just won't take damage lol."
+                        Translate(
+                            "escoptions_sectret_invincible"
                         ), insult, doThing
                     );
                 }

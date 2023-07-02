@@ -62,10 +62,31 @@ escoptions_elevator_text|Enable Elevator
 escoptions_elevator_desc|When enabled, allows Escort to touch the stars whenever they ramp off a living creature.
 escoptions_propdk_text|Proper Dropkick Animation
 escoptions_propdk_desc|During dropkicks, make Escort turn their body in midair to make dropkicks look like dropkick dropkicks.
-escoptions_deflslide_text|Super-Extended <REPLACE> Slide
-escoptions_deflslide_desc|Makes <REPLACE>'s slides last much longer.
+escoptions_deflslide_text|Super-Extended <DEFLECTOR> Slide
+escoptions_deflslide_desc|Makes <DEFLECTOR>'s slides last much longer.
 escoptions_poletech_text|Pole Tech.
-escoptions_poletech_desc|Because someone requested it. Not quite <REPLACE>, but something along the lines ;). Always enabled for Default Escort.
-escoptions_oldspeed_text|Old <REPLACE> Mechanics
-escoptions_oldspeed_desc|Reverts <REPLACE> Escort Mechanics to before the revamp.
+escoptions_poletech_desc|Because someone requested it. Not quite <REPLACE>, but something along the lines ;). Always enabled for <DEFAULT> Escort.
+escoptions_oldspeed_text|Old <SPEEDSTER> Mechanics
+escoptions_oldspeed_desc|Reverts <SPEEDSTER> Escort Mechanics to before the revamp.
+Hmm? What's this?|Hmm? What's this?
 Accessibility|Accessibility
+escoptions_accessibility|Change how some visual effects are displayed for easier understanding of what's going on.
+escoptions_hypeindicator_text|Stronger Battle-hyped Indicator
+escoptions_hypeindicator_desc|Adds a visual effect to show more clearly whether Escort is in the battle-hyped state or not.
+escoptions_deflaltvfx_text|Different Empowered VFX for <DEFLECTOR> Build
+escoptions_deflaltvfx_desc|Changes the empowered vfx for <DEFLECTOR> Escort from sparks to pulsing circle.
+escoptions_devlog_text|Developer Logging
+escoptions_devlog_desc|Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs.
+escoptions_hudshow_text|Escort HUD Visibility
+escoptions_hudshow_desc|Change how and when the HUD is shown.
+escoptions_hudloc_text|Escort HUD Placement
+escoptions_hudloc_desc|Change where the HUD sits
+escoptions_insult_a|Ur not my mum.
+escoptions_insult_b|F#@k off.
+escoptions_insult_c|Skill issue.
+escoptions_insult_d|I don't care.
+escoptions_insult_e|Shut the f$&k up.
+escoptions_sectret_spuphaiku|     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   
+escoptions_sectret_gilded|This code was supposed to unlock the <GILDED> build early for preview,<LINE>but since the build is out publicly, the code no longer serves this purpose...<LINE><LINE>Now this code sends <GILDED> to <REPLACE>!<LINE>Enjoy!
+escoptions_sectret_subgild|a special place
+escoptions_sectret_invincible|Invincible... but not really. You just won't take damage lol.
