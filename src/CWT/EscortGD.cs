@@ -17,6 +17,7 @@ namespace TheEscort
         public int GildCrushTime;
         public bool GildCrushReady;
         public int GildPower;
+        public int GildStartPower;
         public int GildLevitateLimit;
         public int GildLaser;  // Laser (UNUSED)
         public int GildBlast;  // Cone (UNUSED)
@@ -45,7 +46,8 @@ namespace TheEscort
             GildCrushTime = 0;  // Chargeup
             GildCrushReady = false;  // Stops Gilded from stomping multiple times in the air
             GildPower = 2000;
-            GildLevitateLimit = 200;
+            GildStartPower = 2000;
+            GildLevitateLimit = 120;
             GildLaser = 0;
             GildBlast = 0;
         }

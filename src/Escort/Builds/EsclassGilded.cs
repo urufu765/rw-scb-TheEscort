@@ -37,6 +37,7 @@ namespace TheEscort
                 e.GildRequiredPower = 0;
                 e.GildPowerUsage = 0;
                 if (!self.Stunned) e.GildPower++;
+                e.GildStartPower = e.GildPower;
             }
 
             if (e.GildLockRecharge && e.GildReservePower < e.GildRequiredPower)
@@ -78,6 +79,7 @@ namespace TheEscort
             if (e.GildPower > 4600)
             {
                 self.Blink(5);
+                Eshelp_Player_Shaker(self, 3f * Mathf.InverseLerp(4500, 5000, e.GildPower));
             }
             if (e.GildPower > 5000 && !self.dead)
             {
@@ -110,7 +112,7 @@ namespace TheEscort
             }
 
             // Activate levitation
-            if (!(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || self.bodyMode == Player.BodyModeIndex.ZeroG) && self.wantToJump > 0 && self.canJump == 0 && !e.GildFloatState && e.GildPower > Escort.GildCheckLevitate)
+            if (!(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || self.bodyMode == Player.BodyModeIndex.ZeroG) && self.wantToJump > 0 && self.canJump == 0 && !e.GildFloatState && e.GildPower >= Escort.GildUseLevitate)
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
@@ -119,7 +121,7 @@ namespace TheEscort
             }
 
             // Main code
-            if (e.GildLevitateLimit > 0 && self.input[0].jmp && e.GildFloatState)
+            if (e.GildLevitateLimit > 0 && e.GildPower >= Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
@@ -194,7 +196,7 @@ namespace TheEscort
                 else
                 {
                     if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
-                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildPower >= Escort.GildUseCraftFirebomb)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildStartPower >= Escort.GildCheckCraftFirebomb)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
                         e.GildPowerUsage = Escort.GildUseCraftFirebomb;
@@ -234,7 +236,7 @@ namespace TheEscort
                             Ebug(self, err, "Generic exception when charging a rock!");
                         }
                     }
-                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildPower >= Escort.GildUseCraftFirespear)
+                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildStartPower >= Escort.GildCheckCraftFirespear)
                     {
                         e.GildRequiredPower = Escort.GildCheckCraftFirespear;
                         e.GildPowerUsage = Escort.GildUseCraftFirespear;

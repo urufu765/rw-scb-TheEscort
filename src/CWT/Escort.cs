@@ -534,6 +534,10 @@ namespace TheEscort
                     floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
                 }
             }
+            if (Gilded)
+            {
+                floatTrackers.Add(new ETrackrr.GildedPoweredTraction(n, 1, this));
+            }
             this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
         }

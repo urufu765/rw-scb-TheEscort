@@ -259,11 +259,7 @@ namespace TheEscort
                     if (self.slowMovementStun > 40){
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
-                        float intensity = 1.4f;
-                        Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
-                        vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
-                        self.bodyChunks[0].pos += vec;
-                        self.bodyChunks[0].vel += vec * 0.5f;
+                        Eshelp_Player_Shaker(self, 1.4f);
                         return true;
                     }
                     Creature c = cs;
@@ -308,11 +304,7 @@ namespace TheEscort
                     {
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
-                        float intensity = 1.2f;
-                        Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
-                        vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
-                        self.bodyChunks[0].pos += vec;
-                        self.bodyChunks[0].vel += vec * 0.5f;
+                        Eshelp_Player_Shaker(self, 1.2f);
                         return true;
                     }
                     Ebug(self, "SHANK!");
@@ -347,11 +339,7 @@ namespace TheEscort
                     {
                         Ebug(self, "Too tired to punch!");
                         self.Blink(15);
-                        float intensity = 1f;
-                        Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
-                        vec *= Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
-                        self.bodyChunks[0].pos += vec;
-                        self.bodyChunks[0].vel += vec * 0.5f;
+                        Eshelp_Player_Shaker(self, 1f);
                         return true;
                     }
                     Ebug(self, "PUNCH!");

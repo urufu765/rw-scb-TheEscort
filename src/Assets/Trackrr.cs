@@ -404,6 +404,45 @@ public static class ETrackrr
             }
             return escort.parrySlideLean > 0;
         }
+    }
 
+    public class GildedPoweredTraction : Trackrr<float>
+    {
+        private readonly Escort escort;
+        private readonly Color gildColor;
+        private readonly Color overflowColor;
+        public GildedPoweredTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "gilded")
+        {
+            Max = 5000;
+            this.escort = escort;
+            gildColor = new Color(0.85f, 0.58f, 0.3f);
+            overflowColor = new Color(1f, 0.4f, 0.2f);
+            effectColor = gildColor;
+            trackerColor = gildColor;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            if (!escort.GildLockRecharge)
+            {
+                Limit = 5000;
+                if (escort.GildPower > 4600)
+                {
+                    trackerColor = overflowColor;
+                    effectColor = overflowColor;
+                }
+                else
+                {
+                    trackerColor = gildColor;
+                    effectColor = gildColor;
+                }
+
+            }
+            else
+            {
+                Limit = escort.GildStartPower - escort.GildRequiredPower;
+            }
+            Value = escort.GildPower;
+        }
     }
 }

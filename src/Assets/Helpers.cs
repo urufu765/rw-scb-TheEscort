@@ -360,5 +360,27 @@ namespace TheEscort
             }
             return nullCheck;
         }
+
+        
+        public static void Eshelp_Player_Shaker(Player self, float intensity, bool head = true, bool body = false, bool different = false)
+        {
+            Vector2 vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
+            if (head)
+            {
+                Vector2 vecHead = vec * Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[0].mass, 1f, 0.5f)) * intensity;
+                self.bodyChunks[0].pos += vecHead;
+                self.bodyChunks[0].vel += vecHead * 0.5f;
+            }
+            if (different)
+            {
+                vec = Vector3.Slerp(-RWCustom.Custom.RNV().normalized, RWCustom.Custom.RNV(), UnityEngine.Random.value);
+            }
+            if (body)
+            {
+                Vector2 vecBody = vec * Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[1].mass, 1f, 0.5f)) * intensity;
+                self.bodyChunks[1].pos += vecBody;
+                self.bodyChunks[1].vel += vecBody * 0.5f;
+            }
+        }
     }
 }
