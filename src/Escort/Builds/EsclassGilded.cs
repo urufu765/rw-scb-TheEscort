@@ -31,6 +31,16 @@ namespace TheEscort
             {
                 e.GildMoonJump--;
             }
+            
+            if (e.GildCrushCooldown > 0)
+            {
+                e.GildCrushCooldown--;
+            }
+
+            if (e.GildLevitateCooldown > 0)
+            {
+                e.GildLevitateCooldown--;
+            }
 
             if (!e.GildLockRecharge) 
             {
@@ -96,6 +106,7 @@ namespace TheEscort
                 if (self.grasps[i]?.grabbed is not null)
                 {
                     hasSomething = true;
+                    e.GildCrushCooldown = 3;
                     break;
                 }
             }
@@ -114,12 +125,28 @@ namespace TheEscort
             }
 
             // Activate levitation
-            if (!(self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || self.bodyMode == Player.BodyModeIndex.ZeroG) && self.wantToJump > 0 && self.canJump == 0 && !e.GildFloatState && e.GildPower >= Escort.GildUseLevitate)
+            if (
+                !(
+                    self.animation == Player.AnimationIndex.ClimbOnBeam || 
+                    self.animation == Player.AnimationIndex.HangFromBeam || 
+                    self.bodyMode == Player.BodyModeIndex.ZeroG
+                ) && 
+                self.wantToJump > 0 && 
+                self.canJump == 0 && 
+                !e.GildFloatState && 
+                e.GildPower >= Escort.GildUseLevitate &&
+                self.bodyChunks[1].contactPoint.y != -1 &&
+                (
+                    e.GildLevitateCooldown == 0 || 
+                    self.input[0].jmp && !self.input[1].jmp
+                )
+            )
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
                 e.GildRequiredPower = Escort.GildCheckLevitate;
                 e.GildPowerUsage = Escort.GildUseLevitate;
+                e.GildCrushCooldown = 10;
             }
 
             // Main code
@@ -150,7 +177,7 @@ namespace TheEscort
                 }
 
                 // Crush part 1
-                if (!hasSomething && !e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw)
+                if (!hasSomething && !e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw && e.GildCrushCooldown == 0)
                 {
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
@@ -301,6 +328,7 @@ namespace TheEscort
             if (self.standing)
             {
                 e.GildMoonJump = e.GildMoonJumpMax;
+                e.GildLevitateCooldown = 40;
             }
         }
 
@@ -337,10 +365,18 @@ namespace TheEscort
         /// </summary>
         private void Esclass_GD_UpdateAnimation(Player self)
         {
-            if (self.animation == Player.AnimationIndex.BellySlide && self.rollCounter < 8)
+            if (self.animation == Player.AnimationIndex.BellySlide)
             {
-                self.rollCounter = 8;
+                if (self.rollCounter < 8)
+                {
+                    self.rollCounter = 8;
+                }
+                if (self.initSlideCounter < 3)
+                {
+                    self.initSlideCounter = 3;
+                }
             }
+
         }
 
         /// <summary>

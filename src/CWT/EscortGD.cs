@@ -27,6 +27,8 @@ namespace TheEscort
         public int GildRequiredPower;
         public int GildPowerUsage;
         public int GildWantToThrow;
+        public int GildCrushCooldown;
+        public int GildLevitateCooldown;
         //public Rock GildRemoveRock;
         //public int GildRemoveRockAfter;
         public const int GildCheckLevitate = 480;
