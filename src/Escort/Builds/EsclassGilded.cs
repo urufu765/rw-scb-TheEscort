@@ -86,10 +86,10 @@ namespace TheEscort
                 ) return;
 
             // Die by overpower
-            if (e.GildPower > 4600)
+            if (e.GildPower > 4600 && !self.dead)
             {
                 self.Blink(5);
-                Eshelp_Player_Shaker(self, 2f * Mathf.InverseLerp(4600, 5000, e.GildPower));
+                Eshelp_Player_Shaker(self, Mathf.Lerp(0.3f, 1.3f, Mathf.InverseLerp(4600, 5000, e.GildPower)));
                 self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(4600, 5000, e.GildPower));
             }
             if (e.GildPower > 5000 && !self.dead)
@@ -117,7 +117,16 @@ namespace TheEscort
             if (self.canJump > 0) e.GildLevitateLimit = 120;
 
             // Deactivate levitation
-            if ((!self.input[0].jmp || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || e.GildLevitateLimit == 0 || self.Stunned || self.bodyChunks[1].contactPoint.y == -1) && e.GildFloatState)
+            if ((
+                !self.input[0].jmp || 
+                self.animation == Player.AnimationIndex.ClimbOnBeam || 
+                self.animation == Player.AnimationIndex.HangFromBeam || 
+                e.GildLevitateLimit == 0 || 
+                self.Stunned || 
+                self.bodyChunks[1].contactPoint.y == -1 ||
+                e.GildPower <= Escort.GildUseLevitate ||
+                e.GildCrush
+                ) && e.GildFloatState)
             {
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
@@ -134,10 +143,11 @@ namespace TheEscort
                 self.wantToJump > 0 && 
                 self.canJump == 0 && 
                 !e.GildFloatState && 
+                !e.GildCrush &&
                 e.GildPower >= Escort.GildUseLevitate &&
                 self.bodyChunks[1].contactPoint.y != -1 &&
                 (
-                    e.GildLevitateCooldown == 0 || 
+                    e.GildLevitateCooldown <= 0 || 
                     self.input[0].jmp && !self.input[1].jmp
                 )
             )
@@ -150,7 +160,7 @@ namespace TheEscort
             }
 
             // Main code
-            if (e.GildLevitateLimit > 0 && e.GildPower >= Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
+            if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
@@ -320,7 +330,7 @@ namespace TheEscort
 
         private static void Esclass_GD_Breathing(Player self, float f)
         {
-            self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + (f / 8.2f));
+            self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + (f / 10f));
         }
 
         private static void Esclass_GD_Jump(Player self, ref Escort e)
@@ -328,7 +338,7 @@ namespace TheEscort
             if (self.standing)
             {
                 e.GildMoonJump = e.GildMoonJumpMax;
-                e.GildLevitateCooldown = 40;
+                e.GildLevitateCooldown = 5;
             }
         }
 

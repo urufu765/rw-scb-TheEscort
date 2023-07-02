@@ -204,10 +204,10 @@ namespace TheEscort
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
             this.hudShowOptions = new()
             {
-                new ListItem("hide", "Hide", 0),
-                //new ListItem("map", "Show With Map", 1),
-                //new ListItem("relevant", "Show When Relevant", 2),
-                new ListItem("always", "Always Show", 3)
+                new ListItem("hide", Translate("Hide"), 0),
+                //new ListItem("map", Translate("Show With Map"), 1),
+                //new ListItem("relevant", Translate("Show When Relevant"), 2),
+                new ListItem("always", Translate("Always Show"), 3)
             };
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
@@ -460,25 +460,25 @@ namespace TheEscort
 
             this.buildTitle = new OpLabel[]{
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), Translate("Default") + " {***__}", true){
-                    color = bDefault * 0.75f
+                    color = bDefault * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), Translate("Brawler") + " {***__}", true){
-                    color = bBrawler * 0.75f
+                    color = bBrawler * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), Translate("Deflector") + " {*****}", true){
-                    color = bDeflector * 0.75f
+                    color = bDeflector * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Escapist") + " {*____}", true){
-                    color = bEscapist * 0.75f
+                    color = bEscapist * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
-                    color = bRailgunner * 0.75f
+                    color = bRailgunner * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {**___}", true){
-                    color = bSpeedster * 0.75f
+                    color = bSpeedster * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {**___}", true){
-                    color = bGilded * 0.75f
+                    color = bGilded * 0.7f
                 },
             };
             const string buildTextPad = "  ";
@@ -938,6 +938,7 @@ namespace TheEscort
                     );
                 }
                 Plugin.ins.L().Christmas(this.cfgSectret.Value);
+                Ebug("Set secret 1");
             }
             else if (value == nu2.ToString())
             {
@@ -951,6 +952,7 @@ namespace TheEscort
                     );
                 }
                 Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
+                Ebug("Set secret 2");
             }
             else if (value == nu3.ToString())
             {
@@ -964,6 +966,7 @@ namespace TheEscort
                     );
                 }
                 Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
+                Ebug("Set secret 3");
             }
             else
             {
@@ -983,6 +986,7 @@ namespace TheEscort
                     Debug.LogError("Couldn't play sound!");
                     Debug.LogException(err);
                 }
+                Ebug("No More Secrets");
             }        
         }
 
