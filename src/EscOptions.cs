@@ -922,9 +922,9 @@ namespace TheEscort
             }
             else
             {
-                this.cfgSectret.Value = false;
-                this.cfgSectretBuild.Value = false;
-                this.cfgSectretGod.Value = false;
+                this.cfgSectret.Value = this.cfgSecret.Value == num;
+                this.cfgSectretBuild.Value = this.cfgSecret.Value == nu2;
+                this.cfgSectretGod.Value = this.cfgSecret.Value == nu3;
                 Plugin.ins.L().Holiday();
                 try
                 {

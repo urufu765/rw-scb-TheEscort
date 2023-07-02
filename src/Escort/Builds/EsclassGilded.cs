@@ -206,14 +206,13 @@ namespace TheEscort
                             {
                                 Vector2 posi = r.firstChunk.pos;
                                 WorldCoordinate wPos = r.abstractPhysicalObject.pos;
-                                Color.RGBToHSV(e.hypeColor * 2, out float hue, out float sat, out float vib);
-                                if (hue == 0) hue = 1f/360f;
+                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
                                 Ebug(self, "Rock init");
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 Ebug(self, "throwaway");
                                 r.Destroy();
                                 Ebug(self, "Destroy");
-                                FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue);
+                                FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue + 0.5f);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
                                 apo.realizedObject.firstChunk.HardSetPosition(posi);
@@ -247,11 +246,10 @@ namespace TheEscort
                                 Vector2 posi = s.firstChunk.pos;
                                 WorldCoordinate wPos = s.abstractPhysicalObject.pos;
                                 //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
-                                Color.RGBToHSV(e.hypeColor * 2, out float hue, out float sat, out float vib);
-                                if (hue == 0) hue = 1f/360f;
+                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
                                 self.ReleaseGrasp(e.GildWantToThrow);
                                 s.Destroy();
-                                AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue);
+                                AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue + 0.5f);
                                 self.room.abstractRoom.AddEntity(apo);
                                 apo.RealizeInRoom();
                                 self.room.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);

@@ -423,7 +423,7 @@ public static class ETrackrr
 
         public override void DrawTracker(float timeStacker)
         {
-            if (!escort.GildLockRecharge)
+            if (escort.GildRequiredPower == 0)
             {
                 Limit = 5000;
                 if (escort.GildPower > 4600)
