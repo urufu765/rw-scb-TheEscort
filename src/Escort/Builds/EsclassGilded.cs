@@ -79,11 +79,13 @@ namespace TheEscort
             if (e.GildPower > 4600)
             {
                 self.Blink(5);
-                Eshelp_Player_Shaker(self, 3f * Mathf.InverseLerp(4500, 5000, e.GildPower));
+                Eshelp_Player_Shaker(self, 2f * Mathf.InverseLerp(4600, 5000, e.GildPower));
+                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(4600, 5000, e.GildPower));
             }
             if (e.GildPower > 5000 && !self.dead)
             {
                 self.Die();
+                self.room?.AddObject(new CreatureSpasmer(self, true, 120));
                 e.GildLockRecharge = true;
             }
 
@@ -104,7 +106,7 @@ namespace TheEscort
             if (self.canJump > 0) e.GildLevitateLimit = 120;
 
             // Deactivate levitation
-            if ((!self.input[0].jmp || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || e.GildLevitateLimit == 0) && e.GildFloatState)
+            if ((!self.input[0].jmp || self.animation == Player.AnimationIndex.ClimbOnBeam || self.animation == Player.AnimationIndex.HangFromBeam || e.GildLevitateLimit == 0 || self.Stunned || self.bodyChunks[1].contactPoint.y == -1) && e.GildFloatState)
             {
                 e.Escat_float_state(self, false);
                 self.wantToJump = 0;
@@ -125,7 +127,9 @@ namespace TheEscort
             {
                 e.GildLockRecharge = true;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
-
+                self.airFriction = 0.8f;
+                self.standing = false;
+                self.buoyancy = 0f;
                 self.bodyChunks[0].vel.y += levitation;
                 self.bodyChunks[1].vel.y += levitation - 1f;
             }

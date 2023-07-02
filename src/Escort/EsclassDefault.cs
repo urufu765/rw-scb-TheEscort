@@ -1,4 +1,5 @@
 using BepInEx;
+using MoreSlugcats;
 using RWCustom;
 using SlugBase.Features;
 using System;
@@ -1107,7 +1108,7 @@ namespace TheEscort
             {
                 if (self.slugcatStats.throwingSkill == 0 && !e.Speedster)
                 {
-                    spear.spearDamageBonus = 1;
+                    spear.spearDamageBonus = Mathf.Max(1, spear.spearDamageBonus);
                 }
                 if (Esconfig_Hypable(self))
                 {
