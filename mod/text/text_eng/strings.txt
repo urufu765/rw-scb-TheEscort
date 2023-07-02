@@ -1,0 +1,71 @@
+0GILDED UPDATE|GILDED UPDATE
+[Beta]|[Beta]
+Default|Default
+Vanilla|Vanilla
+Main|Main
+Options|Options
+escoptions_options|These options change Escort's main abilities and how they play.<LINE>You can find the easy mode and builds in BUILDS and additional funny shenanigans in GIMMICKS.
+escoptions_meanlizards_text|Enable (Extra) Mean Lizards
+escoptions_meanlizards_desc|When enabled, lizards will spawn at full aggression when playing Escort (and target Escort upon sight)... the behaviour may not carry over in coop sessions.
+escoptions_vengefullizards_text|Enable Vengeful Lizards
+escoptions_vengefullizards_desc|Upon killing too many lizards, lizards may begin hunting Escort down.
+escoptions_carry_text|Lifting Power Multiplier
+escoptions_carry_desc|Determines how heavy (X times Escort's weight) of an object Escort can carry before being burdened.
+escoptions_dropkick_text|Drop Kick Knockback Multiplier
+escoptions_dropkick_desc|How much knockback does Escort's drop kick cause? Keep in mind it only affects creatures that aren't resiliant to knockback.
+escoptions_hype_text|Battle-Hype Mechanic
+escoptions_hypecheckbox_desc|Enables/disables Escort's Battle-Hype mechanic.
+escoptions_hypeslider_desc|Determines how lenient the Battle-Hype requirements are.
+escoptions_hypeselect_a|0=Always on
+escoptions_hypeselect_b|1=50% tiredness
+escoptions_hypeselect_c|2=66% tiredness
+escoptions_hypeselect_d|3=75% tiredness
+escoptions_hypeselect_e|4=80% tiredness
+escoptions_hypeselect_f|5=87% tiredness
+escoptions_hypeselect_g|6=92% tiredness
+escoptions_longwall_text|Long Wall Jump
+escoptions_longwall_desc|Allows Escort to do pounces (hold jump) but on walls as well. Will affect how wall jumping in general feels. Recommended off.
+escoptions_flippounce_text|Flippy Pounce
+escoptions_flippounce_desc|Causes Escort to do a (sick) flip with pounces, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump.
+escoptions_lizgrab_text|Grab Stunned Lizards
+escoptions_lizgrab_desc|Allows Escort to grab stunned lizards and cause violence on them.
+escoptions_superspear_text|Super Spear
+escoptions_superspear_desc|Does additional movement tech when throwing spears to make combos easier.
+Builds|Builds
+escoptions_builds|These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.
+escoptions_buildeasy_text|Easier Mode
+escoptions_buildeasy_desc|Enable the ability to dropkick by pressing Jump + Grab while midair for <REPLACE>.
+escoptions_build_desc|Select build for <REPLACE>.
+default_desc|The basic, with a few tricks up its sleeve to keep up with the rest.
+Brawler|Brawler
+brawler_desc|Switch over to a close-combat fighting style with punches and shanks.
+Deflector|Deflector
+deflector_desc|Embrace a riskier playstyle where one must parry by sliding, rolling, or flipping to survive.
+Escapist|Escapist
+escapist_desc|Force out of creature grasps even when empty handed (hold throw), or pick up something along the way.
+escapist_new_desc|Escape out of any situation with skill and style. Make a fool of the predators.
+Railgunner|Railgunner
+railgunner_desc|Dual-wield two weapons of the same type to enhance your attacks.
+Speedster|Speedster
+speedster_desc|Keep moving to charge up speed, then slide to let it all loose.
+Gilded|Gilded
+gilded_desc|Bring in favors from <REPLACE>, utilize the borrowed powers... but do not let it build up too much.
+gilded_sub_a|the void
+gilded_sub_b|a mysterious place
+Gimmicks|Gimmicks
+escoptions_gimmicks|These optional gimmicks will add features that may alter the gameplay of Escort significantly (and in hilarous ways)
+escoptions_sillysfx_text|Enable silly SFX
+escoptions_sillysfx_desc|Replaces a few sound effects that, on one hand will kill the immersion, but on the other hand... haha funny noises.
+escoptions_noflipsfx_text|Disable (Sick Flip) SFX
+escoptions_noflipsfx_desc|Turns off the sick flip silly soundeffect in case it gets too annoying.
+escoptions_elevator_text|Enable Elevator
+escoptions_elevator_desc|When enabled, allows Escort to touch the stars whenever they ramp off a living creature.
+escoptions_propdk_text|Proper Dropkick Animation
+escoptions_propdk_desc|During dropkicks, make Escort turn their body in midair to make dropkicks look like dropkick dropkicks.
+escoptions_deflslide_text|Super-Extended <REPLACE> Slide
+escoptions_deflslide_desc|Makes <REPLACE>'s slides last much longer.
+escoptions_poletech_text|Pole Tech.
+escoptions_poletech_desc|Because someone requested it. Not quite <REPLACE>, but something along the lines ;). Always enabled for Default Escort.
+escoptions_oldspeed_text|Old <REPLACE> Mechanics
+escoptions_oldspeed_desc|Reverts <REPLACE> Escort Mechanics to before the revamp.
+Accessibility|Accessibility

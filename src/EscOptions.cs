@@ -219,6 +219,14 @@ namespace TheEscort
             return text;
         }
 
+        private string SetDefault(string def, string norm = "")
+        {
+            string text = " (" + Translate("Default") + "=<DEF>" + (norm != ""? (", " + Translate("Vanilla") + "=<NORM>" + ")") : ")");
+            text = text.Replace("<DEF>", def);
+            if (norm != "") text = text.Replace("<NORM>", norm);
+            return text;
+        }
+
         public override void Initialize()
         {
             float xo = this.xoffset;
@@ -274,14 +282,14 @@ namespace TheEscort
             */
             this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp / 2))
             {
-                description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
+                description = OptionInterface.Translate("escoptions_hypecheckbox_desc") + SetDefault(cfgHypable.defaultValue)
             };
             this.hypeableBox.OnValueChanged += ToggleDisableHyped;
             this.hypeableTick = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 7)), 400 - (int)xp - 7)
             {
                 min = 0,
                 max = 6,
-                description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
+                description = OptionInterface.Translate("escoptions_hypeslider_desc") + SetDefault(cfgHypeReq.defaultValue)
             };
             this.hypeableTick.OnValueUpdate += RunItThruHyped;
             this.hypeableText = new OpLabel[7];
@@ -289,13 +297,13 @@ namespace TheEscort
             {
                 this.hypeableText[i] = new OpLabel(440f + xp - tp, yo - (yp * 6) - (tp * 2 * i), i switch
                 {
-                    1 => "1=50% tiredness",
-                    2 => "2=66% tiredness",
-                    3 => "3=75% tiredness",
-                    4 => "4=80% tiredness",
-                    5 => "5=87% tiredness",
-                    6 => "6=92% tiredness",
-                    _ => "0=Always on"
+                    1 => Translate("escoptions_hypeselect_b"),
+                    2 => Translate("escoptions_hypeselect_c"),
+                    3 => Translate("escoptions_hypeselect_d"),
+                    4 => Translate("escoptions_hypeselect_e"),
+                    5 => Translate("escoptions_hypeselect_f"),
+                    6 => Translate("escoptions_hypeselect_g"),
+                    _ => Translate("escoptions_hypeselect_a")
                 })
                 {
                     color = this.cfgHypeReq.Value == i && !this.hypeableTick.greyedOut ? Menu.MenuColorEffect.rgbMediumGrey : Menu.MenuColorEffect.rgbDarkGrey
@@ -304,19 +312,19 @@ namespace TheEscort
 
             this.sillySFX = new OpCheckBox(this.cfgSFX, new Vector2(xo + (xp * 0), yo - (yp * 2))){
                 colorEdge = tempColor,
-                description = OptionInterface.Translate("Replaces a few sound effects that on one hand will kill the immersion, but on the other hand... haha funny noises. (Default=false)")
+                description = OptionInterface.Translate("escoptions_sillysfx_desc") + SetDefault(cfgSFX.defaultValue)
             };
 
             this.sillySFX.OnValueChanged += TurnNoFlipOnAndOff;
 
-            this.shutUpFlipText = new OpLabel(xo + (xp * 6), yo - (yp * 2) + tp/2, "Disable 'Sick Flip' SFX"){
+            this.shutUpFlipText = new OpLabel(xo + (xp * 6), yo - (yp * 2) + tp/2, Translate("escoptions_noflipsfx_text")){
                 color = cfgSFX.Value? tempColor/2 : tempColor
             };
 
             this.shutUpFlip = new OpCheckBox(this.cfgNoMoreFlips, new Vector2(xo + (xp * 5), yo - (yp * 2))){
                 colorEdge = tempColor,
                 greyedOut = !cfgSFX.Value,
-                description = OptionInterface.Translate("Turns off the sick flip silly soundeffect in case it gets too annoying. (Default=false)")
+                description = OptionInterface.Translate("escoptions_noflipsfx_desc") + SetDefault(cfgNoMoreFlips.defaultValue)
             };
 
             /*
@@ -349,12 +357,13 @@ namespace TheEscort
             Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
             Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
 
-            bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
+            //bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
+            bool saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;
             base.Initialize();
-            OpTab mainTab = new(this, "Main");
-            OpTab buildTab = new(this, "Builds");
-            OpTab gimmickTab = new(this, "Gimmicks");
-            OpTab accessibilityTab = new(this, "Accessibility");
+            OpTab mainTab = new(this, Translate("Main"));
+            OpTab buildTab = new(this, Translate("Builds"));
+            OpTab gimmickTab = new(this, Translate("Gimmicks"));
+            OpTab accessibilityTab = new(this, Translate("Accessibility"));
             this.Tabs = new OpTab[]{
                 mainTab,
                 buildTab,
@@ -364,64 +373,64 @@ namespace TheEscort
 
 
             this.mainSet = new UIelement[]{
-                new OpLabel(xo, yo, "Options", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper("These options change Escort's main abilities and how they play.<LINE>You can find the easy mode and builds in BUILDS and additional funny shenanigans in GIMMICKS")){
+                new OpLabel(xo, yo, Translate("Options"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper(Translate("escoptions_options"))){
                     color = descColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable (Extra) Mean Lizards"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, Translate("escoptions_meanlizards_text")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgMeanLizards, new Vector2(xo + (xp * 0), yo - (yp * 2))){
-                    description = Translate("When enabled, lizards will spawn at full aggression when playing Escort (and target Escort upon sight)... the behaviour may not carry over in coop sessions. (Default=false)"),
+                    description = Translate("escoptions_meanlizards_desc") + SetDefault(cfgMeanLizards.defaultValue),
                     colorEdge = tempColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Vengeful Lizards [Beta]"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, Translate("escoptions_vengefullizards_text") + Translate("[Beta]")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgVengefulLizards, new Vector2(xo + (xp * 0), yo - (yp * 3))){
-                    description = Translate("Upon killing too many lizards, lizards may begin hunting Escort down. (Default=false)"),
+                    description = Translate("escoptions_vengefullizards_desc") + SetDefault(cfgVengefulLizards.defaultValue),
                     colorEdge = tempColor
                 },
 
-                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), "Lifting Power Multiplier"),
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), Translate("escoptions_carry_text")),
                 new OpUpdown(this.cfgHeavyLift, new Vector2(xo + (xp * 0), yo - (yp * 4) - tp), 100, 2){
-                    description = Translate("Determines how heavy (X times Escort's weight) of an object Escort can carry before being burdened. (Default=3.0, Normal=0.6)")
+                    description = Translate("escoptions_carry_desc") + SetDefault(cfgHeavyLift.defaultValue, "0.6")
                 },
-                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 5), "Drop Kick Multiplier"),
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 5), Translate("escoptions_dropkick_text")),
                 new OpUpdown(this.cfgDKMult, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 100, 2){
-                    description = Translate("How much knockback does Escort's drop kick cause? Keep in mind it only affects creatures that aren't resiliant to knockback. (Default=3.0)"),
+                    description = Translate("escoptions_dropkick_desc") + SetDefault(cfgDKMult.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 6) - tp, "Battle-Hype Mechanic"),
+                new OpLabel(xo + (xp * 0) + 7f, yo - (yp * 6) - tp, Translate("escoptions_hype_text")),
                 //hypableBtn, hypedSlide,
                 this.hypeableBox,
                 this.hypeableTick,
                 this.hypeableText[0], this.hypeableText[1], this.hypeableText[2], this.hypeableText[3], this.hypeableText[4], this.hypeableText[5], this.hypeableText[6],
                 //new OpLabel(440f + xp - 7, yo - (yp * 7), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, "Long Wall Jump"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, Translate("Long Wall Jump")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 8))){
-                    description = Translate("Allows Escort to do long jumps (hold jump) but on walls as well. Will affect how wall jumping in general feels. Recommended off. (Default=false)"),
+                    description = Translate("escoptions_longwall_desc") + SetDefault(cfgLongWallJump.defaultValue),
                     colorEdge = tempColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, "Flippy Pounce"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, Translate("escoptions_flippounce_text")),
                 new OpCheckBox(this.cfgPounce, new Vector2(xo + (xp * 0), yo - (yp * 9))){
-                    description = Translate("Causes Escort to do a (sick) flip with long jumps, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump to achieve great vertical height. (Default=true)")
+                    description = Translate("escoptions_flippounce_desc") + SetDefault(cfgPounce.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, "Grab Stunned Lizards"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 10) + tp/2, Translate("escoptions_lizgrab_text")),
                 new OpCheckBox(this.cfgDunkin, new Vector2(xo + (xp * 0), yo - (yp * 10))){
-                    description = Translate("Allows Escort to grab stunned lizards and cause violence on them. (Default=true)")
+                    description = Translate("escoptions_lizgrab_desc") + SetDefault(cfgDunkin.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 11) + tp/2, "Super Spear"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 11) + tp/2, Translate("escoptions_superspear_text")),
                 new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 11))){
-                    description = Translate("Does additional movement tech when throwing spears to make combos easier. (Default=true)")
+                    description = Translate("escoptions_superspear_desc") + SetDefault(cfgSpears.defaultValue)
                 },
                 /*
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), "Lifting Power Multiplier"),
@@ -441,54 +450,62 @@ namespace TheEscort
             };
 
             this.buildTitle = new OpLabel[]{
-                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), "Default {***__}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), Translate("Default") + " {***__}", true){
                     color = bDefault * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), "Brawler {***__}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), Translate("Brawler") + " {***__}", true){
                     color = bBrawler * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), "Deflector {*****}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), Translate("Deflector") + " {*****}", true){
                     color = bDeflector * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), "Escapist {*____}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Escapist") + " {*____}", true){
                     color = bEscapist * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), "Railgunner {****_}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
                     color = bRailgunner * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), "Speedster {**___}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {**___}", true){
                     color = bSpeedster * 0.75f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), "Gilded {Delayed}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {**___}", true){
                     color = bGilded * 0.75f
                 },
             };
+            const string buildTextPad = "  ";
             this.buildText = new UIelement[]{
-                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), "  The intended way of playing Escort."){
+                // The intended way of playing Escort.
+                new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), buildTextPad + Translate("default_desc")){
                     color = bDefault
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 2.1f), "  More powerful and consistent close-combat, but reduced range efficiency."){
+                // More powerful and consistent close-combat, but reduced range efficiency
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 2.1f), buildTextPad + Translate("brawler_desc")){
                     color = bBrawler
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 2.1f), "  Easier to parry, with empowered damage on success!... at the cost of some base stats."){
+                // Easier to parry, with empowered damage on success!... at the cost of some base stats.
+                new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 2.1f), buildTextPad + Translate("deflector_desc")){
                     color = bDeflector
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), "  Force out of grasps, though don't expect to be fighting much..."){
+                // Force out of grasps, though don't expect to be fighting much...
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc")){
                     color = bEscapist
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), Swapper("  With the aid of <REPLACE>, dual-wield for extreme results!", catBeat? "the void" : "mysterious forces")){
+                // With the aid of <REPLACE>, dual-wield weapons of the same type for extreme results
+                new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), buildTextPad + Translate("railgunner_desc")){
                     color = bRailgunner
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 2.1f), "  Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast."){
+                // Sometimes you just gotta hit the bricks... and sometimes you just gotta go fast.
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 2.1f), buildTextPad + Translate("speedster_desc")){
                     color = bSpeedster
                 },
 
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), Swapper("  Closer to attunement like he wanted, grasp the powers of <REPLACE>.", catBeat? "the guardians" : "mysterious entities")){
+                // "Closer to attunement as intended, grasp the powers of <REPLACE>.", catBeat? "the guardians" : "mysterious entities")
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 2.1f), buildTextPad + Swapper(Translate("gilded_desc"), saitBeat? Translate("gilded_sub_a") : Translate("gilded_sub_b"))){
                     color = bGilded
                 },
             };
@@ -516,13 +533,18 @@ namespace TheEscort
                     , new Vector2(xoffset - (tpadding * (5 - 4 * j)) + 3f, yoffset - 3f - (ypadding * 2))
                 )
                 {
-                    description = OptionInterface.Translate(j switch
+                    description = j switch
                     {
                         0 => "[P1] ",
                         1 => "[P2] ",
                         2 => "[P3] ",
                         _ => "[P4] "
-                    } + "Enable the ability to dropkick by pressing Jump + Grab while midair."),
+                    } + Swapper(Translate("escoptions_buildeasy_desc"), j switch {
+                        0 => "Player 1",
+                        1 => "Player 2",
+                        2 => "Player 3",
+                        _ => "Player 4"
+                    }),
                     colorEdge = easyColor,
                     colorFill = j switch
                     {
@@ -571,7 +593,21 @@ namespace TheEscort
                     },
                 };
                     */
-                this.buildPlayer[j] = new OpSliderTick(this.cfgBuild[j], new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true);
+                this.buildPlayer[j] = new OpSliderTick(this.cfgBuild[j], new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true)
+                {
+                    description = j switch
+                    {
+                        0 => "[P1] ",
+                        1 => "[P2] ",
+                        2 => "[P3] ",
+                        _ => "[P4] "
+                    } + Swapper(Translate("escoptions_build_desc"), j switch {
+                        0 => "Player 1",
+                        1 => "Player 2",
+                        2 => "Player 3",
+                        _ => "Player 4"
+                    }),
+                };
                 (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
                 {
                     0 => (p1Color * 0.8f, p1Color * 0.9f),
@@ -659,12 +695,12 @@ namespace TheEscort
                 */
             }
             this.buildSet = new UIelement[]{
-                new OpLabel(xo, yo, "Builds", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper("These will change hidden values in certain ways to make Escort play differently!<LINE>Try each build out to see which one you vibe to the most.")){
+                new OpLabel(xo, yo, Translate("Builds"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Swapper(Translate("escoptions_builds"))){
                     color = descColor
                 },
 
-                new OpLabel(xo + (xp * 2) + (tp * 1.5f), yo - 3f - (yp * 2) + tp/2, "Easier Mode"){
+                new OpLabel(xo + (xp * 2) + (tp * 1.5f), yo - 3f - (yp * 2) + tp/2, Translate("escoptions_buildeasy_text")){
                     color = easyColor
                 },
                 this.buildEasy[0],
@@ -683,12 +719,12 @@ namespace TheEscort
                 this.buildPlayer[3],
             };
             this.gimmickSet = new UIelement[]{
-                new OpLabel(xo, yo, "Gimmicks", true),
-                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), "These optional gimmicks will add features that may alter the gameplay of Escort significantly (and usually in hilarous ways)"){
+                new OpLabel(xo, yo, Translate("Gimmicks"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Translate("escoptions_gimmicks")){
                     color = descColor
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, "Enable dumb SFX"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 2) + tp/2, Translate("escoptions_sillysfx_text")){
                     color = tempColor
                 },
                 sillySFX,
@@ -696,41 +732,41 @@ namespace TheEscort
                 shutUpFlipText,
                 shutUpFlip,
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, "Enable Elevator"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, Translate("escoptions_elevator_text")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgElevator, new Vector2(xo + (xp * 0), yo - (yp * 3))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("When enabled, allows Escort to touch the stars whenever they ramp off a living creature. (Default=false)"),
+                    description = OptionInterface.Translate("escoptions_elevator_desc") + SetDefault(cfgElevator.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Proper Dropkick Animation"),
+                new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, Translate("escoptions_propdk_text")),
                 new OpCheckBox(this.cfgDKAnimation, new Vector2(xo + (xp * 0), yo - (yp * 4))){
-                    description = OptionInterface.Translate("During dropkicks, Escort turns their body in midair to make dropkicks look like dropkick dropkicks. (Default=true)"),
+                    description = OptionInterface.Translate("escoptions_propdk_desc") + SetDefault(cfgDKAnimation.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 5) + tp/2, "Super-Extended Deflector Slide"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 5) + tp/2, Swapper(Translate("escoptions_deflslide_text"), Translate("Deflector"))){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgFunnyDeflSlide, new Vector2(xo + (xp * 0), yo - (yp * 5))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Makes Deflector Escort's slides last much longer. (Default=false)"),
+                    description = Swapper(Translate("escoptions_deflslide_desc"), Translate("Deflector")) + SetDefault(cfgFunnyDeflSlide.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 6) + tp/2, "Pole Tech."){
+                new OpLabel(xo + (xp * 1), yo - (yp * 6) + tp/2, Translate("escoptions_poletech_text")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgPoleBounce, new Vector2(xo + (xp * 0), yo - (yp * 6))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Because someone requested it. Not quite Rivulet, but something along the lines ;). Default Escort has it by default. (Default=false)"),
+                    description = Swapper(Translate("escoptions_poletech_desc"), Translate("Rivulet")) + SetDefault(cfgPoleBounce.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, "Old Speedster Mechanics"){
+                new OpLabel(xo + (xp * 1), yo - (yp * 7) + tp/2, Swapper(Translate("escoptions_oldspeed_text"), Translate("Speedster"))){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgOldSpeedster, new Vector2(xo + (xp * 0), yo - (yp * 7))){
                     colorEdge = tempColor,
-                    description = OptionInterface.Translate("Reverts Speedster Escort Mechanics to before the revamp. (Default=false)"),
+                    description = Swapper(Translate("escoptions_oldspeed_desc"), Translate("Speedster")) + SetDefault(cfgOldSpeedster.defaultValue),
                 },
 
 
