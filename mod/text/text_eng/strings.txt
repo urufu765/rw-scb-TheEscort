@@ -103,3 +103,30 @@ escoptions_sectret_spuphaiku|     ...though never intent...     <LINE> ...the pu
 escoptions_sectret_gilded|This code was supposed to unlock the <GILDED> build early for preview,<LINE>but since the build is out publicly, the code no longer serves this purpose...<LINE><LINE>Now this code sends <GILDED> to <REPLACE>!<LINE>Enjoy!
 escoptions_sectret_subgild|a special place
 escoptions_sectret_invincible|Invincible... but not really. You just won't take damage lol.
+... what now?|... what now?
+OUT!|OUT!
+Has Suns decided to insult me with yet another messenger?|Has Suns decided to insult me with yet another messenger?
+... a rat.|... a rat.
+Just my luck.|Just my luck.
+I don't have time to deal with this right now.|I don't have time to deal with this right now.
+Get out.|Get out.
+Get out of my chamber.|Get out of my chamber.
+Fucking.|Fucking.
+Hello little beast. It is nice to see you again.|Hello little beast. It is nice to see you again.
+Thank you for visiting me. I would not mind some company, but you cannot stay here. I do not want you to be caught in the collapse of my structure.|Thank you for visiting me. I would not mind some company, but you cannot stay here. I do not want you to be caught in the collapse of my structure.
+It is nice to see you again, but I'm afraid I have nothing for you.|It is nice to see you again, but I'm afraid I have nothing for you.
+I'm so sorry little creature! I never meant to hurt you!|I'm so sorry little creature! I never meant to hurt you!
+My structure is on the verge of collapsing. This is all I can offer...|My structure is on the verge of collapsing. This is all I can offer...
+Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.|Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.
+Though yours seem vastly different... What are you?|Though yours seem vastly different... What are you?
+I could look up the records of your body's blueprints, but it would be dangerous for you to stay here for the process.|I could look up the records of your body's blueprints, but it would be dangerous for you to stay here for the process.
+My n...|My n...
+My neighb... b b b|My neighb... b b b
+My neighbor, Five Pebbles, has not stopped his output. If the messenger made it safely to the communications array, the local group would know.|My neighbor, Five Pebbles, has not stopped his output. If the messenger made it safely to the communications array, the local group would know.
+Were you sent by the local group?|Were you sent by the local group?
+Who sent you?|Who sent you?
+I should not keep you here any longer.|I should not keep you here any longer.
+I cannot offer you hospitality either, poor thing. Run along now, before my structure collapses.|I cannot offer you hospitality either, poor thing. Run along now, before my structure collapses.
+My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.|My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.
+There is not much I can do, and I urge you to move on, before my structure fails.|There is not much I can do, and I urge you to move on, before my structure fails.
+I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.|I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.

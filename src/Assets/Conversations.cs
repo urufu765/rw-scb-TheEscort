@@ -413,14 +413,14 @@ namespace TheEscort
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, delay, wawa, sustain));
+                conversation.Add(new Conversation.TextEvent(talkingTo, delay, talkingTo.Translate(wawa), sustain));
             }
         }
         private static void Eshelp_Converse(Conversation talkingTo, ref List<Conversation.DialogueEvent> conversation, params string[] wa)
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, 0, wawa, 0));
+                conversation.Add(new Conversation.TextEvent(talkingTo, 0, talkingTo.Translate(wawa), 0));
             }
         }
 
@@ -638,7 +638,10 @@ namespace TheEscort
                             self, ref self.events,
                             0, 20,
                             "...",
-                            "... a rat."
+                            Plugin.ins.config.cfgBuild[0].Value switch
+                            {
+                                _ => "... a rat."
+                            }
                         );
                     }
                 }
@@ -661,7 +664,7 @@ namespace TheEscort
                         Eshelp_Converse(self, ref self.events,
                         0, 10,
                         "...",
-                        "Get out. ",
+                        "Get out.",
                         "Get out of my chamber."
                         );
                     }
