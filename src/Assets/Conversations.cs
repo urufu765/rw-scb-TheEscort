@@ -413,14 +413,14 @@ namespace TheEscort
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, delay, talkingTo.Translate(wawa), sustain));
+                conversation.Add(new Conversation.TextEvent(talkingTo, delay, talkingTo.interfaceOwner.rainWorld.inGameTranslator.Translate(wawa), sustain));
             }
         }
         private static void Eshelp_Converse(Conversation talkingTo, ref List<Conversation.DialogueEvent> conversation, params string[] wa)
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, 0, talkingTo.Translate(wawa), 0));
+                conversation.Add(new Conversation.TextEvent(talkingTo, 0, talkingTo.interfaceOwner.rainWorld.inGameTranslator.Translate(wawa), 0));
             }
         }
 
@@ -640,7 +640,13 @@ namespace TheEscort
                             "...",
                             Plugin.ins.config.cfgBuild[0].Value switch
                             {
-                                _ => "... a rat."
+                                -6 => "... a mouse.",  // Gilded
+                                -5 => "... a failure.",  // Speedster
+                                -4 => "... a disease.",  // Railgunner
+                                -3 => "... nothing interesting.",  // Escapist
+                                -2 => "... a thing.",  // Deflector
+                                -1 => "... a vermin.",  // Brawler
+                                _ => "... a rat."  // Default
                             }
                         );
                     }

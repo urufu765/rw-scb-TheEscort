@@ -23,6 +23,7 @@ escoptions_hypeselect_d|3=75% tiredness
 escoptions_hypeselect_e|4=80% tiredness
 escoptions_hypeselect_f|5=87% tiredness
 escoptions_hypeselect_g|6=92% tiredness
+hype_tutorial|The more hyped you are, the more powerful you become!
 escoptions_longwall_text|Long Wall Jump
 escoptions_longwall_desc|Allows Escort to do pounces (hold jump) but on walls as well. Will affect how wall jumping in general feels. Recommended off.
 escoptions_flippounce_text|Flippy Pounce
@@ -39,15 +40,45 @@ escoptions_buildeasy_text|Easier Mode
 escoptions_buildeasy_desc|Enable the ability to dropkick by pressing Jump + Grab while midair for <REPLACE>.
 escoptions_build_desc|Select build for <REPLACE>.
 default_desc|The basic, with a few tricks up its sleeve to keep up with the rest.
+default_tut_a|<DEFAULT> is more familiar with swimming, giving them a longer breath time and better swimming skills.
+default_tut_b|Poleskipping is also better than the other Escorts!
 Brawler|Brawler
 brawler_desc|Switch over to a close-combat fighting style with punches and shanks.
+brawler_shanktut_a|<BRAWLER> can shank creatures when wielding a spear.
+brawler_shanktut_b|Just attack at close range, or deal more damage by grabbing the creature and shanking them.
+brawler_shanktut_c|To throw the spear, throw while sliding!
+brawler_punchtut|Rocks can be used to punch predators instead.
+brawler_ms_expunchtut|Bombs allow <BRAWLER> to throw an explosive punch!
 Deflector|Deflector
 deflector_desc|Embrace a riskier playstyle where one must parry by sliding, rolling, or flipping to survive.
+deflector_tut_a|<DEFLECTOR> by default deals half damage. 
+deflector_tut_b|They can just attack twice as often to make up for the power loss...
+deflector_tut_c|Or, do a successful parry by rolling, sliding, or flipping into attacks to become empowered!
+deflector_tut_d|Empowered does triple damage, but only applies to one attack, and goes away if not used.
+deflector_tut_e|But that's okay, just outskill the predator!
+deflector_ms_tut|Parry projectiles to return the weapon back to the sender!
 Escapist|Escapist
 escapist_desc|Force out of creature grasps even when empty handed (hold throw).
+escapist_tut_a|Grab something and throw it at the predator before the Game Over text appears!
+escapist_tut_b|Or if there's nothing nearby, hold throw to pry out of the grasp.
+escapist_tut_c|Be careful, that will leave you in a vulnerable state.
 escapist_new_desc|Escape out of any situation with skill and style. Make a fool of the predators.
+escapist_new_tut_a|Tap the Map key to teleport to where <ESCAPIST> was two seconds ago.
+escapist_new_tut_b|Any creature caught between your old position and your new become vulnerable. This will reset the cooldown of the skill by half.
+escapist_new_tut_c|Attack to take advantage of the situation and reset the cooldown even further!
 Railgunner|Railgunner
 railgunner_desc|Dual-wield two weapons of the same type to enhance your attacks.
+railgunner_tut_a|<RAILGUNNER> gains little benefit from battle hype, instead getting extra power from overcharge.
+railgunner_tut_b|Hold two weapons of the same type to throw them both at once, increasing the attack power and overcharge.
+railgunner_tut_c|Pay attention, as too much overcharge will blow up <RAILGUNNER>!
+railgunner_tut_d|Listen for the sharp Pang which indicates the overcharge is at dangerous levels, and wait to cool down.
+ralgunner_ms_tut|Hold grab with two rocks to craft a bomb, two spears for an explosive spear.
+railgunner_tut_spear|Double spear: greatly increased speed and damage.
+railgunner_tut_rock|Double rock: greatly increased speed and knockback.
+railgunner_tut_lily|Double lilypuck: increased speed and improved trajectory.
+railgunner_tut_bomb|Double bomb: increased speed and self-immune to bomb throw to allow literal explosive jump.
+railgunner_ms_tut_cracker|Double firecrackers: increased speed and powerful explosion at the end.
+railgunner_ms_tut_singularity|Double singularity bomb: skip bounce and detonate on impact.
 Speedster|Speedster
 speedster_desc|Keep moving to charge up speed, then slide to let it all loose.
 Gilded|Gilded
@@ -107,6 +138,12 @@ escoptions_sectret_invincible|Invincible... but not really. You just won't take 
 OUT!|OUT!
 Has Suns decided to insult me with yet another messenger?|Has Suns decided to insult me with yet another messenger?
 ... a rat.|... a rat.
+... a vermin.|... a vermin.
+... a thing.|... a thing.
+... nothing interesting.|... nothing interesting.
+... a disease.|... a disease.
+... a failure.|... a failure.
+... a mouse.|... a mouse.
 Just my luck.|Just my luck.
 I don't have time to deal with this right now.|I don't have time to deal with this right now.
 Get out.|Get out.
