@@ -81,10 +81,22 @@ railgunner_ms_tut_cracker|Double firecrackers: increased speed and powerful expl
 railgunner_ms_tut_singularity|Double singularity bomb: skip bounce and detonate on impact.
 Speedster|Speedster
 speedster_desc|Keep moving to charge up speed, then slide to let it all loose.
+speedster_tut_a|Always be on the move to charge up the boost, then slide to use the boost to go fast!
+speedster_tut_b|Beware, colliding into anything can stun you if you go too fast!
+speedster_old_tut_a|Keep moving to build up speed. Cross a certain threshold to obtain a boost!
+speedster_old_tut_b|Keep moving at the boosted speed to access an even faster boost!
+speedster_ms_tut_a|Slide to pass under a creature without stunning yourself!
+speedster_ms_tut_b|Slide indefinitely when you reach gears three and up!
+speedster_ms_old_tut_b|Slide indefinitely when you reach extra boost!
 Gilded|Gilded
 gilded_desc|Bring in favors from <REPLACE>, utilize the borrowed powers.
 gilded_sub_a|the void
 gilded_sub_b|a mysterious place
+gilded_tut_a|Jump to reach higher places. Super wall flips go really high!
+gilded_tut_b|Press throw while empty handed and midair to do a stomp! Fall damage is negated.
+gilded_tut_c|<GILDED> cannot throw rocks or spears to defend themselves. Use the power to transform the objects first!
+gilded_tut_rock|Hold throw with a rock or bomb in hand to transform it into a firebomb!
+gilded_tut_spear|Hold throw with a spear to transform it into a firespear!
 Gimmicks|Gimmicks
 escoptions_gimmicks|These optional gimmicks will add features that may alter the gameplay of Escort significantly (and in hilarous ways)
 escoptions_sillysfx_text|Enable silly SFX
