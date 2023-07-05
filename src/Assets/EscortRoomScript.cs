@@ -2,6 +2,7 @@
 using TheEscort;
 using UnityEngine.PlayerLoop;
 using static TheEscort.Eshelp;
+using static RWCustom.Custom;
 
 namespace TheEscort;
 
@@ -53,7 +54,7 @@ public class EscortRoomScript
                 {
                     if ((room.abstractRoom.name == "CC_SHAFT02" && player.mainBodyChunk.pos.y > 120 && player.mainBodyChunk.pos.y < 140) || room.abstractRoom.name == "CC_CLOG")
                     {
-                        this.room.game.cameras[0].hud.textPrompt.AddMessage("Hold a diagonal direction for about 1 second then press jump while holding to do a super wall flip!", 20, 500, true, true);
+                        this.room.game.cameras[0].hud.textPrompt.AddMessage(rainWorld.inGameTranslator.Translate("flippounce_tutorial"), 20, 500, true, true);
                         message = true;
                         break;
                     }
