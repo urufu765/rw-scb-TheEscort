@@ -30,6 +30,7 @@ namespace TheEscort
         public int GildCrushCooldown;
         public int GildLevitateCooldown;
         public bool GildAlsoPop;
+        public int GildJetPackVFX;
         //public Rock GildRemoveRock;
         //public int GildRemoveRockAfter;
         public const int GildCheckLevitate = 480;

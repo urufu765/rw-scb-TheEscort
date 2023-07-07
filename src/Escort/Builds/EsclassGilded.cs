@@ -42,6 +42,11 @@ namespace TheEscort
                 e.GildLevitateCooldown--;
             }
 
+            if (e.GildJetPackVFX > 0)
+            {
+                e.GildJetPackVFX--;
+            }
+
             if (!e.GildLockRecharge) 
             {
                 e.GildRequiredPower = 0;
@@ -172,6 +177,12 @@ namespace TheEscort
                 self.buoyancy = 0f;
                 self.bodyChunks[0].vel.y += levitation;
                 self.bodyChunks[1].vel.y += levitation - 1f;
+                if (Esconfig_SFX(self) && e.GildJetPackVFX == 0)
+                {
+                    e.GildJetPackVFX += UnityEngine.Random.Range(5, 21);
+                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(8f * self.input[0].x, 30f - e.GildJetPackVFX), 40f));
+                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(8f * self.input[0].x, 30f - e.GildJetPackVFX), 40f));
+                }
             }
             #endregion
 
@@ -263,7 +274,7 @@ namespace TheEscort
                                 posi = b.firstChunk.pos;
                                 wPos = b.abstractPhysicalObject.pos;
                             }
-                            Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                            Color.RGBToHSV(e.hypeColor, out float hue, out float _, out float _);
                             Ebug(self, "Rock init");
                             self.ReleaseGrasp(grabby);
                             Ebug(self, "throwaway");
@@ -274,7 +285,10 @@ namespace TheEscort
                             self.room.abstractRoom.AddEntity(apo);
                             apo.RealizeInRoom();
                             apo.realizedObject.firstChunk.HardSetPosition(posi);
-                            self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
+                            self.room?.PlaySound(SoundID.Water_Nut_Swell, posi);
+                            self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
+                            self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
+                            self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
                             if (e.GildWantToThrow == 0 && self.grasps[1]?.grabbed is not null && (self.grasps[1].grabbed is Rock or ScavengerBomb || self.grasps[1].grabbed is Spear sp && !sp.bugSpear)) 
                             {
                                 e.GildAlsoPop = true;
@@ -316,13 +330,15 @@ namespace TheEscort
                             Vector2 posi = s.firstChunk.pos;
                             WorldCoordinate wPos = s.abstractPhysicalObject.pos;
                             //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
-                            Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                            Color.RGBToHSV(e.hypeColor, out float hue, out float _, out float _);
                             self.ReleaseGrasp(grabby);
                             s.Destroy();
                             AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue + 0.5f);
                             self.room.abstractRoom.AddEntity(apo);
                             apo.RealizeInRoom();
-                            self.room.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
+                            self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
+                            self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
+                            self.room?.AddObject(new ExplosionSpikes(self.room, posi, 10, 15f, 9f, 5f, 90f, e.hypeColor));
                             self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
 
                             // Doesn't work
@@ -332,7 +348,14 @@ namespace TheEscort
                                 e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
                             }
                             #endif
-                            if (e.GildWantToThrow == 0 && self.grasps[1]?.grabbed is not null && (self.grasps[1].grabbed is Rock or ScavengerBomb || self.grasps[1].grabbed is Spear sp && !sp.bugSpear)) 
+                            if (
+                                e.GildWantToThrow == 0 && 
+                                self.grasps[1]?.grabbed is not null && 
+                                (
+                                    self.grasps[1].grabbed is Rock or ScavengerBomb || 
+                                    self.grasps[1].grabbed is Spear sp && !sp.bugSpear
+                                )
+                            ) 
                             {
                                 e.GildAlsoPop = true;
                             }
