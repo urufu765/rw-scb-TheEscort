@@ -75,6 +75,8 @@ namespace TheEscort
             }
             if (!self.dead) e.GildLockRecharge = false;
 
+            if (!self.input[0].thrw) e.GildAlsoPop = false;
+
             // if (e.secretRGB) e.Escat_RGB_firespear();
         }
 
@@ -86,13 +88,13 @@ namespace TheEscort
                 ) return;
 
             // Die by overpower
-            if (e.GildPower > 4600 && !self.dead)
+            if (e.GildPower > 5600 && !self.dead)
             {
                 self.Blink(5);
-                Eshelp_Player_Shaker(self, Mathf.Lerp(0.3f, 1.3f, Mathf.InverseLerp(4600, 5000, e.GildPower)));
-                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(4600, 5000, e.GildPower));
+                Eshelp_Player_Shaker(self, 0.7f * Mathf.InverseLerp(5600, 6000, e.GildPower));
+                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(5600, 6000, e.GildPower));
             }
-            if (e.GildPower > 5000 && !self.dead)
+            if (e.GildPower > 6000 && !self.dead)
             {
                 self.Die();
                 self.room?.AddObject(new CreatureSpasmer(self, true, 120));
@@ -160,6 +162,7 @@ namespace TheEscort
             }
 
             // Main code
+            // TODO: Allow simultaneous usage of power, e.g. float while making a spear.
             if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
@@ -225,102 +228,131 @@ namespace TheEscort
 
         private static void Esclass_GD_GrabUpdate(Player self, bool eu, ref Escort e)
         {
-            if (e.GildWantToThrow != -1)
+            // Throw when letting go of the held button
+            if (!self.input[0].thrw && e.GildWantToThrow != -1)
             {
-                // Throw when letting go of the held button
-                if (!self.input[0].thrw)
+                self.ThrowObject(e.GildWantToThrow, eu);
+                e.GildCancel = true;
+                e.GildWantToThrow = -1;
+            }
+            else if (e.GildWantToThrow != -1 || e.GildAlsoPop)
+            {
+                int grabby = e.GildAlsoPop? 1 : e.GildWantToThrow;
+                if (self.grasps[grabby]?.grabbed is null) return;
+                if ((self.grasps[grabby].grabbed is Rock or ScavengerBomb)&& e.GildStartPower >= Escort.GildCheckCraftFirebomb)
                 {
-                    self.ThrowObject(e.GildWantToThrow, eu);
-                    e.GildCancel = true;
-                    e.GildWantToThrow = -1;
-                }
-                else
-                {
-                    if (self.grasps[e.GildWantToThrow]?.grabbed is null) return;
-                    if (self.grasps[e.GildWantToThrow].grabbed is Rock r && e.GildStartPower >= Escort.GildCheckCraftFirebomb)
+                    e.GildRequiredPower = Escort.GildCheckCraftFirebomb * (self.grasps[grabby].grabbed is Rock? 2 : 1);
+                    e.GildPowerUsage = Escort.GildUseCraftFirebomb;
+                    try
                     {
-                        e.GildRequiredPower = Escort.GildCheckCraftFirebomb;
-                        e.GildPowerUsage = Escort.GildUseCraftFirebomb;
-                        try
+                        if (e.GildReservePower >= e.GildRequiredPower)
                         {
-                            if (e.GildReservePower >= e.GildRequiredPower)
+                            Vector2 posi = new();
+                            WorldCoordinate wPos = new(); 
+                            Rock r = null;
+                            ScavengerBomb b = null;
+                            if (self.grasps[grabby].grabbed is Rock) 
                             {
-                                Vector2 posi = r.firstChunk.pos;
-                                WorldCoordinate wPos = r.abstractPhysicalObject.pos;
-                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
-                                Ebug(self, "Rock init");
-                                self.ReleaseGrasp(e.GildWantToThrow);
-                                Ebug(self, "throwaway");
-                                r.Destroy();
-                                Ebug(self, "Destroy");
-                                FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue + 0.5f);
-                                self.room.abstractRoom.AddEntity(apo);
-                                apo.RealizeInRoom();
-                                apo.realizedObject.firstChunk.HardSetPosition(posi);
-                                self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
-                                e.GildWantToThrow = -1;
-                                e.GildReservePower = 0;
-                                return;
+                                r = self.grasps[grabby].grabbed as Rock;
+                                posi = r.firstChunk.pos;
+                                wPos = r.abstractPhysicalObject.pos;
                             }
                             else
                             {
-                                e.GildLockRecharge = true;
+                                b = self.grasps[grabby].grabbed as ScavengerBomb;
+                                posi = b.firstChunk.pos;
+                                wPos = b.abstractPhysicalObject.pos;
+                            }
+                            Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                            Ebug(self, "Rock init");
+                            self.ReleaseGrasp(grabby);
+                            Ebug(self, "throwaway");
+                            r?.Destroy();
+                            b?.Destroy();
+                            Ebug(self, "Destroy");
+                            FireEgg.AbstractBugEgg apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), hue + 0.5f);
+                            self.room.abstractRoom.AddEntity(apo);
+                            apo.RealizeInRoom();
+                            apo.realizedObject.firstChunk.HardSetPosition(posi);
+                            self.room.PlaySound(SoundID.Water_Nut_Swell, posi);
+                            if (e.GildWantToThrow == 0 && self.grasps[1]?.grabbed is not null && (self.grasps[1].grabbed is Rock or ScavengerBomb || self.grasps[1].grabbed is Spear sp && !sp.bugSpear)) 
+                            {
+                                e.GildAlsoPop = true;
+                            }
+                            e.GildWantToThrow = -1;
+                            e.GildReservePower = 0;
+                            self.Blink(10);
+                            return;
+                        }
+                        else
+                        {
+                            e.GildLockRecharge = true;
+                            if (self.grasps[grabby].grabbed is Rock r) 
+                            {
                                 r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
-                        } 
-                        catch (NullReferenceException nre)
-                        {
-                            Ebug(self, nre, "Null when charging a rock!");
+                            else if (self.grasps[grabby].grabbed is ScavengerBomb b)
+                            {
+                                b.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
+                            }
                         }
-                        catch (Exception err) {
-                            Ebug(self, err, "Generic exception when charging a rock!");
-                        }
-                    }
-                    if (self.grasps[e.GildWantToThrow].grabbed is Spear s && !s.bugSpear && e.GildStartPower >= Escort.GildCheckCraftFirespear)
+                    } 
+                    catch (NullReferenceException nre)
                     {
-                        e.GildRequiredPower = Escort.GildCheckCraftFirespear;
-                        e.GildPowerUsage = Escort.GildUseCraftFirespear;
-                        try
+                        Ebug(self, nre, "Null when charging a rock!");
+                    }
+                    catch (Exception err) {
+                        Ebug(self, err, "Generic exception when charging a rock!");
+                    }
+                }
+                if (self.grasps[grabby].grabbed is Spear s && !s.bugSpear && e.GildStartPower >= Escort.GildCheckCraftFirespear)
+                {
+                    e.GildRequiredPower = Escort.GildCheckCraftFirespear;
+                    e.GildPowerUsage = Escort.GildUseCraftFirespear;
+                    try
+                    {
+                        if (e.GildReservePower >= e.GildRequiredPower)
                         {
-                            if (e.GildReservePower >= e.GildRequiredPower)
-                            {
-                                Vector2 posi = s.firstChunk.pos;
-                                WorldCoordinate wPos = s.abstractPhysicalObject.pos;
-                                //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
-                                Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
-                                self.ReleaseGrasp(e.GildWantToThrow);
-                                s.Destroy();
-                                AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue + 0.5f);
-                                self.room.abstractRoom.AddEntity(apo);
-                                apo.RealizeInRoom();
-                                self.room.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
-                                self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                            Vector2 posi = s.firstChunk.pos;
+                            WorldCoordinate wPos = s.abstractPhysicalObject.pos;
+                            //float hue = Mathf.Lerp(0.35f, 0.6f, Custom.ClampedRandomVariation(0.5f, 0.5f, 2f));
+                            Color.RGBToHSV(e.hypeColor, out float hue, out float sat, out float vib);
+                            self.ReleaseGrasp(grabby);
+                            s.Destroy();
+                            AbstractSpear apo = new(self.abstractCreature.world, null, wPos, self.room.game.GetNewID(), false, hue + 0.5f);
+                            self.room.abstractRoom.AddEntity(apo);
+                            apo.RealizeInRoom();
+                            self.room.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
+                            self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
 
-                                // Doesn't work
-                                #if false
-                                if (e.secretRGB)
-                                {
-                                    e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
-                                }
-                                #endif
-                                e.GildWantToThrow = -1;
-                                e.GildReservePower = 0;
-                                return;
-                            }
-                            else
+                            // Doesn't work
+                            #if false
+                            if (e.secretRGB)
                             {
-                                e.GildLockRecharge = true;
-                                s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
+                                e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
                             }
-                        } 
-                        catch (NullReferenceException nre)
+                            #endif
+                            if (e.GildWantToThrow == 0 && self.grasps[1]?.grabbed is not null && (self.grasps[1].grabbed is Rock or ScavengerBomb || self.grasps[1].grabbed is Spear sp && !sp.bugSpear)) 
+                            {
+                                e.GildAlsoPop = true;
+                            }
+                            e.GildWantToThrow = -1;
+                            e.GildReservePower = 0;
+                            self.Blink(10);
+                            return;
+                        }
+                        else
                         {
-                            Ebug(self, nre, "Null when charging a spear!");
+                            e.GildLockRecharge = true;
+                            s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                         }
-                        catch (Exception err) {
-                            Ebug(self, err, "Generic exception when charging a spear!");
-                        }
-
+                    } 
+                    catch (NullReferenceException nre)
+                    {
+                        Ebug(self, nre, "Null when charging a spear!");
+                    }
+                    catch (Exception err) {
+                        Ebug(self, err, "Generic exception when charging a spear!");
                     }
 
                 }
@@ -377,9 +409,9 @@ namespace TheEscort
         {
             if (self.animation == Player.AnimationIndex.BellySlide)
             {
-                if (self.rollCounter < 8)
+                if (self.rollCounter < 7)
                 {
-                    self.rollCounter = 8;
+                    self.rollCounter = 7;
                 }
                 if (self.initSlideCounter < 3)
                 {
