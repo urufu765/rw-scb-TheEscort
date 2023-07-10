@@ -539,7 +539,7 @@ namespace TheEscort
             if (self.grasps[grasp]?.grabbed is null) return false;
 
             if (
-                self.grasps[grasp].grabbed is Rock || 
+                self.grasps[grasp].grabbed is Rock or ScavengerBomb || 
                 self.grasps[grasp].grabbed is Spear spear && (ins.config.cfgSectretBuild.Value || !spear.bugSpear) || 
                 self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck ||
                 ins.config.cfgSectretBuild.Value && self.grasps[grasp].grabbed is MoreSlugcats.FireEgg
@@ -547,10 +547,17 @@ namespace TheEscort
             {
                 if (!self.input[0].thrw || self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck)
                 {
-                    self.TossObject(grasp, eu);
-                    Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
-                    self.dontGrabStuff = 15;
-                    self.ReleaseGrasp(grasp);
+                    if (self.grasps[grasp].grabbed is ScavengerBomb || (ins.config.cfgSectretBuild.Value && (self.grasps[grasp].grabbed is FireEgg || self.grasps[grasp].grabbed is Spear sp && sp.bugSpear)))
+                    {
+                        orig(self, grasp, eu);  // Regular throw
+                    }
+                    else
+                    {
+                        self.TossObject(grasp, eu);
+                        Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
+                        self.dontGrabStuff = 15;
+                        self.ReleaseGrasp(grasp);
+                    }
                 }
                 else
                 {

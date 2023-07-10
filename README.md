@@ -8,7 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
-  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. (new sfx)
+  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. (new sfx, replace Gilded levitate sfx, add ascention ping when reaching max power)
 
   * **(0.2.9.3)** Fixed Brawler damage
 
