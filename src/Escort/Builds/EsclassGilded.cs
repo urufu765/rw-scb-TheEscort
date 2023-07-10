@@ -18,6 +18,7 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> gilded = PlayerFloats("theescort/gilded/");
         public static readonly PlayerFeature<float> gilded_float = PlayerFloat("theescort/gilded/float_speed");
         public static readonly PlayerFeature<float> gilded_lev = PlayerFloat("theescort/gilded/levitation");
+        public static readonly PlayerFeature<float> gilded_jet = PlayerFloat("theescort/gilded/jetplane");
         public static readonly PlayerFeature<float> gilded_radius = PlayerFloat("theescort/gilded/pipradius");
         public static readonly PlayerFeature<float[]> gilded_position = PlayerFloats("theescort/gilded/pipposition");
 
@@ -90,7 +91,8 @@ namespace TheEscort
         {
             if (
                 !gilded_float.TryGet(self, out float floatingSpd) ||
-                !gilded_lev.TryGet(self, out float levitation)
+                !gilded_lev.TryGet(self, out float levitation) || 
+                !gilded_jet.TryGet(self, out float jetSize)
                 ) return;
 
             // Die by overpower
@@ -181,8 +183,13 @@ namespace TheEscort
                 if (Esconfig_SFX(self) && e.GildJetPackVFX == 0)
                 {
                     e.GildJetPackVFX += UnityEngine.Random.Range(5, 21);
-                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(8f * self.input[0].x, 30f - e.GildJetPackVFX), 40f));
-                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(8f * self.input[0].x, 30f - e.GildJetPackVFX), 40f));
+                    /*
+                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
+                    self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
+                    */
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), (30f - e.GildJetPackVFX)/jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), (30f - e.GildJetPackVFX)/jetSize, e.hypeColor, Color.black, 30));
+
                 }
             }
             #endregion
@@ -251,7 +258,7 @@ namespace TheEscort
             {
                 int grabby = e.GildAlsoPop? 1 : e.GildWantToThrow;
                 if (self.grasps[grabby]?.grabbed is null) return;
-                if ((self.grasps[grabby].grabbed is Rock or ScavengerBomb)&& e.GildStartPower >= Escort.GildCheckCraftFirebomb)
+                if ((self.grasps[grabby].grabbed is Rock && e.GildStartPower >= Escort.GildCheckCraftFirebomb * 2) || (self.grasps[grabby].grabbed is ScavengerBomb && e.GildStartPower >= Escort.GildCheckCraftFirebomb))
                 {
                     e.GildRequiredPower = Escort.GildCheckCraftFirebomb * (self.grasps[grabby].grabbed is Rock? 2 : 1);
                     e.GildPowerUsage = Escort.GildUseCraftFirebomb;
@@ -290,7 +297,15 @@ namespace TheEscort
                             self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
                             self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
                             self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
-                            if (e.GildWantToThrow == 0 && self.grasps[1]?.grabbed is not null && (self.grasps[1].grabbed is Rock or ScavengerBomb || self.grasps[1].grabbed is Spear sp && !sp.bugSpear)) 
+                            if (
+                                e.GildWantToThrow == 0 && 
+                                self.grasps[1]?.grabbed is not null && 
+                                (
+                                    self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
+                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
+                                    self.grasps[1].grabbed is Spear sp && !sp.bugSpear && e.GildPower >= Escort.GildCheckCraftFirespear
+                                )
+                            ) 
                             {
                                 e.GildAlsoPop = true;
                             }
@@ -353,8 +368,9 @@ namespace TheEscort
                                 e.GildWantToThrow == 0 && 
                                 self.grasps[1]?.grabbed is not null && 
                                 (
-                                    self.grasps[1].grabbed is Rock or ScavengerBomb || 
-                                    self.grasps[1].grabbed is Spear sp && !sp.bugSpear
+                                    self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
+                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
+                                    self.grasps[1].grabbed is Spear sp && !sp.bugSpear && e.GildPower >= Escort.GildCheckCraftFirespear
                                 )
                             ) 
                             {
@@ -618,7 +634,7 @@ namespace TheEscort
                         };*/
 
                         // Color
-                        if ((escort.GildLockRecharge || escort.GildCancel) && minR >= minReq)
+                        if (escort.GildRequiredPower != 0 && minR >= minReq)
                         {
                             s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
                         }

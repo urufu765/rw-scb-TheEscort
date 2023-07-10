@@ -125,7 +125,7 @@ namespace TheEscort
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDivFix = -5;
-        public int buildDiv = -5;
+        public int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.2.9.1";
         private readonly Configurable<string> cfgVersion;
@@ -211,6 +211,10 @@ namespace TheEscort
             };
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
+
+            Plugin.ins.L().Christmas(this.cfgSectret.Value);
+            Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
+            Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
         }
 
         private static string Swapper(string text, string with = "")
@@ -362,9 +366,6 @@ namespace TheEscort
                 min = this.buildDiv,
                 max = 0
             };*/
-            Plugin.ins.L().Christmas(this.cfgSectret.Value);
-            Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
-            Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
 
             //bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 
@@ -94,16 +95,19 @@ namespace TheEscort
 
             public void Christmas(bool hasArrived = false)
             {
+                if (hasArrived) UnityEngine.Debug.Log("Christmas!");
                 this.Crispmunch = !hasArrived;
             }
 
             public void Easter(bool hasArrived = false)
             {
+                if (hasArrived) UnityEngine.Debug.Log("Easter!");
                 this.Eastabun = !hasArrived;
             }
 
             public void Valentines(bool hasArrived = false)
             {
+                if (hasArrived) UnityEngine.Debug.Log("Valentines!");
                 this.Vegetable = !hasArrived;
             }
 
