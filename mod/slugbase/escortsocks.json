@@ -6,7 +6,8 @@
 		"color" : "ede5fa",
 		"custom_colors" : [
 			{"name": "Body", "story": "ede5fa", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
-			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}		],
+			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}		
+		],
 		"weight": [0.47, 0.35],
 		"crouch_stealth": [0.7, 0.9],
 		"lung_capacity": 2.5,
