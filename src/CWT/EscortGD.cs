@@ -59,6 +59,7 @@ namespace TheEscort
             GildBlast = 0;
             GildPowerMax = self.Malnourished? 4000: 6400;
             GildPowerPipsMax = self.Malnourished? 10: 16;
+            GildPowerPipsIndex = -1;
         }
 
         public void Escat_float_state(Player self, bool status = true){

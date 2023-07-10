@@ -528,13 +528,29 @@ namespace TheEscort
         /// </summary>
         private static void Esclass_GD_InitiateSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, ref Escort escort)
         {
-            escort.Escat_setIndex_sprite_cue(ref escort.GildPowerPipsIndex, s.sprites.Length);
-            Array.Resize(ref s.sprites, s.sprites.Length + escort.GildPowerPipsMax);
-            for (int i = 0; i < escort.GildPowerPipsMax; i++)
+            try
             {
-                s.sprites[escort.GildPowerPipsIndex + i] = new FSprite("WormEye");
+                escort.Escat_setIndex_sprite_cue(ref escort.GildPowerPipsIndex, s.sprites.Length);
+                Ebug("Set cue for Gilded sprites");
+                Array.Resize(ref s.sprites, s.sprites.Length + escort.GildPowerPipsMax);
+                for (int i = 0; i < escort.GildPowerPipsMax; i++)
+                {
+                    s.sprites[escort.GildPowerPipsIndex + i] = new FSprite("WormEye");
+                }
+                Ebug(self.player, "Applied the PIPS");
             }
-            Ebug(self.player, "Applied the PIPS");
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null reference when initiating Gilded sprites");
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                Ebug(ioore, "Index out of bounds when initiating Gilded sprites");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when initiating Gilded sprites");
+            }
         }
 
         /// <summary>
@@ -542,19 +558,35 @@ namespace TheEscort
         /// </summary>
         private static void Esclass_GD_AddTaCantaina(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera r, ref Escort escort)
         {
-            if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
+            try
             {
-                for (int i = escort.GildPowerPipsIndex; i < escort.GildPowerPipsIndex + escort.GildPowerPipsMax; i++)
+                if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
                 {
-                    r.ReturnFContainer("Foreground").RemoveChild(s.sprites[i]);
-                    r.ReturnFContainer("HUD2").AddChild(s.sprites[i]);
+                    for (int i = escort.GildPowerPipsIndex; i < escort.GildPowerPipsIndex + escort.GildPowerPipsMax; i++)
+                    {
+                        r.ReturnFContainer("Foreground").RemoveChild(s.sprites[i]);
+                        r.ReturnFContainer("HUD2").AddChild(s.sprites[i]);
+                    }
+                    Ebug(self.player, "Power pips relocated");
                 }
-                Ebug(self.player, "Power pips relocated");
+                else
+                {
+                    Ebug(self.player, "Uh oh, something went wrong while allocating power pips");
+                }
             }
-            else
+            catch (NullReferenceException nre)
             {
-                Ebug(self.player, "Uh oh, something went wrong while allocating power pips");
+                Ebug(nre, "Null reference when containering Gilded sprites");
             }
+            catch (IndexOutOfRangeException ioore)
+            {
+                Ebug(ioore, "Index out of bounds when containering Gilded sprites");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when containering Gilded sprites");
+            }
+
         }
 
         /// <summary>
@@ -566,40 +598,58 @@ namespace TheEscort
                 !gilded_radius.TryGet(self.player, out float pipRad) ||
                 !gilded_position.TryGet(self.player, out float[] pipPos)
             ) return;
-            if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
+            try
             {
-                float division = escort.GildPowerMax / (float)escort.GildPowerPipsMax;
-                float minReq = escort.GildPower + escort.GildReservePower - escort.GildRequiredPower;
-                for (int i = 0; i < escort.GildPowerPipsMax; i++)
+                if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
                 {
-                    // Visibility
-                    float minR = division * (float)i;
-                    float maxR = division * (float)(i + 1);
-                    s.sprites[escort.GildPowerPipsIndex + i].scale = Mathf.InverseLerp(minR, maxR, escort.GildPower);
-                    /*
-                    s.sprites[escort.GildPowerPipsIndex + i].scale = (float)escort.GildPower switch {
-                        var a when a <= minR => 0f,
-                        var a when a >= maxR => 1f,
-                        _ => (escort.GildPower - minR) / division
-                    };*/
-
-                    // Color
-                    if ((escort.GildLockRecharge || escort.GildCancel) && minR >= minReq)
+                    float division = escort.GildPowerMax / (float)escort.GildPowerPipsMax;
+                    float minReq = escort.GildStartPower - escort.GildRequiredPower;
+                    for (int i = 0; i < escort.GildPowerPipsMax; i++)
                     {
-                        s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
-                    }
-                    else 
-                    {
-                        s.sprites[escort.GildPowerPipsIndex + i].color = escort.hypeColor;
+                        // Visibility
+                        float minR = division * (float)i;
+                        float maxR = division * (float)(i + 1);
+                        s.sprites[escort.GildPowerPipsIndex + i].scale = Mathf.InverseLerp(minR, maxR, escort.GildPower);
+                        /*
+                        s.sprites[escort.GildPowerPipsIndex + i].scale = (float)escort.GildPower switch {
+                            var a when a <= minR => 0f,
+                            var a when a >= maxR => 1f,
+                            _ => (escort.GildPower - minR) / division
+                        };*/
+
+                        // Color
+                        if ((escort.GildLockRecharge || escort.GildCancel) && minR >= minReq)
+                        {
+                            s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
+                        }
+                        else 
+                        {
+                            Color wawa = new(escort.hypeColor.r, escort.hypeColor.g, escort.hypeColor.b, 1f);
+                            s.sprites[escort.GildPowerPipsIndex + i].color = wawa;
+                        }
+                        s.sprites[escort.GildPowerPipsIndex + i].alpha = 1f;
+
+                        // Location
+                        Vector2 loc = new Vector2(s.sprites[3].x + pipPos[0], s.sprites[3].y + pipPos[1]) + Custom.rotateVectorDeg(Vector2.one * pipRad, i * (360f / escort.GildPowerPipsMax));
+                        s.sprites[escort.GildPowerPipsIndex + i].x = loc.x;
+                        s.sprites[escort.GildPowerPipsIndex + i].y = loc.y;
                     }
 
-                    // Location
-                    Vector2 loc = new Vector2(s.sprites[3].x + pipPos[0], s.sprites[3].y + pipPos[1]) + Custom.rotateVectorDeg(Vector2.one * pipRad, i * (360f / escort.GildPowerPipsMax));
-                    s.sprites[escort.GildPowerPipsIndex + i].x = loc.x;
-                    s.sprites[escort.GildPowerPipsIndex + i].y = loc.y;
                 }
-
             }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null reference when drawing Gilded sprites");
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                Ebug(ioore, "Index out of bounds when drawing Gilded sprites");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when drawing Gilded sprites");
+            }
+
         }
 
     }

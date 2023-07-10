@@ -51,6 +51,7 @@ namespace TheEscort
                 }
                 ins.L().Set("Escort/Socks CWT Access");
                 e.Escat_setIndex_sprite_cue(ref e.mainSpriteIndex, s.sprites.Length);
+                Ebug("Set cue for Escort sprites");
                 Array.Resize(ref s.sprites, s.sprites.Length + e.mainSprites);
                 // Store the end index of the sprites so none are overwritten!
                 s.sprites[e.mainSpriteIndex] = new FSprite("escortHeadT");
@@ -59,11 +60,11 @@ namespace TheEscort
                 if (e.Gilded) Esclass_GD_InitiateSprites(self, s, rCam, ref e);
 
                 // When builds have custom sprites, do an if condition and add accordingly
-                for (int i = e.mainSpriteIndex; i < e.mainSpriteIndex + e.mainSprites; i++)
+                for (int i = e.mainSpriteIndex; i < s.sprites.Length; i++)
                 {
-                    if (s.sprites[e.mainSpriteIndex] == null)
+                    if (s.sprites[i] is null)
                     {
-                        Ebug(self.player, "Oh geez. No sprites?", 0);
+                        Ebug(self.player, "Oh geez. No sprites on index " + i + "?", 0);
                     }
                 }
                 ins.L().Set("Successful Spriting Check");

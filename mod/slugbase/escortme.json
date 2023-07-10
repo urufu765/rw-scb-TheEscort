@@ -109,7 +109,7 @@
 
 		"theescort/gilded/float_speed": 1.5,
 		"theescort/gilded/levitation": 1.40,
-		"theescort/gilded/pipradius": 15,
+		"theescort/gilded/pipradius": 16,
 		"theescort/gilded/pipposition": [0, 0]
 		}
 }

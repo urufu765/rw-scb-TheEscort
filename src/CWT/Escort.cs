@@ -312,10 +312,11 @@ namespace TheEscort
             if (cue == -1)
             {
                 cue = index;
+                Ebug("Cue set to " + cue);
             }
             else
             {
-                Debug.Log("-> Escwt: Cue is already set for sprites!");
+                Ebug("Cue is already set for sprites! " + cue);
             }
         }
 
