@@ -24,7 +24,7 @@ namespace TheEscort
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
-            if (e.GildLevitateLimit > 0 && e.GildFloatState)
+            if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
             {
                 e.GildLevitateLimit--;
             }
@@ -164,7 +164,7 @@ namespace TheEscort
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
-                e.GildRequiredPower = Escort.GildCheckLevitate;
+                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : Escort.GildCheckLevitate;
                 e.GildPowerUsage = Escort.GildUseLevitate;
                 e.GildCrushCooldown = 10;
             }
@@ -396,6 +396,76 @@ namespace TheEscort
                     }
 
                 }
+                if (ins.config.cfgSectretBuild.Value && (self.grasps[grabby].grabbed is FireEgg || self.grasps[grabby].grabbed is Spear spr && spr.bugSpear) && e.GildStartPower >= Escort.GildCheckCraftSingularity)
+                {
+                    e.GildRequiredPower = Escort.GildCheckCraftSingularity;
+                    e.GildPowerUsage = Escort.GildUseCraftSingularity;
+                    try
+                    {
+                        if (e.GildReservePower >= e.GildRequiredPower)
+                        {
+                            Vector2 posi = new();
+                            WorldCoordinate wPos = new(); 
+                            Spear spear = null;
+                            FireEgg fireEgg = null;
+                            if (self.grasps[grabby].grabbed is Spear) 
+                            {
+                                spear = self.grasps[grabby].grabbed as Spear;
+                                posi = spear.firstChunk.pos;
+                                wPos = spear.abstractPhysicalObject.pos;
+                            }
+                            else
+                            {
+                                fireEgg = self.grasps[grabby].grabbed as FireEgg;
+                                posi = fireEgg.firstChunk.pos;
+                                wPos = fireEgg.abstractPhysicalObject.pos;
+                            }
+                            Color.RGBToHSV(e.hypeColor, out float hue, out float _, out float _);
+                            Ebug(self, "Singularity init");
+                            self.ReleaseGrasp(grabby);
+                            Ebug(self, "throwaway");
+                            spear?.Destroy();
+                            fireEgg?.Destroy();
+                            Ebug(self, "Destroy");
+                            AbstractPhysicalObject apo = new(self.abstractCreature.world, MoreSlugcatsEnums.AbstractObjectType.SingularityBomb, null, wPos, self.room.game.GetNewID());
+                            self.room.abstractRoom.AddEntity(apo);
+                            apo.RealizeInRoom();
+                            apo.realizedObject.firstChunk.HardSetPosition(posi);
+                            self.room?.PlaySound(SoundID.Water_Nut_Swell, posi);
+                            self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
+                            self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
+                            self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
+                            self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                            e.GildWantToThrow = -1;
+                            e.GildReservePower = 0;
+                            self.Blink(10);
+                            return;
+                        }
+                        else
+                        {
+                            e.GildLockRecharge = true;
+                            if (self.grasps[grabby].grabbed is FireEgg fe) 
+                            {
+                                fe.firstChunk.vel += new Vector2(
+                                    Mathf.Lerp(0, UnityEngine.Random.Range(-1f, 1f), e.GildReservePower / Escort.GildCheckCraftSingularity), 
+                                    Mathf.Lerp(0, UnityEngine.Random.Range(-1f, 1f), e.GildReservePower / Escort.GildCheckCraftSingularity)
+                                );
+                            }
+                            else if (self.grasps[grabby].grabbed is Spear spearie)
+                            {
+                                spearie.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
+                            }
+                        }
+                    } 
+                    catch (NullReferenceException nre)
+                    {
+                        Ebug(self, nre, "Null when charging a rock!");
+                    }
+                    catch (Exception err) {
+                        Ebug(self, err, "Generic exception when charging a rock!");
+                    }
+                }
+
             }
         }
 
@@ -470,8 +540,9 @@ namespace TheEscort
 
             if (
                 self.grasps[grasp].grabbed is Rock || 
-                self.grasps[grasp].grabbed is Spear spear && !spear.bugSpear || 
-                self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck
+                self.grasps[grasp].grabbed is Spear spear && (ins.config.cfgSectretBuild.Value || !spear.bugSpear) || 
+                self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck ||
+                ins.config.cfgSectretBuild.Value && self.grasps[grasp].grabbed is MoreSlugcats.FireEgg
             )
             {
                 if (!self.input[0].thrw || self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck)

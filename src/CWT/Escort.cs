@@ -324,7 +324,7 @@ namespace TheEscort
         {
             if (this.secretRGB)
             {
-                this.hypeColor = Eshelp_cycle_dat_RGB(ref rgbTick, lightness: (progression > 5f ? 0.67f : 0.5f), increment: progression);
+                this.hypeColor = Eshelp_cycle_dat_RGB(ref rgbTick, lightness: (progression > 4f ? 0.67f : 0.5f), increment: progression);
                 return hypeColor;
             }
             return c;

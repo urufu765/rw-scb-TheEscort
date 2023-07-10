@@ -664,9 +664,6 @@ namespace TheEscort
                 };
                 */
                 int pal = config.cfgBuild[self.playerState.playerNumber].Value;
-                if (!ins.L().Eastabun){
-                    pal = -6;
-                }
                 //int maximumPips = self.slugcatStats.maxFood;
                 //int minimumPips = self.slugcatStats.foodToHibernate;
                 switch (pal)

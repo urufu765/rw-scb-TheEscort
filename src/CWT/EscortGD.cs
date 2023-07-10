@@ -42,6 +42,8 @@ namespace TheEscort
         public const int GildUseCraftFirebomb = 8;
         public const int GildCheckCraftFirespear = 2000;
         public const int GildUseCraftFirespear = 10;
+        public const int GildCheckCraftSingularity = 400;
+        public const int GildUseCraftSingularity = 10;
         
         public void EscortGD(Player self)
         {

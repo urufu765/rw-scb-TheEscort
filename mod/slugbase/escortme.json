@@ -109,7 +109,7 @@
 
 		"theescort/gilded/float_speed": 1.5,
 		"theescort/gilded/levitation": 1.40,
-		"theescort/gilded/jetplane": 2,
+		"theescort/gilded/jetplane": 0.98,
 		"theescort/gilded/pipradius": 12,
 		"theescort/gilded/pipposition": [0, 0]
 		}
