@@ -187,8 +187,8 @@ namespace TheEscort
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     */
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), (30f - e.GildJetPackVFX)/jetSize, e.hypeColor, Color.black, 30));
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), (30f - e.GildJetPackVFX)/jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
 
                 }
             }

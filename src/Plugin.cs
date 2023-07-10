@@ -1259,6 +1259,7 @@ namespace TheEscort
                     -3 => "DM_LEG02",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
+                    -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
                     _ => "SB_C09"  // Unspecified
                 };
                 Ebug("It's time UwU");
@@ -1278,6 +1279,7 @@ namespace TheEscort
                     -3 => "DM_LEG02",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
+                    -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
                     _ => "SB_C09"  // Unspecified
                 };
                 Ebug("It's time OwO");
