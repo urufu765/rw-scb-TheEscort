@@ -28,8 +28,8 @@ namespace TheEscort
         public int LizGrabCount;
         public bool ParrySuccess;
         public bool ElectroParry;
-        public int spriteQueue;
-        public int customSprites;
+        public int mainSpriteIndex;
+        public int mainSprites;
         public LightSource hypeLight;
         public LightSource hypeSurround;
         public Color hypeColor;
@@ -129,8 +129,8 @@ namespace TheEscort
             this.ParrySuccess = false;
             this.ElectroParry = false;
             this.SFXChunk = player.bodyChunks[0];
-            this.spriteQueue = -1;
-            this.customSprites = 2;
+            this.mainSpriteIndex = -1;
+            this.mainSprites = 2;
             this.hypeColor = new Color(0.796f, 0.549f, 0.27843f);
             this.Escat_setLight_hype(player, this.hypeColor);
             this.secretRGB = false;
@@ -209,7 +209,7 @@ namespace TheEscort
             this.RailBombJump = false;
 
             EscortSS();
-            EscortGD();
+            EscortGD(player);
         }
 
 
@@ -307,11 +307,11 @@ namespace TheEscort
             }
         }
 
-        public void Escat_setIndex_sprite_cue(int cue)
+        public void Escat_setIndex_sprite_cue(ref int cue, int index)
         {
-            if (this.spriteQueue == -1)
+            if (cue == -1)
             {
-                this.spriteQueue = cue;
+                cue = index;
             }
             else
             {

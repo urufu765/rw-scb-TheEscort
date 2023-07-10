@@ -413,7 +413,7 @@ public static class ETrackrr
         private readonly Color overflowColor;
         public GildedPoweredTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "gilded")
         {
-            Max = 5000;
+            Max = escort.GildPowerMax;
             this.escort = escort;
             gildColor = new Color(0.85f, 0.58f, 0.3f);
             overflowColor = new Color(1f, 0.4f, 0.2f);
@@ -425,8 +425,8 @@ public static class ETrackrr
         {
             if (escort.GildRequiredPower == 0)
             {
-                Limit = 5000;
-                if (escort.GildPower > 4600)
+                Limit = escort.GildPowerMax;
+                if (escort.GildPower > escort.GildPowerMax - 800)
                 {
                     trackerColor = overflowColor;
                     effectColor = overflowColor;

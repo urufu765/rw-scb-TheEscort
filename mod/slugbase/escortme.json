@@ -108,6 +108,8 @@
 		"theescort/speedster/pole_rise": [0.8, 0.65],
 
 		"theescort/gilded/float_speed": 1.5,
-		"theescort/gilded/levitation": 1.40
+		"theescort/gilded/levitation": 1.40,
+		"theescort/gilded/pipradius": 15,
+		"theescort/gilded/pipposition": [0, 0]
 		}
 }

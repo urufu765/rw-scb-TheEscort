@@ -50,21 +50,22 @@ namespace TheEscort
                     return;
                 }
                 ins.L().Set("Escort/Socks CWT Access");
-                e.Escat_setIndex_sprite_cue(s.sprites.Length);
-                Array.Resize(ref s.sprites, s.sprites.Length + e.customSprites);
+                e.Escat_setIndex_sprite_cue(ref e.mainSpriteIndex, s.sprites.Length);
+                Array.Resize(ref s.sprites, s.sprites.Length + e.mainSprites);
                 // Store the end index of the sprites so none are overwritten!
-                s.sprites[e.spriteQueue] = new FSprite("escortHeadT");
-                s.sprites[e.spriteQueue + 1] = new FSprite("escortHipT");
+                s.sprites[e.mainSpriteIndex] = new FSprite("escortHeadT");
+                s.sprites[e.mainSpriteIndex + 1] = new FSprite("escortHipT");
+
+                if (e.Gilded) Esclass_GD_InitiateSprites(self, s, rCam, ref e);
 
                 // When builds have custom sprites, do an if condition and add accordingly
-                for (int i = e.spriteQueue; i < e.spriteQueue + e.customSprites; i++)
+                for (int i = e.mainSpriteIndex; i < s.sprites.Length; i++)
                 {
-                    if (s.sprites[e.spriteQueue] == null)
+                    if (s.sprites[e.mainSpriteIndex] == null)
                     {
                         Ebug(self.player, "Oh geez. No sprites?", 0);
                     }
                 }
-
                 ins.L().Set("Successful Spriting Check");
                 self.AddToContainer(s, rCam, null);
             }
@@ -93,18 +94,18 @@ namespace TheEscort
                     return;
                 }
 
-                if (e.spriteQueue == -1)
+                if (e.mainSpriteIndex == -1)
                 {
                     return;
                 }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null))
+                if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     Ebug(self.player, "Oh dear. Null sprites!!", 0);
                     return;
                 }
                 Color c = new(0.796f, 0.549f, 0.27843f);
                 // Applying colors?
-                if (s.sprites.Length > e.spriteQueue)
+                if (s.sprites.Length > e.mainSpriteIndex)
                 {
                     //Ebug(self.player, "Gone in", 2);
                     if (ModManager.CoopAvailable && self.useJollyColor)
@@ -152,7 +153,7 @@ namespace TheEscort
                 {
                     e.secretRGB = true;
                 }
-                for (int i = e.spriteQueue; i < s.sprites.Length; i++)
+                for (int i = e.mainSpriteIndex; i < s.sprites.Length; i++)
                 {
                     s.sprites[i].color = e.Escat_runit_thru_RGB(c);
                 }
@@ -194,27 +195,28 @@ namespace TheEscort
                 {
                     return;
                 }
-                if (e.spriteQueue == -1)
+                if (e.mainSpriteIndex == -1)
                 {
                     return;
                 }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null))
+                if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     Ebug(self.player, "Oh shoot. Where sprites?", 0);
                     return;
                 }
-                if (e.spriteQueue < s.sprites.Length)
+                if (e.mainSpriteIndex < s.sprites.Length)
                 {
-                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue]);
-                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.spriteQueue + 1]);
+                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex]);
+                    rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex + 1]);
                     Ebug(self.player, "Removal success.", 1);
-                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue]);
-                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.spriteQueue + 1]);
+                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex]);
+                    rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex + 1]);
                     Ebug(self.player, "Addition success.", 1);
-                    s.sprites[e.spriteQueue].MoveBehindOtherNode(s.sprites[9]);
-                    s.sprites[e.spriteQueue + 1].MoveBehindOtherNode(s.sprites[3]);
+                    s.sprites[e.mainSpriteIndex].MoveBehindOtherNode(s.sprites[9]);
+                    s.sprites[e.mainSpriteIndex + 1].MoveBehindOtherNode(s.sprites[3]);
                     //Ebug(self.player, "Restructure success.", 1);
                 }
+                if (e.Gilded) Esclass_GD_AddTaCantaina(self, s, rCam, ref e);
                 /*
                 foreach (EscortHUD.Traction traction in e.ringTrackers)
                 {
@@ -261,12 +263,12 @@ namespace TheEscort
                     orig(self, s, rCam, t, camP);
                     return;
                 }
-                if (e.spriteQueue == -1)
+                if (e.mainSpriteIndex == -1)
                 {
                     orig(self, s, rCam, t, camP);
                     return;
                 }
-                if (e.spriteQueue + 2 == s.sprites.Length && (s.sprites[e.spriteQueue] == null || s.sprites[e.spriteQueue + 1] == null))
+                if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     orig(self, s, rCam, t, camP);
                     Ebug(self.player, "Oh crap. Sprites? Hello?!", 0);
@@ -283,7 +285,7 @@ namespace TheEscort
                     e.hipScaleY = bD[0];
                 }
                 orig(self, s, rCam, t, camP);
-                if (s.sprites.Length > e.spriteQueue)
+                if (s.sprites.Length > e.mainSpriteIndex)
                 {
                     // Hypelevel visual fx
                     try
@@ -295,13 +297,13 @@ namespace TheEscort
                             {
                                 alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
                             }
-                            for (int a = e.spriteQueue; a < s.sprites.Length; a++)
+                            for (int a = e.mainSpriteIndex; a < s.sprites.Length; a++)
                             {
                                 s.sprites[a].alpha = alphya;
                                 s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, hypeRequirement < self.player.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
-                            s.sprites[e.spriteQueue + 1].scaleX = e.hipScaleX;
-                            s.sprites[e.spriteQueue + 1].scaleY = e.hipScaleY;
+                            s.sprites[e.mainSpriteIndex + 1].scaleX = e.hipScaleX;
+                            s.sprites[e.mainSpriteIndex + 1].scaleY = e.hipScaleY;
                             if (e.hypeLight != null && e.hypeSurround != null)
                             {
                                 float alpine = 0f;
@@ -339,28 +341,29 @@ namespace TheEscort
                     {
                         Ebug(self.player, err, "something went wrong when altering alpha");
                     }
-                    s.sprites[e.spriteQueue].rotation = s.sprites[9].rotation;
-                    s.sprites[e.spriteQueue + 1].rotation = s.sprites[1].rotation;
-                    s.sprites[e.spriteQueue].scaleX = hD[0];
+                    s.sprites[e.mainSpriteIndex].rotation = s.sprites[9].rotation;
+                    s.sprites[e.mainSpriteIndex + 1].rotation = s.sprites[1].rotation;
+                    s.sprites[e.mainSpriteIndex].scaleX = hD[0];
                     //s.sprites[e.spriteQueue + 1].scaleX = bD[0];
                     if (self.player.animation == Player.AnimationIndex.Flip || self.player.animation == Player.AnimationIndex.Roll)
                     {
                         Vector2 vectoria = RWCustom.Custom.DegToVec(s.sprites[9].rotation) * hD[1];
                         Vector2 vectorib = RWCustom.Custom.DegToVec(s.sprites[1].rotation) * bD[1];
-                        s.sprites[e.spriteQueue].x = s.sprites[9].x + vectoria.x;
-                        s.sprites[e.spriteQueue].y = s.sprites[9].y + vectoria.y;
-                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + vectorib.x;
-                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + vectorib.y;
+                        s.sprites[e.mainSpriteIndex].x = s.sprites[9].x + vectoria.x;
+                        s.sprites[e.mainSpriteIndex].y = s.sprites[9].y + vectoria.y;
+                        s.sprites[e.mainSpriteIndex + 1].x = s.sprites[1].x + vectorib.x;
+                        s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + vectorib.y;
                     }
                     else
                     {
-                        s.sprites[e.spriteQueue].x = s.sprites[9].x + hD[2];
-                        s.sprites[e.spriteQueue].y = s.sprites[9].y + hD[3];
-                        s.sprites[e.spriteQueue + 1].x = s.sprites[1].x + bD[2];
-                        s.sprites[e.spriteQueue + 1].y = s.sprites[1].y + bD[3];
+                        s.sprites[e.mainSpriteIndex].x = s.sprites[9].x + hD[2];
+                        s.sprites[e.mainSpriteIndex].y = s.sprites[9].y + hD[3];
+                        s.sprites[e.mainSpriteIndex + 1].x = s.sprites[1].x + bD[2];
+                        s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
+                if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 e.Escat_Update_Ring_Trackers(t);
             }
             catch (Exception err)

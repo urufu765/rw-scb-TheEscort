@@ -356,9 +356,9 @@ namespace TheEscort
                 }
                 ins.L().Set("Socks CWT Access");
                 //s.sprites[e.spriteQueue]
-                for (int i = es.spriteQueue; i < es.spriteQueue + es.customSprites; i++)
+                for (int i = es.mainSpriteIndex; i < es.mainSpriteIndex + es.mainSprites; i++)
                 {
-                    if (s.sprites[es.spriteQueue] == null)
+                    if (s.sprites[es.mainSpriteIndex] == null)
                     {
                         Ebug(self.player, "Oh geez. No sprites?", 0);
                     }

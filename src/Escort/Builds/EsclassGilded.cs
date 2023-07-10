@@ -18,7 +18,8 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> gilded = PlayerFloats("theescort/gilded/");
         public static readonly PlayerFeature<float> gilded_float = PlayerFloat("theescort/gilded/float_speed");
         public static readonly PlayerFeature<float> gilded_lev = PlayerFloat("theescort/gilded/levitation");
-
+        public static readonly PlayerFeature<float> gilded_radius = PlayerFloat("theescort/gilded/pipradius");
+        public static readonly PlayerFeature<float[]> gilded_position = PlayerFloats("theescort/gilded/pipposition");
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
@@ -93,13 +94,13 @@ namespace TheEscort
                 ) return;
 
             // Die by overpower
-            if (e.GildPower > 5600 && !self.dead)
+            if (e.GildPower > e.GildPowerMax - 800 && !self.dead)
             {
                 self.Blink(5);
-                Eshelp_Player_Shaker(self, 0.7f * Mathf.InverseLerp(5600, 6000, e.GildPower));
-                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(5600, 6000, e.GildPower));
+                Eshelp_Player_Shaker(self, 0.7f * Mathf.InverseLerp(e.GildPowerMax - 800, e.GildPowerMax, e.GildPower));
+                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(e.GildPowerMax - 800, e.GildPowerMax, e.GildPower));
             }
-            if (e.GildPower > 6000 && !self.dead)
+            if (e.GildPower > e.GildPowerMax && !self.dead)
             {
                 self.Die();
                 self.room?.AddObject(new CreatureSpasmer(self, true, 120));
@@ -520,5 +521,86 @@ namespace TheEscort
             }
             self.Blink(15);
         }
+
+
+        /// <summary>
+        /// Initiates the pips that will be shown for the amount of power left
+        /// </summary>
+        private static void Esclass_GD_InitiateSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, ref Escort escort)
+        {
+            escort.Escat_setIndex_sprite_cue(ref escort.GildPowerPipsIndex, s.sprites.Length);
+            Array.Resize(ref s.sprites, s.sprites.Length + escort.GildPowerPipsMax);
+            for (int i = 0; i < escort.GildPowerPipsMax; i++)
+            {
+                s.sprites[escort.GildPowerPipsIndex + i] = new FSprite("WormEye");
+            }
+            Ebug(self.player, "Applied the PIPS");
+        }
+
+        /// <summary>
+        /// Puts the power pips in the hud layer
+        /// </summary>
+        private static void Esclass_GD_AddTaCantaina(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera r, ref Escort escort)
+        {
+            if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
+            {
+                for (int i = escort.GildPowerPipsIndex; i < escort.GildPowerPipsIndex + escort.GildPowerPipsMax; i++)
+                {
+                    r.ReturnFContainer("Foreground").RemoveChild(s.sprites[i]);
+                    r.ReturnFContainer("HUD2").AddChild(s.sprites[i]);
+                }
+                Ebug(self.player, "Power pips relocated");
+            }
+            else
+            {
+                Ebug(self.player, "Uh oh, something went wrong while allocating power pips");
+            }
+        }
+
+        /// <summary>
+        /// Draws the power pips
+        /// </summary>
+        private static void Esclass_GD_DrawPipSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, float timeStacker, Vector2 cameraPos, ref Escort escort)
+        {
+            if (
+                !gilded_radius.TryGet(self.player, out float pipRad) ||
+                !gilded_position.TryGet(self.player, out float[] pipPos)
+            ) return;
+            if (escort.GildPowerPipsIndex + escort.GildPowerPipsMax <= s.sprites.Length)
+            {
+                float division = escort.GildPowerMax / (float)escort.GildPowerPipsMax;
+                float minReq = escort.GildPower + escort.GildReservePower - escort.GildRequiredPower;
+                for (int i = 0; i < escort.GildPowerPipsMax; i++)
+                {
+                    // Visibility
+                    float minR = division * (float)i;
+                    float maxR = division * (float)(i + 1);
+                    s.sprites[escort.GildPowerPipsIndex + i].scale = Mathf.InverseLerp(minR, maxR, escort.GildPower);
+                    /*
+                    s.sprites[escort.GildPowerPipsIndex + i].scale = (float)escort.GildPower switch {
+                        var a when a <= minR => 0f,
+                        var a when a >= maxR => 1f,
+                        _ => (escort.GildPower - minR) / division
+                    };*/
+
+                    // Color
+                    if ((escort.GildLockRecharge || escort.GildCancel) && minR >= minReq)
+                    {
+                        s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
+                    }
+                    else 
+                    {
+                        s.sprites[escort.GildPowerPipsIndex + i].color = escort.hypeColor;
+                    }
+
+                    // Location
+                    Vector2 loc = new Vector2(s.sprites[3].x + pipPos[0], s.sprites[3].y + pipPos[1]) + Custom.rotateVectorDeg(Vector2.one * pipRad, i * (360f / escort.GildPowerPipsMax));
+                    s.sprites[escort.GildPowerPipsIndex + i].x = loc.x;
+                    s.sprites[escort.GildPowerPipsIndex + i].y = loc.y;
+                }
+
+            }
+        }
+
     }
 }

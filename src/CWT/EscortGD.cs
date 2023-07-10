@@ -17,6 +17,7 @@ namespace TheEscort
         public int GildCrushTime;
         public bool GildCrushReady;
         public int GildPower;
+        public int GildPowerMax;
         public int GildStartPower;
         public int GildLevitateLimit;
         public int GildLaser;  // Laser (UNUSED)
@@ -31,16 +32,18 @@ namespace TheEscort
         public int GildLevitateCooldown;
         public bool GildAlsoPop;
         public int GildJetPackVFX;
+        public int GildPowerPipsIndex;
+        public int GildPowerPipsMax;
         //public Rock GildRemoveRock;
         //public int GildRemoveRockAfter;
         public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
         public const int GildUseCraftFirebomb = 8;
-        public const int GildCheckCraftFirespear = 1600;
+        public const int GildCheckCraftFirespear = 2000;
         public const int GildUseCraftFirespear = 10;
         
-        public void EscortGD()
+        public void EscortGD(Player self)
         {
             Gilded = false;
             GildFloatState = false;
@@ -54,6 +57,8 @@ namespace TheEscort
             GildLevitateLimit = 120;
             GildLaser = 0;
             GildBlast = 0;
+            GildPowerMax = self.Malnourished? 4000: 6400;
+            GildPowerPipsMax = self.Malnourished? 10: 16;
         }
 
         public void Escat_float_state(Player self, bool status = true){

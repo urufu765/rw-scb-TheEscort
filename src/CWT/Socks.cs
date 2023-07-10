@@ -84,7 +84,7 @@ namespace TheEscort
         public Socks(Player self) : base(self)
         {
             this.Eskie = "Socks";
-            this.customSprites = 0;
+            this.mainSprites = 0;
             this.coopMode = false;
             this.makeBackpackWait = 20;
             this.swapBackpack = 40;
