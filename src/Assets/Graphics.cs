@@ -13,13 +13,13 @@ namespace TheEscort
     partial class Plugin : BaseUnityPlugin
     {
         public static Dictionary<int, string> selectionable = new() { 
-            {  0, rainWorld.inGameTranslator.Translate("Default") }, 
-            { -1, rainWorld.inGameTranslator.Translate("Brawler") }, 
-            { -2, rainWorld.inGameTranslator.Translate("Deflector") }, 
-            { -3, rainWorld.inGameTranslator.Translate("Escapist") }, 
-            { -4, rainWorld.inGameTranslator.Translate("Railgunner") }, 
-            { -5, rainWorld.inGameTranslator.Translate("Speedster") }, 
-            { -6, rainWorld.inGameTranslator.Translate("Gilded") } 
+            {  0, "Default" }, 
+            { -1, "Brawler" }, 
+            { -2, "Deflector" }, 
+            { -3, "Escapist" }, 
+            { -4, "Railgunner" }, 
+            { -5, "Speedster" }, 
+            { -6, "Gilded" } 
         };
         public static UIelementWrapper[] hackyWrapper;
         public static UIelementWrapper[] fairlyIllegalWrapper;
@@ -478,7 +478,7 @@ namespace TheEscort
                     vector2, new Vector2(100f, 30f)
                 )
                 {
-                    text = selectionable[ins.config.cfgBuild[i].Value],
+                    text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[i].Value]),
                     /*
                     text = i switch
                     {
@@ -617,7 +617,7 @@ namespace TheEscort
             }
             if (ins.config.cfgBuild[index].Value - 1 < ins.config.buildDiv) ins.config.cfgBuild[index].Value = 0;
             else ins.config.cfgBuild[index].Value--;
-            ins.config.jollyEscortBuilds[index].text = selectionable[ins.config.cfgBuild[index].Value];
+            ins.config.jollyEscortBuilds[index].text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[index].Value]);
             /*
             switch (index)
             {
