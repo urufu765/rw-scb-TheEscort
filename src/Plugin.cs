@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -20,8 +19,11 @@ namespace TheEscort
         public static Plugin ins;
         public EscOptions config;
         private const string MOD_ID = "urufudoggo.theescort";
+
+        /*
         public Plugin()
         {
+            Debug.Log("-> Escort Plugin Init!");
             try
             {
                 Plugin.ins = this;
@@ -30,7 +32,7 @@ namespace TheEscort
             {
                 base.Logger.LogError(e);
             }
-        }
+        }*/
 
 #region Declare Features
         public static readonly PlayerFeature<bool> pRTEdits = PlayerBool("playescort/realtime_edits");
@@ -137,6 +139,15 @@ namespace TheEscort
         // Add hooks
         public void OnEnable()
         {
+            Debug.Log("-> Escort plugin INIT!");
+            try
+            {
+                ins = this;
+            }
+            catch (Exception e)
+            {
+                base.Logger.LogError(e);
+            }
             On.RainWorld.OnModsInit += Extras.WrapInit(LoadResources);
             On.RainWorld.OnModsInit += Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please;
             On.RainWorld.PostModsInit += Escort_PostInit;
@@ -271,7 +282,20 @@ namespace TheEscort
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
         public void OnApplicationQuit()
         {
-            ins.L().LetItRip();
+            try
+            {
+                ins.L().LetItRip();
+            }
+            catch (NullReferenceException ne)
+            {
+                Debug.LogError(">>>E>   Instance is not inited!");
+                Logger.LogError(ne);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(">>>E>   Generic instance error!");
+                Logger.LogError(e);
+            }
 
         }
 
