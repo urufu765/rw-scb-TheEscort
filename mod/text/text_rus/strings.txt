@@ -1,0 +1,181 @@
+0GILDED UPDATE|ПОЗОЛОЧЕННОЕ ОБНОВЛЕНИЕ
+[Beta]|[Бета]
+Default|По умолчанию
+Vanilla|Ванилла
+Main|Основное
+Options|Настройки
+escoptions_options|Эти параметры изменяют основные способности Эскорта и то, как они используются.<LINE>Вы можете найти простой режим и сборки в СБОРКАХ, а дополнительные забавные махинации — в УЛОВКАХ.
+escoptions_meanlizards_text|Включить (дополнительно) Злые Ящерицы
+escoptions_meanlizards_desc|Когда эта функция включена, ящерицы будут появляться с полной агрессией при игре за Эскорта (и нацеливаться на Эскорта при виде)... поведение может не сохраняться в кооперативных сессиях.
+escoptions_vengefullizards_text|Включить мстительных ящериц
+escoptions_vengefullizards_desc|Убив слишком много ящериц, ящерицы могут начать охоту на Эскорта.
+escoptions_carry_text|Множитель подъёмной силы
+escoptions_carry_desc|Определяет, насколько тяжёлый (в X раз больше веса Эскорта) объект, который Эскорт может нести, пока не устанет.
+escoptions_dropkick_text|Множитель отбрасывания от удара броском
+escoptions_dropkick_desc|Сколько отбрасывания вызывает удар Эскорта? Имейте в виду, что это действует только на существ, которые не устойчивы к отбрасыванию.
+escoptions_hype_text|Механика батл-хайпа
+escoptions_hypecheckbox_desc|Включает/отключает механику батл-хайпа Escort.
+escoptions_hypeslider_desc|Определяет, насколько мягкими являются требования батл-хайпа.
+escoptions_hypeselect_a|0=Всегда
+escoptions_hypeselect_b|1=50% усталость
+escoptions_hypeselect_c|2=66% усталость
+escoptions_hypeselect_d|3=75% усталость
+escoptions_hypeselect_e|4=80% усталость
+escoptions_hypeselect_f|5=87% усталость
+escoptions_hypeselect_g|6=92% усталость
+hype_tutorial|Чем больше вы на хайпе, тем сильнее вы становитесь!
+escoptions_longwall_text|Длинный прыжок от стены
+escoptions_longwall_desc|Позволяет Эскорту делать прыжки (удерживая прыжок), но также и по стенам. Повлияет на ощущения от прыжков от стены в целом. Рекомендуется выключить.
+escoptions_flippounce_text|Пружинистый налёт
+escoptions_flippounce_desc|Заставляет Эскорта делать (уродливое) сальто с прыжками и позволяет Эскорту выполнять супер-прыжок-с-переворотом-от-стеныTM, держась по диагонали у стены и нажимая прыжок.
+flippounce_tutorial|Удерживайте диагональное направление около 1 секунды, затем нажмите прыжок, чтобы сделать супер сальто от стены!
+escoptions_lizgrab_text|Взятие оглушённых ящериц
+escoptions_lizgrab_desc|Позволяет Эскорту хватать оглушенных ящериц и причинать им насилие.
+lizgrab_tutorial|Оглушите ящерицу, чтобы схватить её, затем прыгните и нажмите кнопку броска, чтобы ударить её!
+escoptions_superspear_text|Супер Копьё
+escoptions_superspear_desc|Делает дополнительную технику движения при метании копий, чтобы упростить комбо.
+Builds|Сборки
+escoptions_builds|Они изменят скрытые значения определённым образом, чтобы Эскорт играл по-другому!<LINE>Попробуйте каждую сборку, чтобы увидеть, какая из них вам нравится больше всего.
+escoptions_buildeasy_text|Упрощённый режим
+escoptions_buildeasy_desc|Включите возможность удара броском, нажав Прыжок + Взять в воздухе для <REPLACE>.
+escoptions_build_desc|Выберите сборку для <REPLACE>.
+default_desc|Базовый, с несколькими тузами в рукаве, чтобы не отставать от остальных.
+default_tut_a|<DEFAULT> лучше знаком с плаванием, что даёт ему более длительное время дыхания и лучшие навыки плавания.
+default_tut_b|Полскипинг также лучше, чем другие эскорты!
+Brawler|Скандалист
+brawler_desc|Переключитесь на стиль рукопашного боя с ударами руками и ногами.
+brawler_shanktut_a|<BRAWLER> может бить существ копьем.
+brawler_shanktut_b|Просто атакуйте с близкого расстояния или нанесите больше урона, схватив существо и ударив его ногой.
+brawler_shanktut_c|Чтобы бросить копье, бросьте во время скольжения!
+brawler_punchtut|Вместо этого можно использовать камни, чтобы бить хищников.
+brawler_ms_expunchtut|Бомбы позволяют <BRAWLER> наносить взрывной удар!
+Deflector|Дефлектор
+deflector_desc|Примите более рискованный стиль игры, в котором нужно парировать, скользя, перекатываясь или уворачиваясь, чтобы выжить.
+deflector_tut_a|<DEFLECTOR> по умолчанию наносит половину урона.
+deflector_tut_b|Он может просто атаковать в два раза чаще, чтобы компенсировать потерю силы...
+deflector_tut_c|Или делайте успешные парирования, перекатываясь, скользя или уворачиваясь от атак, чтобы стать сильнее!
+deflector_tut_d|Наносит тройной урон, но применяется только к одной атаке и исчезает, если его не использовать.
+deflector_tut_e|Но ничего страшного, просто перехитрите хищника!
+deflector_ms_tut|Парируйте снаряды, чтобы вернуть оружие отправителю!
+Escapist|Эскапист
+escapist_desc|Сила из захвата существа даже с пустыми руками (бросок с задержкой).
+escapist_tut_a|Хватай что-нибудь и бросай в хищника до того, как появится надпись Game Over!
+escapist_tut_b|Или, если поблизости ничего нет, удерживайте бросок, чтобы вырваться из хватки.
+escapist_tut_c|Будьте осторожны, это сделает вас в уязвимым.
+escapist_new_desc|Побег из любой ситуации с умением и стилем. Сделайте хищников дураками.
+escapist_new_tut_a|Коснитесь кнопки «Карта», чтобы телепортироваться туда, где <ESCAPIST> был две секунды назад.
+escapist_new_tut_b|Любое существо, оказавшееся между вашей старой и новой позицией, становится уязвимым. Это сбрасывает время восстановления навыка наполовину.
+escapist_new_tut_c|Атакуйте, чтобы воспользоваться ситуацией и еще больше сбросить время восстановления!
+Railgunner|Рейлганнер
+railgunner_desc|Используйте два оружия одного типа, чтобы усилить свои атаки.
+railgunner_tut_a|<RAILGUNNER> получает мало пользы от батл-хайпа, вместо этого получает дополнительную мощность от перезарядки.
+railgunner_tut_b|Держите два оружия одного типа, чтобы метать их оба одновременно, увеличивая силу атаки и перезарядку.
+railgunner_tut_c|Обратите внимание, слишком большая перезарядка взорвёт <RAILGUNNER>!
+railgunner_tut_d|Прислушайтесь к резкому удару, указывающему на опасный уровень перезарядки, и подождите, пока он остынет.
+ralgunner_ms_tut|Держите два камня, чтобы создать бомбу, два копья для взрывного копья.
+railgunner_tut_spear|Двойное копье: значительно увеличена скорость и урон.
+railgunner_tut_rock|Двойной камень: значительно увеличена скорость и отбрасывание.
+railgunner_tut_lily|Двойной лилёк: увеличена скорость и улучшена траектория.
+railgunner_tut_bomb|Двойная бомба: повышенная скорость и самоиммунитет к броску бомбы, что позволяет совершить буквально взрывной прыжок.
+railgunner_ms_tut_cracker|Двойные петарды: увеличенная скорость и мощный взрыв в конце.
+railgunner_ms_tut_singularity|Двойная бомба сингулярности: пропускает отскок и взрывается при ударе.
+Speedster|Спидстер
+speedster_desc|Продолжайте двигаться, чтобы зарядить скорость, затем скользите, чтобы всё это высвободилось.
+speedster_tut_a|Всегда будь в движении, чтобы зарядить ускорение, а затем скользи, чтобы использовать ускорение, чтобы двигаться быстрее!
+speedster_tut_b|Осторожно, столкновение с чем-либо может оглушить вас, если вы будете двигаться слишком быстро!
+speedster_old_tut_a|Продолжайте двигаться, чтобы набрать скорость. Преодолейте определенный порог, чтобы получить ускорение!
+speedster_old_tut_b|Продолжайте двигаться с повышенной скоростью, чтобы получить доступ к еще более быстрому ускорению!
+speedster_ms_tut_a|Скользите, чтобы пройти под существом, не оглушая себя!
+speedster_ms_tut_b|Скользите бесконечно, когда вы достигаете третьей передачи и выше!
+speedster_ms_old_tut_b|Скользите бесконечно, когда вы достигаете дополнительного ускорения!
+Gilded|Позолоченный
+gilded_desc|Принесите пользу от <REPLACE>, используйте заимствованные силы.
+gilded_sub_a|пустота
+gilded_sub_b|таинственное место
+gilded_tut_a|Прыгайте, чтобы достичь более высоких мест. Супер сальто от стены работает очень высоко!
+gilded_tut_b|Нажмите бросить с пустыми руками в воздухе, чтобы топнуть! Урон от падения сводится на нет.
+gilded_tut_c|<GILDED> не может бросать камни или копья, чтобы защитить себя. Используйте силу, чтобы трансформировать объекты первыми!
+gilded_tut_rock|Зажмите бросить с камнем или бомбой в руке, чтобы превратить их в зажигательную бомбу!
+gilded_tut_spear|Зажмите бросить с копьём, чтобы превратить его в огненное копьё!
+Gimmicks|Уловки
+escoptions_gimmicks|Эти дополнительные уловки добавят функции, которые могут значительно изменить игровой процесс Эскорта (и веселым образом).
+escoptions_sillysfx_text|Включить глупые звуковые эффекты
+escoptions_sillysfx_desc|Заменяет несколько звуковых эффектов, которые, с одной стороны, убивают погружение, а с другой… ха-ха, забавные звуки.
+escoptions_noflipsfx_text|Отключить (уродливый кувырок) звуковой эффект
+escoptions_noflipsfx_desc|Отключает глупый звуковой эффект уродливого кувырка, если он становится слишком раздражающим.
+escoptions_elevator_text|Включить лифт
+escoptions_elevator_desc|При включении позволяет Эскорту касаться звёзд всякий раз, когда он скатываются с живого существа.
+escoptions_propdk_text|Правильная анимация удара с броском
+escoptions_propdk_desc|Во время ударов с бросками заставьте Эскорта поворачиваться в воздухе, чтобы удары выглядели как дропы.
+escoptions_deflslide_text|Сверхудлинённый слайд <DEFLECTOR>
+escoptions_deflslide_desc|Увеличивает время скольжения <DEFLECTOR>.
+escoptions_poletech_text|Технология столба.
+escoptions_poletech_desc|Потому что кто-то просил. Не совсем <REPLACE>, но что-то в этом роде ;). Всегда включен для <DEFAULT> Эскорта.
+escoptions_oldspeed_text|Старая механика <SPEEDSTER>
+escoptions_oldspeed_desc|Возвращает механику <SPEEDSTER> Эскорта к состоянию до обновления.
+Hmm? What's this?|Хмм? Что это?
+Accessibility|Специальные возможности
+escoptions_accessibility|Измените способ отображения некоторых визуальных эффектов, чтобы было легче понять, что происходит.
+escoptions_hypeindicator_text|Более сильный индикатор батл-хайпа.
+escoptions_hypeindicator_desc|Добавляет визуальный эффект, чтобы более чётко показать, находится ли Эскорт в боевом состоянии или нет.
+escoptions_deflaltvfx_text|Различные усиленные визуальные эффекты для сборки <DEFLECTOR>
+escoptions_deflaltvfx_desc|Изменяет усиленный визуальный эффект для <DEFLECTOR> Эскорта с искр на пульсирующий круг.
+escoptions_devlog_text|Ведение журнала разработчиков
+escoptions_devlog_desc|Контролирует, что разрешено отправлять в журналы. -1 отключает все журналы разработки Escort.
+escoptions_hudshow_text|Видимость HUD Эскорта
+escoptions_hudshow_desc|Измените способ и время отображения HUD.
+escoptions_hudshow_opt_hide|Скрыть
+escoptions_hudshow_opt_map|Показать с картой
+escoptions_hudshow_opt_relevant|Показать, когда актуально
+escoptions_hudshow_opt_always|Всегда показывать
+escoptions_hudloc_text|Размещение HUD Эскорта
+escoptions_hudloc_desc|Изменить расположение HUD (применяется только к HUD по умолчанию)
+escoptions_hudloc_opt_botl|Внизу слева
+escoptions_hudloc_opt_botc|Снизу в центре
+escoptions_hudloc_opt_left|Слева стеком
+escoptions_hudtype_text|Стиль HUD Эскорта
+escoptions_hudtype_desc|Изменить внешний вид HUD
+escoptions_hudtype_opt_ring|Кольца
+escoptions_hudtype_opt_bar|Показатели
+escoptions_insult_a|Ты не моя мама.
+escoptions_insult_b|От#@бись.
+escoptions_insult_c|Ну ты и рак.
+escoptions_insult_d|Мне все равно.
+escoptions_insult_e|Завали е$&ло.
+escoptions_sectret_spuphaiku|     ...хотя и не намеренно... <LINE> ...котёнок сбегает из-под стражи... <LINE> ...осторожнее там, да?...   
+escoptions_sectret_gilded|Этот код должен был раньше разблокировать сборку <GILDED> для предварительного просмотра,<LINE>но, поскольку сборка опубликована, этот код больше не служит этой цели...<LINE><LINE>Теперь этот код отправляет <GILDED> в <REPLACE>!<LINE>Наслаждайтесь!
+escoptions_sectret_subgild|особое место
+escoptions_sectret_invincible|Непобедимый... но не совсем. Вы просто не получаете урон, лол.
+... what now?|.. что теперь?
+OUT!|СНАРУЖИ!
+Has Suns decided to insult me with yet another messenger?|Солнц решил оскорбить меня очередным гонцом?
+... a rat.|... крыса.
+... a vermin.|... вредитель.
+... a thing.|... вещь.
+... nothing interesting.|... ничего интересного.
+... a disease.|... болезнь.
+... a failure.|... провал.
+... a mouse.|... мышь.
+Just my luck.|Просто моя удача.
+I don't have time to deal with this right now.|У меня нет времени заниматься этим прямо сейчас.
+Get out.|Убирайся.
+Get out of my chamber.|Убирайся из моей камеры.
+Fucking.|Нахуй.
+Hello little beast. It is nice to see you again.|Здравствуй, зверюшка. Приятно видеть тебя снова.
+Thank you for visiting me. I would not mind some company, but you cannot stay here. I do not want you to be caught in the collapse of my structure.|Спасибо, что посетили меня. Я бы не возражала против компании, но ты не можешь оставаться здесь. Я не хочу, чтобы ты попал в ловушку краха моей структуры.
+It is nice to see you again, but I'm afraid I have nothing for you.|Приятно снова тебя видеть, но, боюсь, у меня для тебя ничего нет.
+I'm so sorry little creature! I never meant to hurt you!|Мне так жаль маленькое существо! Я никогда не хотела причинить тебе боль!
+My structure is on the verge of collapsing. This is all I can offer...|Моя структура находится на грани разрушения. Это все, что я могу предложить...
+Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.|Разве это не смешно? У последнего существа, вошедшего в мою комнату, тоже были экстремальные приспособления.
+Though yours seem vastly different... What are you?|Хотя твои кажутся совсем другими... Кто ты?
+I could look up the records of your body's blueprints, but it would be dangerous for you to stay here for the process.|Я могла бы просмотреть записи чертежей твоего тела, но для тебя было бы опасно оставаться здесь ради процесса.
+My n...|Моё с...
+My neighb... b b b|Мой сосе... е е е
+My neighbor, Five Pebbles, has not stopped his output. If the messenger made it safely to the communications array, the local group would know.|Мой сосед, Пять Галек, не прекратил свою добычу. Если гонец благополучно доберётся до массива связи, локальная группа узнает.
+Were you sent by the local group?|Тебя прислала локальная группа?
+Who sent you?|Кто тебя послал?
+I should not keep you here any longer.|Я не должена больше задерживать вас здесь.
+I cannot offer you hospitality either, poor thing. Run along now, before my structure collapses.|Я тоже не могу предложить тебе гостеприимство, бедняжка. Беги, пока моя конструкция не рухнула.
+My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.|Мой сосед, Пять Галек, не прекратил свою добычу. Я не знаю, добрался ли гонец до него или он решил проигнорировать сообщение.
+There is not much I can do, and I urge you to move on, before my structure fails.|Я мало что могу сделать, и я призываю тебя двигаться дальше, пока моя структура не дала сбой.
+I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.|Я бы не возражала против компании, однако я призываю тебя двигаться дальше. Я не хочу, чтобы ты попал в ловушку краха моей структуры.
