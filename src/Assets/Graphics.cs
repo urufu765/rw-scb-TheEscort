@@ -59,7 +59,7 @@ namespace TheEscort
                 if (e.Gilded) Esclass_GD_InitiateSprites(self, s, rCam, ref e);
 
                 // When builds have custom sprites, do an if condition and add accordingly
-                for (int i = e.mainSpriteIndex; i < s.sprites.Length; i++)
+                for (int i = e.mainSpriteIndex; i < e.mainSpriteIndex + e.mainSprites; i++)
                 {
                     if (s.sprites[e.mainSpriteIndex] == null)
                     {
@@ -98,7 +98,7 @@ namespace TheEscort
                 {
                     return;
                 }
-                if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
+                if (e.mainSpriteIndex + e.mainSprites == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     Ebug(self.player, "Oh dear. Null sprites!!", 0);
                     return;
@@ -153,7 +153,7 @@ namespace TheEscort
                 {
                     e.secretRGB = true;
                 }
-                for (int i = e.mainSpriteIndex; i < s.sprites.Length; i++)
+                for (int i = e.mainSpriteIndex; i < e.mainSpriteIndex + e.mainSprites; i++)
                 {
                     s.sprites[i].color = e.Escat_runit_thru_RGB(c);
                 }
@@ -199,7 +199,7 @@ namespace TheEscort
                 {
                     return;
                 }
-                if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
+                if (e.mainSpriteIndex + e.mainSprites == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     Ebug(self.player, "Oh shoot. Where sprites?", 0);
                     return;
