@@ -238,6 +238,7 @@ namespace TheEscort
                 if (e.consoleTick == 0)
                 {
                     Ebug(self, "Clocked.");
+                    #if false
                     if (e.Gilded)
                     {
                         Ebug(self, "Power: " + e.GildPower);
@@ -246,7 +247,6 @@ namespace TheEscort
                         Ebug(self, "Float: " + e.GildLevitateLimit);
                         Ebug(self, "WTThr: " + e.GildWantToThrow);
                     }
-                    #if false
                     Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
                     Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
                     Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");

@@ -420,7 +420,7 @@ namespace TheEscort
                 this.hypeableText[0], this.hypeableText[1], this.hypeableText[2], this.hypeableText[3], this.hypeableText[4], this.hypeableText[5], this.hypeableText[6],
                 //new OpLabel(440f + xp - 7, yo - (yp * 7), swapper("0=Always on<LINE>1=50% tiredness<LINE>2=66% tiredness<LINE>3=75% tiredness<LINE>4=80% tiredness<LINE>5=87% tiredness<LINE>6=92% tiredness")),
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, Translate("Long Wall Jump")){
+                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, Translate("escoptions_longwall_text")){
                     color = tempColor
                 },
                 new OpCheckBox(this.cfgLongWallJump, new Vector2(xo + (xp * 0), yo - (yp * 8))){
@@ -821,7 +821,7 @@ namespace TheEscort
                     description = OptionInterface.Translate("escoptions_devlog_desc") + SetDefault(cfgLogImportance.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudshow_text") + Translate("[BETA]")),
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
                 new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudShowOptions){
                     description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
                 }

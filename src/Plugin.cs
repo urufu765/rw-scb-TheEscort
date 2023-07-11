@@ -259,6 +259,8 @@ namespace TheEscort
 
             On.TubeWorm.Update += Socks_Sticky_Immune;
             //ReJollyCoop.Hooker();
+
+            //On.MoreSlugcats.HRGuardManager.Update += Esclass_GD_KillGuardianWithOneHit;
         }
 
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)

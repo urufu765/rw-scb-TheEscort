@@ -771,9 +771,41 @@ namespace TheEscort
             }
             else 
             {
-                escort.GildPower += (escort.GildPowerMax - escort.GildPower) / 2;
+                escort.GildPower += Math.Min(800, (escort.GildPowerMax - escort.GildPower) / 2);
             }
         }
+
+
+        private void Esclass_GD_KillGuardianWithOneHit(On.MoreSlugcats.HRGuardManager.orig_Update orig, MoreSlugcats.HRGuardManager self, bool eu)
+        {
+            try
+            {
+                if (self.myGuard is not null && self.myPlayer is not null && self.room?.game?.cameras[0]?.followAbstractCreature?.Room is not null && self.room.game.cameras[0].followAbstractCreature.Room == self.room.abstractRoom)
+                {
+                    if (eCon.TryGetValue(self.myPlayer, out Escort escort) && escort.Gilded)
+                    {
+                        Ebug(self.myPlayer, "Found Gilded!");
+                        if (self.myGuard.state.dead && self.myGuard.realizedCreature.killTag == self.myPlayer.abstractCreature && self.hitsToKill > 1)
+                        {
+                            Ebug(self.myPlayer, "Set killrequirement to 1");
+                            self.hitsToKill = 1;
+                        }
+                    }
+                }
+                orig(self, eu);
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null error when killing guardian with one hit");
+                orig(self, eu);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when killing guardian with one hit");
+                orig(self, eu);
+            }
+        }
+
     }
 
 }

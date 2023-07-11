@@ -183,6 +183,26 @@ namespace TheEscort
                 }
 
                 Ebug(self, "Die Triggered!");
+                // Acid water survival
+                if (self.Submersion > 0.2f && self.room?.waterObject is not null && self.room.waterObject.WaterIsLethal && self.aerobicLevel < 1f)
+                {
+                    Ebug(self, "Escort survives swimming in acid!");
+                    self.aerobicLevel += e.acidSwim;
+                    if (e.Gilded) Esclass_GD_Die(ref e);
+                    self.dead = false;
+                    if (self.lavaContactCount > 0)
+                    {
+                        self.lavaContactCount = self.aerobicLevel switch 
+                        {
+                            > 0.9f => 3,
+                            > 0.6f => 2,
+                            > 0.3f => 1,
+                            _ => 0
+                        };
+                    }
+                    return;
+                }
+
                 if (!e.ParrySuccess && e.iFrames == 0)
                 {
                     orig(self);
@@ -205,14 +225,6 @@ namespace TheEscort
                     Ebug(self, "Player attempted to cheat death with the ParrySuccess card. Failed.");
                 }
 
-                // Acid water survival
-                if (self.Submersion > 0.2f && self.room?.waterObject is not null && self.room.waterObject.WaterIsLethal && self.aerobicLevel < 1f)
-                {
-                    Ebug(self, "Escort survives swimming in acid!");
-                    self.aerobicLevel += e.acidSwim;
-                    if (e.Gilded) Esclass_GD_Die(ref e);
-                    return;
-                }
                 orig(self);
             }
             catch (Exception err)
