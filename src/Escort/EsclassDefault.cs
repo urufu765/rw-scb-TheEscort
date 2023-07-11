@@ -237,7 +237,7 @@ namespace TheEscort
             if (e.secretRGB) {
                 e.Escat_runit_thru_RGB(
                     e.hypeColor, 
-                    hypeRequirement < self.aerobicLevel ? 5f: Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, hypeRequirement, self.aerobicLevel))
+                    hypeRequirement < self.aerobicLevel ? 8f: Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, hypeRequirement, self.aerobicLevel))
                 );
             }
 

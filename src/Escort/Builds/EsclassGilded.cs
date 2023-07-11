@@ -58,7 +58,7 @@ namespace TheEscort
             {
                 e.GildRequiredPower = 0;
                 e.GildPowerUsage = 0;
-                if (!self.Stunned) e.GildPower++;
+                if (!self.Stunned) e.GildPower += e.GildPower < 2000? 2 : 1;
                 e.GildStartPower = e.GildPower;
             }
 
@@ -146,6 +146,7 @@ namespace TheEscort
                 !self.input[0].jmp || 
                 self.animation == Player.AnimationIndex.ClimbOnBeam || 
                 self.animation == Player.AnimationIndex.HangFromBeam || 
+                self.bodyMode == Player.BodyModeIndex.CorridorClimb ||
                 e.GildLevitateLimit == 0 || 
                 self.Stunned || 
                 self.bodyChunks[1].contactPoint.y == -1 ||
@@ -164,7 +165,8 @@ namespace TheEscort
                 !(
                     self.animation == Player.AnimationIndex.ClimbOnBeam || 
                     self.animation == Player.AnimationIndex.HangFromBeam || 
-                    self.bodyMode == Player.BodyModeIndex.ZeroG
+                    self.bodyMode == Player.BodyModeIndex.ZeroG ||
+                    self.bodyMode == Player.BodyModeIndex.CorridorClimb
                 ) && 
                 self.wantToJump > 0 && 
                 self.canJump == 0 && 
@@ -229,7 +231,8 @@ namespace TheEscort
                 {
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
-                    e.GildCrushTime = 40;
+                    e.GildCrushTime = 30;
+                    self.room?.PlaySound(Escort_SFX_Gild_Stomp, e.SFXChunk);
                 }
             }
 

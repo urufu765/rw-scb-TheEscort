@@ -108,6 +108,7 @@ namespace TheEscort
         public static SoundID Escort_SFX_Uhoh_Big;
         public static SoundID Esconfig_SFX_Sectret;
         public static SoundID Escort_SFX_Placeholder;
+        public static SoundID Escort_SFX_Gild_Stomp;
         //public static SoundID Escort_SFX_Spawn;
 
         //public DynamicSoundLoop escortRollin;
@@ -321,6 +322,7 @@ namespace TheEscort
             Escort_SFX_Uhoh_Big = new SoundID("Escort_Rotunded", true);
             Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
             Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
+            Escort_SFX_Gild_Stomp = new SoundID("Escort_Gild_Stomp", true);
             FAtlas aB, aH, hM;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
