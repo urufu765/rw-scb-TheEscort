@@ -212,9 +212,9 @@ namespace TheEscort
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
 
-            Plugin.ins.L().Christmas(this.cfgSectret.Value);
-            Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
-            Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
+            // Plugin.ins.L().Christmas(this.cfgSectret.Value);
+            // Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
+            // Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
         }
 
         private static string Swapper(string text, string with = "")
@@ -912,7 +912,6 @@ namespace TheEscort
 
         private void ResultsBaby(string value = "")
         {
-            if (rainworld.processManager.currentMainLoop is not Menu.ModdingMenu) return;
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769;
             string[] insult = new string[1];
@@ -977,7 +976,7 @@ namespace TheEscort
                 Plugin.ins.L().Holiday();
                 try
                 {
-                    if (Plugin.Esconfig_SFX_Sectret != null)
+                    if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && Plugin.Esconfig_SFX_Sectret != null)
                     {
                         ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
                     }
@@ -993,7 +992,7 @@ namespace TheEscort
 
         private void MakeSomeNoiseEsconfig()
         {
-            if (SoundID.MENU_Next_Slugcat != null){
+            if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Next_Slugcat != null){
                 ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
             }
         }
