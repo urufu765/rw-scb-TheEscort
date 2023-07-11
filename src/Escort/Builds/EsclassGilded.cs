@@ -111,6 +111,16 @@ namespace TheEscort
             {
                 self.Die();
                 self.room?.AddObject(new CreatureSpasmer(self, true, 120));
+                self.room?.PlaySound(SoundID.Firecracker_Bang, e.SFXChunk, false, 1f, 0.75f + UnityEngine.Random.value);
+                self.room?.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, e.SFXChunk, false, 0.8f, 0.3f + UnityEngine.Random.value * 0.5f);
+                for (int i = 0; i < 15; i++)
+                {
+                    self.room?.AddObject(new Spark(self.mainBodyChunk.pos, Custom.RNV() * UnityEngine.Random.value * 40f, e.hypeColor, null, 30, 120));
+                    if (i < 10)
+                    {
+                        self.room?.AddObject(new WaterDrip(self.mainBodyChunk.pos, Custom.RNV() * UnityEngine.Random.value * 40f, false));
+                    }
+                }
                 e.GildLockRecharge = true;
             }
 
@@ -144,6 +154,7 @@ namespace TheEscort
                 ) && e.GildFloatState)
             {
                 e.Escat_float_state(self, false);
+                self.standing = self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump;
                 self.wantToJump = 0;
                 e.GildReservePower = 0;
             }

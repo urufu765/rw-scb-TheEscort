@@ -39,9 +39,9 @@ namespace TheEscort
         public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
-        public const int GildUseCraftFirebomb = 8;
+        public const int GildUseCraftFirebomb = 10;
         public const int GildCheckCraftFirespear = 2000;
-        public const int GildUseCraftFirespear = 10;
+        public const int GildUseCraftFirespear = 15;
         public const int GildCheckCraftSingularity = 400;
         public const int GildUseCraftSingularity = 10;
         

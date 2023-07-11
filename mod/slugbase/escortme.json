@@ -29,7 +29,8 @@
 			"corpses": 0.75,
 			"plants": 0.75,
 			"overrides": {
-				"Fly": 0.5
+				"Fly": 0.5,
+				"FireEgg": 1
 			}
 		},
 		"karma": 2,
@@ -107,9 +108,9 @@
 		"theescort/speedster/custom_shader": "Basic",
 		"theescort/speedster/pole_rise": [0.8, 0.65],
 
-		"theescort/gilded/float_speed": 1.5,
+		"theescort/gilded/float_speed": 2,
 		"theescort/gilded/levitation": 1.40,
-		"theescort/gilded/jetplane": 0.98,
+		"theescort/gilded/jetplane": 1,
 		"theescort/gilded/pipradius": 12,
 		"theescort/gilded/pipposition": [0, 0]
 		}

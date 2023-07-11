@@ -301,7 +301,7 @@ namespace TheEscort
                             for (int a = e.mainSpriteIndex; a < s.sprites.Length; a++)
                             {
                                 s.sprites[a].alpha = alphya;
-                                s.sprites[a].color = e.Escat_runit_thru_RGB(e.hypeColor, hypeRequirement < self.player.aerobicLevel ? 5f * t : Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel))) * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans)) * t;
+                                s.sprites[a].color = e.hypeColor * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
                             s.sprites[e.mainSpriteIndex + 1].scaleX = e.hipScaleX;
                             s.sprites[e.mainSpriteIndex + 1].scaleY = e.hipScaleY;

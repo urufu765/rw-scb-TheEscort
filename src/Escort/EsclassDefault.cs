@@ -232,6 +232,15 @@ namespace TheEscort
             if (e.Gilded) Esclass_GD_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
+
+            // Secret color tick
+            if (e.secretRGB) {
+                e.Escat_runit_thru_RGB(
+                    e.hypeColor, 
+                    hypeRequirement < self.aerobicLevel ? 5f: Mathf.Lerp(1f, 2f, Mathf.InverseLerp(0f, hypeRequirement, self.aerobicLevel))
+                );
+            }
+
             // Just for seeing what a variable does.
             try
             {
