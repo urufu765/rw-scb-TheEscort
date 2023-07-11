@@ -62,6 +62,7 @@ namespace TheEscort
             GildPowerMax = self.Malnourished? 4000: 6400;
             GildPowerPipsMax = self.Malnourished? 10: 16;
             GildPowerPipsIndex = -1;
+            if (Plugin.ins.config.cfgSectretBuild.Value) acidSwim = 0.2f;
         }
 
         public void Escat_float_state(Player self, bool status = true){

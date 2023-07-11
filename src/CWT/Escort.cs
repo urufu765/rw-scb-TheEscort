@@ -64,6 +64,7 @@ namespace TheEscort
         public WorldCoordinate lizzieDestination;
         public List<Trackrr<float>> floatTrackers;
         public List<Trackrr<int>> intTrackers;
+        public float acidSwim;
 
         // Build stuff
         public bool Brawler;
@@ -162,6 +163,7 @@ namespace TheEscort
             this.floatTrackers = new List<Trackrr<float>>();
             this.intTrackers = new List<Trackrr<int>>();
             this.isDefault = false;
+            this.acidSwim = 0.4f;
 
             // Build specific
             this.Brawler = false;

@@ -746,5 +746,21 @@ namespace TheEscort
 
         }
 
+
+        /// <summary>
+        /// Let Gilded survive the acid pools, based on the hype meter. Recharges a bit of gilded power.
+        /// </summary>
+        private static void Esclass_GD_Die(ref Escort escort)
+        {
+            if (escort.GildLockRecharge && !escort.GildFloatState) 
+            {
+                escort.GildReservePower = escort.GildRequiredPower;
+            }
+            else 
+            {
+                escort.GildPower += (escort.GildPowerMax - escort.GildPower) / 2;
+            }
+        }
     }
+
 }
