@@ -39,6 +39,11 @@ namespace TheEscort
                 e.GildCrushCooldown--;
             }
 
+            if (e.GildCrushTime > 0)
+            {
+                e.GildCrushTime--;
+            }
+
             if (e.GildLevitateCooldown > 0)
             {
                 e.GildLevitateCooldown--;
@@ -213,6 +218,7 @@ namespace TheEscort
                 {
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
+                    e.GildCrushTime = 40;
                 }
             }
 
@@ -234,6 +240,13 @@ namespace TheEscort
                     self.bodyChunks[1].vel.y /= 10;
                     self.impactTreshhold = 1f;
                     e.GildCrush = false;
+                }
+                else if (e.GildCrushTime > 0)
+                {
+                    self.bodyChunks[0].vel.y = levitation;
+                    self.bodyChunks[1].vel.y = levitation;
+                    self.bodyChunks[0].vel.x /= 2;
+                    self.bodyChunks[1].vel.x /= 2;
                 }
                 else  
                 {  // Flight downwards
@@ -489,7 +502,7 @@ namespace TheEscort
         /// </summary>
         private void Esclass_GD_Collision(Player self, Creature creature, ref Escort e)
         {
-            if (e.GildCrush){
+            if (e.GildCrush && e.GildCrushTime == 0){
                 creature.SetKillTag(self.abstractCreature);
                 creature.LoseAllGrasps();
                 float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 50, Mathf.Abs(self.bodyChunks[0].vel.y)));
