@@ -677,6 +677,7 @@ namespace TheEscort
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
+                        if (config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
                         self.slugcatStats.bodyWeightFac = 1f;
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.runspeedFac = 0.9f;
@@ -705,6 +706,7 @@ namespace TheEscort
                         break;
                     case -4:  // Railgunner build
                         e.Railgunner = true;
+                        e.acidSwim = 0.3f;
                         self.slugcatStats.lungsFac = 1.2f;
                         self.slugcatStats.throwingSkill = 2;
                         self.slugcatStats.loudnessFac += 2f;
