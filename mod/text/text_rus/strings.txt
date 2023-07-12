@@ -124,19 +124,19 @@ escoptions_devlog_text|Ведение журнала разработчиков
 escoptions_devlog_desc|Контролирует, что разрешено отправлять в журналы. -1 отключает все журналы разработки Escort.
 escoptions_hudshow_text|Видимость HUD Эскорта
 escoptions_hudshow_desc|Измените способ и время отображения HUD.
-escoptions_hudshow_opt_hide|Скрыть
-escoptions_hudshow_opt_map|Показать с картой
-escoptions_hudshow_opt_relevant|Показать, когда актуально
-escoptions_hudshow_opt_always|Всегда показывать
+Hide|Скрыть
+Show With Map|Показать с картой
+Show When Relevant|Показать, когда актуально
+Always Show|Всегда показывать
 escoptions_hudloc_text|Размещение HUD Эскорта
 escoptions_hudloc_desc|Изменить расположение HUD (применяется только к HUD по умолчанию)
-escoptions_hudloc_opt_botl|Внизу слева
-escoptions_hudloc_opt_botc|Снизу в центре
-escoptions_hudloc_opt_left|Слева стеком
+Bottom Left|Внизу слева
+Bottom Center|Снизу в центре
+Left Stacked|Слева стеком
 escoptions_hudtype_text|Стиль HUD Эскорта
 escoptions_hudtype_desc|Изменить внешний вид HUD
-escoptions_hudtype_opt_ring|Кольца
-escoptions_hudtype_opt_bar|Показатели
+Rings|Кольца
+Bars|Показатели
 escoptions_insult_a|Ты не моя мама.
 escoptions_insult_b|От#@бись.
 escoptions_insult_c|Ну ты и рак.

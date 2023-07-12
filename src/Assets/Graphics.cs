@@ -365,7 +365,7 @@ namespace TheEscort
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
-                e.Escat_Update_Ring_Trackers(t);
+                e.Escat_Draw_Ring_Trackers(t);
             }
             catch (Exception err)
             {
@@ -373,6 +373,31 @@ namespace TheEscort
                 Ebug(self.player, err, "Something happened while trying to draw sprites!");
             }
         }
+
+        private void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
+        {
+            orig(self);
+            try
+            {
+                if (self is not null && self.player is not null && eCon.TryGetValue(self.player, out Escort e))
+                {
+                    e.Escat_Update_Ring_Trackers();
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null reference exception when updating graphics!");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Ebug(ane, "Argument is null exception when trying to get class from CWT when updating graphics!");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic exceptoin when updating graphics!");
+            }
+        }
+
 
         private Color Escort_Colorz(On.PlayerGraphics.orig_DefaultSlugcatColor orig, SlugcatStats.Name i)
         {

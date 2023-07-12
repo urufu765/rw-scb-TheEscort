@@ -8,8 +8,6 @@ namespace TheEscort
 {
     public partial class Escort
     {
-        //public readonly SlugcatStats.Name name;
-        //public String EsbuildName;
         public string Eskie = "Escort";
         public bool isDefault;
         public int DropKickCD;
@@ -65,6 +63,7 @@ namespace TheEscort
         public List<Trackrr<float>> floatTrackers;
         public List<Trackrr<int>> intTrackers;
         public float acidSwim;
+        public int acidRepetitionGuard;
 
         // Build stuff
         public bool Brawler;
@@ -545,7 +544,7 @@ namespace TheEscort
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
         }
 
-        public void Escat_Update_Ring_Trackers(float timeStacker)
+        public void Escat_Draw_Ring_Trackers(float timeStacker)
         {
             foreach(Trackrr<float> t in this.floatTrackers)
             {
@@ -557,5 +556,17 @@ namespace TheEscort
             }
         }
 
+
+        public void Escat_Update_Ring_Trackers()
+        {
+            foreach(Trackrr<float> t in this.floatTrackers)
+            {
+                t.UpdateTracker();
+            }
+            foreach(Trackrr<int> t2 in this.intTrackers)
+            {
+                t2.UpdateTracker();
+            }
+        }
     }
 }

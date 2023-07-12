@@ -171,6 +171,7 @@ namespace TheEscort
             On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
             On.PlayerGraphics.AddToContainer += Escort_AddGFXContainer;
             On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
+            On.PlayerGraphics.Update += Escort_GFXUpdate;
             On.PlayerGraphics.DefaultSlugcatColor += Escort_Colorz;
 
             // Jolly UI

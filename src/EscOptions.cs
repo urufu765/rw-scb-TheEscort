@@ -804,25 +804,25 @@ namespace TheEscort
                     description = Swapper(Translate("escoptions_deflaltvfx_desc")) + SetDefault(cfgNoticeEmpower.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Keep Track of All Methods (for modders)"){
-                    color = tempColor * 0.75f
-                },
-                new OpCheckBox(this.cfgDeveloperMode, new Vector2(xo + (xp * 0), yo - (yp * 4))){
-                    colorEdge = tempColor * 0.75f,
-                    description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)"),
-                    greyedOut = true
-                },
+                // new OpLabel(xo + (xp * 1), yo - (yp * 4) + tp/2, "Keep Track of All Methods (for modders)"){
+                //     color = tempColor * 0.75f
+                // },
+                // new OpCheckBox(this.cfgDeveloperMode, new Vector2(xo + (xp * 0), yo - (yp * 4))){
+                //     colorEdge = tempColor * 0.75f,
+                //     description = OptionInterface.Translate("For other modders: Also keep track of frequently updated methods (May cause a bit of lag). (Default=false)"),
+                //     greyedOut = true
+                // },
 
-                new OpLabel(xo + (xp * 8) + 7f, yo - (yp * 5) + tp, Translate("escoptions_devlog_text")),
-                new OpSliderTick(this.cfgLogImportance, new Vector2(xo + (xp * 0) + 7f, yo - (yp * 5)), 300 - (int)xp - 7)
+                new OpLabel(xo + (xp * 8) + 7f, yo - (yp * 4) + tp, Translate("escoptions_devlog_text")),
+                new OpSliderTick(this.cfgLogImportance, new Vector2(xo + (xp * 0) + 7f, yo - (yp * 4)), 300 - (int)xp - 7)
                 {
                     min = -1,
                     max = 4,
                     description = OptionInterface.Translate("escoptions_devlog_desc") + SetDefault(cfgLogImportance.defaultValue),
                 },
 
-                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
-                new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudShowOptions){
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 5), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
+                new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 160, hudShowOptions){
                     description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
                 }
             };

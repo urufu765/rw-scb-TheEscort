@@ -188,6 +188,7 @@ namespace TheEscort
                 {
                     Ebug(self, "Escort survives swimming in acid!");
                     self.dead = false;
+                    if (e.Gilded) Esclass_GD_Die(ref e);
                     if (self.lavaContactCount > 0)
                     {
                         self.lavaContactCount = self.aerobicLevel switch 
@@ -198,8 +199,11 @@ namespace TheEscort
                             _ => 0
                         };
                     }
-                    self.aerobicLevel += e.acidSwim;
-                    if (e.Gilded) Esclass_GD_Die(ref e);
+                    if (e.acidRepetitionGuard == 0) 
+                    {
+                        self.aerobicLevel += e.acidSwim;
+                        e.acidRepetitionGuard += 5;
+                    }
                     return;
                 }
 

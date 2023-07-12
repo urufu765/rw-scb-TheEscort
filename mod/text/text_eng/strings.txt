@@ -124,19 +124,19 @@ escoptions_devlog_text|Developer Logging
 escoptions_devlog_desc|Controls what are allowed to be sent to the logs. -1 disables all Escort devlogs.
 escoptions_hudshow_text|Escort HUD Visibility
 escoptions_hudshow_desc|Change how and when the HUD is shown.
-escoptions_hudshow_opt_hide|Hide
-escoptions_hudshow_opt_map|Show With Map
-escoptions_hudshow_opt_relevant|Show When Relevant
-escoptions_hudshow_opt_always|Always Show
+Hide|Hide
+Show With Map|Show With Map
+Show When Relevant|Show When Relevant
+Always Show|Always Show
 escoptions_hudloc_text|Escort HUD Placement
 escoptions_hudloc_desc|Change where the HUD sits (Only applies to default HUD)
-escoptions_hudloc_opt_botl|Bottom Left
-escoptions_hudloc_opt_botc|Bottom Center
-escoptions_hudloc_opt_left|Left Stacked
+Bottom Left|Bottom Left
+Bottom Center|Bottom Center
+Left Stacked|Left Stacked
 escoptions_hudtype_text|Escort HUD Style
 escoptions_hudtype_desc|Change how the HUD looks
-escoptions_hudtype_opt_ring|Rings
-escoptions_hudtype_opt_bar|Bars
+Rings|Rings
+Bars|Bars
 escoptions_insult_a|Ur not my mum.
 escoptions_insult_b|F#@k off.
 escoptions_insult_c|Skill issue.

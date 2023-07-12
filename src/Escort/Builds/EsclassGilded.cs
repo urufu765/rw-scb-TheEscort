@@ -155,7 +155,7 @@ namespace TheEscort
                 ) && e.GildFloatState)
             {
                 e.Escat_float_state(self, false);
-                self.standing = self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump;
+                self.standing = !(self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump);
                 self.wantToJump = 0;
                 e.GildReservePower = 0;
             }
@@ -265,7 +265,7 @@ namespace TheEscort
                 else  
                 {  // Flight downwards
                     self.impactTreshhold = 200f;
-                    self.bodyChunks[1].vel.y -= 3f;
+                    self.bodyChunks[1].vel.y -= 4f;
                 }
             }
             #endregion
@@ -779,6 +779,7 @@ namespace TheEscort
         /// </summary>
         private static void Esclass_GD_Die(ref Escort escort)
         {
+            if (escort.acidRepetitionGuard > 0) return;
             if (escort.GildLockRecharge && !escort.GildFloatState) 
             {
                 escort.GildReservePower = escort.GildRequiredPower;
@@ -798,7 +799,7 @@ namespace TheEscort
                 {
                     if (eCon.TryGetValue(self.myPlayer, out Escort escort) && escort.Gilded)
                     {
-                        Ebug(self.myPlayer, "Found Gilded!");
+                        Ebug(self.myPlayer, "Found Gilded!", 4);
                         if (self.myGuard.state.dead && self.myGuard.realizedCreature.killTag == self.myPlayer.abstractCreature && self.hitsToKill > 1)
                         {
                             Ebug(self.myPlayer, "Set killrequirement to 1");

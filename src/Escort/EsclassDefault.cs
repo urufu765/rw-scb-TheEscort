@@ -43,7 +43,7 @@ namespace TheEscort
 
         private void Esclass_Tick(Player self)
         {
-            if (!eCon.TryGetValue(self, out Escort e) || !CR.TryGet(self, out int limiter))
+            if (!eCon.TryGetValue(self, out Escort e))
             {
                 return;
             }
@@ -55,17 +55,6 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
-
-
-            // Console ticker
-            if (e.consoleTick > limiter)
-            {
-                e.consoleTick = 0;
-            }
-            else
-            {
-                e.consoleTick++;
-            }
 
             // Dropkick damage cooldown
             if (e.DropKickCD > 0)
@@ -88,7 +77,6 @@ namespace TheEscort
             {
                 e.parryAirLean = 20;
             }
-
 
             // Headbutt cooldown
             if (e.CometFrames > 0)
@@ -158,6 +146,7 @@ namespace TheEscort
                 }
             }
 
+            // Vengeful lizard location updater clock
             if (e.lizzieVengenceClock > 0)
             {
                 e.lizzieVengenceClock--;
@@ -166,7 +155,6 @@ namespace TheEscort
             {
                 e.lizzieVengenceClock = 400;
             }
-
             if (e.lizzieVengenceTick > 0)
             {
                 e.lizzieVengenceTick--;
@@ -174,6 +162,12 @@ namespace TheEscort
             else
             {
                 e.lizzieVengenceTick = 40;
+            }
+
+            // Escort touching acid cooldown
+            if (e.acidRepetitionGuard > 0)
+            {
+                e.acidRepetitionGuard--;
             }
         }
 
@@ -244,64 +238,76 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (e.consoleTick == 0)
-                {
-                    Ebug(self, "Clocked.");
-                    #if false
-                    if (e.Gilded)
+                if (false && CR.TryGet(self, out int limiter)){
+                    // Console ticker
+                    if (e.consoleTick > limiter)
                     {
-                        Ebug(self, "Power: " + e.GildPower);
-                        Ebug(self, "Resrv: " + e.GildReservePower);
-                        Ebug(self, "Requi: " + e.GildRequiredPower);
-                        Ebug(self, "Float: " + e.GildLevitateLimit);
-                        Ebug(self, "WTThr: " + e.GildWantToThrow);
+                        e.consoleTick = 0;
                     }
-                    Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
-                    Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
-                    Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
-                    Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
-                    Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
-                    Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
-                    Ebug(self, "How big?: " + self.TotalMass / e.originalMass);
-                    if (e.Brawler)
+                    else
                     {
-                        Ebug(self, "Shankmode: " + e.BrawShankMode);
+                        e.consoleTick++;
                     }
-                    if (e.Deflector)
+
+                    if (e.consoleTick == 0)
                     {
-                        Ebug(self, "Empowered: " + e.DeflAmpTimer);
+                        Ebug(self, "Clocked.");
+                        #if false
+                        if (e.Gilded)
+                        {
+                            Ebug(self, "Power: " + e.GildPower);
+                            Ebug(self, "Resrv: " + e.GildReservePower);
+                            Ebug(self, "Requi: " + e.GildRequiredPower);
+                            Ebug(self, "Float: " + e.GildLevitateLimit);
+                            Ebug(self, "WTThr: " + e.GildWantToThrow);
+                        }
+                        Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
+                        Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
+                        Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
+                        Ebug(self, "[Roll, Slide, Flip, Throw] Direction: [" + self.rollDirection + ", " + self.slideDirection + ", " + self.flipDirection + ", " + self.ThrowDirection + "]");
+                        Ebug(self, "Rotation [x,y]: [" + self.mainBodyChunk.Rotation.x + ", " + self.mainBodyChunk.Rotation.y + "]");
+                        Ebug(self, "Lizard Grab Counter: " + e.LizGrabCount);
+                        Ebug(self, "How big?: " + self.TotalMass / e.originalMass);
+                        if (e.Brawler)
+                        {
+                            Ebug(self, "Shankmode: " + e.BrawShankMode);
+                        }
+                        if (e.Deflector)
+                        {
+                            Ebug(self, "Empowered: " + e.DeflAmpTimer);
+                        }
+                        if (e.Escapist)
+                        {
+                            Ebug(self, "Ungrasp Left: " + e.EscUnGraspTime);
+                        }
+                        if (e.Railgunner)
+                        {
+                            Ebug(self, "  DoubleRock: " + e.RailDoubleRock);
+                            Ebug(self, " DoubleSpear: " + e.RailDoubleSpear);
+                            //Ebug(self, "  DoubleBomb: " + e.RailDoubleBomb);
+                            //Ebug(self, "DoubleFlower: " + e.RailDoubleFlower);
+                        }
+                        if (e.Speedster)
+                        {
+                            Ebug(self, "Speeding Tickets: " + e.SpeSpeedin);
+                            Ebug(self, "Speeding Tickets 2: " + e.SpeBuildup);
+                            Ebug(self, "Charge/Gear: " + e.SpeCharge + "/" + e.SpeGear);
+                            //Ebug(self, "Gravity: " + self.gravity);
+                            //Ebug(self, "Customgrav: " + self.customPlayerGravity);
+                            //Ebug(self, "FrictionAir: " + self.airFriction);
+                            //Ebug(self, "FrictionWar: " + self.waterFriction);
+                            //Ebug(self, "FrictionSur: " + self.surfaceFriction);
+                            //Ebug(self, "FrictionMush: " + self.mushroomEffect);
+                            //Ebug(self, "Timesinceincorr: " + self.timeSinceInCorridorMode);
+                            //Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
+                            //Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
+                        }
+                        #endif
                     }
-                    if (e.Escapist)
-                    {
-                        Ebug(self, "Ungrasp Left: " + e.EscUnGraspTime);
-                    }
-                    if (e.Railgunner)
-                    {
-                        Ebug(self, "  DoubleRock: " + e.RailDoubleRock);
-                        Ebug(self, " DoubleSpear: " + e.RailDoubleSpear);
-                        //Ebug(self, "  DoubleBomb: " + e.RailDoubleBomb);
-                        //Ebug(self, "DoubleFlower: " + e.RailDoubleFlower);
-                    }
-                    if (e.Speedster)
-                    {
-                        Ebug(self, "Speeding Tickets: " + e.SpeSpeedin);
-                        Ebug(self, "Speeding Tickets 2: " + e.SpeBuildup);
-                        Ebug(self, "Charge/Gear: " + e.SpeCharge + "/" + e.SpeGear);
-                        //Ebug(self, "Gravity: " + self.gravity);
-                        //Ebug(self, "Customgrav: " + self.customPlayerGravity);
-                        //Ebug(self, "FrictionAir: " + self.airFriction);
-                        //Ebug(self, "FrictionWar: " + self.waterFriction);
-                        //Ebug(self, "FrictionSur: " + self.surfaceFriction);
-                        //Ebug(self, "FrictionMush: " + self.mushroomEffect);
-                        //Ebug(self, "Timesinceincorr: " + self.timeSinceInCorridorMode);
-                        //Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
-                        //Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
-                    }
-                    #endif
+                    //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
+                    //Ebug(self, "Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
+                    //Ebug(self, "Normalized direction: " + self.bodyChunks[0].vel.normalized);
                 }
-                //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
-                //Ebug(self, "Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
-                //Ebug(self, "Normalized direction: " + self.bodyChunks[0].vel.normalized);
             }
             catch (Exception err)
             {
