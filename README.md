@@ -8,7 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
-  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. Fixed graphical inconsistencies regarding framerate. Added translation layer and russian translation. Escort can now survive touching acid. Removed an unused option. Fixed secret code going away whenever you restart the game.
+  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. Fixed graphical inconsistencies regarding framerate. Added translation layer and russian translation. Escort can now survive touching acid. Removed an unused option. Fixed secret code going away whenever you restart the game. (Fix Gilded not being able to craft in room transitions)(fix Gilded not having instant crafting when landing in acid)(Fix Gilded doing stomp on second spear toss)(add hud sprite)(fix Default Escort super wall flip tutorial (add savestate to it))(reduce dropkick damage and stunslide stun duration)
 
   * **(0.2.9.3)** Fixed Brawler damage
 

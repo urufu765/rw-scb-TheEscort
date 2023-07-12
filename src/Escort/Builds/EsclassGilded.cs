@@ -728,6 +728,7 @@ namespace TheEscort
                     for (int i = 0; i < escort.GildPowerPipsMax; i++)
                     {
                         // Visibility
+                        float preR = i > 0? division * (float)(i - 1) : 0;
                         float minR = division * (float)i;
                         float maxR = division * (float)(i + 1);
                         s.sprites[escort.GildPowerPipsIndex + i].scale = Mathf.InverseLerp(minR, maxR, escort.GildPower);
@@ -739,7 +740,7 @@ namespace TheEscort
                         };*/
 
                         // Color
-                        if (escort.GildRequiredPower != 0 && minR >= minReq)
+                        if (escort.GildRequiredPower != 0 && preR >= minReq)
                         {
                             s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
                         }
