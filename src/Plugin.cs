@@ -669,6 +669,22 @@ namespace TheEscort
                 };
                 */
                 int pal = config.cfgBuild[self.playerState.playerNumber].Value;
+
+                // Story expansion skips
+                if (self.slugcatStats?.name?.value is not null)
+                {
+                    pal = self.slugcatStats.name.value switch 
+                    {
+                        "EscortBriish" => -1,
+                        "EscortGamer" => -2,
+                        "EscortHax" => -3,
+                        "EscortRizzgayer" => -4,
+                        "EscortCheese" => -5,
+                        "EscortDrip" => -6,
+                        _ => pal
+                    };
+                }
+
                 //int maximumPips = self.slugcatStats.maxFood;
                 //int minimumPips = self.slugcatStats.foodToHibernate;
                 switch (pal)

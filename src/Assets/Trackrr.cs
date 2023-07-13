@@ -442,9 +442,9 @@ public static class ETrackrr
         public override void UpdateTracker()
         {
             base.UpdateTracker();
-            preLimit = Limit;
-            if (transitionLim > 0) transitionLim--;
-            transition += transitioner;
+            this.preLimit = this.Limit;
+            if (this.transitionLim > 0) this.transitionLim--;
+            this.transition += this.transitioner;
         }
 
         /// <summary>

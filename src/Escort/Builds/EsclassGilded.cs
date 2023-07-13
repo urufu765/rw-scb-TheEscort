@@ -24,6 +24,17 @@ namespace TheEscort
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
+            if (e.GildLockLean > 0)
+            {
+                e.GildLockLean--;
+                e.GildLockRecharge = true;
+            }
+            else
+            {
+                e.GildLockRecharge = false;
+            }
+
+
             if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
             {
                 e.GildLevitateLimit--;
@@ -85,7 +96,7 @@ namespace TheEscort
                     e.GildCancel = false;
                 }
             }
-            if (!self.dead) e.GildLockRecharge = false;
+            if (!self.dead) e.GildLockLean = 0;
 
             if (!self.input[0].thrw) e.GildAlsoPop = false;
 
@@ -121,7 +132,7 @@ namespace TheEscort
                         self.room?.AddObject(new WaterDrip(self.mainBodyChunk.pos, Custom.RNV() * UnityEngine.Random.value * 40f, false));
                     }
                 }
-                e.GildLockRecharge = true;
+                e.GildLockLean = 4;
             }
 
             // Check empty hand
@@ -191,7 +202,7 @@ namespace TheEscort
             // TODO: Allow simultaneous usage of power, e.g. float while making a spear.
             if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
             {
-                e.GildLockRecharge = true;
+                e.GildLockLean = 4;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
                 self.airFriction = 0.8f;
                 self.standing = false;
@@ -227,7 +238,7 @@ namespace TheEscort
                 }
 
                 // Crush part 1
-                if (!hasSomething && !e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw && e.GildCrushCooldown == 0)
+                if (!hasSomething && !e.GildCrush && (e.GildMoonJump < e.GildMoonJumpMax - 5 || e.GildFloatState) && self.bodyChunks[1].contactPoint.y != -1 && self.input[0].thrw && !self.input[1].thrw && e.GildCrushCooldown == 0 && self.dontGrabStuff == 0)
                 {
                     e.GildCrush = true;
                     e.GildMoonJump = 0;
@@ -343,7 +354,7 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockRecharge = true;
+                            e.GildLockLean = 4;
                             if (self.grasps[grabby].grabbed is Rock r) 
                             {
                                 r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
@@ -410,7 +421,7 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockRecharge = true;
+                            e.GildLockLean = 4;
                             s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                         }
                     } 
@@ -470,12 +481,12 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockRecharge = true;
+                            e.GildLockLean = 4;
                             if (self.grasps[grabby].grabbed is FireEgg fe) 
                             {
                                 fe.firstChunk.vel += new Vector2(
-                                    Mathf.Lerp(0, UnityEngine.Random.Range(-1f, 1f), e.GildReservePower / Escort.GildCheckCraftSingularity), 
-                                    Mathf.Lerp(0, UnityEngine.Random.Range(-1f, 1f), e.GildReservePower / Escort.GildCheckCraftSingularity)
+                                    Mathf.Lerp(0, UnityEngine.Random.Range(-3f, 3f), e.GildReservePower / Escort.GildCheckCraftSingularity), 
+                                    Mathf.Lerp(0, UnityEngine.Random.Range(-3f, 3f), e.GildReservePower / Escort.GildCheckCraftSingularity)
                                 );
                             }
                             else if (self.grasps[grabby].grabbed is Spear spearie)
@@ -780,12 +791,11 @@ namespace TheEscort
         /// </summary>
         private static void Esclass_GD_Die(ref Escort escort)
         {
-            if (escort.acidRepetitionGuard > 0) return;
             if (escort.GildLockRecharge && !escort.GildFloatState) 
             {
                 escort.GildReservePower = escort.GildRequiredPower;
             }
-            else 
+            else if (escort.acidRepetitionGuard == 0)
             {
                 escort.GildPower += Math.Min(800, (escort.GildPowerMax - escort.GildPower) / 2);
             }

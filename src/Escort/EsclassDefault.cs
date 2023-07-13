@@ -593,7 +593,7 @@ namespace TheEscort
                         e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
                     }
                     self.rollCounter = e.Brawler? 15: 0;
-                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount));
+                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount)) * (e.Gilded? 0.75f : 1f);
                 }
 
                 if (self.animation != Player.AnimationIndex.Roll)
@@ -614,6 +614,8 @@ namespace TheEscort
                 self.bodyChunks[0].vel.y += 0.05f;
                 self.bodyChunks[1].vel.y += 0.1f;
             }
+            // Implement frontslide animation
+            
             if (e.easyMode && e.easyKick)
             {
                 if (self.animation == Player.AnimationIndex.RocketJump && self.input[0].x == 0 && self.input[1].x == 0 && self.input[2].x == 0)

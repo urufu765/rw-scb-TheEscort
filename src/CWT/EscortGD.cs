@@ -23,6 +23,7 @@ namespace TheEscort
         public int GildLaser;  // Laser (UNUSED)
         public int GildBlast;  // Cone (UNUSED)
         public bool GildLockRecharge;
+        public int GildLockLean;
         public bool GildCancel;
         public int GildReservePower;
         public int GildRequiredPower;
