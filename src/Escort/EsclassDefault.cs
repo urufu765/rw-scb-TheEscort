@@ -2073,11 +2073,15 @@ namespace TheEscort
                         {
                             normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
                         }
+                        if (e.Gilded)
+                        {
+                            normSlideStun *= 0.75f;
+                        }
                         float deflectorSlidingDamage = dSlideDmg;
                         if (e.DeflPowah == 2) deflectorSlidingDamage *= 1.4f;
                         if (e.DeflPowah == 3) deflectorSlidingDamage *= 2.4f;
                         creature.Violence(
-                            self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x / 4f, self.mainBodyChunk.vel.y / 4f)),
+                            self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x / 4f, self.mainBodyChunk.vel.y / 4f),
                             creature.firstChunk, null, e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt,
                             e.DeflAmpTimer > 0 ? deflectorSlidingDamage : bodySlam[0], normSlideStun
                         );
@@ -2190,6 +2194,10 @@ namespace TheEscort
                                     normSlamDamage *= dDKHDmg[1];
                                 }
                             }
+                            if (e.Gilded)
+                            {
+                                normSlamDamage *= 0.75f;
+                            }
                             message = "Powerdropkicked!";
                         }
                         else
@@ -2197,7 +2205,7 @@ namespace TheEscort
                             self.room.PlaySound(SoundID.Big_Needle_Worm_Bounce_Terrain, self.mainBodyChunk, false, 1f, 0.9f);
                         }
                         creature.Violence(
-                            self.mainBodyChunk, new Vector2?(new Vector2(self.mainBodyChunk.vel.x * DKMultiplier, self.mainBodyChunk.vel.y * DKMultiplier * (e.LizardDunk ? 0.2f : 1f))),
+                            self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x * DKMultiplier, self.mainBodyChunk.vel.y * DKMultiplier * (e.LizardDunk ? 0.2f : 1f)),
                             creature.firstChunk, null, Creature.DamageType.Blunt,
                             normSlamDamage, (e.DeflAmpTimer > 0 ? bodySlam[1] : bodySlam[3])
                         );
@@ -2238,7 +2246,7 @@ namespace TheEscort
                     {
                         creature.SetKillTag(self.abstractCreature);
                         creature.Violence(
-                            self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass)),
+                            self.bodyChunks[0], new Vector2(self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass),
                             creature.mainBodyChunk, null, Creature.DamageType.Blunt,
                             creature.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly? 1f: 0f, 15f
                         );
