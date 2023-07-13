@@ -21,7 +21,6 @@ namespace TheEscort
         public int GildStartPower;
         public int GildLevitateLimit;
         public bool GildLockRecharge;
-        public int GildLockLean;
         public bool GildCancel;
         public int GildReservePower;
         public int GildRequiredPower;

@@ -261,7 +261,6 @@ namespace TheEscort
                             Ebug(self, "Float: " + e.GildLevitateLimit);
                             Ebug(self, "WTThr: " + e.GildWantToThrow);
                             Ebug(self, "LOCKY: " + e.GildLockRecharge);
-                            Ebug(self, "LOCKL: " + e.GildLockLean);
                             Ebug(self, "CANCL: " + e.GildCancel);
                         }
                         #if false
