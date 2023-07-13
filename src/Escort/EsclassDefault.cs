@@ -263,6 +263,8 @@ namespace TheEscort
                             Ebug(self, "LOCKY: " + e.GildLockRecharge);
                             Ebug(self, "CANCL: " + e.GildCancel);
                         }
+                        Ebug(self, "X: " + self.mainBodyChunk.pos.x);
+                        Ebug(self, "Y: " + self.mainBodyChunk.pos.y);
                         #if false
                         Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
                         Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);

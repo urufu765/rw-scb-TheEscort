@@ -192,6 +192,7 @@ namespace TheEscort
                 !e.GildFloatState && 
                 !e.GildCrush &&
                 e.GildPower >= Escort.GildUseLevitate &&
+                e.GildReservePower < 10 &&
                 self.bodyChunks[1].contactPoint.y != -1 &&
                 (
                     e.GildLevitateCooldown <= 0 || 
@@ -201,7 +202,7 @@ namespace TheEscort
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
-                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : Escort.GildCheckLevitate;
+                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : e.GildLevitateLimit * 4;
                 e.GildPowerUsage = Escort.GildUseLevitate;
                 e.GildCrushCooldown = 10;
             }

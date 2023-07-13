@@ -1,0 +1,13 @@
+Template: HR_SettingsTemplate_HellNew
+CeilingDrips: 0
+WaveSpeed: 0.51
+WaveLength: 1
+WaveAmplitude: 0.0001
+SecondWaveLength: 1
+SecondWaveAmplitude: 0.0001
+Effects: FairyParticles-0.07608695-568-262, 
+PlacedObjects: FairyParticleSettings><339.5579><545.8057><-720~274.6602~1~7.065217~37.5~0~1~2.35436~60~180~40~100~0~19.56522~0~23.47826~0.1086956~0.1413043~1~1~0.4347826~0.5217391~0.7065217~0.2717391~9.51087~Leaf~SIN_IO~SIN_IO~8.78259~1~0.6521739, LightSource><570.1862><2.938046><0.4236994~EffectColor2~-640~766~50~86.60254~0~1~None~0~0, LightSource><799.3809><8.58942><0.5434783~EffectColor2~-124~128~-56~200.6025~0~1~None~0~0, LightSource><343.4184><1.93256><0.5434783~EffectColor2~119~172~50~86.60254~0~1~None~0~0, LightSource><592.8713><7.096867><0.4673913~EffectColor2~-91~179~50~86.60254~0~1~None~0~0, LightSource><83.33572><7.430668><0.1521739~EffectColor2~-114~118~19~134.6025~0~1~None~0~0, LightSource><1022.859><8.66736><0.1630435~EffectColor2~-78~155~50~86.60254~0~1~None~0~0, LightSource><573.3381><407.9302><0.5978261~EffectColor2~696~1290~50~86.60254~0~0~None~0~0, LightSource><507.259><12.19977><0.5217391~EffectColor2~688~764~128~369.6025~0~1~None~0~0, HRGuard><599.1196><1099.348><0~0~2~3, 
+AmbientSounds: OMNI><SO_NAT-Fire.ogg><477.6736><431.3493><0.3695652><1, 
+FadePalette: 75, 0.1956522, 0.173913, 0.1521739
+WetTerrain: OFF
+RoomSpecificScriptActive: ON

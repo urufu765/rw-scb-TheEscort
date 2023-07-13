@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using SlugBase.SaveData;
 
 
 namespace TheEscort
@@ -382,5 +383,33 @@ namespace TheEscort
                 self.bodyChunks[1].vel += vecBody * 0.5f;
             }
         }
+
+        public static EscortSaveDataDeathPersistent Esave(this DeathPersistentSaveData data)
+        {
+            if (!data.GetSlugBaseData().TryGet(Plugin.MOD_ID, out EscortSaveDataDeathPersistent save))
+            {
+                data.GetSlugBaseData().Set(Plugin.MOD_ID, save = new());
+            }
+            return save;
+        }
+
+        public static EscortSaveDataMiscWorld Esave(this MiscWorldSaveData data)
+        {
+            if (!data.GetSlugBaseData().TryGet(Plugin.MOD_ID, out EscortSaveDataMiscWorld save))
+            {
+                data.GetSlugBaseData().Set(Plugin.MOD_ID, save = new());
+            }
+            return save;
+        }
+
+        public static EscortSaveDataMiscProgression Esave(this PlayerProgression.MiscProgressionData data)
+        {
+            if (!data.GetSlugBaseData().TryGet(Plugin.MOD_ID, out EscortSaveDataMiscProgression save))
+            {
+                data.GetSlugBaseData().Set(Plugin.MOD_ID, save = new());
+            }
+            return save;
+        }
+
     }
 }

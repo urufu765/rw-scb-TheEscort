@@ -18,7 +18,7 @@ namespace TheEscort
     {
         public static Plugin ins;
         public EscOptions config;
-        private const string MOD_ID = "urufudoggo.theescort";
+        public const string MOD_ID = "urufudoggo.theescort";
 
         /*
         public Plugin()
@@ -324,11 +324,11 @@ namespace TheEscort
             Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
             Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
             Escort_SFX_Gild_Stomp = new SoundID("Escort_Gild_Stomp", true);
-            FAtlas aB, aH, hM;
+            FAtlas aB, aH, hA;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
-            hM = Futile.atlasManager.LoadAtlas("atlases/escorthudmain");
-            if (aB == null || aH == null || hM == null)
+            hA = Futile.atlasManager.LoadAtlas("atlases/escorthuda");
+            if (aB == null || aH == null || hA == null)
             {
                 Ebug("Oh no. Sprites dead.", 0);
             }

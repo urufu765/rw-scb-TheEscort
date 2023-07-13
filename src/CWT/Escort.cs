@@ -501,7 +501,7 @@ namespace TheEscort
             string hypeSprite = "escort_hud_default";
             if (Brawler)
             {
-                hypeSprite = "escort_hud_brawler";
+                hypeSprite = Plugin.ins.config.cfgSFX.Value? "escort_hud_brawler_alt" : "escort_hud_brawler";
                 floatTrackers.Add(new ETrackrr.BrawlerMeleeTraction(n, 1, self, this));
             }
             if (Deflector)
@@ -538,6 +538,7 @@ namespace TheEscort
             }
             if (Gilded)
             {
+                hypeSprite = "escort_hud_gilded";
                 floatTrackers.Add(new ETrackrr.GildedPoweredTraction(n, 1, this));
             }
             this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
