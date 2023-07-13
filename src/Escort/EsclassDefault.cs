@@ -238,7 +238,7 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (false && CR.TryGet(self, out int limiter)){
+                if (true && CR.TryGet(self, out int limiter)){
                     // Console ticker
                     if (e.consoleTick > limiter)
                     {
@@ -252,15 +252,19 @@ namespace TheEscort
                     if (e.consoleTick == 0)
                     {
                         Ebug(self, "Clocked.");
-                        #if false
                         if (e.Gilded)
                         {
                             Ebug(self, "Power: " + e.GildPower);
+                            Ebug(self, "SPowr: " + e.GildStartPower);
                             Ebug(self, "Resrv: " + e.GildReservePower);
                             Ebug(self, "Requi: " + e.GildRequiredPower);
                             Ebug(self, "Float: " + e.GildLevitateLimit);
                             Ebug(self, "WTThr: " + e.GildWantToThrow);
+                            Ebug(self, "LOCKY: " + e.GildLockRecharge);
+                            Ebug(self, "LOCKL: " + e.GildLockLean);
+                            Ebug(self, "CANCL: " + e.GildCancel);
                         }
+                        #if false
                         Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
                         Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
                         Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
@@ -614,8 +618,20 @@ namespace TheEscort
                 self.bodyChunks[0].vel.y += 0.05f;
                 self.bodyChunks[1].vel.y += 0.1f;
             }
-            // Implement frontslide animation
-            
+            // Implement frontslide animation (not working right)
+            if (false && self.animation == Player.AnimationIndex.BellySlide && config.cfgDKAnimation.Value && !self.longBellySlide)
+            {
+                if (self.rollCounter < 6)
+                {
+                    self.bodyChunks[1].vel.x += 9.1f * self.rollDirection;
+                    self.bodyChunks[0].vel.x -= 9.1f * self.rollDirection;
+                }
+
+                float sliding = 18.1f * self.rollDirection * Mathf.Sin(self.rollCounter / 15f) * (float)Math.PI;
+                self.bodyChunks[0].vel.x -= sliding;
+                self.bodyChunks[1].vel.x += sliding;
+            }
+
             if (e.easyMode && e.easyKick)
             {
                 if (self.animation == Player.AnimationIndex.RocketJump && self.input[0].x == 0 && self.input[1].x == 0 && self.input[2].x == 0)

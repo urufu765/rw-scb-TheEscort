@@ -20,8 +20,6 @@ namespace TheEscort
         public int GildPowerMax;
         public int GildStartPower;
         public int GildLevitateLimit;
-        public int GildLaser;  // Laser (UNUSED)
-        public int GildBlast;  // Cone (UNUSED)
         public bool GildLockRecharge;
         public int GildLockLean;
         public bool GildCancel;
@@ -29,14 +27,14 @@ namespace TheEscort
         public int GildRequiredPower;
         public int GildPowerUsage;
         public int GildWantToThrow;
+        public bool GildClearReserve;
+        public int GildInstaCreate;
         public int GildCrushCooldown;
         public int GildLevitateCooldown;
         public bool GildAlsoPop;
         public int GildJetPackVFX;
         public int GildPowerPipsIndex;
         public int GildPowerPipsMax;
-        //public Rock GildRemoveRock;
-        //public int GildRemoveRockAfter;
         public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
@@ -58,8 +56,6 @@ namespace TheEscort
             GildPower = 2000;
             GildStartPower = 2000;
             GildLevitateLimit = 120;
-            GildLaser = 0;
-            GildBlast = 0;
             GildPowerMax = self.Malnourished? 4000: 6400;
             GildPowerPipsMax = self.Malnourished? 10: 16;
             GildPowerPipsIndex = -1;

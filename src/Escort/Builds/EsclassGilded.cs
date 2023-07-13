@@ -24,15 +24,17 @@ namespace TheEscort
 
         public void Esclass_GD_Tick(Player self, ref Escort e)
         {
-            if (e.GildLockLean > 0)
-            {
-                e.GildLockLean--;
-                e.GildLockRecharge = true;
-            }
-            else
-            {
-                e.GildLockRecharge = false;
-            }
+            // // Shortcut fix for crafting
+            // if (!e.GildLockRecharge && !e.GildCancel && !e.GildClearReserve && e.GildReservePower > 0 && (e.GildWantToThrow != -1 || e.GildAlsoPop))
+            // {
+            //     e.GildLockRecharge = true;
+            // }
+
+            // if (e.GildClearReserve)
+            // {
+            //     e.GildReservePower = 0;
+            //     e.GildClearReserve = false;
+            // }
 
 
             if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
@@ -63,6 +65,11 @@ namespace TheEscort
             if (e.GildJetPackVFX > 0)
             {
                 e.GildJetPackVFX--;
+            }
+
+            if (e.GildInstaCreate > 0)
+            {
+                e.GildInstaCreate--;
             }
 
             if (!e.GildLockRecharge) 
@@ -96,7 +103,18 @@ namespace TheEscort
                     e.GildCancel = false;
                 }
             }
-            if (!self.dead) e.GildLockLean = 0;
+            // if (self.dead) e.GildLockLean = 3;
+
+            if (e.GildLockLean > 0)
+            {
+                e.GildLockLean--;
+                e.GildLockRecharge = true;
+            }
+            else
+            {
+                e.GildLockRecharge = self.dead;
+            }
+
 
             if (!self.input[0].thrw) e.GildAlsoPop = false;
 
@@ -132,7 +150,7 @@ namespace TheEscort
                         self.room?.AddObject(new WaterDrip(self.mainBodyChunk.pos, Custom.RNV() * UnityEngine.Random.value * 40f, false));
                     }
                 }
-                e.GildLockLean = 4;
+                e.GildLockRecharge = true;
             }
 
             // Check empty hand
@@ -202,7 +220,7 @@ namespace TheEscort
             // TODO: Allow simultaneous usage of power, e.g. float while making a spear.
             if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
             {
-                e.GildLockLean = 4;
+                e.GildLockLean = 3;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
                 self.airFriction = 0.8f;
                 self.standing = false;
@@ -335,6 +353,11 @@ namespace TheEscort
                             self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
                             self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
                             self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
+                            if (e.GildInstaCreate > 0) 
+                            {
+                                self.SlugcatGrab(apo.realizedObject, grabby);
+                            }
+
                             if (
                                 e.GildWantToThrow == 0 && 
                                 self.grasps[1]?.grabbed is not null && 
@@ -346,6 +369,7 @@ namespace TheEscort
                             ) 
                             {
                                 e.GildAlsoPop = true;
+                                e.GildClearReserve = true;
                             }
                             e.GildWantToThrow = -1;
                             e.GildReservePower = 0;
@@ -354,7 +378,7 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockLean = 4;
+                            e.GildLockLean = 6;
                             if (self.grasps[grabby].grabbed is Rock r) 
                             {
                                 r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
@@ -393,7 +417,7 @@ namespace TheEscort
                             self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.7f, 1f);
                             self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
                             self.room?.AddObject(new ExplosionSpikes(self.room, posi, 10, 15f, 9f, 5f, 90f, e.hypeColor));
-                            self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                            self.SlugcatGrab(apo.realizedObject, grabby);
 
                             // Doesn't work
                             #if false
@@ -413,6 +437,7 @@ namespace TheEscort
                             ) 
                             {
                                 e.GildAlsoPop = true;
+                                e.GildClearReserve = true;
                             }
                             e.GildWantToThrow = -1;
                             e.GildReservePower = 0;
@@ -421,7 +446,7 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockLean = 4;
+                            e.GildLockLean = 6;
                             s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                         }
                     } 
@@ -473,7 +498,7 @@ namespace TheEscort
                             self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
                             self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
                             self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
-                            self.SlugcatGrab(apo.realizedObject, e.GildWantToThrow);
+                            self.SlugcatGrab(apo.realizedObject, grabby);
                             e.GildWantToThrow = -1;
                             e.GildReservePower = 0;
                             self.Blink(10);
@@ -481,7 +506,7 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.GildLockLean = 4;
+                            e.GildLockLean = 6;
                             if (self.grasps[grabby].grabbed is FireEgg fe) 
                             {
                                 fe.firstChunk.vel += new Vector2(
@@ -751,7 +776,7 @@ namespace TheEscort
                         };*/
 
                         // Color
-                        if (escort.GildRequiredPower != 0 && preR >= minReq)
+                        if (escort.GildRequiredPower != 0 && maxR >= minReq)
                         {
                             s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
                         }
@@ -794,6 +819,7 @@ namespace TheEscort
             if (escort.GildLockRecharge && !escort.GildFloatState) 
             {
                 escort.GildReservePower = escort.GildRequiredPower;
+                escort.GildInstaCreate = 5;
             }
             else if (escort.acidRepetitionGuard == 0)
             {
