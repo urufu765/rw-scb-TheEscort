@@ -2205,7 +2205,7 @@ namespace TheEscort
                             self.room.PlaySound(SoundID.Big_Needle_Worm_Bounce_Terrain, self.mainBodyChunk, false, 1f, 0.9f);
                         }
                         creature.Violence(
-                            self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x * DKMultiplier, self.mainBodyChunk.vel.y * DKMultiplier * (e.LizardDunk ? 0.2f : 1f)),
+                            self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x * DKMultiplier, self.mainBodyChunk.vel.y * DKMultiplier * (e.LizardDunk ? 0.2f : 1f) * (e.Gilded? 0.5f : 1f)),
                             creature.firstChunk, null, Creature.DamageType.Blunt,
                             normSlamDamage, (e.DeflAmpTimer > 0 ? bodySlam[1] : bodySlam[3])
                         );
