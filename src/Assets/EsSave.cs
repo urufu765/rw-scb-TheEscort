@@ -11,6 +11,7 @@ namespace TheEscort
     public class EscortSaveDataDeathPersistent
     {
         public bool SuperWallFlipTutorial = false;
+        public bool GildKillGuardianTutorial = false;
     }
 
     /// <summary>

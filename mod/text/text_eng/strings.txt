@@ -97,6 +97,9 @@ gilded_tut_b|Press throw while empty handed and midair to do a stomp! Fall damag
 gilded_tut_c|<GILDED> cannot throw rocks or spears to defend themselves. Use the power to transform the objects first!
 gilded_tut_rock|Hold throw with a rock or bomb in hand to transform it into a firebomb!
 gilded_tut_spear|Hold throw with a spear to transform it into a firespear!
+gilded_tut_fullpower_a|Hold throw with a firebomb or firespear to transform it into a singularity bomb.
+gilded_tut_fullpower_b|The duration of levitate is unrestricted now.
+gilded_tut_guardian|<GILDED> only has to kill the guardian once to pass!
 Gimmicks|Gimmicks
 escoptions_gimmicks|These optional gimmicks will add features that may alter the gameplay of Escort significantly (and in hilarous ways)
 escoptions_sillysfx_text|Enable silly SFX

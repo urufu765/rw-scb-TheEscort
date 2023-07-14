@@ -158,7 +158,7 @@ namespace TheEscort
 
 
             #region Temporary levitation code
-            if (self.canJump > 0) e.GildLevitateLimit = 120;
+            if (self.bodyChunks[0].contactPoint.x < 0) e.GildLevitateLimit = 120;
 
             // Deactivate levitation
             if ((
@@ -546,10 +546,10 @@ namespace TheEscort
             if (e.GildCrush && e.GildCrushTime == 0){
                 creature.SetKillTag(self.abstractCreature);
                 creature.LoseAllGrasps();
-                float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 50, Mathf.Abs(self.bodyChunks[0].vel.y)));
+                float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 35, Mathf.Abs(self.bodyChunks[0].vel.y)));
                 creature.Violence(
                     self.bodyChunks[1], 
-                    new Vector2?(new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * DKMultiplier)),
+                    new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
                     dam,
@@ -818,11 +818,14 @@ namespace TheEscort
             }
         }
 
-
+        /// <summary>
+        /// Kills a guardian in rubicon with just one singularity bomb so it isn't required for them to source and craft three just to get past.
+        /// </summary>
         private void Esclass_GD_KillGuardianWithOneHit(On.MoreSlugcats.HRGuardManager.orig_Update orig, MoreSlugcats.HRGuardManager self, bool eu)
         {
             try
             {
+                // Unsure if this will work properly in jolly coop
                 if (self.myGuard is not null && self.myPlayer is not null && self.room?.game?.cameras[0]?.followAbstractCreature?.Room is not null && self.room.game.cameras[0].followAbstractCreature.Room == self.room.abstractRoom)
                 {
                     if (eCon.TryGetValue(self.myPlayer, out Escort escort) && escort.Gilded)
@@ -832,6 +835,12 @@ namespace TheEscort
                         {
                             Ebug(self.myPlayer, "Set killrequirement to 1");
                             self.hitsToKill = 1;
+                        }
+
+                        if (self.triggered && self.room?.game?.session is StoryGameSession && !self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial)
+                        {
+                            self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("gilded_tut_guardian"), 20, 400, true, true);
+                            self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial = true;
                         }
                     }
                 }

@@ -2158,6 +2158,10 @@ namespace TheEscort
                             {
                                 self.mainBodyChunk.vel.y *= eSlideFac;
                             }
+                            if (e.Gilded)
+                            {
+                                self.mainBodyChunk.vel.x *= 0.75f;
+                            }
                             if (self.rocketJumpFromBellySlide)
                             {
                                 Ebug(self, "No more no control!");

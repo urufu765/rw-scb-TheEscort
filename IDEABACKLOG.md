@@ -35,6 +35,7 @@
     * Add Railgunner knockback for other double-ups (maybe by having the knockback get introduced in frame 2 or 3)
     * Reduce stunslide uncontrollability by changeing it to a roll and balance it. Also have a new way to trigger the combo
     * Deflector's damage increases by 0.001f for every kill in the whole campaign.
+    * Wallpounces don't work with dk animation
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
 

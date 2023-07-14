@@ -60,7 +60,7 @@ public class EscortRoomScript
                             "LF_A10" => false,
                             "LF_E03" => false,
                             "CC_A10" => player.mainBodyChunk.pos.x > 195 && player.mainBodyChunk.pos.y > 334 && player.mainBodyChunk.pos.x < 311 && player.mainBodyChunk.pos.y < 572,
-                            "HR_AP01" => false,
+                            "HR_AP01" => player.mainBodyChunk.pos.y > 625,
                             _ => false
                         })
                         {
