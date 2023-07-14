@@ -263,6 +263,8 @@ namespace TheEscort
             //ReJollyCoop.Hooker();
 
             On.MoreSlugcats.HRGuardManager.Update += Esclass_GD_KillGuardianWithOneHit;
+
+            On.ShelterDoor.Close += StoreWinConditionData;
         }
 
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
@@ -714,7 +716,7 @@ namespace TheEscort
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
                         if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession)
                         {
-                            e.SpeCharge = self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[0];
+                            e.SpeCharge = self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[self.playerState.playerNumber];
                         }
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.bodyWeightFac += 0.1f;

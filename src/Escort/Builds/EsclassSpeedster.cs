@@ -513,5 +513,11 @@ namespace TheEscort
             }
         }
 
+
+        public static void Esclass_SS_WinLoseSave(ShelterDoor self, int playerNumber, bool success, ref Escort escort)
+        {
+            if (self.room?.game?.session is not StoryGameSession) return;
+            self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[playerNumber] = success? escort.SpeCharge : 0;
+        }
     }
 }

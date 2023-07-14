@@ -3,6 +3,8 @@ using MoreSlugcats;
 using RWCustom;
 using SlugBase.Features;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -2337,5 +2339,47 @@ namespace TheEscort
             }
             return orig(self, obj);
         }
+
+
+        private void StoreWinConditionData(On.ShelterDoor.orig_Close orig, ShelterDoor self)
+        {
+            orig(self);
+            try{
+                List<AbstractCreature> playersToProgressOrWin = self.room.game.PlayersToProgressOrWin;
+                List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
+                foreach (AbstractCreature abstractPlayer in playersToProgressOrWin)
+                {
+                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
+                    {
+                        int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
+                        bool Successful = false;
+                        if (shelterPlayers.Contains(abstractPlayer) && !player.dead)
+                        {
+                            Ebug(player, "Is successful!", ignoreRepetition: true);
+                            Successful = true;
+
+                            // do things when successful
+                        }
+                        else
+                        {
+                            Ebug(player, "Is failure!", ignoreRepetition: true);
+                            // do things when failure
+                        }
+
+                        // Other builds
+                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, Successful, ref escort);
+                    }
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null encountered when determining win condition!");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when saving win condition");
+            }
+        }
+
     }
 }

@@ -13,29 +13,34 @@ namespace TheEscort
 
         public bool SuperWallFlipTutorial = false;
         public bool GildKillGuardianTutorial = false;
-        public class SpeChargeStore
+        public SpeedsterChargeStorage SpeChargeStore = new();
+        public class SpeedsterChargeStorage
         {
-            private readonly List<int> _SpeChargeStore = new();
+            private readonly List<int> _speChargeStore = new();
 
             public int this[int index]
             {
                 get
                 {
-                    if (index >= _SpeChargeStore.Count)
+                    while (index >= _speChargeStore.Count)
                     {
-                        _SpeChargeStore.Add(0);
+                        _speChargeStore.Add(0);
                     }
-                    return _SpeChargeStore[index];
+                    return _speChargeStore[index];
                 }
                 set
                 {
-                    if (index >= _SpeChargeStore.Count)
+                    if (index >= _speChargeStore.Count)
                     {
-                        _SpeChargeStore.Add(value);
+                        while (index > _speChargeStore.Count)
+                        {
+                            _speChargeStore.Add(0);
+                        }
+                        _speChargeStore.Add(value);
                     }
                     else
                     {
-                        _SpeChargeStore[index] = value;
+                        _speChargeStore[index] = value;
                     }
                 }
             }
