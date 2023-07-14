@@ -28,7 +28,7 @@ escoptions_longwall_text|Long Wall Jump
 escoptions_longwall_desc|Allows Escort to do pounces (hold jump) but on walls as well. Will affect how wall jumping in general feels. Recommended off.
 escoptions_flippounce_text|Flippy Pounce
 escoptions_flippounce_desc|Causes Escort to do a (sick) flip with pounces, and allows Escort to do a super-wall-flip-jumpTM when holding diagonal against a wall and pressing jump.
-flippounce_tutorial|Hold a diagonal direction for about 1 second then press jump to do a super wall flip!
+flippounce_tutorial|Hold a diagonal direction against a wall for about 1 second then press jump to do a super wall flip!
 escoptions_lizgrab_text|Grab Stunned Lizards
 escoptions_lizgrab_desc|Allows Escort to grab stunned lizards and cause violence on them.
 lizgrab_tutorial|Stun a lizard to grab it, then jump and press the throw button to punt it!

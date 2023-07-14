@@ -411,5 +411,21 @@ namespace TheEscort
             return save;
         }
 
+
+        public static string Swapper(string text, string with = "")
+        {
+            text = text.Replace("<LINE>", System.Environment.NewLine);
+            text = text.Replace("<REPLACE>", with);
+            text = text.Replace("<DEFAULT>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Default"));
+            text = text.Replace("<BRAWLER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Brawler"));
+            text = text.Replace("<DEFLECTOR>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Deflector"));
+            text = text.Replace("<ESCAPIST>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Escapist"));
+            text = text.Replace("<RAILGUNNER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Railgunner"));
+            text = text.Replace("<SPEEDSTER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Speedster"));
+            text = text.Replace("<GILDED>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Gilded"));
+
+            return text;
+        }
+
     }
 }

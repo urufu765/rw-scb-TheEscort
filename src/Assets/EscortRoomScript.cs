@@ -23,7 +23,7 @@ public class EscortRoomScript
         {
             string name = room.abstractRoom.name;
             if (name is null) return;
-            if (room.game.GetStorySession.saveState.cycleNumber < 2 && (name is "CC_SHAFT02" or "CC_CLOG" or "SU_B07" or "SI_D01" or "SI_D06" or "DM_LEG02" or "GW_TOWER15" or "LF_A10" or "LF_E03" or "CC_A10" or "HR_AP01") && !room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial)
+            if (room.game.GetStorySession.saveState.cycleNumber < 2 && (name is "CC_SHAFT02" or "CC_CLOG" or "SU_B07" or "SI_D01" or "SI_D03" or "DM_LEG02" or "GW_TOWER15" or "LF_A10" or "LF_E03" or "CC_A10" or "HR_AP01") && !room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial)
             {
                 Ebug("Get the fucking tutorial bro");
                 room.AddObject(new TellPlayerToDoASickFlip(room));
@@ -33,6 +33,7 @@ public class EscortRoomScript
 
     private class TellPlayerToDoASickFlip : UpdatableAndDeletable
     {
+        private int waitForSpawn = 120;
         public TellPlayerToDoASickFlip(Room room)
         {
             this.room = room;
@@ -44,6 +45,7 @@ public class EscortRoomScript
             if (room?.game?.session is null) return;
             if (room.game.session is StoryGameSession && !room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial)
             {
+                waitForSpawn--;
                 for (int i = 0; i < room.game.Players.Count && (ModManager.CoopAvailable || i == 0); i++)
                 {
                     AbstractCreature abstractPlayer = room.game.Players[i];
@@ -53,14 +55,15 @@ public class EscortRoomScript
                         if (room.abstractRoom.name switch {
                             "CC_SHAFT02" => player.mainBodyChunk.pos.y > 2340 && player.mainBodyChunk.pos.y < 2830,
                             "CC_CLOG" => true,
-                            "SU_B07" => false,
-                            "SI_D06" => false,
-                            "DM_LEG02" => false,
-                            "GW_TOWER15" => false,
-                            "LF_A10" => false,
-                            "LF_E03" => false,
-                            "CC_A10" => player.mainBodyChunk.pos.x > 195 && player.mainBodyChunk.pos.y > 334 && player.mainBodyChunk.pos.x < 311 && player.mainBodyChunk.pos.y < 572,
-                            "HR_AP01" => player.mainBodyChunk.pos.y > 625,
+                            "SU_B07" => player.mainBodyChunk.pos.x > 932 && player.mainBodyChunk.pos.x < 1540,
+                            "SI_D01" => player.mainBodyChunk.pos.x > 573 && player.mainBodyChunk.pos.x < 750 && player.mainBodyChunk.pos.y > 733 && player.mainBodyChunk.pos.y < 1062,
+                            "SI_D03" => player.mainBodyChunk.pos.x > 3380 && player.mainBodyChunk.pos.x < 3700,
+                            "DM_LEG02" => player.mainBodyChunk.pos.x > 113 && player.mainBodyChunk.pos.x < 339 && player.mainBodyChunk.pos.y > 996 && player.mainBodyChunk.pos.y < 1250,
+                            "GW_TOWER15" => player.mainBodyChunk.pos.x > 2313 && player.mainBodyChunk.pos.x < 2800 && player.mainBodyChunk.pos.y < 666,
+                            "LF_A10" => player.mainBodyChunk.pos.y > 96 && player.mainBodyChunk.pos.y < 167,
+                            "LF_E03" => player.mainBodyChunk.pos.x > 3010 && player.mainBodyChunk.pos.x < 4640 && player.mainBodyChunk.pos.y > 120 && player.mainBodyChunk.pos.y < 188,
+                            "CC_A10" => player.mainBodyChunk.pos.x > 275 && player.mainBodyChunk.pos.y > 389 && player.mainBodyChunk.pos.x < 311 && player.mainBodyChunk.pos.y < 572 && waitForSpawn <= 0,
+                            "HR_AP01" => player.mainBodyChunk.pos.y > 725,
                             _ => false
                         })
                         {

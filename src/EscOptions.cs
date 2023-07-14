@@ -217,20 +217,6 @@ namespace TheEscort
             // Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
         }
 
-        private static string Swapper(string text, string with = "")
-        {
-            text = text.Replace("<LINE>", System.Environment.NewLine);
-            text = text.Replace("<REPLACE>", with);
-            text = text.Replace("<DEFAULT>", Translate("Default"));
-            text = text.Replace("<BRAWLER>", Translate("Brawler"));
-            text = text.Replace("<DEFLECTOR>", Translate("Deflector"));
-            text = text.Replace("<ESCAPIST>", Translate("Escapist"));
-            text = text.Replace("<RAILGUNNER>", Translate("Railgunner"));
-            text = text.Replace("<SPEEDSTER>", Translate("Speedster"));
-            text = text.Replace("<GILDED>", Translate("Gilded"));
-
-            return text;
-        }
 
         private string SetDefault(string def, string norm = "")
         {

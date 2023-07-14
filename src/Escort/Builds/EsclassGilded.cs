@@ -33,13 +33,12 @@ namespace TheEscort
             if (e.GildClearReserve)
             {
                 e.GildReservePower = 0;
-                e.GildClearReserve = false;
             }
 
 
             if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
             {
-                e.GildLevitateLimit--;
+                e.GildLevitateLimit -= e.GildPowerUsage;
             }
 
             if (e.GildMoonJump > 0)
@@ -106,12 +105,19 @@ namespace TheEscort
 
             e.GildLockRecharge = self.dead;
 
-            if (!self.input[0].thrw) e.GildAlsoPop = false;
+            if (!self.input[0].thrw || e.GildClearReserve) e.GildAlsoPop = false;
+
+            if (e.GildClearReserve) e.GildClearReserve = false;
 
             // if (e.secretRGB) e.Escat_RGB_firespear();
-            if (self.room?.game?.session is StoryGameSession)
+            if (!e.GildOverpowered)
             {
+                e.GildOverpowered = ins.config.cfgSectretBuild.Value;
 
+                if (self.room?.game?.session is StoryGameSession && self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap == 9)
+                {
+                    e.GildOverpowered = true;
+                }
             }
         }
 
@@ -366,6 +372,7 @@ namespace TheEscort
                             if (
                                 e.GildWantToThrow == 0 && 
                                 self.grasps[1]?.grabbed is not null && 
+                                !e.GildAlsoPop &&
                                 (
                                     self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
                                     self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
@@ -434,6 +441,7 @@ namespace TheEscort
                             if (
                                 e.GildWantToThrow == 0 && 
                                 self.grasps[1]?.grabbed is not null && 
+                                !e.GildAlsoPop &&
                                 (
                                     self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
                                     self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
@@ -464,7 +472,7 @@ namespace TheEscort
                     }
 
                 }
-                if (ins.config.cfgSectretBuild.Value && (self.grasps[grabby].grabbed is FireEgg || self.grasps[grabby].grabbed is Spear spr && spr.bugSpear) && e.GildStartPower >= Escort.GildCheckCraftSingularity)
+                if (e.GildOverpowered && (self.grasps[grabby].grabbed is FireEgg || self.grasps[grabby].grabbed is Spear spr && spr.bugSpear) && e.GildStartPower >= Escort.GildCheckCraftSingularity)
                 {
                     e.GildRequiredPower = Escort.GildCheckCraftSingularity;
                     e.GildPowerUsage = Escort.GildUseCraftSingularity;
@@ -608,14 +616,14 @@ namespace TheEscort
 
             if (
                 self.grasps[grasp].grabbed is Rock or ScavengerBomb || 
-                self.grasps[grasp].grabbed is Spear spear && (ins.config.cfgSectretBuild.Value || !spear.bugSpear) || 
+                self.grasps[grasp].grabbed is Spear spear && (escort.GildOverpowered || !spear.bugSpear) || 
                 self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck ||
-                ins.config.cfgSectretBuild.Value && self.grasps[grasp].grabbed is MoreSlugcats.FireEgg
+                escort.GildOverpowered && self.grasps[grasp].grabbed is MoreSlugcats.FireEgg
             )
             {
                 if (!self.input[0].thrw || self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck)
                 {
-                    if (self.grasps[grasp].grabbed is ScavengerBomb || (ins.config.cfgSectretBuild.Value && (self.grasps[grasp].grabbed is FireEgg || self.grasps[grasp].grabbed is Spear sp && sp.bugSpear)))
+                    if (self.grasps[grasp].grabbed is ScavengerBomb || (escort.GildOverpowered && (self.grasps[grasp].grabbed is FireEgg || self.grasps[grasp].grabbed is Spear sp && sp.bugSpear)))
                     {
                         orig(self, grasp, eu);  // Regular throw
                     }
@@ -821,7 +829,7 @@ namespace TheEscort
         /// </summary>
         private static void Esclass_GD_Die(ref Escort escort)
         {
-            if (escort.GildLockRecharge && !escort.GildFloatState) 
+            if (escort.GildReservePower > 0 && !escort.GildFloatState) 
             {
                 escort.GildReservePower = escort.GildRequiredPower;
                 escort.GildInstaCreate = 5;
@@ -853,7 +861,7 @@ namespace TheEscort
 
                         if (self.triggered && self.room?.game?.session is StoryGameSession && !self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial)
                         {
-                            self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("gilded_tut_guardian"), 20, 400, true, true);
+                            self.room.game.cameras[0].hud.textPrompt.AddMessage(Swapper(Custom.rainWorld.inGameTranslator.Translate("gilded_tut_guardian")), 20, 300, true, true);
                             self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial = true;
                         }
                     }
