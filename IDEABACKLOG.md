@@ -36,6 +36,7 @@
     * Reduce stunslide uncontrollability by changeing it to a roll and balance it. Also have a new way to trigger the combo
     * Deflector's damage increases by 0.001f for every kill in the whole campaign.
     * Wallpounces don't work with dk animation
+    * Add spiking
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
 

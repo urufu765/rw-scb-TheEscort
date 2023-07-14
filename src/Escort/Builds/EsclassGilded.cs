@@ -30,11 +30,11 @@ namespace TheEscort
             //     e.GildLockRecharge = true;
             // }
 
-            // if (e.GildClearReserve)
-            // {
-            //     e.GildReservePower = 0;
-            //     e.GildClearReserve = false;
-            // }
+            if (e.GildClearReserve)
+            {
+                e.GildReservePower = 0;
+                e.GildClearReserve = false;
+            }
 
 
             if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
@@ -109,6 +109,10 @@ namespace TheEscort
             if (!self.input[0].thrw) e.GildAlsoPop = false;
 
             // if (e.secretRGB) e.Escat_RGB_firespear();
+            if (self.room?.game?.session is StoryGameSession)
+            {
+
+            }
         }
 
         private void Esclass_GD_Update(Player self, ref Escort e)
@@ -158,7 +162,17 @@ namespace TheEscort
 
 
             #region Temporary levitation code
-            if (self.bodyChunks[0].contactPoint.x < 0) e.GildLevitateLimit = 120;
+            if (self.canJump > 0 && self.canWallJump == 0)
+            {
+                if (self.room?.game?.session is StoryGameSession)
+                {
+                    e.GildLevitateLimit = 120 * (self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap + 1);
+                }
+                else 
+                {
+                    e.GildLevitateLimit = 480;
+                }
+            }
 
             // Deactivate levitation
             if ((
@@ -202,7 +216,7 @@ namespace TheEscort
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
-                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : e.GildLevitateLimit * 4;
+                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : e.GildLevitateLimit;
                 e.GildPowerUsage = Escort.GildUseLevitate;
                 e.GildCrushCooldown = 10;
             }
@@ -225,8 +239,8 @@ namespace TheEscort
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     */
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
 
                 }
             }

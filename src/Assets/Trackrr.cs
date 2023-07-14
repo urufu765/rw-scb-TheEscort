@@ -280,7 +280,7 @@ public static class ETrackrr
             if (setValue != Mathf.Min(e.RailgunUse, e.RailgunLimit) && (preValue < setValue || e.RailgunCD == 0))
             {
                 transitioning = 0;
-                preValue = setValue;
+                preValue = e.RailgunCD == 0? 0 : setValue;
             }
             setValue = Mathf.Min(e.RailgunUse, e.RailgunLimit);
 

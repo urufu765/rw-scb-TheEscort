@@ -34,7 +34,6 @@ namespace TheEscort
         public int GildJetPackVFX;
         public int GildPowerPipsIndex;
         public int GildPowerPipsMax;
-        public const int GildCheckLevitate = 480;
         public const int GildUseLevitate = 4;
         public const int GildCheckCraftFirebomb = 800;
         public const int GildUseCraftFirebomb = 10;

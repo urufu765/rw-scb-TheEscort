@@ -30,7 +30,7 @@
 			"plants": 0.75,
 			"overrides": {
 				"Fly": 0.5,
-				"FireEgg": 1
+				"FireEgg": 0.25
 			}
 		},
 		"karma": 2,
