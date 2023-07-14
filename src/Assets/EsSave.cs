@@ -6,53 +6,58 @@ using System.Threading.Tasks;
 namespace TheEscort
 {
     /// <summary>
-    /// Escort Savedata for run
+    /// A simple list that expands upon having an index greater than the size
     /// </summary>
-    public class EscortSaveDataDeathPersistent
+    public record ExpandableList<T>
     {
+        private readonly List<T> _list = new();
 
-        public bool SuperWallFlipTutorial = false;
-        public bool GildKillGuardianTutorial = false;
-        public SpeedsterChargeStorage SpeChargeStore = new();
-        public class SpeedsterChargeStorage
+        public T this[int index]
         {
-            private readonly List<int> _speChargeStore = new();
-
-            public int this[int index]
+            get
             {
-                get
+                while (index >= _list.Count)
                 {
-                    while (index >= _speChargeStore.Count)
-                    {
-                        _speChargeStore.Add(0);
-                    }
-                    return _speChargeStore[index];
+                    _list.Add(default);
                 }
-                set
+                return _list[index];
+            }
+            set
+            {
+                if (index >= _list.Count)
                 {
-                    if (index >= _speChargeStore.Count)
+                    while (index > _list.Count)
                     {
-                        while (index > _speChargeStore.Count)
-                        {
-                            _speChargeStore.Add(0);
-                        }
-                        _speChargeStore.Add(value);
+                        _list.Add(default);
                     }
-                    else
-                    {
-                        _speChargeStore[index] = value;
-                    }
+                    _list.Add(value);
+                }
+                else
+                {
+                    _list[index] = value;
                 }
             }
         }
     }
 
     /// <summary>
-    /// Escort Savedata for campaign
+    /// Escort Savedata for run (doesn't save on death)
     /// </summary>
     public class EscortSaveDataMiscWorld
     {
 
+    }
+
+    /// <summary>
+    /// Escort Savedata for run (saves even on death)
+    /// </summary>
+    public class EscortSaveDataDeathPersistent
+    {
+
+        public bool SuperWallFlipTutorial = false;
+        public bool GildKillGuardianTutorial = false;
+        public ExpandableList<int> SpeChargeStore = new();
+        public Dictionary<int, float> Storage = new();
     }
 
     /// <summary>
