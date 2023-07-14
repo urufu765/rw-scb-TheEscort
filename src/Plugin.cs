@@ -712,6 +712,10 @@ namespace TheEscort
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
+                        if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession)
+                        {
+                            e.SpeCharge = self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[0];
+                        }
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.bodyWeightFac += 0.1f;
                         //self.slugcatStats.corridorClimbSpeedFac += 1.0f;
