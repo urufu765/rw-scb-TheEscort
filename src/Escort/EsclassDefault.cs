@@ -554,6 +554,10 @@ namespace TheEscort
                     e.isChunko = false;
                 }
             }
+
+
+            // Update tracker
+            e.Escat_Update_Ring_Trackers();
         }
 
 

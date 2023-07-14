@@ -381,7 +381,7 @@ namespace TheEscort
             {
                 if (self is not null && self.player is not null && eCon.TryGetValue(self.player, out Escort e))
                 {
-                    e.Escat_Update_Ring_Trackers();
+                    //e.Escat_Update_Ring_Trackers();
                 }
             }
             catch (NullReferenceException nre)

@@ -8,7 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.2 - The Escort
 
-  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. Fixed graphical inconsistencies regarding framerate. Added translation layer and russian translation. Escort can now survive touching acid. Removed an unused option. Fixed secret code going away whenever you restart the game. (fix Default Escort super wall flip tutorial (add savestate to it)) (Speedster can now save most of the charge) Replaced Brawler's hud sprite when silly SFX is on. Updated Deflector's hud sprite. (Brawler throws spears and rocks when sliding forward)
+  * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. Fixed graphical inconsistencies regarding framerate. Added translation layer and russian translation. Escort can now survive touching acid. Removed an unused option. Fixed secret code going away whenever you restart the game. (fix Default Escort super wall flip tutorial (add savestate to it)) (Speedster can now save most of the charge) Replaced Brawler's hud sprite when silly SFX is on. Updated Deflector's hud sprite. 
 
   * **(0.2.9.3)** Fixed Brawler damage
 

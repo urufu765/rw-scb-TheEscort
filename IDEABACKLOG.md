@@ -37,6 +37,8 @@
     * Deflector's damage increases by 0.001f for every kill in the whole campaign.
     * Wallpounces don't work with dk animation
     * Add spiking
+    * (Brawler throws spears and rocks when sliding forward)
+    * (Escort vertical pole climb)
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
 
