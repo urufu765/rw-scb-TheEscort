@@ -266,7 +266,10 @@ namespace TheEscort
             On.MoreSlugcats.HRGuardManager.Update += Esclass_GD_KillGuardianWithOneHit;
 
             On.ShelterDoor.Close += StoreWinConditionData;
+
+            On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
         }
+
 
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
         {
@@ -715,12 +718,12 @@ namespace TheEscort
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
-                        if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession storyGameSession)
+                        if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                         {
                             Ebug(self, "Get Speedster save!");
-                            storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging);
+                            speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging);
                             e.SpeCharge = charging;
-                            Ebug(self, "Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
+                            //Ebug(self, "Misc: " + JsonConvert.SerializeObject(speedsterSession.saveState.miscWorldSaveData.Esave()));
                         }
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.bodyWeightFac += 0.1f;
@@ -758,6 +761,13 @@ namespace TheEscort
                         break;
                     case -2:  // Deflector build
                         e.Deflector = true;
+                        if (self.room?.game?.session is StoryGameSession deflectorSession)
+                        {
+                            Ebug(self, "Get Deflector save!");
+                            deflectorSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage.TryGetValue(self.playerState.playerNumber, out float permaDamage);
+                            e.DeflPerma = permaDamage;
+                        }
+
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
@@ -877,15 +887,6 @@ namespace TheEscort
                 Ebug(err, "Exception when lizard likes!");
             }
         }*/
-
-
-        // to help with something, ignore this.
-        private void Player_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world){
-            orig(self, abstractCreature, world);
-            if (self.slugcatStats.name == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Rivulet){
-                self.slugcatStats.lungsFac = 0.0001f;
-            }
-        }
 
 
         private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)

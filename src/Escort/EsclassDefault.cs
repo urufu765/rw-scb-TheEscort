@@ -2216,13 +2216,16 @@ namespace TheEscort
                             {
                                 if (e.DeflAmpTimer > 0)
                                 {
-                                    normSlamDamage *= dDKHDmg[0];
-                                    if (e.DeflPowah == 2) normSlamDamage *= 2;
-                                    if (e.DeflPowah == 3) normSlamDamage = 100;
+                                    normSlamDamage = e.DeflPowah switch 
+                                    {
+                                        3 => 100000,
+                                        2 => normSlamDamage * (7 + e.DeflPerma),
+                                        _ => normSlamDamage * (dDKHDmg[0] + e.DeflPerma)
+                                    };
                                 }
                                 else
                                 {
-                                    normSlamDamage *= dDKHDmg[1];
+                                    normSlamDamage *= (dDKHDmg[1] + e.DeflPerma);
                                 }
                             }
                             if (e.Gilded)
@@ -2349,15 +2352,15 @@ namespace TheEscort
                 List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
                 foreach (AbstractCreature abstractPlayer in playersToProgressOrWin)
                 {
-                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
+                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort) && escort.shelterSaveComplete < 20)
                     {
                         int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
-                        bool Successful = false;
-                        if (shelterPlayers.Contains(abstractPlayer) && !player.dead)
+                        bool inShelter = shelterPlayers.Contains(abstractPlayer);
+                        bool notDead = !player.dead;
+
+                        if (inShelter && notDead)
                         {
                             Ebug(player, "Is successful!", ignoreRepetition: true);
-                            Successful = true;
-
                             // do things when successful
                         }
                         else
@@ -2367,7 +2370,9 @@ namespace TheEscort
                         }
 
                         // Other builds
-                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, Successful, ref escort);
+                        if (escort.Deflector) Esclass_DF_WinLoseSave(self, playerNumber, notDead, ref escort);
+                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, inShelter && notDead, ref escort);
+                        escort.shelterSaveComplete++;
                     }
                 }
             }

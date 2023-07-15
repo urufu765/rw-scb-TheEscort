@@ -1,4 +1,6 @@
 using BepInEx;
+using Menu;
+using Newtonsoft.Json;
 using SlugBase.Features;
 using System;
 using UnityEngine;
@@ -159,8 +161,8 @@ namespace TheEscort
             {
                 if (e.DeflAmpTimer > 0)
                 {
-                    spear.spearDamageBonus *= dSpearDmg[0];
-                    if (e.DeflPowah == 2) spear.spearDamageBonus += 1.5f;
+                    if (e.DeflPowah == 1) spear.spearDamageBonus *= dSpearDmg[0] + e.DeflPerma;
+                    if (e.DeflPowah == 2) spear.spearDamageBonus *= 7f + e.DeflPerma;
                     if (e.DeflPowah == 3) {
                         spear.spearDamageBonus = 1000000f;
                         self.room?.ScreenMovement(null, default, 1.2f);
@@ -172,13 +174,83 @@ namespace TheEscort
                 else
                 {
                     e.DeflPowah = 0;
-                    spear.spearDamageBonus = dSpearDmg[1];
+                    spear.spearDamageBonus *= dSpearDmg[1] + e.DeflPerma;
                     spear.firstChunk.vel *= dSpearVel[1];
                 }
             }
             catch (Exception err)
             {
                 Ebug(self, err, "Error while applying Deflector-specific speartoss");
+            }
+        }
+
+        private void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
+        {
+            try
+            {
+                if (victim.killTag?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort escort) && escort.Deflector)
+                {
+                    if (p.room?.game?.session is StoryGameSession)
+                    {
+                        int points = StoryGameStatisticsScreen.GetNonSandboxKillscore(victim.Template.type);
+                        if (points <= 0)
+                        {
+                            if (themCreatureScores is null) Expedition.ChallengeTools.GenerateCreatureScores(ref themCreatureScores);
+                            if (themCreatureScores.TryGetValue(victim.Template.type.value, out var score))
+                            {
+                                points = score;
+                            }
+                        }
+                        escort.DeflPerma += points * 0.001f;
+                    }
+                    else if (p.room?.game?.session is ArenaGameSession arenaGameSession)
+                    {
+                        int i = MultiplayerUnlocks.SandboxUnlockForSymbolData(CreatureSymbol.SymbolDataFromCreature(victim.abstractCreature)).index;
+                        if (i >= 0)
+                        {
+                            escort.DeflPerma += arenaGameSession.arenaSitting.gameTypeSetup.killScores[i] * 0.01f;
+                        }
+                    }
+                    Ebug("Damage: " + escort.DeflPerma);
+                }
+                orig(self, victim);
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Permadamage increase failed due to null!");
+                orig(self, victim);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Permadamage increase failed due to generic error!");
+                orig(self, victim);
+            }
+        }
+
+        public static void Esclass_DF_WinLoseSave(ShelterDoor self, int playerNumber, bool success, ref Escort escort)
+        {
+            if (success && self.room?.game?.session is StoryGameSession storyGameSession)
+            {
+                float bonusDamage = 0;
+                if (storyGameSession.saveState.deathPersistentSaveData.karma == storyGameSession.saveState.deathPersistentSaveData.karmaCap)
+                {
+                    bonusDamage = storyGameSession.saveState.deathPersistentSaveData.karmaCap switch 
+                    {
+                        9 => 0.01f,
+                        8 => 0.008f,
+                        7 => 0.006f,
+                        6 => 0.004f,
+                        4 => 0.002f,
+                        3 => 0.001f,
+                        _ => 0
+                    };
+                }
+                storyGameSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage[playerNumber] = escort.DeflPerma + bonusDamage;
+                if (escort.shelterSaveComplete <= 1)
+                {
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
+                }
+
             }
         }
     }

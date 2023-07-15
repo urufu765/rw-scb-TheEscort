@@ -506,4 +506,66 @@ public static class ETrackrr
             Value = Mathf.Lerp(PreValue, escort.GildPower, timeStacker);
         }
     }
+
+    public class DeflectorPermaDamage : Trackrr<float>
+    {
+        private readonly Escort e;
+        private int tickSlowly;
+        private int tickEvenSlowly;
+        private int tickExtremelySlowly;
+        private int sizeIncrease;
+        private bool firstInit = true;
+        private readonly Color deflectorColor = new Color(0.69f, 0.55f, 0.9f);
+        public DeflectorPermaDamage(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "deflectorPerma")
+        {
+            this.e = escort;
+            this.Limit = 0;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            this.Value = Mathf.Lerp(PreValue, Mathf.InverseLerp(0, 50, sizeIncrease + tickExtremelySlowly), timeStacker);
+            this.trackerColor = Color.Lerp(deflectorColor, Color.white, Mathf.InverseLerp(0, 40, tickExtremelySlowly));
+            this.effectColor = e.hypeColor;
+        }
+
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+            if (this.Limit < e.DeflPerma)
+            {
+                if (!firstInit) tickSlowly++;
+                if (sizeIncrease < 30 && tickSlowly >= 4) 
+                {
+                    sizeIncrease++;
+                    tickSlowly = 0;
+                }
+                tickEvenSlowly++;
+                if (tickEvenSlowly >= (firstInit? 4 : 10))
+                {
+                    this.Limit += 0.001f;
+                    tickEvenSlowly = 0;
+                    tickExtremelySlowly = firstInit? 8 : 20;
+                }
+            }
+            else
+            {
+                firstInit = false;
+                if (sizeIncrease > 0)
+                {
+                    sizeIncrease--;
+                }
+            }
+            if (tickExtremelySlowly > 0)
+            {
+                tickExtremelySlowly--;
+            }
+            Max = e.DeflPowah switch {
+                3 => 69,
+                2 => 7,
+                1 => 3,
+                _ => 0.5f
+            };
+        }
+    }
 }

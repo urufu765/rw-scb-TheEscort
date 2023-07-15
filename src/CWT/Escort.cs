@@ -64,6 +64,7 @@ namespace TheEscort
         public List<Trackrr<int>> intTrackers;
         public float acidSwim;
         public int acidRepetitionGuard;
+        public int shelterSaveComplete;
 
         // Build stuff
         public bool Brawler;
@@ -86,6 +87,7 @@ namespace TheEscort
         public int DeflSlideCom;
         public bool DeflSlideKick;
         public int DeflPowah;
+        public float DeflPerma;
         public bool Escapist;
         public int EscDangerExtend;
         public Creature.Grasp EscDangerGrasp;
@@ -185,6 +187,7 @@ namespace TheEscort
             this.DeflSlideCom = 0;
             this.DeflSlideKick = false;
             this.DeflPowah = 0;
+            this.DeflPerma = 0f;
 
             this.Escapist = false;
             this.EscDangerExtend = 0;
@@ -508,6 +511,7 @@ namespace TheEscort
             {
                 hypeSprite = "escort_hud_deflector";
                 floatTrackers.Add(new ETrackrr.DeflectorEmpowerTraction(n, 1, this));
+                floatTrackers.Add(new ETrackrr.DeflectorPermaDamage(n, 2, this));
             }
             if (Escapist)
             {

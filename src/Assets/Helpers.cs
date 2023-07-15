@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using SlugBase.SaveData;
-
+using System.Collections.Generic;
 
 namespace TheEscort
 {
@@ -21,6 +21,8 @@ namespace TheEscort
         public static int logImportance = 4;
         private static readonly string[] prevLogs = new string[4];
         private static readonly int[] logRepetitions = new int[4];
+
+        public static Dictionary<string, int> themCreatureScores;
 
         public static void Ebug(string message, int logPrio = 3, bool ignoreRepetition = false)
         {

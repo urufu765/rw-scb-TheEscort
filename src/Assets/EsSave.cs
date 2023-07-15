@@ -47,6 +47,7 @@ namespace TheEscort
     public record EscortSaveDataMiscWorld
     {
         public Dictionary<int, int> SpeChargeStore {get; set;} = new();
+        public Dictionary<int, float> DeflPermaDamage {get; set;} = new();
     }
 
 
@@ -69,6 +70,5 @@ namespace TheEscort
     /// </summary>
     public record EscortSaveDataMiscProgression
     {
-
     }
 }

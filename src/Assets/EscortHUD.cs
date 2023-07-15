@@ -31,6 +31,7 @@ public static class EscortHUD
                                 "hype" => new HypeRing(self, traction),
                                 "railgunnerUse" => new RailRing(self, traction),
                                 "speedster" => new SpeedRing(self, traction),
+                                "deflectorPerma" => new DmgText(self, traction),
                                 _ => new GenericRing(self, traction)
                             }
                         );
@@ -325,6 +326,69 @@ public static class EscortHUD
             normalSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, tracked.Limit);
             normalSprite.alpha = Mathf.InverseLerp(0, 5, tracked.Value);
             normalSprite.scale = 1 + 0.07f * tracked.Max;
+        }
+    }
+
+    public class DmgText : RingMeter
+    {
+        private readonly Trackrr<float> tracked;
+        private readonly FLabel damage;
+        private readonly FLabel damageBacking;
+        private readonly FSprite glow;
+        public DmgText(HUD.HUD hud, Trackrr<float> trackrr) : base(hud)
+        {
+            this.tracked = trackrr;
+            damage = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                color = tracked.trackerColor
+            };
+            damageBacking = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                alpha = 0.7f,
+                color = Color.black
+            };
+            this.glow = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                scaleX = 6,
+                scaleY = 1,
+                alpha = 0.5f,
+                color = tracked.trackerColor,
+                shader = hud.rainWorld.Shaders["FlatLight"]
+            };
+
+            hud.fContainers[1].AddChild(glow);
+            hud.fContainers[1].AddChild(damageBacking);
+            hud.fContainers[1].AddChild(damage);
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            string multiplier = (tracked.Max + tracked.Limit).ToString();
+            if (!multiplier.Contains(".")) multiplier += ".";
+            while (multiplier.Length < 4 || multiplier[multiplier.Length - 4] != '.')
+            {
+                multiplier += "0";
+            }
+            damage.text = "x" + (tracked.Max == 69? "∞.000" : multiplier);
+            damage.x = DrawPos(timeStacker).x;
+            damage.y = DrawPos(timeStacker).y + 40;
+            damage.color = tracked.trackerColor;
+            damage.scale = Mathf.Lerp(0.75f, 1f, tracked.Value);
+            damageBacking.text = "x" + (tracked.Max == 69? "∞.000" : multiplier);
+            damageBacking.x = DrawPos(timeStacker).x + 2;
+            damageBacking.y = DrawPos(timeStacker).y + 38;
+            damageBacking.scale = Mathf.Lerp(0.75f, 1f, tracked.Value);
+            glow.x = DrawPos(timeStacker).x;
+            glow.y = DrawPos(timeStacker).y + 40;
+            glow.color = tracked.effectColor;
+            glow.scaleY = Mathf.Lerp(1, 3, tracked.Value);
         }
     }
 }

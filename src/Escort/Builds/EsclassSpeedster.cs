@@ -523,10 +523,9 @@ namespace TheEscort
                 storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore[playerNumber] = success? escort.SpeCharge : 0;
                 storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(playerNumber, out int charging);
                 Ebug("Saved successfully to " + playerNumber + ": " + charging);
-                if (!escort.astop)
+                if (escort.shelterSaveComplete <= 1)
                 {
                     Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
-                    escort.astop = true;
                 }
             }
         }
