@@ -177,6 +177,11 @@ namespace TheEscort
             {
                 e.verticalPoleFail--;
             }
+            if (self.bodyChunks[1].contactPoint.y < 0)
+            {
+                e.verticalPoleTech = false;
+                e.verticalPoleToggle = false;
+            }
         }
 
 
@@ -246,7 +251,7 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (true && CR.TryGet(self, out int limiter)){
+                if (false && CR.TryGet(self, out int limiter)){
                     // Console ticker
                     if (e.consoleTick > limiter)
                     {
@@ -466,20 +471,24 @@ namespace TheEscort
                         self.bodyChunks[1].contactPoint.x == 0 &&
                         self.bodyChunks[0].contactPoint.y == 0 &&
                         self.bodyChunks[0].contactPoint.x == 0 &&
-                        !self.IsTileSolid(1, -1, 0) && !self.IsTileSolid(1, 1, 0)
+                        (!self.IsTileSolid(1, -1, 0) && !self.IsTileSolid(1, 1, 0) ||
+                        !self.IsTileSolid(1, 0, -1) && !self.IsTileSolid(1, 0, 1)
+                        )
                     )
                     {   
                         // Horizontal pole skip
                         if (
                             (
                                 self.room.GetTile(self.bodyChunks[1].pos).horizontalBeam ||
-                                self.room.GetTile(new Vector2(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y - 10f)).horizontalBeam) &&
-                                Mathf.Min(Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].pos.y), Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].lastPos.y)
+                                self.room.GetTile(new Vector2(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y - 10f)).horizontalBeam
+                            ) &&
+                            Mathf.Min(Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].pos.y), Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].lastPos.y)
                             ) < 22.5f &&
                             self.input[0].y <= 0 &&
                             self.poleSkipPenalty < 1
                         )
                         {
+                            Ebug(self, "Horizontal Poletech condition", ignoreRepetition: true);
                             if (flipperoni)
                             {
                                 self.bodyChunks[0].vel.y = 7f;
@@ -528,13 +537,13 @@ namespace TheEscort
                             self.poleSkipPenalty = 3;
                             self.wantToJump = 0;
                             self.canJump = 0;
-                            e.verticalPoleFail = 40;
+                            e.verticalPoleFail = 10;
                         }
                         // Vertical pole skip
                         else if (
-                            false &&
+                            true &&
                             e.isDefault &&
-                            e.verticalPoleFail == 0 &&
+                            //e.verticalPoleFail == 0 &&
                             (
                                 self.room.GetTile(self.bodyChunks[1].pos).verticalBeam ||
                                 self.room.GetTile(new Vector2(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y - 10f)).verticalBeam) &&
@@ -554,7 +563,7 @@ namespace TheEscort
                                 self.bodyChunks[0].vel.x *= e.verticalPoleToggle? 0.28f: 0.24f;
                                 self.bodyChunks[1].vel.x *= e.verticalPoleToggle? 0.24f: 0.28f;
                                 self.jumpBoost += 8f;
-                                e.verticalPoleToggle = e.verticalPoleToggle? false : true;
+                                e.verticalPoleToggle = !e.verticalPoleToggle;
                             }
                             else if (kickeroni)
                             {
@@ -599,14 +608,14 @@ namespace TheEscort
                         }
                         else
                         {
-                            e.verticalPoleFail = 80;
+                            e.verticalPoleFail = 30;
                             self.poleSkipPenalty = 5;
                             self.wantToJump = 5;
                         }
                     }
                     else
                     {
-                        e.verticalPoleFail = 80;
+                        //e.verticalPoleFail = 80;
                         self.wantToJump = 5;
                     }
                 }

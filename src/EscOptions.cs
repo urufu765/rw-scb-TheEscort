@@ -131,7 +131,7 @@ namespace TheEscort
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "[GILDED UPDATE 0.2.10!]<LINE>- New build: Gilded! Gilded is unable to throw rocks and spears, but hold throw to transform them into throwable objects!<LINE>- Input the secret code that once gave you early Gilded preview and you can further craft something much more dangerous!<LINE>- Fixed damage output of special spears for all Escorts. <LINE>- Escorts can now take a dip in acid. <LINE>- You no longer have to go to the remix settings for the secret code to apply, it will now save between game sessions.<LINE>- Tutorial has been added to teach those unaware of super wall flips that such a thing exists.<LINE>- Translation support has been added, Russian translation included (wip). Thank you MaxBogomol for the translation!<LINE>- Normal Escort can now swim better.<LINE>- Brawler's HUD sprite is replaced when silly sfx is on<LINE>- Deflector's HUD sprite has been updated, and given text to indicate how much damage you can do. <LINE>- Deflector's damage increases permanently per kill in a run.<LINE>- Speedster will get stunned a lot less<LINE>- Speedster speed benefits buffed<LINE>- Speedster charges carry over from the previous successful cycle.");
+                "[GILDED UPDATE 0.2.10!]<LINE>- New build: Gilded! Gilded is unable to throw rocks and spears, but hold throw to transform them into throwable objects!<LINE>- Input the secret code that once gave you early Gilded preview and you can further craft something much more dangerous!<LINE>- Fixed damage output of special spears for all Escorts. <LINE>- Escorts can now take a dip in acid. <LINE>- You no longer have to go to the remix settings for the secret code to apply, it will now save between game sessions.<LINE>- Tutorial has been added to teach those unaware of super wall flips that such a thing exists.<LINE>- Translation support has been added, Russian translation included (wip). Thank you MaxBogomol for the translation!<LINE>- Normal Escort can now swim better.<LINE>- Normal Escort can also do vertical poletech!<LINE>- Brawler's HUD sprite is replaced when silly sfx is on<LINE>- Deflector's HUD sprite has been updated, and given text to indicate how much damage you can do. <LINE>- Deflector's damage increases permanently per kill in a run.<LINE>- Speedster will get stunned a lot less<LINE>- Speedster speed benefits buffed<LINE>- Speedster charges carry over from the previous successful cycle.");
             }
         }
 
@@ -462,7 +462,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {**___}", true){
                     color = bSpeedster * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {**___}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
             };
