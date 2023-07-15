@@ -171,6 +171,12 @@ namespace TheEscort
             {
                 e.acidRepetitionGuard--;
             }
+
+            // Escort vertical pole penalty
+            if (e.verticalPoleFail > 0)
+            {
+                e.verticalPoleFail--;
+            }
         }
 
 
@@ -462,7 +468,8 @@ namespace TheEscort
                         self.bodyChunks[0].contactPoint.x == 0 &&
                         !self.IsTileSolid(1, -1, 0) && !self.IsTileSolid(1, 1, 0)
                     )
-                    {
+                    {   
+                        // Horizontal pole skip
                         if (
                             (
                                 self.room.GetTile(self.bodyChunks[1].pos).horizontalBeam ||
@@ -521,15 +528,85 @@ namespace TheEscort
                             self.poleSkipPenalty = 3;
                             self.wantToJump = 0;
                             self.canJump = 0;
+                            e.verticalPoleFail = 40;
+                        }
+                        // Vertical pole skip
+                        else if (
+                            false &&
+                            e.isDefault &&
+                            e.verticalPoleFail == 0 &&
+                            (
+                                self.room.GetTile(self.bodyChunks[1].pos).verticalBeam ||
+                                self.room.GetTile(new Vector2(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y - 10f)).verticalBeam) &&
+                                Mathf.Min(Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].pos.y), Mathf.Abs(self.room.MiddleOfTile(self.bodyChunks[1].pos).y - self.bodyChunks[1].lastPos.y)
+                            ) < 22.5f &&
+                            self.input[0].y <= 0 &&
+                            self.poleSkipPenalty < 1 &&
+                            ((e.verticalPoleToggle? (self.bodyChunks[0].pos.y > self.bodyChunks[1].pos.y) : (self.bodyChunks[0].pos.y < self.bodyChunks[1].pos.y)) || !e.verticalPoleTech)
+                        )
+                        {
+                            e.verticalPoleTech = true;
+                            Ebug(self, "Vertical Poletech Condition", ignoreRepetition: true);
+                            if (flipperoni)
+                            {
+                                self.bodyChunks[0].vel.y = e.verticalPoleToggle? 6f : 8f;
+                                self.bodyChunks[1].vel.y = e.verticalPoleToggle? 8f : 6f;
+                                self.bodyChunks[0].vel.x *= e.verticalPoleToggle? 0.28f: 0.24f;
+                                self.bodyChunks[1].vel.x *= e.verticalPoleToggle? 0.24f: 0.28f;
+                                self.jumpBoost += 8f;
+                                e.verticalPoleToggle = e.verticalPoleToggle? false : true;
+                            }
+                            else if (kickeroni)
+                            {
+                                self.bodyChunks[0].vel.y = 6f;
+                                self.bodyChunks[1].vel.y = 4.5f;
+                                self.bodyChunks[0].vel.x *= -2.5f;
+                                self.bodyChunks[1].vel.x *= -1.5f;
+                                self.jumpBoost += 7f;
+                            }
+                            else if (rollaunch)
+                            {
+                                self.bodyChunks[0].vel.y = 14f;
+                                self.bodyChunks[1].vel.y = 13f;
+                                self.bodyChunks[0].vel.x *= 0.1f;
+                                self.bodyChunks[1].vel.x *= 0f;
+                                self.jumpBoost += 9f;
+                                self.animation = Player.AnimationIndex.Flip;
+                                e.verticalPoleToggle = true;
+                            }
+                            else
+                            {
+                                e.verticalPoleFail = 40;
+                            }
+                            if (self.animation != Player.AnimationIndex.None)
+                            {
+                                for (int num8 = 0; num8 < (rollaunch ? 14 : 6); num8++)
+                                {
+                                    self.room.AddObject(new WaterDrip(self.mainBodyChunk.pos + new Vector2(self.mainBodyChunk.rad * self.mainBodyChunk.vel.x, 0f), Custom.DegToVec(UnityEngine.Random.value * 180f * (0f - self.mainBodyChunk.vel.x)) * Mathf.Lerp(10f, 17f, UnityEngine.Random.value), waterColor: false));
+                                }
+                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk, false, 1f, rollaunch ? 0.5f : 1f);
+                            }
+                            else
+                            {
+                                self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, e.SFXChunk);
+                            }
+                            float n = self.room.MiddleOfTile(self.bodyChunks[1].pos).y + 5f - self.bodyChunks[1].pos.y;
+                            self.bodyChunks[1].pos.y += n;
+                            self.bodyChunks[0].pos.y += n;
+                            self.poleSkipPenalty = 3;
+                            self.wantToJump = 0;
+                            self.canJump = 0;
                         }
                         else
                         {
+                            e.verticalPoleFail = 80;
                             self.poleSkipPenalty = 5;
                             self.wantToJump = 5;
                         }
                     }
                     else
                     {
+                        e.verticalPoleFail = 80;
                         self.wantToJump = 5;
                     }
                 }

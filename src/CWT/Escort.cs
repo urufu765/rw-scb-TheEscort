@@ -65,6 +65,9 @@ namespace TheEscort
         public float acidSwim;
         public int acidRepetitionGuard;
         public int shelterSaveComplete;
+        public bool verticalPoleToggle;
+        public bool verticalPoleTech;
+        public int verticalPoleFail;
 
         // Build stuff
         public bool Brawler;
