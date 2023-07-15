@@ -78,7 +78,6 @@ namespace TheEscort
         [Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
         [Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
         public Configurable<int>[] cfgBuild;
-        public Configurable<int> camBuild;
         [Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
         public Configurable<bool>[] cfgEasy;
         [Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
@@ -127,13 +126,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.9.1";
+        private static readonly string VERSION = "0.2.10";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Fixed food meter to properly apply the correct amount of food taken and stuff.<LINE><LINE>" +
-                "In case you missed it -> [HUD UPDATE 0.2.9!]<LINE>- Each Escort has a different food requirement, and has different spawns<LINE>- Patched out an obsolete code that causes crashes if there's more than 4 players (full support for 8 players will come out when the mod does)<LINE>- Clarified Long Wall Jump and told players to keep it off<LINE>- Disabled experimental backpack (secret slup) due to crashes<LINE>- Added legacy controls for tongue thing<LINE>- Gave option to disable the sick flip sfx separately from the rest of silly sfx<LINE>- Potentially fixed issue where sometimes Escort can just not die in death situations<LINE>- Gave default Escort poletech by default<LINE>- Brawler shank adjusted such that you can shank faster if it doesn't land 1s -> 0.5s, Brawler punch buffed by being able to punch faster 1s -> 0.75s<LINE>- Deflector buffed by increasing empowered duration for higher power stages (up to 8 seconds)<LINE>- Railgunner's base bite lethality rate reduced from 0.85 -> 0.75");
+                "[GILDED UPDATE 0.2.10!]<LINE>- New build: Gilded! Gilded is unable to throw rocks and spears, but hold throw to transform them into throwable objects!<LINE>- Input the secret code that once gave you early Gilded preview and you can further craft something much more dangerous!<LINE>- Fixed damage output of special spears for all Escorts. <LINE>- Escorts can now take a dip in acid. <LINE>- You no longer have to go to the remix settings for the secret code to apply, it will now save between game sessions.<LINE>- Tutorial has been added to teach those unaware of super wall flips that such a thing exists.<LINE>- Translation support has been added, Russian translation included (wip). Thank you MaxBogomol for the translation!<LINE>- Normal Escort can now swim better.<LINE>- Brawler's HUD sprite is replaced when silly sfx is on<LINE>- Deflector's HUD sprite has been updated, and given text to indicate how much damage you can do. <LINE>- Deflector's damage increases permanently per kill in a run.<LINE>- Speedster will get stunned a lot less<LINE>- Speedster speed benefits buffed<LINE>- Speedster charges carry over from the previous successful cycle.");
             }
         }
 

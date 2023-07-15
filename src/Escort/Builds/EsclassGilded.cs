@@ -598,9 +598,9 @@ namespace TheEscort
                 {
                     self.rollCounter = 7;
                 }
-                if (self.initSlideCounter < 3)
+                if (self.initSlideCounter < 2)
                 {
-                    self.initSlideCounter = 3;
+                    self.initSlideCounter = 2;
                 }
             }
 

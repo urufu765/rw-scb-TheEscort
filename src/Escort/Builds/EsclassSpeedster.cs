@@ -152,7 +152,7 @@ namespace TheEscort
             {  // New speedway
                 if (e.SpeBonk == 1)
                 {
-                    self.Stun(40 * e.SpeGear);
+                    self.Stun(20 * e.SpeGear);
                     if (e.SpeDashNCrash && e.SpeGear > 0)
                     {
                         e.SpeGear--;
@@ -294,7 +294,7 @@ namespace TheEscort
             }
             else
             {
-                n += 0.4f * e.SpeGear;
+                n += 0.45f * e.SpeGear;
             }
             if (e.SpeDashNCrash)
             {
@@ -378,7 +378,7 @@ namespace TheEscort
             }
             else
             {
-                n += 0.25f * e.SpeGear;
+                n += 0.35f * e.SpeGear;
             }
             if (e.SpeDashNCrash)
             {
@@ -481,7 +481,7 @@ namespace TheEscort
                     //self.WallJump(-self.flipDirection);
                     self.bodyChunks[0].vel.x *= -(1.5f + 0.3f * e.SpeGear);
                     self.bodyChunks[1].vel.x *= -(1f + 0.2f * e.SpeGear);
-                    self.Stun((int)(slamStun * 1.5f));
+                    self.Stun((int)(slamStun * 0.75f));
                 }
             }
         }
@@ -507,7 +507,7 @@ namespace TheEscort
             }
             if (!self.dead && e.SpeDashNCrash)
             {
-                if (firstContact && speed > (e.SpeSecretSpeed ? 15f : 13f) && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip)
+                if (firstContact && speed > (e.SpeSecretSpeed ? 15f : 14f) && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip)
                 {
                     self.room?.PlaySound(e.SpeSecretSpeed ? SoundID.Slugcat_Terrain_Impact_Hard : SoundID.Slugcat_Terrain_Impact_Medium, e.SFXChunk);
                     e.SpeBonk = 5;

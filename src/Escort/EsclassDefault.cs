@@ -2338,6 +2338,10 @@ namespace TheEscort
             if (obj != null && obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown)
             {
                 Ebug(self, "Hehe, yoink!");
+                if (self.input[0].pckp && !self.input[1].pckp)
+                {
+                    w.mode = Weapon.Mode.Free;
+                }
                 return true;
             }
             return orig(self, obj);
