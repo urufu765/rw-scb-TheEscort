@@ -966,7 +966,7 @@ namespace TheEscort
             {
                 if (Eshelp_IsMe(slugcat)) return orig(slugcat);
                 return config.cfgBuild[0].Value switch{
-                    -6 => new(10, 6),  // Gilded
+                    -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
                     -4 => new(14, 7),  // Railgunner
                     -3 => new(11, 7),  // Escapist

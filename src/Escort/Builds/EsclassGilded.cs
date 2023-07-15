@@ -113,8 +113,6 @@ namespace TheEscort
             // if (e.secretRGB) e.Escat_RGB_firespear();
             if (!e.GildOverpowered)
             {
-                e.GildOverpowered = ins.config.cfgSectretBuild.Value;
-
                 if (self.room?.game?.session is StoryGameSession && self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap == 9)
                 {
                     e.GildOverpowered = true;
