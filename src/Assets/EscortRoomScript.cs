@@ -4,6 +4,7 @@ using UnityEngine.PlayerLoop;
 using SlugBase;
 using static TheEscort.Eshelp;
 using static RWCustom.Custom;
+using static TheEscort.EscortTutorial;
 
 namespace TheEscort;
 
@@ -19,11 +20,11 @@ public class EscortRoomScript
         orig(room);
         //Ebug("SCRIPTADDER HERE LOL");
         if (room?.game?.session is null) return;
-        if (room.game.session is StoryGameSession && Eshelp_IsMe(room.game.GetStorySession.saveState.saveStateNumber, false))
+        if (room.game.session is StoryGameSession storyGameSession && Eshelp_IsMe(storyGameSession.saveState.saveStateNumber, false))
         {
             string name = room.abstractRoom.name;
             if (name is null) return;
-            if (room.game.GetStorySession.saveState.cycleNumber < 2 && (name is "CC_SHAFT02" or "CC_CLOG" or "SU_B07" or "SI_D01" or "SI_D03" or "DM_LEG02" or "GW_TOWER15" or "LF_A10" or "LF_E03" or "CC_A10" or "HR_AP01") && !room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial)
+            if (storyGameSession.saveState.cycleNumber < 2 && (name is "CC_SHAFT02" or "CC_CLOG" or "SU_B07" or "SI_D01" or "SI_D03" or "DM_LEG02" or "GW_TOWER15" or "LF_A10" or "LF_E03" or "CC_A10" or "HR_AP01") && !storyGameSession.saveState.deathPersistentSaveData.Etut(SuperWallFlip))
             {
                 Ebug("Get the fucking tutorial bro");
                 room.AddObject(new TellPlayerToDoASickFlip(room));
@@ -43,7 +44,7 @@ public class EscortRoomScript
         {
             base.Update(eu);
             if (room?.game?.session is null) return;
-            if (room.game.session is StoryGameSession && !room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial)
+            if (room.game.session is StoryGameSession storyGameSession && !storyGameSession.saveState.deathPersistentSaveData.Etut(SuperWallFlip))
             {
                 waitForSpawn--;
                 for (int i = 0; i < room.game.Players.Count && (ModManager.CoopAvailable || i == 0); i++)
@@ -69,7 +70,7 @@ public class EscortRoomScript
                         {
                             Ebug(player, "SHOW TUTORIAL");
                             this.room.game.cameras[0].hud.textPrompt.AddMessage(rainWorld.inGameTranslator.Translate("flippounce_tutorial"), 20, 500, true, true);
-                            room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SuperWallFlipTutorial = true;
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(SuperWallFlip, true);
                             //Destroy();
                             break;
                         }

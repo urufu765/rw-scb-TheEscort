@@ -5,6 +5,8 @@ using System;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using Newtonsoft;
+using Newtonsoft.Json;
 
 namespace TheEscort
 {
@@ -516,8 +518,17 @@ namespace TheEscort
 
         public static void Esclass_SS_WinLoseSave(ShelterDoor self, int playerNumber, bool success, ref Escort escort)
         {
-            if (self.room?.game?.session is not StoryGameSession) return;
-            self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[playerNumber] = success? escort.SpeCharge : 0;
+            if (self.room?.game?.session is StoryGameSession storyGameSession)
+            {
+                storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore[playerNumber] = success? escort.SpeCharge : 0;
+                storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(playerNumber, out int charging);
+                Ebug("Saved successfully to " + playerNumber + ": " + charging);
+                if (!escort.astop)
+                {
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
+                    escort.astop = true;
+                }
+            }
         }
     }
 }

@@ -384,13 +384,14 @@ namespace TheEscort
             }
         }
 
-        public static EscortSaveDataDeathPersistent Esave(this DeathPersistentSaveData data)
+        public static void Etut(this DeathPersistentSaveData data, EscortTutorial tutorial, bool value)
         {
-            if (!data.GetSlugBaseData().TryGet(Plugin.MOD_ID, out EscortSaveDataDeathPersistent save))
-            {
-                data.GetSlugBaseData().Set(Plugin.MOD_ID, save = new());
-            }
-            return save;
+            data.SetTutorialValue(tutorial, value);
+        }
+
+        public static bool Etut(this DeathPersistentSaveData data, EscortTutorial tutorial)
+        {
+            return data.tutorialMessages.Contains(tutorial);
         }
 
         public static EscortSaveDataMiscWorld Esave(this MiscWorldSaveData data)

@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
+using Newtonsoft.Json;
 using RWCustom;
 using SlugBase.Features;
 using System;
@@ -714,9 +715,12 @@ namespace TheEscort
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
-                        if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession)
+                        if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession storyGameSession)
                         {
-                            e.SpeCharge = self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().SpeChargeStore[self.playerState.playerNumber];
+                            Ebug(self, "Get Speedster save!");
+                            storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging);
+                            e.SpeCharge = charging;
+                            Ebug(self, "Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
                         }
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.bodyWeightFac += 0.1f;

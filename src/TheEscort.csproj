@@ -46,6 +46,9 @@
     <Reference Include="..\lib\DressMySlugcat.dll">
       <HintPath>..\lib\DressMySlugcat.dll</HintPath>
     </Reference>
+    <Reference Include="..\lib\Newtonsoft.Json.dll">
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">
     <ItemGroup>

@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IL.Menu;
 
 namespace TheEscort
 {
     /// <summary>
     /// A simple list that expands upon having an index greater than the size
     /// </summary>
-    public record ExpandableList<T>
+    public class ExpandableList<T> : List<T>
     {
         private readonly List<T> _list = new();
 
-        public T this[int index]
+        public new T this[int index]
         {
             get
             {
@@ -43,27 +44,30 @@ namespace TheEscort
     /// <summary>
     /// Escort Savedata for run (doesn't save on death)
     /// </summary>
-    public class EscortSaveDataMiscWorld
+    public record EscortSaveDataMiscWorld
     {
-
+        public Dictionary<int, int> SpeChargeStore {get; set;} = new();
     }
+
 
     /// <summary>
-    /// Escort Savedata for run (saves even on death)
+    /// Escort Savedata for tutorials (death persistent)
     /// </summary>
-    public class EscortSaveDataDeathPersistent
+    public class EscortTutorial : DeathPersistentSaveData.Tutorial
     {
+        public static readonly EscortTutorial SuperWallFlip = new("EscorTutorialSuperWallFlip", true);
+        public static readonly EscortTutorial GildKillGuardian = new("EscorTutorialGildedKillAGuardian", true);
 
-        public bool SuperWallFlipTutorial = false;
-        public bool GildKillGuardianTutorial = false;
-        public ExpandableList<int> SpeChargeStore = new();
-        public Dictionary<int, float> Storage = new();
+        public EscortTutorial(string value, bool register = false) : base(value, register)
+        {
+        }
     }
+
 
     /// <summary>
     /// Escort Savedata for entire savefile
     /// </summary>
-    public class EscortSaveDataMiscProgression
+    public record EscortSaveDataMiscProgression
     {
 
     }

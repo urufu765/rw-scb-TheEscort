@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using static TheEscort.EscortTutorial;
 using RWCustom;
 using MoreSlugcats;
 
@@ -859,10 +860,10 @@ namespace TheEscort
                             self.hitsToKill = 1;
                         }
 
-                        if (self.triggered && self.room?.game?.session is StoryGameSession && !self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial)
+                        if (self.triggered && self.room?.game?.session is StoryGameSession storyGameSession && !storyGameSession.saveState.deathPersistentSaveData.Etut(GildKillGuardian))
                         {
                             self.room.game.cameras[0].hud.textPrompt.AddMessage(Swapper(Custom.rainWorld.inGameTranslator.Translate("gilded_tut_guardian")), 20, 300, true, true);
-                            self.room.game.GetStorySession.saveState.deathPersistentSaveData.Esave().GildKillGuardianTutorial = true;
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(GildKillGuardian, true);
                         }
                     }
                 }
