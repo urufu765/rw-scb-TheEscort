@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using IL.ScavengerCosmetic;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using RWCustom;
@@ -14,7 +15,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.10.1")]
+    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.11")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -330,11 +331,12 @@ namespace TheEscort
             Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
             Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
             Escort_SFX_Gild_Stomp = new SoundID("Escort_Gild_Stomp", true);
-            FAtlas aB, aH, hA;
+            FAtlas aB, aH, hA, hB;
             aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
             aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
             hA = Futile.atlasManager.LoadAtlas("atlases/escorthuda");
-            if (aB == null || aH == null || hA == null)
+            hB = Futile.atlasManager.LoadAtlas("atlases/escorthudb");
+            if (aB == null || aH == null || hA == null || hB == null)
             {
                 Ebug("Oh no. Sprites dead.", 0);
             }

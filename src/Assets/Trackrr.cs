@@ -16,6 +16,7 @@ public abstract class Trackrr<T>
     public Color trackerColor;
     public Color effectColor;
     public bool force;
+    public bool overtake;
 
     public virtual T Value
     {
@@ -142,6 +143,7 @@ public static class ETrackrr
             force = Value > Limit;
             this.trackerColor = e.hypeColor;
             this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.5f);
+            this.overtake = e.overtakeSprite;
         }
     }
 

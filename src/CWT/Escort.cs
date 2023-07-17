@@ -68,6 +68,7 @@ namespace TheEscort
         public bool verticalPoleToggle;
         public bool verticalPoleTech;
         public int verticalPoleFail;
+        public bool overtakeSprite;
 
         // Build stuff
         public bool Brawler;
