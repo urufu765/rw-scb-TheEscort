@@ -1,6 +1,6 @@
 {"frames": {
 
-"escort_hud2_brawler.png":
+"escort_hud_brawler.png":
 {
 	"frame": {"x":2,"y":2,"w":32,"h":32},
 	"rotated": false,
@@ -8,7 +8,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"escort_hud_brawler.png":
+"escort_hud_brawler_alt.png":
 {
 	"frame": {"x":36,"y":2,"w":32,"h":32},
 	"rotated": false,
@@ -16,7 +16,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"escort_hud_brawler_alt.png":
+"escort_hud_default.png":
 {
 	"frame": {"x":70,"y":2,"w":32,"h":32},
 	"rotated": false,
@@ -24,17 +24,9 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"escort_hud_default.png":
-{
-	"frame": {"x":104,"y":2,"w":32,"h":32},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
-	"sourceSize": {"w":32,"h":32}
-},
 "escort_hud_deflector.png":
 {
-	"frame": {"x":138,"y":2,"w":32,"h":32},
+	"frame": {"x":2,"y":36,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +34,7 @@
 },
 "escort_hud_escapist.png":
 {
-	"frame": {"x":172,"y":2,"w":32,"h":32},
+	"frame": {"x":36,"y":36,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +42,7 @@
 },
 "escort_hud_gilded.png":
 {
-	"frame": {"x":206,"y":2,"w":32,"h":32},
+	"frame": {"x":70,"y":36,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +50,7 @@
 },
 "escort_hud_parry.png":
 {
-	"frame": {"x":240,"y":2,"w":32,"h":32},
+	"frame": {"x":2,"y":70,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,7 +58,7 @@
 },
 "escort_hud_railgunner.png":
 {
-	"frame": {"x":274,"y":2,"w":32,"h":32},
+	"frame": {"x":36,"y":70,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -74,7 +66,7 @@
 },
 "escort_hud_speedster.png":
 {
-	"frame": {"x":308,"y":2,"w":32,"h":32},
+	"frame": {"x":70,"y":70,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -85,8 +77,8 @@
 	"version": "1.0",
 	"image": "escorthuda.png",
 	"format": "RGBA8888",
-	"size": {"w":342,"h":36},
+	"size": {"w":104,"h":104},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:afa3260007882e17abe4458de6fcebf6:17ad5151edd0bf25ff98702346abce22:ec86523cfb19d91419f02a13ca731bbe$"
+	"smartupdate": "$TexturePacker:SmartUpdate:7196800227787ebbc043fefba7efe898:1b198e80cb192ab5c8dffc41b6ef09f4:ec86523cfb19d91419f02a13ca731bbe$"
 }
 }

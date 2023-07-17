@@ -75,12 +75,12 @@ namespace TheEscort
         public Configurable<bool> cfgSFX;
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
-        [Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
-        [Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
+        //[Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
+        //[Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
         public Configurable<int>[] cfgBuild;
-        [Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
+        //[Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
         public Configurable<bool>[] cfgEasy;
-        [Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
+        //[Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
         public Configurable<bool> cfgDKAnimation;
@@ -126,12 +126,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.10";
+        private static readonly string VERSION = "0.2.10.1";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "[GILDED UPDATE 0.2.10!]<LINE>- New build: Gilded! Gilded is unable to throw rocks and spears, but hold throw to transform them into throwable objects!<LINE>- Input the secret code that once gave you early Gilded preview and you can further craft something much more dangerous!<LINE>- Fixed damage output of special spears for all Escorts. <LINE>- Escorts can now take a dip in acid. <LINE>- You no longer have to go to the remix settings for the secret code to apply, it will now save between game sessions.<LINE>- Tutorial has been added to teach those unaware of super wall flips that such a thing exists.<LINE>- Translation support has been added, Russian translation included (wip). Thank you MaxBogomol for the translation!<LINE>- Normal Escort can now swim better.<LINE>- Normal Escort can also do vertical poletech!<LINE>- Brawler's HUD sprite is replaced when silly sfx is on<LINE>- Deflector's HUD sprite has been updated, and given text to indicate how much damage you can do. <LINE>- Deflector's damage increases permanently per kill in a run.<LINE>- Speedster will get stunned a lot less<LINE>- Speedster speed benefits buffed<LINE>- Speedster charges carry over from the previous successful cycle.");
+                "- Secret code for the build now allows karma 10 stuff to happen outside of its campaign<LINE>- Parry shield sprite slight fix<LINE>- You can actually end the game with Gilded.<LINE><LINE>In cased you missed it: [GILDED UPDATE 0.2.10!]<LINE>- New build: Gilded! Gilded is unable to throw rocks and spears, but hold throw to transform them into throwable objects!<LINE>- Input the secret code that once gave you early Gilded preview and you can further craft something much more dangerous!<LINE>- Fixed damage output of special spears for all Escorts. <LINE>- Escorts can now take a dip in acid. <LINE>- You no longer have to go to the remix settings for the secret code to apply, it will now save between game sessions.<LINE>- Tutorial has been added to teach those unaware of super wall flips that such a thing exists.<LINE>- Translation support has been added, Russian translation included (wip). Thank you MaxBogomol for the translation!<LINE>- Normal Escort can now swim better.<LINE>- Normal Escort can also do vertical poletech!<LINE>- Brawler's HUD sprite is replaced when silly sfx is on<LINE>- Deflector's HUD sprite has been updated, and given text to indicate how much damage you can do. <LINE>- Deflector's damage increases permanently per kill in a run.<LINE>- Speedster will get stunned a lot less<LINE>- Speedster speed benefits buffed<LINE>- Speedster charges carry over from the previous successful cycle.");
             }
         }
 
@@ -159,25 +159,25 @@ namespace TheEscort
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
             this.cfgDKAnimation = this.config.Bind<bool>("cfg_Drop_Kick_Animation", true);
-            this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            //this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            //this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            //this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            //this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
+            //this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             this.cfgBuild = new Configurable<int>[4];  // Make this expandable to more than 4 players by checking how many players are being logged in?
             this.cfgEasy = new Configurable<bool>[4];  // This too
             for (int x = 0; x < this.cfgBuild.Length; x++){
                 this.cfgBuild[x] = this.config.Bind<int>("cfg_Build_Player" + x, 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
                 this.cfgEasy[x] = this.config.Bind<bool>("cfg_Easy_Player" + x, false);
             }
-            this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
-            this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
-            this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
-            this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
-            this.cfgCustomP1 = this.config.Bind<bool>("cfg_Custom_P1", false);
-            this.cfgCustomP2 = this.config.Bind<bool>("cfg_Custom_P2", false);
-            this.cfgCustomP3 = this.config.Bind<bool>("cfg_Custom_P3", false);
-            this.cfgCustomP4 = this.config.Bind<bool>("cfg_Custom_P4", false);
+            //this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
+            //this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
+            //this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
+            //this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
+            //this.cfgCustomP1 = this.config.Bind<bool>("cfg_Custom_P1", false);
+            //this.cfgCustomP2 = this.config.Bind<bool>("cfg_Custom_P2", false);
+            //this.cfgCustomP3 = this.config.Bind<bool>("cfg_Custom_P3", false);
+            //this.cfgCustomP4 = this.config.Bind<bool>("cfg_Custom_P4", false);
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
             this.cfgNoticeHype = this.config.Bind<bool>("cfg_Noticeable_Hype", false);

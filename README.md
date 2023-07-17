@@ -7,6 +7,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.2 - The Escort
+  * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 
   * **(0.2.10)** Gilded Update! Gilded will be able to change a rock into a firebomb and spears into firespears. Slide is half distance. Correctly applied speed reduction when slow movement stun is applied. Fixed damage output of different types of spears. Fixed graphical inconsistencies regarding framerate. Added translation layer and russian translation. Escort can now survive touching acid. Removed an unused option. Fixed secret code going away whenever you restart the game. Speedster can now save their charge when hibernating. Replaced Brawler's hud sprite when silly SFX is on. Updated Deflector's hud sprite. Normal escort can swim better. Deflector's damage permanently increases the more kills they get. Speedster gets stunned a lot less. Increased Speedster's speed benefits. Vertical poletech for Escort.
 
