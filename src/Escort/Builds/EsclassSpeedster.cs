@@ -37,10 +37,15 @@ namespace TheEscort
             {
                 if (e.SpeTrailTick == 0 && e.SpeDashNCrash && self != null && self.player != null && self.owner != null && self.owner.room != null && self.player.bodyMode != Player.BodyModeIndex.ClimbIntoShortCut)
                 {
-                    e.Escat_addTrail(self, s, (int)Mathf.Lerp(20, 40, self.player.Adrenaline), (int)Mathf.Lerp(10, 20, self.player.Adrenaline));
+                    e.Escat_addTrail(rCam, s, (int)Mathf.Lerp(20, 40, self.player.Adrenaline), (int)Mathf.Lerp(10, 20, self.player.Adrenaline));
+                    //e.Escat_addSpeTrail(s, rCam, (int)Mathf.Lerp(20, 40, self.player.Adrenaline), (int)Mathf.Lerp(10, 20, self.player.Adrenaline));
                     e.SpeTrailTick = 2;
                 }
-                e.Escat_showTrail();
+                //e.Escat_showTrail();
+                // foreach(var speedTrail in e.SpeTrail2)
+                // {
+                //     speedTrail.DrawSprites(s, rCam, t, camP);
+                // }
             }
             catch (Exception err)
             {

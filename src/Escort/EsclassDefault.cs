@@ -645,7 +645,7 @@ namespace TheEscort
 
 
             // Update tracker
-            e.Escat_Update_Ring_Trackers();
+            //e.Escat_Update_Ring_Trackers();
         }
 
 

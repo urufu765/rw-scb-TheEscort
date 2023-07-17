@@ -122,6 +122,7 @@ namespace TheEscort
         // Escort instance stuff
         public static ConditionalWeakTable<Player, Escort> eCon = new();
         public static ConditionalWeakTable<Player, Socks> sCon = new();
+        //public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon = new();
         //private Escort e;
         public float hypeRequirement;
         private float DKMultiplier;
@@ -217,6 +218,8 @@ namespace TheEscort
             On.Player.TerrainImpact += Esclass_SS_Bonk;
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
             On.Player.Stun += Esclass_RG_Spasm;
+            On.RainWorldGame.Update += Escort_AbsoluteTick;
+            //On.RoomCamera.DrawUpdate += Escort_AdditionalDraw;
             //On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
 
 
@@ -959,6 +962,74 @@ namespace TheEscort
                 }
             }
         }
+
+
+
+        private void Escort_AbsoluteTick(On.RainWorldGame.orig_Update orig, RainWorldGame self)
+        {
+            orig(self);
+            try
+            {
+                if (!self.paused)
+                {
+                    foreach(var x in self.AlivePlayers)
+                    {
+                        if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
+                        {
+                            escort.Escat_Update_Ring_Trackers();
+                            if (escort.Speedster)
+                            {
+                                escort.Escat_showTrail();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Nulled when trying to tick absolute clocks");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Ebug(ane, "Argument nulled when trying to find an escort in a CWT");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when ticking absolute clocks");
+            }
+        }
+
+        private void Escort_AdditionalDraw(On.RoomCamera.orig_DrawUpdate orig, RoomCamera self, float timeStacker, float timeSpeed)
+        {
+            orig(self, timeStacker, timeSpeed);
+            try
+            {
+                foreach (AbstractCreature abstractCreature in self.game.Players)
+                {
+                    if (abstractCreature.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
+                    {
+                        //e.Escat_showTrail();
+                        foreach(var speedTrail in escort.SpeTrail2)
+                        {
+                            //speedTrail.Draw(self, timeStacker, self.CamPos);
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Nulled when trying to update graphics for miscellanious stuff");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Ebug(ane, "Argument nulled when trying to find an escort in a CWT");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when trying to update graphics for miscellanious stuff");
+            }
+        }
+
 
         /// <summary>
         /// Each build gets different food requirements!
