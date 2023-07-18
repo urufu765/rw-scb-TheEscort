@@ -172,6 +172,7 @@ public static class ETrackrr
             this.Value = Mathf.Lerp(PreValue, Max - player.slowMovementStun, timeStacker);
             this.Limit = player.slowMovementStun > 0? 0 : 1000;
             this.force = player.slowMovementStun > 0;
+            e.overtakeSprite = e.BrawLastWeapon != "";
         }
     }
 
@@ -188,7 +189,6 @@ public static class ETrackrr
         {
             this.Value = Mathf.Lerp(PreValue, e.DeflAmpTimer, timeStacker);
             this.Limit = e.DeflPowah == 3? 0 : 160;
-            this.force = e.DeflAmpTimer > 0;
         }
     }
 
@@ -212,7 +212,15 @@ public static class ETrackrr
             if (e.EscUnGraspCD <= 0)
             {
                 this.Limit = 0;
-                if (e.EscUnGraspLimit != 0) prevMax = e.EscUnGraspLimit;
+                if (e.EscUnGraspLimit != 0) 
+                {
+                    prevMax = e.EscUnGraspLimit;
+                    e.overtakeSprite = true;
+                }
+                else
+                {
+                    e.overtakeSprite = false;
+                }
                 this.Max = prevMax;
                 this.Value = Mathf.Lerp(PreValue, Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning)), timeStacker);
                 if (e.EscUnGraspLimit == 0 && transitioning > 0) {
@@ -231,6 +239,7 @@ public static class ETrackrr
                 this.Limit = 500;
                 this.Max = 480;
                 this.Value = Mathf.Lerp(PreValue, e.EscUnGraspCD, timeStacker);
+                e.overtakeSprite = e.EscUnGraspCD > 0;
             }
         }
 
@@ -258,6 +267,7 @@ public static class ETrackrr
         {
             this.Value = Mathf.Lerp(PreValue, e.RailgunCD, timeStacker);
             this.Limit = player.Malnourished? 0 : 1000;
+            e.overtakeSprite = e.RailDoubleBomb || e.RailDoubleLilly || e.RailDoubleRock || e.RailDoubleSpear;
         }
     }
 
@@ -499,11 +509,12 @@ public static class ETrackrr
                     trackerColor = gildColor;
                     effectColor = gildColor;
                 }
-
+                escort.overtakeSprite = false;
             }
             else
             {
                 Limit = escort.GildStartPower - escort.GildRequiredPower;
+                escort.overtakeSprite = true;
             }
             Value = Mathf.Lerp(PreValue, escort.GildPower, timeStacker);
         }

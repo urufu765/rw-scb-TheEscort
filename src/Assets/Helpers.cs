@@ -136,7 +136,7 @@ namespace TheEscort
 
                 if (Plugin.escPatch_guardian)
                 {
-                    Eshelp_Throw_Exception_At_Vigaro(new EscortException(toSend, exception));
+                    Eshelp_Throw_Exception_At_Vigaro(new Exception(toSend, exception));
                 }
             }
         }
@@ -307,7 +307,7 @@ namespace TheEscort
                 }
                 if (Plugin.escPatch_guardian)
                 {
-                    Eshelp_Throw_Exception_At_Vigaro(new EscortException(toSend, exception));
+                    Eshelp_Throw_Exception_At_Vigaro(new Exception(toSend, exception));
                 }
             }
             catch (Exception err)
@@ -449,14 +449,5 @@ namespace TheEscort
 
             return text;
         }
-
-
-        public class EscortException : Exception
-        {
-            public EscortException(string message, Exception innerException) : base(message, innerException)
-            {
-            }
-        }
-
     }
 }
