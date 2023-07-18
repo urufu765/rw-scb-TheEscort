@@ -49,6 +49,9 @@
     <Reference Include="..\lib\Newtonsoft.Json.dll">
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="..\lib\Guardian.dll">
+      <HintPath>..\lib\Guardian.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">
     <ItemGroup>

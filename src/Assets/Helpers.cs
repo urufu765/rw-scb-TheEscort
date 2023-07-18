@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using SlugBase.SaveData;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using static Guardian.CloudLogger;
 
 namespace TheEscort
 {
@@ -109,13 +111,14 @@ namespace TheEscort
                 }
             }
         }
-        public static void Ebug(Exception exception, string message = "caught error!", int logPrio = 0, bool asregular = false)
+        public static void Ebug(Exception exception, string message = "caught error!", int logPrio = 0, bool asregular = false, [CallerMemberName] string callerName = "")
         {
             if (logPrio <= logImportance)
             {
+                string toSend = $"-> ERcORt[{callerName}]: {message}";
                 if (asregular)
                 {
-                    Debug.LogWarning("-> ERcORt: " + message + " => " + exception.Message);
+                    Debug.LogWarning(toSend + " => " + exception.Message);
                     if (exception.StackTrace != null)
                     {
                         Debug.LogWarning("->       : " + exception.StackTrace);
@@ -123,12 +126,17 @@ namespace TheEscort
                 }
                 else
                 {
-                    Debug.LogError("-> ERcORt: " + message);
+                    Debug.LogError(toSend);
                     if (exception.StackTrace != null)
                     {
                         Debug.LogError("->       : " + exception.StackTrace);
                     }
                     Debug.LogException(exception);
+                }
+
+                if (Plugin.escPatch_guardian)
+                {
+                    Eshelp_Throw_Exception_At_Vigaro(new EscortException(toSend, exception));
                 }
             }
         }
@@ -267,19 +275,21 @@ namespace TheEscort
                 Ebug(err, logPrio: 4, asregular: true);
             }
         }
-        public static void Ebug(Player self, Exception exception, string message = "caught error!", int logPrio = 0, bool asregular = false)
+
+        public static void Ebug(Player self, Exception exception, string message = "caught error!", int logPrio = 0, bool asregular = false, [CallerMemberName] string callerName = "")
         {
             if (self == null)
             {
-                Ebug(exception, message, logPrio, asregular);
+                Ebug(exception, message, logPrio, asregular, callerName);
             }
             try
             {
+                string toSend = $"-> ERcORt[{callerName}|{self.playerState.playerNumber}]: {message}";
                 if (logPrio <= logImportance)
                 {
                     if (asregular)
                     {
-                        Debug.LogWarning("-> ERcORt[" + self.playerState.playerNumber + "]: " + message + " => " + exception.Message);
+                        Debug.LogWarning(toSend + $" => {exception.Message}");
                         if (exception.StackTrace != null)
                         {
                             Debug.LogWarning("->       : " + exception.StackTrace);
@@ -287,13 +297,17 @@ namespace TheEscort
                     }
                     else
                     {
-                        Debug.LogError("-> ERcORt[" + self.playerState.playerNumber + "]: " + message);
+                        Debug.LogError(toSend);
                         if (exception.StackTrace != null)
                         {
-                            Debug.LogError("->       [" + self.playerState.playerNumber + "]: " + exception.StackTrace);
+                            Debug.LogError($"->       [{callerName}|{self.playerState.playerNumber}]: {exception.StackTrace}");
                         }
                         Debug.LogException(exception);
                     }
+                }
+                if (Plugin.escPatch_guardian)
+                {
+                    Eshelp_Throw_Exception_At_Vigaro(new EscortException(toSend, exception));
                 }
             }
             catch (Exception err)
@@ -301,6 +315,12 @@ namespace TheEscort
                 Ebug(exception, message, logPrio, asregular);
                 Ebug(err, logPrio: 4, asregular: true);
             }
+        }
+
+
+        public static void Eshelp_Throw_Exception_At_Vigaro(Exception exception)
+        {
+            UploadException(exception);
         }
 
 
@@ -428,6 +448,14 @@ namespace TheEscort
             text = text.Replace("<GILDED>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Gilded"));
 
             return text;
+        }
+
+
+        public class EscortException : Exception
+        {
+            public EscortException(string message, Exception innerException) : base(message, innerException)
+            {
+            }
         }
 
     }

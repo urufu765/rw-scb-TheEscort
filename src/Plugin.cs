@@ -130,9 +130,10 @@ namespace TheEscort
 
 
         // Patches
-        private static bool escPatch_revivify = false;
-        private static bool escPatch_rotundness = false;
-        private static bool escPatch_dms = false;
+        public static bool escPatch_revivify = false;
+        public static bool escPatch_rotundness = false;
+        public static bool escPatch_dms = false;
+        public static bool escPatch_guardian = false;
         //private static bool escPatch_DMS = false;
         //private bool escPatch_emeraldTweaks = false;
 #endregion
@@ -393,6 +394,11 @@ namespace TheEscort
                     ins.L().Set("Patch: Rotund World");
                     Ebug("Found Rotund World! Applying custom patch...", 1);
                     escPatch_rotundness = true;
+                }
+                if (ModManager.ActiveMods.Exists(mod => mod.id == ""))
+                {
+                    Ebug("Found Guardian! Applying patch...", 1);
+                    escPatch_guardian = true;
                 }
             }
             catch (Exception err)
