@@ -29,9 +29,15 @@ public static class EscortHUD
                             traction.trackerName switch {
                                 "parry" => new ParryShield(self, traction),
                                 "hype" => new HypeRing(self, traction),
+                                "default" => new HypeRing(self, traction),
+                                "brawler" => new BrawWeaponSprites(self, traction),
+                                "deflector" => new DeflEmpowerSprites(self, traction),
+                                "deflectorPerma" => new DmgText(self, traction),
+                                "escapist" => new EscSprite(self, traction),
                                 "railgunnerUse" => new RailRing(self, traction),
                                 "speedster" => new SpeedRing(self, traction),
-                                "deflectorPerma" => new DmgText(self, traction),
+                                "speedsterOld" => new OldSpeedRing(self, traction),
+                                "gilded" => new GildSprite(self, traction),
                                 _ => new GenericRing(self, traction)
                             }
                         );
@@ -52,9 +58,11 @@ public static class EscortHUD
         public Vector2 pos;
         public Vector2 lastPos;
         public FoodMeter foodmeter;
+        public Vector2 offset;
 
         public RingMeter(HUD.HUD hud) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
+            this.offset = new Vector2(0, 0);  // TODO: Make this changeable later
         }
 
 		public Vector2 DrawPos(float timeStacker)
@@ -144,23 +152,12 @@ public static class EscortHUD
             base.Draw(timeStacker);
 
             pos.x = 60f + 80f * tracked.playerNumber;
-            progressBacking.x = DrawPos(timeStacker).x;
-            progressBacking.y = DrawPos(timeStacker).y;
-            progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
-            progressBacking2.x = DrawPos(timeStacker).x;
-            progressBacking2.y = DrawPos(timeStacker).y;
-            progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-            progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
-            progressSprite.x = DrawPos(timeStacker).x;
-            progressSprite.y = DrawPos(timeStacker).y;
-            progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
-            progressSprite.color = tracked.trackerColor;
-            progressSprite2.x = DrawPos(timeStacker).x;
-            progressSprite2.y = DrawPos(timeStacker).y;
-            progressSprite2.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
-            progressSprite2.color = tracked.trackerColor;
-
+            progressBacking.x = progressBacking2.x = progressSprite.x = progressSprite2.x = DrawPos(timeStacker).x;
+            progressBacking.y = progressBacking2.y = progressSprite.y = progressSprite2.y = DrawPos(timeStacker).y;
+            progressBacking.alpha = progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            progressBacking.color = progressBacking2.color = Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+            progressSprite.alpha = progressSprite2.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
+            progressSprite.color = progressSprite2.color = tracked.trackerColor;
         }
 
 
@@ -215,13 +212,11 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
             normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.55f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
-            progressGlow.x = DrawPos(timeStacker).x;
-            progressGlow.y = DrawPos(timeStacker).y;
+            progressGlow.x = normalSprite.x = DrawPos(timeStacker).x;
+            progressGlow.y = normalSprite.y = DrawPos(timeStacker).y;
             progressGlow.alpha = 0.15f;
-            normalSprite.x = DrawPos(timeStacker).x;
-            normalSprite.y = DrawPos(timeStacker).y;
-            progressBacking.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
-            progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
+            normalSprite.alpha = tracked.overridden? 0f : 1f;
+            progressBacking.color = progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
         }
     }
 
@@ -230,15 +225,146 @@ public static class EscortHUD
     /// </summary>
     public class RailRing : GenericRing
     {
+        private readonly FSprite[] sprites;
+
         public RailRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
         {
+            sprites = new FSprite[4];
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i] = new FSprite(i switch
+                {
+                    3 => "escort_hud_raildspear",
+                    2 => "escort_hud_raildrock",
+                    1 => "escort_hud_raildlily",
+                    _ => "escort_hud_raildbomb"
+                })
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0,
+                    scale = 1,
+                };
+                hud.fContainers[1].AddChild(sprites[i]);
+            }
         }
 
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            progressBacking.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
-            progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
+            progressBacking.color = progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i].x = DrawPos(timeStacker).x;
+                sprites[i].y = DrawPos(timeStacker).y;
+                sprites[i].alpha = i == tracked.spriteNumber? 1 : 0;
+                sprites[i].color = tracked.Value > tracked.Limit? Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor) : tracked.trackerColor;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ring that uses the generic ring while adding custom sprites
+    /// </summary>
+    public class BrawWeaponSprites : GenericRing
+    {
+        private readonly FSprite[] brawlSprites;
+        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        {
+            brawlSprites = new FSprite[3];
+            for (int i = 0; i < brawlSprites.Length; i++)
+            {
+                brawlSprites[i] = new FSprite(i switch
+                {
+                    3 => "escort_hud_brawpowerpunch",  // Not implemented yet
+                    2 => "escort_hud_brawpunch",
+                    1 => "escort_hud_brawshank",
+                    _ => "escort_hud_brawsupershank"
+                })
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0,
+                    scale = 1,
+                };
+                hud.fContainers[1].AddChild(brawlSprites[i]);
+            }
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            for (int i = 0; i < brawlSprites.Length; i++)
+            {
+                brawlSprites[i].x = DrawPos(timeStacker).x;
+                brawlSprites[i].y = DrawPos(timeStacker).y;
+                brawlSprites[i].alpha = i == tracked.spriteNumber? 1 : 0;
+                brawlSprites[i].color = tracked.Limit == 0? tracked.trackerColor : Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ring that uses the generic ring while adding custom sprites
+    /// </summary>
+    public class DeflEmpowerSprites : GenericRing
+    {
+        private readonly FSprite[] sprites;
+        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        {
+            sprites = new FSprite[4];
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i] = new FSprite($"escort_hud_deflamp{i}")
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0,
+                    scale = 1,
+                    color = tracked.trackerColor
+                };
+                hud.fContainers[1].AddChild(sprites[i]);
+            }
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i].x = DrawPos(timeStacker).x;
+                sprites[i].y = DrawPos(timeStacker).y;
+                sprites[i].alpha = i == tracked.spriteNumber? 1 : 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ring that uses the generic ring while adding custom sprites
+    /// </summary>
+    public class EscSprite : GenericRing
+    {
+        private readonly FSprite sprite;
+
+        public EscSprite(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        {
+            sprite = new FSprite("escort_hud_escshadow")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1
+            };
+            hud.fContainers[1].AddChild(sprite);
+        }
+
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            sprite.x = DrawPos(timeStacker).x;
+            sprite.y = DrawPos(timeStacker).y;
+            sprite.alpha = tracked.overridden? 1 : 0;
         }
     }
 
@@ -250,7 +376,10 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite progressSprite;
         private readonly FSprite progressBacking;
-        private float pulseColor;
+        private readonly FSprite chargeSprite;
+        private readonly FSprite gearSprite;
+        private float pulseColor, gradientColor;
+        private readonly FSprite[] sprites;
 
         public SpeedRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
         {
@@ -269,6 +398,24 @@ public static class EscortHUD
                 scale = 2.9f + 0.4f * tracked.trackerNumber,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
+            chargeSprite = new FSprite($"escort_hud_spegb{tracked.trackerNumber}")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1,
+            };
+            gearSprite = new FSprite($"escort_hud_spega{tracked.trackerNumber}")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1,
+                color = tracked.trackerColor
+            };
+            gradientColor = (tracked.trackerNumber - 1) * 0.25f;
+            hud.fContainers[1].AddChild(chargeSprite);
+            hud.fContainers[1].AddChild(gearSprite);
             hud.fContainers[1].AddChild(progressBacking);
             hud.fContainers[1].AddChild(progressSprite);
         }
@@ -277,14 +424,17 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
             pos.x = 60f + 80f * tracked.playerNumber;
-            progressBacking.x = DrawPos(timeStacker).x;
-            progressBacking.y = DrawPos(timeStacker).y;
+            progressBacking.x = progressSprite.x = chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
+            progressBacking.y = progressSprite.y = chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
             progressBacking.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
-            progressSprite.x = DrawPos(timeStacker).x;
-            progressSprite.y = DrawPos(timeStacker).y;
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
             progressSprite.color = tracked.trackerColor;
+
+            chargeSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            chargeSprite.color = tracked.Limit == 0? tracked.trackerColor : Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
+            gearSprite.alpha = tracked.spriteNumber >= tracked.trackerNumber? 1 : 0;
+            gearSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, gradientColor);
         }
 
 
@@ -293,9 +443,106 @@ public static class EscortHUD
             base.Update();
 
             if (pulseColor < 1f){
-                pulseColor += 1f/40f;
+                pulseColor += 1f/80f;
             } else {
                 pulseColor = 0;
+            }
+
+            if (gradientColor < 1f)
+            {
+                gradientColor += 1f/40f;
+            }
+            else
+            {
+                gradientColor = 0;
+            }
+        }
+    }
+
+    public class OldSpeedRing : GenericRing
+    {
+        private readonly FSprite[] sprites;
+        private float[] spriteGradient;
+
+        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, bool staticFlash = false) : base(hud, tracked, staticFlash)
+        {
+            sprites = new FSprite[4];
+            spriteGradient = new float[4];
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i] = new FSprite("escort_hud_speg" + (tracked.trackerNumber == 1? "b" : "a") + (i + 1))
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0,
+                    scale = 1,
+                    color = tracked.trackerColor
+                };
+                hud.fContainers[1].AddChild(sprites[i]);
+                spriteGradient[i] = 0.25f * i;
+            }
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i].x = DrawPos(timeStacker).x;
+                sprites[i].y = DrawPos(timeStacker).y;
+                sprites[i].alpha = tracked.trackerNumber == tracked.spriteNumber? 1 : 0;
+                sprites[i].color = Color.Lerp(tracked.effectColor, tracked.trackerColor, spriteGradient[i]);
+            }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            for (int i = 0; i < spriteGradient.Length; i++)
+            {
+                if (spriteGradient[i] < 1f){
+                    spriteGradient[i] += 1f/40f;
+                } else {
+                    spriteGradient[i] = 0;
+                }
+            }
+        }
+    }
+
+    public class GildSprite : GenericRing
+    {
+        private readonly FSprite[] sprites;
+
+        public GildSprite(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        {
+            sprites = new FSprite[7];
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i] = new FSprite(i switch
+                {
+                    >= 4 => $"escort_hud_gildlevitate{i - 4}",
+                    3 => "escort_hud_gildcraftdone",
+                    _ => $"escort_hud_gildcraft{i}"
+                })
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0,
+                    scale = 1,
+                    color = tracked.trackerColor
+                };
+                hud.fContainers[1].AddChild(sprites[i]);
+            }
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                sprites[i].x = DrawPos(timeStacker).x;
+                sprites[i].y = DrawPos(timeStacker).y;
+                sprites[i].alpha = (i == tracked.spriteNumber) && tracked.overridden? 1 : 0;
             }
         }
     }

@@ -1015,10 +1015,10 @@ namespace TheEscort
                     if (abstractCreature.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
                         //e.Escat_showTrail();
-                        foreach(var speedTrail in escort.SpeTrail2)
-                        {
+                        //foreach(var speedTrail in escort.SpeTrail2)
+                        //{
                             //speedTrail.Draw(self, timeStacker, self.CamPos);
-                        }
+                        //}
                     }
                 }
             }

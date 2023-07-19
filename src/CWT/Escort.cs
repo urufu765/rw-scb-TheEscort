@@ -68,7 +68,7 @@ namespace TheEscort
         public bool verticalPoleToggle;
         public bool verticalPoleTech;
         public int verticalPoleFail;
-        public bool overtakeSprite;
+        public bool overrideSprite;
 
         // Build stuff
         public bool Brawler;
@@ -98,6 +98,13 @@ namespace TheEscort
         public int EscUnGraspTime;
         public int EscUnGraspLimit;
         public int EscUnGraspCD;
+        public bool NewEscapist;
+        public int NEsLastInput;
+        public int NEsInputLean;
+        public int NEsRecharge;
+        public int NEsCooldown;
+        public List<AbstractCreature> NEsVulnerable;
+        public int NEsClearVulnerable;
         public bool Railgunner;
         public int RailGaussed;
         public Creature RailThrower;

@@ -11,7 +11,6 @@ namespace TheEscort
         public int SpeSpeedin;
         public bool SpeDashNCrash;
         public Queue<SpeedTrail> SpeTrail;
-        public Queue<SpeedsTrail> SpeTrail2;
         public int SpeTrailTick;
         public bool SpeSecretSpeed;
         public int SpeExtraSpe;
@@ -31,7 +30,7 @@ namespace TheEscort
             this.SpeDashNCrash = false;
             this.SpeSecretSpeed = false;
             this.SpeTrail ??= new Queue<SpeedTrail>();
-            this.SpeTrail2 ??= new Queue<SpeedsTrail>();
+            //this.SpeTrail2 ??= new Queue<SpeedsTrail>();
             this.SpeTrailTick = 0;
             this.SpeColor = new Color(0.76f, 0.78f, 0f);
             this.SpeBonk = 0;
@@ -62,6 +61,8 @@ namespace TheEscort
             }
         }
 
+
+        /*
         public void Escat_addSpeTrail(RoomCamera.SpriteLeaser s, RoomCamera roomCamera, int life, int trailCount = 10)
         {
             if (SpeTrail2.Count >= trailCount)
@@ -95,7 +96,7 @@ namespace TheEscort
                     slugcatTrail.Update();
                 }
             }
-        }
+        }*/
 
         public void Escat_showTrail()
         {

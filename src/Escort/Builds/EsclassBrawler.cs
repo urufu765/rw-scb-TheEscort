@@ -79,17 +79,22 @@ namespace TheEscort
                 e.BrawThrowUsed = -1;
             }
 
+            if (e.BrawMeleeWeapon.Count == 0)
+            {
+                string theWeapon = "";
+                for (int i = 0; i < 2; i++)
+                {
+                    theWeapon = Esclass_BL_Weapon(self, i);
+                    if (theWeapon != "") break;
+                }
+                e.BrawLastWeapon = theWeapon;
+            }
+
             // Brawler wall spear
             if (e.BrawWallSpear.Count > 0 && e.BrawRevertWall == 0)
             {
                 e.BrawWallSpear.Pop().doNotTumbleAtLowSpeed = e.BrawWall;
                 e.BrawRevertWall = -1;
-            }
-
-            // HUD stuff
-            if (self.slowMovementStun == 0)
-            {
-                e.BrawLastWeapon = "";
             }
 
             // VFX
@@ -230,6 +235,30 @@ namespace TheEscort
             {
                 Ebug(self, err, "Error while applying Brawler-specific speartoss");
             }
+        }
+
+        /// <summary>
+        /// Checks if Brawler has a weapon or not
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="grasp"></param>
+        /// <returns></returns>
+        private static string Esclass_BL_Weapon(Player self, int grasp)
+        {
+            if (
+                self.grasps[grasp]?.grabbed is Spear and not ExplosiveSpear &&
+                self.grasps[1 - grasp]?.grabbed is Creature
+            ) return "supershank";
+            else if (
+                self.grasps[grasp]?.grabbed is Spear and not ExplosiveSpear
+            ) return "shank";
+            else if (
+                self.grasps[grasp]?.grabbed is Rock
+            ) return "punch";
+            else if (false &&
+                self.grasps[grasp]?.grabbed is ScavengerBomb
+            ) return "powerpunch";
+            return "";
         }
 
 

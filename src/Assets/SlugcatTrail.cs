@@ -79,10 +79,6 @@ namespace TheEscort
             {
                 lifeTime--;
             }
-            else
-            {
-                Kill();
-            }
         }
 
         public void Kill()
@@ -114,7 +110,7 @@ namespace TheEscort
             {
                 if (i == 0 || i == 1)
                 {
-                    playerSprites[i] = new FSprite(i == 0? "BodyA" : "HipsA");
+                    playerSprites[i].element = Futile.atlasManager.GetElementWithName(i == 0? "BodyA" : "HipsA");
                     playerSprites[i].SetPosition(sLeaser.sprites[i].GetPosition());
                     playerSprites[i].scaleX = sLeaser.sprites[i].scaleX;
                     playerSprites[i].scaleY = sLeaser.sprites[i].scaleY;

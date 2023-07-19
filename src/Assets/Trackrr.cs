@@ -16,7 +16,8 @@ public abstract class Trackrr<T>
     public Color trackerColor;
     public Color effectColor;
     public bool force;
-    public bool overtake;
+    public bool overridden;
+    public int spriteNumber;
 
     public virtual T Value
     {
@@ -143,7 +144,7 @@ public static class ETrackrr
             force = Value > Limit;
             this.trackerColor = e.hypeColor;
             this.effectColor = Color.Lerp(Color.white, e.hypeColor, 0.5f);
-            this.overtake = e.overtakeSprite;
+            this.overridden = e.overrideSprite;
         }
     }
 
@@ -172,7 +173,15 @@ public static class ETrackrr
             this.Value = Mathf.Lerp(PreValue, Max - player.slowMovementStun, timeStacker);
             this.Limit = player.slowMovementStun > 0? 0 : 1000;
             this.force = player.slowMovementStun > 0;
-            e.overtakeSprite = e.BrawLastWeapon != "";
+            e.overrideSprite = e.BrawLastWeapon != "";
+            spriteNumber = e.BrawLastWeapon switch
+            {
+                "powerpunch" => 3,
+                "punch" => 2,
+                "shank" => 1,
+                "supershank" => 0,
+                _ => -1
+            };
         }
     }
 
@@ -189,6 +198,7 @@ public static class ETrackrr
         {
             this.Value = Mathf.Lerp(PreValue, e.DeflAmpTimer, timeStacker);
             this.Limit = e.DeflPowah == 3? 0 : 160;
+            spriteNumber = e.DeflPowah;
         }
     }
 
@@ -215,11 +225,11 @@ public static class ETrackrr
                 if (e.EscUnGraspLimit != 0) 
                 {
                     prevMax = e.EscUnGraspLimit;
-                    e.overtakeSprite = true;
+                    e.overrideSprite = true;
                 }
                 else
                 {
-                    e.overtakeSprite = false;
+                    e.overrideSprite = false;
                 }
                 this.Max = prevMax;
                 this.Value = Mathf.Lerp(PreValue, Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning)), timeStacker);
@@ -239,7 +249,7 @@ public static class ETrackrr
                 this.Limit = 500;
                 this.Max = 480;
                 this.Value = Mathf.Lerp(PreValue, e.EscUnGraspCD, timeStacker);
-                e.overtakeSprite = e.EscUnGraspCD > 0;
+                e.overrideSprite = e.EscUnGraspCD > 0;
             }
         }
 
@@ -267,7 +277,6 @@ public static class ETrackrr
         {
             this.Value = Mathf.Lerp(PreValue, e.RailgunCD, timeStacker);
             this.Limit = player.Malnourished? 0 : 1000;
-            e.overtakeSprite = e.RailDoubleBomb || e.RailDoubleLilly || e.RailDoubleRock || e.RailDoubleSpear;
         }
     }
 
@@ -306,7 +315,12 @@ public static class ETrackrr
                 yesTrans = true;
             }
 
-
+            e.overrideSprite = e.RailDoubleBomb || e.RailDoubleLilly || e.RailDoubleRock || e.RailDoubleSpear;
+            spriteNumber = -1;
+            if(e.RailDoubleBomb) spriteNumber = 0;
+            if(e.RailDoubleLilly) spriteNumber = 1;
+            if(e.RailDoubleRock) spriteNumber = 2;
+            if(e.RailDoubleSpear) spriteNumber = 3;
 
             // Smoothly transition the value with an ease out
             this.Value = Mathf.Lerp(PreValue, preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 10)) : Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 10)), timeStacker);
@@ -326,10 +340,12 @@ public static class ETrackrr
         private float oldValue;
         private float transitioning;
         private bool yesTrans;
-        public SpeedsterTraction(int playerNumber, int trackerNumber, Escort escort, int gear) : base(playerNumber, trackerNumber, "speedster", new Color(0.76f, 0.78f, 0f))
+        public SpeedsterTraction(int playerNumber, int trackerNumber, Escort escort, int gear) : base(playerNumber, trackerNumber, "speedster")
         {
             this.e = escort;
             this.gear = gear;
+            trackerColor = new Color(0.76f, 0.78f, 0f);
+            effectColor = new Color(0.52f, 0.48f, 0f);
         }
 
         public override void DrawTracker(float timeStacker)
@@ -348,6 +364,7 @@ public static class ETrackrr
                     yesTrans = true;
                     Value = Mathf.Lerp(PreValue, Mathf.Lerp(oldValue, 0, Mathf.InverseLerp(0, 20, transitioning)), timeStacker);
                 }
+                spriteNumber = e.SpeGear + 1;
             }
             else 
             {
@@ -368,6 +385,7 @@ public static class ETrackrr
                 yesTrans = false;
                 transitioning = 0;
                 oldValue = Value;
+                spriteNumber = 0;
             }
         }
 
@@ -397,12 +415,14 @@ public static class ETrackrr
                 this.effectColor = Color.Lerp(trackerColor, Color.white, 0.35f);
                 Limit = escort.SpeSecretSpeed? 0 : Max;
                 Value = Mathf.Lerp(PreValue, escort.SpeSecretSpeed? escort.SpeSpeedin * 2 : escort.SpeExtraSpe, timeStacker);
+                spriteNumber = escort.SpeSecretSpeed? 2 : 0;
             }
             else 
             {
                 this.effectColor = escort.SpeSecretSpeed? Color.Lerp(trackerColor, Color.white, 0.35f) : Color.Lerp(trackerColor, Color.black, 0.35f);
                 Limit = escort.SpeDashNCrash? 0 : Max;
                 Value = Mathf.Lerp(PreValue, escort.SpeSpeedin, timeStacker);
+                spriteNumber = escort.SpeDashNCrash? 1 : 0;
             }
         }
     }
@@ -484,6 +504,9 @@ public static class ETrackrr
         private readonly Escort escort;
         private readonly Color gildColor;
         private readonly Color overflowColor;
+        private int crafting;
+        private int changing;
+        private int animation;
         public GildedPoweredTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "gilded")
         {
             Max = escort.GildPowerMax;
@@ -509,14 +532,39 @@ public static class ETrackrr
                     trackerColor = gildColor;
                     effectColor = gildColor;
                 }
-                escort.overtakeSprite = false;
+                if (crafting == 0) overridden = escort.overrideSprite = false;
             }
             else
             {
                 Limit = escort.GildStartPower - escort.GildRequiredPower;
-                escort.overtakeSprite = true;
+                if (escort.GildReservePower >= escort.GildRequiredPower && !escort.GildFloatState) crafting = 30;
+                overridden = escort.overrideSprite = true;
             }
             Value = Mathf.Lerp(PreValue, escort.GildPower, timeStacker);
+        }
+
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+            if (crafting > 0) 
+            {
+                crafting--;
+                spriteNumber = 3;
+            }
+            else
+            {
+                spriteNumber = animation + (escort.GildFloatState? 4 : 0);
+            }
+            if (changing > 0)
+            {
+                changing--;
+            }
+            else
+            {
+                changing = 5;
+                animation++;
+                if (animation == 3) animation = 0;
+            }
         }
     }
 
@@ -581,4 +629,5 @@ public static class ETrackrr
             };
         }
     }
+
 }

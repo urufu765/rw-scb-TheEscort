@@ -12,6 +12,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev02** Speedster speed trail now a standalone object and an IDrawable object, trackers update on rwg.update instead, ended up using an ISingleCameraDrawable anyways.
     * **dev03** Exception logger updated
     * **dev04** Made sprite override on tracker side
+    * **dev05** Sprite override on HUD side
+    * **dev06** Offset to move hud around
+    * **dev07** make them stack vertically
+    * **dev08** rectangle version
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 
