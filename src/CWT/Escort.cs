@@ -69,6 +69,8 @@ namespace TheEscort
         public bool verticalPoleTech;
         public int verticalPoleFail;
         public bool overrideSprite;
+        public float viscoDance;
+        public Color viscoColor;
 
         // Build stuff
         public bool Brawler;
@@ -176,6 +178,7 @@ namespace TheEscort
             this.intTrackers = new List<Trackrr<int>>();
             this.isDefault = false;
             this.acidSwim = 0.4f;
+            this.viscoColor = Color.black;
 
             // Build specific
             this.Brawler = false;

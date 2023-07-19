@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace TheEscort;
 
+/// <summary>
+/// A "middleman" to convert a bunch of data into something simple for the hud meters to understand
+/// </summary>
 public abstract class Trackrr<T>
 {
     private T _tracked;
@@ -634,22 +637,57 @@ public static class ETrackrr
     {
         Player player;
         Escort escort;
-        int animation, aniTick;
+        int animation, shallow, deep;
+        float aniTick;
+
 
         public SwimTracker(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "swimming")
         {
             this.player = player;
             this.escort = escort;
+            Max = escort.isDefault? 1 : 0;
         }
 
         public override void DrawTracker(float timeStacker)
         {
-            throw new NotImplementedException();
+            trackerColor = escort.hypeColor;
+            effectColor = escort.viscoColor;
+            Limit = Mathf.InverseLerp(0, 40, shallow);
+            Value = Mathf.InverseLerp(0, 30, deep);
+            spriteNumber = animation;
         }
 
         public override void UpdateTracker()
         {
             base.UpdateTracker();
+            if (player.animation == Player.AnimationIndex.SurfaceSwim)
+            {
+                if (shallow < 40) shallow += 4;
+            }
+            else if (player.animation == Player.AnimationIndex.DeepSwim)
+            {
+                if (deep < 30) deep++;
+                if (shallow < 40) shallow += 80;
+            }
+            else
+            {
+                if (deep > 0) deep--;
+                if (shallow > 0) shallow--;
+            }
+
+            if (aniTick < 2)
+            {
+                aniTick += 1 - Mathf.Lerp(0f, 0.9f, escort.viscoDance);
+            }
+            else
+            {
+                aniTick = 0;
+                animation++;
+                if (animation >= 12)
+                {
+                    animation = 0;
+                }
+            }
         }
     }
 

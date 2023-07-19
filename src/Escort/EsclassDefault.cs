@@ -842,22 +842,26 @@ namespace TheEscort
             // Implement GuuhWuuh (& Default Escort better swimming ability)
             if (self.bodyMode == Player.BodyModeIndex.Swimming)
             {
-                float viscoDance = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity);
+                e.viscoDance = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity);
+                if (self.room?.waterObject is not null)
+                {
+                    e.viscoColor = self.room.waterObject.palette.waterColor1;   
+                }
 
                 if (self.animation == Player.AnimationIndex.DeepSwim)
                 {
                     if (e.isDefault) self.waterFriction = 0.98f;
                     self.mainBodyChunk.vel *= new Vector2(
-                        Mathf.Lerp(1f, theGut[0], (float)Math.Pow(viscoDance, theGut[6])),
-                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2], (float)Math.Pow(viscoDance, theGut[7])));
+                        Mathf.Lerp(1f, theGut[0], (float)Math.Pow(e.viscoDance, theGut[6])),
+                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2], (float)Math.Pow(e.viscoDance, theGut[7])));
                 }
                 else if (self.animation == Player.AnimationIndex.SurfaceSwim)
                 {                    
                     if (e.isDefault) self.waterFriction = Mathf.Lerp(0.98f, 1f, Mathf.InverseLerp(0, 5, self.waterJumpDelay));
                     self.mainBodyChunk.vel *= new Vector2(
-                        Mathf.Lerp(1f, theGut[3], (float)Math.Pow(viscoDance, theGut[8])),
-                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5], (float)Math.Pow(viscoDance, theGut[9])));
-                    self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(viscoDance, theGut[12]));
+                        Mathf.Lerp(1f, theGut[3], (float)Math.Pow(e.viscoDance, theGut[8])),
+                        Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5], (float)Math.Pow(e.viscoDance, theGut[9])));
+                    self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(e.viscoDance, theGut[12]));
                 }
             }
 
