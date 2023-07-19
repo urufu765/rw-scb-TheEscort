@@ -395,7 +395,7 @@ namespace TheEscort
                     Ebug("Found Rotund World! Applying custom patch...", 1);
                     escPatch_rotundness = true;
                 }
-                if (ModManager.ActiveMods.Exists(mod => mod.id == ""))
+                if (ModManager.ActiveMods.Exists(mod => mod.id == "vigaro.guardian"))
                 {
                     Ebug("Found Guardian! Applying patch...", 1);
                     escPatch_guardian = true;

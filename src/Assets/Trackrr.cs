@@ -630,4 +630,27 @@ public static class ETrackrr
         }
     }
 
+    public class SwimTracker : Trackrr<float>
+    {
+        Player player;
+        Escort escort;
+        int animation, aniTick;
+
+        public SwimTracker(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "swimming")
+        {
+            this.player = player;
+            this.escort = escort;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+        }
+    }
+
 }

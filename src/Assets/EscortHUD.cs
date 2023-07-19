@@ -379,7 +379,6 @@ public static class EscortHUD
         private readonly FSprite chargeSprite;
         private readonly FSprite gearSprite;
         private float pulseColor, gradientColor;
-        private readonly FSprite[] sprites;
 
         public SpeedRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
         {
@@ -462,7 +461,7 @@ public static class EscortHUD
     public class OldSpeedRing : GenericRing
     {
         private readonly FSprite[] sprites;
-        private float[] spriteGradient;
+        private readonly float[] spriteGradient;
 
         public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, bool staticFlash = false) : base(hud, tracked, staticFlash)
         {
