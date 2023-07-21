@@ -616,7 +616,9 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
+            //string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
             string multiplier = (tracked.Max + tracked.Limit).ToString();
+            
             if (!multiplier.Contains(".")) multiplier += ".";
             while (multiplier.Length < 4 || multiplier[multiplier.Length - 4] != '.')
             {
@@ -635,6 +637,18 @@ public static class EscortHUD
             glow.y = DrawPos(timeStacker).y + 40;
             glow.color = tracked.effectColor;
             glow.scaleY = Mathf.Lerp(1, 3, tracked.Value);
+        }
+    }
+
+    public class SwimmingVisuals : RingMeter
+    {
+        private readonly Trackrr<float> tracked;
+        private readonly FSprite[] shallowSprites, deepSprites;
+        private readonly FSprite defaultSprite;
+        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
+        {
+            this.tracked = tracked;
+
         }
     }
 }

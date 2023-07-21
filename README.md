@@ -15,10 +15,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** Sprite override on HUD side
     * **dev06** Escort sprite full override and swim tracker sprites
     * **dev07** Swim tracker finished
-    * *dev08* Swim hud finished
-    * *dev09* Offset to move hud around
-    * *dev10* make them stack vertically
-    * *dev11* rectangle version
+    * **dev08** Deflector crash potential fix outlined
+    * *dev09* Huds finished
+    * *dev10* Offset to move hud around
+    * *dev11* make them stack vertically
+    * *dev12* rectangle version
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 
