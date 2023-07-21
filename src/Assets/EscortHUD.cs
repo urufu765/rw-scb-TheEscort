@@ -648,7 +648,47 @@ public static class EscortHUD
         public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
         {
             this.tracked = tracked;
+            for(int i = 0; i < 12; i++)
+            {
+                shallowSprites[i] = new FSprite($"escort_hud_swims{i}")
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0
+                };
+                deepSprites[i] = new FSprite($"escort_hud_swimd{i}")
+                {
+                    x = pos.x,
+                    y = pos.y,
+                    alpha = 0
+                };
+                hud.fContainers[1].AddChild(shallowSprites[i]);
+                hud.fContainers[1].AddChild(deepSprites[i]);
+            }
+            defaultSprite = new FSprite("escort_hud_defaultswim")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0
+            };
+            hud.fContainers[1].AddChild(defaultSprite);
+        }
 
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            for (int i = 0; i < deepSprites.Length; i++)
+            {
+                deepSprites[i].x = shallowSprites[i].x = DrawPos(timeStacker).x;
+                deepSprites[i].y = shallowSprites[i].y = DrawPos(timeStacker).y;
+                deepSprites[i].color = shallowSprites[i].color = tracked.effectColor;
+                deepSprites[i].alpha = tracked.spriteNumber == i? tracked.Value : 0;
+                shallowSprites[i].alpha = tracked.spriteNumber == i? tracked.Limit : 0;
+            }
+            defaultSprite.x = DrawPos(timeStacker).x;
+            defaultSprite.y = DrawPos(timeStacker).y;
+            defaultSprite.color = tracked.trackerColor;
+            defaultSprite.alpha = Mathf.Min(tracked.Max, tracked.Limit);
         }
     }
 }
