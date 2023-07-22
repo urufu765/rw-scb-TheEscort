@@ -24,21 +24,22 @@ public static class EscortHUD
             for (int i = 0; i < cam.room.game.session.Players.Count; i++){
                 if (cam.room.game.session.Players[i].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e)){
                     Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
+                    Vector2 o = new(60, 80);
                     foreach(Trackrr<float> traction in e.floatTrackers){
                         self.AddPart(
                             traction.trackerName switch {
-                                "parry" => new ParryShield(self, traction),
-                                "hype" => new HypeRing(self, traction),
-                                "default" => new HypeRing(self, traction),
-                                "brawler" => new BrawWeaponSprites(self, traction),
-                                "deflector" => new DeflEmpowerSprites(self, traction),
-                                "deflectorPerma" => new DmgText(self, traction),
-                                "escapist" => new EscSprite(self, traction),
-                                "railgunnerUse" => new RailRing(self, traction),
-                                "speedster" => new SpeedRing(self, traction),
-                                "speedsterOld" => new OldSpeedRing(self, traction),
-                                "gilded" => new GildSprite(self, traction),
-                                _ => new GenericRing(self, traction)
+                                "parry" => new ParryShield(self, traction, o),
+                                "hype" => new HypeRing(self, traction, o),
+                                "default" => new HypeRing(self, traction, o),
+                                "brawler" => new BrawWeaponSprites(self, traction, o),
+                                "deflector" => new DeflEmpowerSprites(self, traction, o),
+                                "deflectorPerma" => new DmgText(self, traction, o),
+                                "escapist" => new EscSprite(self, traction, o),
+                                "railgunnerUse" => new RailRing(self, traction, o),
+                                "speedster" => new SpeedRing(self, traction, o),
+                                "speedsterOld" => new OldSpeedRing(self, traction, o),
+                                "gilded" => new GildSprite(self, traction, o),
+                                _ => new GenericRing(self, traction, o)
                             }
                         );
                     }
@@ -60,9 +61,9 @@ public static class EscortHUD
         public FoodMeter foodmeter;
         public Vector2 offset;
 
-        public RingMeter(HUD.HUD hud) : base(hud) { 
+        public RingMeter(HUD.HUD hud, Vector2 offset) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
-            this.offset = new Vector2(0, 0);  // TODO: Make this changeable later
+            this.offset = offset;  // TODO: Make this changeable later
         }
 
 		public Vector2 DrawPos(float timeStacker)
@@ -74,7 +75,7 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
             pos = DrawPos(timeStacker);
-            if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + 80f;
+            if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + offset.y;
         }
 
         public override void Update()
@@ -107,7 +108,7 @@ public static class EscortHUD
         public float flashColor;
         public bool staticFlash;
 
-        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, bool staticFlash = false) : base(hud)
+        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool staticFlash = false) : base(hud, offset)
         {
             this.tracked = tracked;
             this.staticFlash = staticFlash;
@@ -151,7 +152,7 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
 
-            pos.x = 60f + 80f * tracked.playerNumber;
+            pos.x = offset.x + 80f * tracked.playerNumber;
             progressBacking.x = progressBacking2.x = progressSprite.x = progressSprite2.x = DrawPos(timeStacker).x;
             progressBacking.y = progressBacking2.y = progressSprite.y = progressSprite2.y = DrawPos(timeStacker).y;
             progressBacking.alpha = progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -187,7 +188,7 @@ public static class EscortHUD
         private readonly FSprite progressGlow;
         private readonly FSprite normalSprite;
 
-        public HypeRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             this.progressGlow = new FSprite("Futile_White")
             {
@@ -227,7 +228,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public RailRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public RailRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -269,7 +270,7 @@ public static class EscortHUD
     public class BrawWeaponSprites : GenericRing
     {
         private readonly FSprite[] brawlSprites;
-        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             brawlSprites = new FSprite[3];
             for (int i = 0; i < brawlSprites.Length; i++)
@@ -310,7 +311,7 @@ public static class EscortHUD
     public class DeflEmpowerSprites : GenericRing
     {
         private readonly FSprite[] sprites;
-        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -346,7 +347,7 @@ public static class EscortHUD
     {
         private readonly FSprite sprite;
 
-        public EscSprite(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public EscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             sprite = new FSprite("escort_hud_escshadow")
             {
@@ -380,7 +381,7 @@ public static class EscortHUD
         private readonly FSprite gearSprite;
         private float pulseColor, gradientColor;
 
-        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
+        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, offset)
         {
             this.tracked = tracked;
             this.progressSprite = new FSprite("Futile_White")
@@ -422,7 +423,7 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = 60f + 80f * tracked.playerNumber;
+            pos.x = offset.x + 80f * tracked.playerNumber;
             progressBacking.x = progressSprite.x = chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
             progressBacking.y = progressSprite.y = chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -463,7 +464,7 @@ public static class EscortHUD
         private readonly FSprite[] sprites;
         private readonly float[] spriteGradient;
 
-        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, bool staticFlash = false) : base(hud, tracked, staticFlash)
+        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool staticFlash = false) : base(hud, tracked, offset, staticFlash)
         {
             sprites = new FSprite[4];
             spriteGradient = new float[4];
@@ -512,7 +513,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public GildSprite(HUD.HUD hud, Trackrr<float> tracked) : base(hud, tracked)
+        public GildSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
         {
             sprites = new FSprite[7];
             for (int i = 0; i < sprites.Length; i++)
@@ -551,7 +552,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite normalSprite;
 
-        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr) : base(hud)
+        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset) : base(hud, offset)
         {
             this.tracked = trackrr;
             this.normalSprite = new FSprite(trackrr.centerSprite){
@@ -566,7 +567,7 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = 60f + 80f * tracked.playerNumber;
+            pos.x = offset.x + 80f * tracked.playerNumber;
             normalSprite.x = base.DrawPos(timeStacker).x;
             normalSprite.y = base.DrawPos(timeStacker).y;
             normalSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, tracked.Limit);
@@ -581,7 +582,7 @@ public static class EscortHUD
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
-        public DmgText(HUD.HUD hud, Trackrr<float> trackrr) : base(hud)
+        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset) : base(hud, offset)
         {
             this.tracked = trackrr;
             damage = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
@@ -616,6 +617,8 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
+            pos.x = offset.x + 80f * tracked.playerNumber;
+
             //string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
             string multiplier = (tracked.Max + tracked.Limit).ToString();
             
@@ -645,7 +648,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite[] shallowSprites, deepSprites;
         private readonly FSprite defaultSprite;
-        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked) : base(hud)
+        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, offset)
         {
             this.tracked = tracked;
             for(int i = 0; i < 12; i++)
@@ -677,6 +680,9 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
+            pos.x = offset.x + 80f * tracked.playerNumber;
+
+
             for (int i = 0; i < deepSprites.Length; i++)
             {
                 deepSprites[i].x = shallowSprites[i].x = DrawPos(timeStacker).x;

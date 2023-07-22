@@ -17,7 +17,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev07** Swim tracker finished
     * **dev08** Deflector crash potential fix outlined
     * **dev09** Huds finished
-    * *dev10* Offset to move hud around
+    * **dev10** Offset to move hud around
     * *dev11* make them stack vertically
     * *dev12* rectangle version
 

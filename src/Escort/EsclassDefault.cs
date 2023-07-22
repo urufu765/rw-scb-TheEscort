@@ -2446,7 +2446,7 @@ namespace TheEscort
                 List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
                 foreach (AbstractCreature abstractPlayer in playersToProgressOrWin)
                 {
-                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort) && escort.shelterSaveComplete < 20)
+                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort) && escort.shelterSaveComplete < 1)
                     {
                         int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
                         bool inShelter = shelterPlayers.Contains(abstractPlayer);

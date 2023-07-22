@@ -202,6 +202,10 @@ namespace TheEscort
                             }
                         }
                         escort.DeflPerma += points * 0.001f;
+                        if (p.room?.abstractRoom is not null && p.room.abstractRoom.shelter)
+                        {
+                            escort.shelterSaveComplete = 0;
+                        }
                     }
                     else if (p.room?.game?.session is ArenaGameSession arenaGameSession)
                     {
