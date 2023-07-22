@@ -24,7 +24,11 @@ public static class EscortHUD
             for (int i = 0; i < cam.room.game.session.Players.Count; i++){
                 if (cam.room.game.session.Players[i].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e)){
                     Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
-                    Vector2 o = new(60, 80);
+                    Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
+                    {
+                        "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 - 80, 10), 
+                        _ => new(60, 80)
+                    };
                     foreach(Trackrr<float> traction in e.floatTrackers){
                         self.AddPart(
                             traction.trackerName switch {
@@ -60,6 +64,7 @@ public static class EscortHUD
         public Vector2 lastPos;
         public FoodMeter foodmeter;
         public Vector2 offset;
+        public bool stackVertical => Plugin.ins.config.cfgHudLocation.Value == "leftstack";
 
         public RingMeter(HUD.HUD hud, Vector2 offset) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
@@ -75,6 +80,7 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
             pos = DrawPos(timeStacker);
+            pos.x = offset.x;
             if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + offset.y;
         }
 
@@ -152,7 +158,14 @@ public static class EscortHUD
         {
             base.Draw(timeStacker);
 
-            pos.x = offset.x + 80f * tracked.playerNumber;
+            if (stackVertical)
+            {
+                pos.y += 80f * tracked.playerNumber;
+            }
+            else
+            {
+                pos.x += 80f * tracked.playerNumber;
+            }
             progressBacking.x = progressBacking2.x = progressSprite.x = progressSprite2.x = DrawPos(timeStacker).x;
             progressBacking.y = progressBacking2.y = progressSprite.y = progressSprite2.y = DrawPos(timeStacker).y;
             progressBacking.alpha = progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -423,7 +436,14 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = offset.x + 80f * tracked.playerNumber;
+            if (stackVertical)
+            {
+                pos.y += 80f * tracked.playerNumber;
+            }
+            else
+            {
+                pos.x += 80f * tracked.playerNumber;
+            }
             progressBacking.x = progressSprite.x = chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
             progressBacking.y = progressSprite.y = chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -567,7 +587,14 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = offset.x + 80f * tracked.playerNumber;
+            if (stackVertical)
+            {
+                pos.y += 80f * tracked.playerNumber;
+            }
+            else
+            {
+                pos.x += 80f * tracked.playerNumber;
+            }
             normalSprite.x = base.DrawPos(timeStacker).x;
             normalSprite.y = base.DrawPos(timeStacker).y;
             normalSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, tracked.Limit);
@@ -617,7 +644,14 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = offset.x + 80f * tracked.playerNumber;
+            if (stackVertical)
+            {
+                pos.y += 80f * tracked.playerNumber;
+            }
+            else
+            {
+                pos.x += 80f * tracked.playerNumber;
+            }
 
             //string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
             string multiplier = (tracked.Max + tracked.Limit).ToString();
@@ -680,7 +714,14 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            pos.x = offset.x + 80f * tracked.playerNumber;
+            if (stackVertical)
+            {
+                pos.y += 80f * tracked.playerNumber;
+            }
+            else
+            {
+                pos.x += 80f * tracked.playerNumber;
+            }
 
 
             for (int i = 0; i < deepSprites.Length; i++)

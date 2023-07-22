@@ -18,8 +18,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08** Deflector crash potential fix outlined
     * **dev09** Huds finished
     * **dev10** Offset to move hud around
-    * *dev11* make them stack vertically
-    * *dev12* rectangle version
+    * **dev11** More than 4 patch, and hud location option added
+    * *dev12* make them stack vertically
+    * *dev13* rectangle version
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 

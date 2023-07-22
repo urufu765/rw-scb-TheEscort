@@ -96,6 +96,8 @@ namespace TheEscort
         public Configurable<int> cfgLogImportance;
         public Configurable<string> cfgShowHud;
         public List<ListItem> hudShowOptions;
+        public Configurable<string> cfgHudLocation;
+        public List<ListItem> hudLocaOptions;
         public Configurable<bool> cfgNoMoreFlips;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
@@ -117,6 +119,7 @@ namespace TheEscort
         private Color[] buildColors;
         private Color p1Color, p2Color, p3Color, p4Color;
         private Color tempColor;
+        public int PlayerCount {get; private set;} = 4;
         private bool saitBeat;
         private readonly float yoffset = 560f;
         private readonly float xoffset = 30f;
@@ -164,8 +167,9 @@ namespace TheEscort
             //this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             //this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             //this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            this.cfgBuild = new Configurable<int>[4];  // Make this expandable to more than 4 players by checking how many players are being logged in?
-            this.cfgEasy = new Configurable<bool>[4];  // This too
+            PlayerCount = Mathf.Max(4, RainWorld.PlayerObjectBodyColors.Length, rainworld.options.controls.Length);
+            this.cfgBuild = new Configurable<int>[PlayerCount];  // Make this expandable to more than 4 players by checking how many players are being logged in?
+            this.cfgEasy = new Configurable<bool>[PlayerCount];  // This too
             for (int x = 0; x < this.cfgBuild.Length; x++){
                 this.cfgBuild[x] = this.config.Bind<int>("cfg_Build_Player" + x, 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
                 this.cfgEasy[x] = this.config.Bind<bool>("cfg_Easy_Player" + x, false);
@@ -197,7 +201,7 @@ namespace TheEscort
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
-            this.buildEasy = new OpCheckBox[4];
+            this.buildEasy = new OpCheckBox[4];  // hardcoded to 4 players due to graphical stuff
             this.buildPlayer = new OpSliderTick[4];
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
             this.hudShowOptions = new()
@@ -207,7 +211,14 @@ namespace TheEscort
                 //new ListItem("relevant", Translate("Show When Relevant"), 2),
                 new ListItem("always", Translate("Always Show"), 3)
             };
+            this.hudLocaOptions = new()
+            {
+                new ListItem("botleft", Translate("Bottom Left"), 0),
+                new ListItem("botmid", Translate("Bottom Middle"), 1),
+                new ListItem("leftstack", Translate("Left Stacked"), 2)
+            };
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
+            this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
 
             // Plugin.ins.L().Christmas(this.cfgSectret.Value);
@@ -808,6 +819,11 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 5), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
                 new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 160, hudShowOptions){
                     description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
+                },
+
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudloc_text") + Translate("[Beta]")),
+                new OpComboBox(this.cfgHudLocation, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudLocaOptions){
+                    description = Translate("escoptions_hudloc_desc") + SetDefault(cfgHudLocation.defaultValue)
                 }
             };
             mainTab.AddItems(this.mainSet);
