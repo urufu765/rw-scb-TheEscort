@@ -207,7 +207,7 @@ namespace TheEscort
                     return;
                 }
 
-                if (!e.ParrySuccess && e.iFrames == 0)
+                if (!e.ParrySuccess && e.iFrames == 0 && !self.dead)
                 {
                     orig(self);
                     if (self.dead && Esconfig_SFX(self) && self.room != null)
@@ -216,6 +216,7 @@ namespace TheEscort
                         //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
                     }
                     Ebug(self, "Failure.", 1);
+                    return;
                 }
                 else if (e.iFrames > 0)
                 {

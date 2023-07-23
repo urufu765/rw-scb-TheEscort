@@ -81,13 +81,15 @@ namespace TheEscort
 
             if (e.BrawMeleeWeapon.Count == 0)
             {
-                string theWeapon = "";
-                for (int i = 0; i < 2; i++)
+                string leftHand = Esclass_BL_Weapon(self, 0);
+                string rightHand = Esclass_BL_Weapon(self, 1);
+                e.BrawLastWeapon = (leftHand, rightHand) switch
                 {
-                    theWeapon = Esclass_BL_Weapon(self, i);
-                    if (theWeapon != "") break;
-                }
-                e.BrawLastWeapon = theWeapon;
+                    ("supershank", "supershank") => "supershank",
+                    ("", not "") => rightHand,
+                    (not "", "") => leftHand,
+                    (_, _) => ""
+                };
             }
 
             // Brawler wall spear

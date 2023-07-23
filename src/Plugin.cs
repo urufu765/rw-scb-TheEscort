@@ -978,7 +978,7 @@ namespace TheEscort
             {
                 if (!self.paused)
                 {
-                    foreach(var x in self.AlivePlayers)
+                    foreach(var x in self.Players)
                     {
                         if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                         {

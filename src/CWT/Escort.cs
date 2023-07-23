@@ -561,6 +561,7 @@ namespace TheEscort
             }
             this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
+            this.floatTrackers.Add(new ETrackrr.SwimTracker(n, 0, self, this));
         }
 
         public void Escat_Draw_Ring_Trackers(float timeStacker)

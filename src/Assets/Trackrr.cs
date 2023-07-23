@@ -635,8 +635,8 @@ public static class ETrackrr
 
     public class SwimTracker : Trackrr<float>
     {
-        Player player;
-        Escort escort;
+        readonly Player player;
+        readonly Escort escort;
         int animation, shallow, deep;
         float aniTick;
 

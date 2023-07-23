@@ -34,6 +34,7 @@ public static class EscortHUD
                             traction.trackerName switch {
                                 "parry" => new ParryShield(self, traction, o),
                                 "hype" => new HypeRing(self, traction, o),
+                                "swimming" => new SwimmingVisuals(self, traction, o),
                                 "default" => new HypeRing(self, traction, o),
                                 "brawler" => new BrawWeaponSprites(self, traction, o),
                                 "deflector" => new DeflEmpowerSprites(self, traction, o),
@@ -313,7 +314,7 @@ public static class EscortHUD
                 brawlSprites[i].x = DrawPos(timeStacker).x;
                 brawlSprites[i].y = DrawPos(timeStacker).y;
                 brawlSprites[i].alpha = i == tracked.spriteNumber? 1 : 0;
-                brawlSprites[i].color = tracked.Limit == 0? tracked.trackerColor : Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f);
+                brawlSprites[i].color = tracked.Limit == 0? Color.Lerp(tracked.effectColor, Color.black, flashColor / 2f) : tracked.trackerColor;
             }
         }
     }
@@ -685,6 +686,8 @@ public static class EscortHUD
         public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, offset)
         {
             this.tracked = tracked;
+            shallowSprites = new FSprite[12];
+            deepSprites = new FSprite[12];
             for(int i = 0; i < 12; i++)
             {
                 shallowSprites[i] = new FSprite($"escort_hud_swims{i}")
@@ -702,7 +705,7 @@ public static class EscortHUD
                 hud.fContainers[1].AddChild(shallowSprites[i]);
                 hud.fContainers[1].AddChild(deepSprites[i]);
             }
-            defaultSprite = new FSprite("escort_hud_defaultswim")
+            defaultSprite = new FSprite("escort_hud_defaultswimplus")
             {
                 x = pos.x,
                 y = pos.y,
