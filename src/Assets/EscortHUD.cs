@@ -654,20 +654,20 @@ public static class EscortHUD
                 pos.x += 80f * tracked.playerNumber;
             }
 
-            //string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
-            string multiplier = (tracked.Max + tracked.Limit).ToString();
+            string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
+            // string multiplier = (tracked.Max + tracked.Limit).ToString();
             
-            if (!multiplier.Contains(".")) multiplier += ".";
-            while (multiplier.Length < 4 || multiplier[multiplier.Length - 4] != '.')
-            {
-                multiplier += "0";
-            }
-            damage.text = "x" + (tracked.Max == 69? "∞.000" : multiplier);
+            // if (!multiplier.Contains(".")) multiplier += ".";
+            // while (multiplier.Length < 4 || multiplier[multiplier.Length - 4] != '.')
+            // {
+            //     multiplier += "0";
+            // }
+            damage.text = "x" + (tracked.Max == 69f? $"INF{multiplier.Substring(multiplier.IndexOf('.'))}" : multiplier);
             damage.x = DrawPos(timeStacker).x;
             damage.y = DrawPos(timeStacker).y + 40;
             damage.color = tracked.trackerColor;
             damage.scale = Mathf.Lerp(0.75f, 1f, tracked.Value);
-            damageBacking.text = "x" + (tracked.Max == 69? "∞.000" : multiplier);
+            damageBacking.text = "x" + (tracked.Max == 69f? $"INF{multiplier.Substring(multiplier.IndexOf('.'))}" : multiplier);
             damageBacking.x = DrawPos(timeStacker).x + 2;
             damageBacking.y = DrawPos(timeStacker).y + 38;
             damageBacking.scale = Mathf.Lerp(0.75f, 1f, tracked.Value);
@@ -675,6 +675,7 @@ public static class EscortHUD
             glow.y = DrawPos(timeStacker).y + 40;
             glow.color = tracked.effectColor;
             glow.scaleY = Mathf.Lerp(1, 3, tracked.Value);
+            
         }
     }
 

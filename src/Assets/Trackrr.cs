@@ -1,4 +1,5 @@
 ﻿using System;
+using RWCustom;
 using UnityEngine;
 
 namespace TheEscort;
@@ -605,12 +606,17 @@ public static class ETrackrr
                     tickSlowly = 0;
                 }
                 tickEvenSlowly++;
-                if (tickEvenSlowly >= (firstInit? 4 : 10))
+                if (firstInit)
+                {
+                    this.Limit += this.Limit < e.DeflPerma - 10? 0.123f : (this.Limit < e.DeflPerma - 0.75f? 0.012f : 0.001f);
+                    tickExtremelySlowly = 8;
+                }
+                else if (tickEvenSlowly >= Custom.LerpMap(e.DeflPerma - Limit, 0.001f, 0.025f, 20, 0))
                 {
                     this.Limit += 0.001f;
                     tickEvenSlowly = 0;
-                    tickExtremelySlowly = firstInit? 8 : 20;
-                }
+                    tickExtremelySlowly = 20;
+                }// Make the value tick faster the more the value is
             }
             else
             {
@@ -662,6 +668,7 @@ public static class ETrackrr
             base.UpdateTracker();
             if (player.animation == Player.AnimationIndex.SurfaceSwim)
             {
+                if (deep > 0) deep--;
                 if (shallow < 40) shallow += 4;
             }
             else if (player.animation == Player.AnimationIndex.DeepSwim)

@@ -917,6 +917,7 @@ namespace TheEscort
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
                 e.originalMass = self.TotalMass;
+                logImportance = config.cfgLogImportance.Value;
                 try
                 {
                     Ebug(self, "Setting silly sounds", 2);
