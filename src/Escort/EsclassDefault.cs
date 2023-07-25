@@ -56,6 +56,7 @@ namespace TheEscort
             if (e.Brawler) Esclass_BL_Tick(self, ref e);
             if (e.Deflector) Esclass_DF_Tick(self, ref e);
             if (e.Escapist) Esclass_EC_Tick(self, ref e);
+            if (e.NewEscapist) Esclass_NE_Tick(self, ref e);
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
@@ -236,6 +237,7 @@ namespace TheEscort
             if (e.Brawler) Esclass_BL_Update(self, ref e);
             if (e.Deflector) Esclass_DF_Update(self, ref e);
             if (e.Escapist) Esclass_EC_Update(self, ref e);
+            if (e.NewEscapist) Esclass_NE_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);

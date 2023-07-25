@@ -71,6 +71,7 @@ namespace TheEscort
         public bool overrideSprite;
         public float viscoDance;
         public Color viscoColor;
+        public bool escortArena;
 
         // Build stuff
         public bool Brawler;
@@ -118,6 +119,7 @@ namespace TheEscort
         public int NEsInputLean;
         public int NEsRecharge;
         public int NEsCooldown;
+        public int NEsChangeRoom;
         public List<AbstractCreature> NEsVulnerable;
         public int NEsClearVulnerable;
         public bool Railgunner;

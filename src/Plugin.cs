@@ -923,6 +923,7 @@ namespace TheEscort
                     Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
                     return;
                 }
+                if (world?.game?.session is ArenaGameSession) e.escortArena = true;
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
                 e.originalMass = self.TotalMass;
@@ -996,6 +997,10 @@ namespace TheEscort
                             if (escort.Speedster)
                             {
                                 escort.Escat_showTrail();
+                            }
+                            if (escort.NewEscapist)
+                            {
+                                Esclass_NE_AbsoluteTick(player, ref escort);
                             }
                         }
                     }

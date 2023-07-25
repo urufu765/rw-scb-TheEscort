@@ -648,6 +648,8 @@ public static class EscortHUD
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
+        private readonly String formatting;
+
         public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = trackrr;
@@ -678,12 +680,14 @@ public static class EscortHUD
             hud.fContainers[1].AddChild(glow);
             hud.fContainers[1].AddChild(damageBacking);
             hud.fContainers[1].AddChild(damage);
+            formatting = tracked.spriteNumber == 1? "###0.00" : "###0.000";
         }
 
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
+            string multiplier = (tracked.Max + tracked.Limit).ToString(formatting);
+
             // string multiplier = (tracked.Max + tracked.Limit).ToString();
             
             // if (!multiplier.Contains(".")) multiplier += ".";

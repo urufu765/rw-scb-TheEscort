@@ -585,6 +585,7 @@ public static class ETrackrr
         {
             this.e = escort;
             this.Limit = 0;
+            this.spriteNumber = e.escortArena? 1 : 0;
         }
 
         public override void DrawTracker(float timeStacker)

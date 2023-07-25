@@ -48,6 +48,11 @@ namespace TheEscort
             {
                 e.DeflSlideCom = 0;
             }
+
+            if (self.room?.game?.session is ArenaGameSession ags)
+            {
+                e.DeflPerma = 0.01f * ags.ScoreOfPlayer(self, false);
+            }
         }
 
         private void Esclass_DF_Update(Player self, ref Escort e)
@@ -171,14 +176,14 @@ namespace TheEscort
                             escort.shelterSaveComplete = 0;
                         }
                     }
-                    else if (p.room?.game?.session is ArenaGameSession arenaGameSession)
-                    {
-                        int i = MultiplayerUnlocks.SandboxUnlockForSymbolData(CreatureSymbol.SymbolDataFromCreature(victim.abstractCreature)).index;
-                        if (i >= 0)
-                        {
-                            escort.DeflPerma += arenaGameSession.arenaSitting.gameTypeSetup.killScores[i] * 0.01f;
-                        }
-                    }
+                    // else if (p.room?.game?.session is ArenaGameSession arenaGameSession)
+                    // {
+                    //     int i = MultiplayerUnlocks.SandboxUnlockForSymbolData(CreatureSymbol.SymbolDataFromCreature(victim.abstractCreature)).index;
+                    //     if (i >= 0)
+                    //     {
+                    //         escort.DeflPerma += arenaGameSession.arenaSitting.gameTypeSetup.killScores[i] * 0.01f;
+                    //     }
+                    // }
                     Ebug(p, "Damage: " + escort.DeflPerma, ignoreRepetition: true);
                 }
                 orig(self, victim);

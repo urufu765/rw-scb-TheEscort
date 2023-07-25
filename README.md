@@ -25,7 +25,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev15** Brawler can now throw weapons by sliding and supershank is a little more reliable.
     * **dev16** Deflector's damage multiplier also applies to rocks and lilypucks. Made Deflector a better thrower. Deflector power is only spent when the spear actually hits.
     * **dev17** Arena mode has HUD
-    * *dev18* Deflector perma damage fix for arena mode
+    * **dev18** Deflector perma damage fix for arena mode
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 
