@@ -21,10 +21,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev11** More than 4 patch, and hud location option added
     * **dev12** Many more fixes to get it to working order. Fixes expecially for Brawler's hud. Also implented vertical stacking.
     * **dev13** Deflector fixes
-    * *dev14* Speedster will no longer get stunned when sliding into creatures.
+    * **dev14** Speedster will no longer get stunned when sliding into creatures and walls. Wallbonk enhanced to beautiful degrees. Nerfed Speedster's stun duration (Doubled the stun duration). Gilded karma 10 powers are actually karma 10
     * *dev15* Default Escort can now "scooch" towards a direction in zero-g to make it a little bit easier
     * *dev16* Brawler can now throw spears by sliding and supershank aim is lower.
-    * *dev17* Deflector's damage multiplier also applies to rocks and lilypucks.
+    * *dev17* Deflector's damage multiplier also applies to rocks and lilypucks. Deflector also gets additional power increases with multiple flip parries without touching the floor
     * *dev18* Arena mode has HUD
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.

@@ -21,6 +21,7 @@ namespace TheEscort
         public int SpeCharge;
         public float SpeGain;
         public bool SpeOldSpeed;
+        public int SpeRollCounter;
 
         public void EscortSS(bool useOld = false)
         {

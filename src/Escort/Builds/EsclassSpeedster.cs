@@ -63,7 +63,7 @@ namespace TheEscort
             {
                 if (e.SpeBonk == 1)
                 {
-                    self.Stun(e.SpeSecretSpeed ? 50 : 30);
+                    self.Stun(e.SpeSecretSpeed ? 100 : 60);
                 }
                 if (self.Stunned)
                 {
@@ -157,7 +157,7 @@ namespace TheEscort
             {  // New speedway
                 if (e.SpeBonk == 1)
                 {
-                    self.Stun(20 * e.SpeGear);
+                    self.Stun(40 * e.SpeGear);
                     if (e.SpeDashNCrash && e.SpeGear > 0)
                     {
                         e.SpeGear--;
@@ -301,6 +301,47 @@ namespace TheEscort
             {
                 n += 0.45f * e.SpeGear;
             }
+            if (self.animation == Player.AnimationIndex.BellySlide)
+            {
+                int initReq = 2;
+                int rollCount = 4;
+                if (e.SpeOldSpeed)
+                {
+                    if (e.SpeDashNCrash) 
+                    {
+                        initReq = 3;
+                        rollCount = 4;
+                    }
+                    if (e.SpeSecretSpeed)
+                    {
+                        initReq = 5;
+                        rollCount = 8;
+                    }
+                }
+                else
+                {
+                    initReq += e.SpeGear;
+                    rollCount += e.SpeGear;
+                }
+                if (self.initSlideCounter < initReq)
+                {
+                    self.initSlideCounter += initReq;
+                }
+                if (self.rollCounter < rollCount)
+                {
+                    self.rollCounter += rollCount;
+                }
+                if (self.rollCounter >= 9 && e.SpeRollCounter < rollCount)
+                {
+                    self.rollCounter--;
+                    e.SpeRollCounter++;
+                }
+            }
+            else
+            {
+                e.SpeRollCounter = 0;
+            }
+
             if (e.SpeDashNCrash)
             {
                 if (self.animation == Player.AnimationIndex.Roll)
@@ -309,10 +350,6 @@ namespace TheEscort
                 }
                 if (self.animation == Player.AnimationIndex.BellySlide)
                 {
-                    if (self.initSlideCounter < 5)
-                    {
-                        self.initSlideCounter += 5;
-                    }
                     self.bodyChunks[0].vel.x += Mathf.Sign(self.bodyChunks[0].vel.x) * n * 2.5f;
                     self.bodyChunks[1].vel.x += Mathf.Sign(self.bodyChunks[1].vel.x) * n * 2.3f;
                     self.bodyChunks[0].vel.y *= 0.9f;
@@ -432,6 +469,7 @@ namespace TheEscort
         {
             if (e.SpeDashNCrash && !creature.dead && Mathf.Max(Mathf.Abs(self.mainBodyChunk.vel.x), Mathf.Abs(self.mainBodyChunk.vel.y)) > 10f)
             {
+                bool checkSlide = self.animation == Player.AnimationIndex.BellySlide;
                 if (e.SpeOldSpeed)
                 {
                     creature.SetKillTag(self.abstractCreature);
@@ -452,12 +490,15 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * 0.5f);
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * 0.5f);
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
                     //self.WallJump(-self.flipDirection);
-                    self.bodyChunks[0].vel.x *= -(e.SpeSecretSpeed ? 2.5f : 1.5f);
-                    self.bodyChunks[1].vel.x *= -(e.SpeSecretSpeed ? 1.5f : 1f);
-                    self.Stun(e.SpeSecretSpeed ? 160 : 60);
+                    if (!checkSlide)
+                    {
+                        self.bodyChunks[0].vel.x *= -(e.SpeSecretSpeed ? 2.5f : 1.5f);
+                        self.bodyChunks[1].vel.x *= -(e.SpeSecretSpeed ? 1.5f : 1f);
+                        self.Stun(e.SpeSecretSpeed ? 160 : 60);
+                    }
                 }
                 else
                 {
@@ -481,12 +522,20 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (DKMultiplier) * (creature.TotalMass * 0.5f);
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (DKMultiplier) * (creature.TotalMass * 0.5f);
+                    creature.firstChunk.vel.x += self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
+                    creature.firstChunk.vel.y += self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
                     //self.WallJump(-self.flipDirection);
-                    self.bodyChunks[0].vel.x *= -(1.5f + 0.3f * e.SpeGear);
-                    self.bodyChunks[1].vel.x *= -(1f + 0.2f * e.SpeGear);
-                    self.Stun((int)(slamStun * 0.75f));
+                    if (!checkSlide)
+                    {
+                        self.bodyChunks[0].vel.x *= -(1.5f + 0.3f * e.SpeGear);
+                        self.bodyChunks[1].vel.x *= -(1f + 0.2f * e.SpeGear);
+                        self.Stun((int)(slamStun * 1.5f));
+                    }
+                    else
+                    {
+                        self.bodyChunks[0].vel.x *= -0.01f;
+                        self.bodyChunks[1].vel.x *= -0.025f;
+                    }
                 }
             }
         }
@@ -512,11 +561,36 @@ namespace TheEscort
             }
             if (!self.dead && e.SpeDashNCrash)
             {
-                if (firstContact && speed > (e.SpeSecretSpeed ? 15f : 14f) && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip)
+                if (firstContact && speed > (e.SpeSecretSpeed ? 15f : 14f) && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip && self.animation != Player.AnimationIndex.BellySlide)
                 {
                     self.room?.PlaySound(e.SpeSecretSpeed ? SoundID.Slugcat_Terrain_Impact_Hard : SoundID.Slugcat_Terrain_Impact_Medium, e.SFXChunk);
                     e.SpeBonk = 5;
                 }
+            }
+            if (MoreSlugcats.MMF.cfgWallpounce.Value && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.wantToJump > 0 && direction.x != 0 && chunk == 0 && speed > 7f && self.input[0].x == direction.x && !self.standing)
+            {
+                self.bodyChunks[0].vel = new Vector2(direction.x * -25f, 10f);
+                self.bodyChunks[1].vel = new Vector2(direction.x * -25f, 10f);
+                if (e.SpeOldSpeed)
+                {
+                    float extraHeight = 5f;
+                    if (e.SpeDashNCrash)
+                    {
+                        extraHeight = 10f;
+                    }
+                    if (e.SpeSecretSpeed)
+                    {
+                        extraHeight = 20f;
+                    }
+                    self.bodyChunks[0].vel.y += extraHeight + 1f;
+                    self.bodyChunks[1].vel.y += extraHeight;
+                }
+                else
+                {
+                    self.bodyChunks[0].vel.y += 6f + 4f * e.SpeGear;
+                    self.bodyChunks[1].vel.y += 5f + 4f * e.SpeGear;
+                }
+                self.jumpStun = 15 * -direction.x;
             }
         }
 

@@ -114,7 +114,7 @@ namespace TheEscort
             if (!e.GildOverpowered)
             {
                 e.GildOverpowered = config.cfgSectretBuild.Value;
-                if (self.room?.game?.session is StoryGameSession && self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap == 9)
+                if (self.room?.game?.session is StoryGameSession && self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap >= 9)
                 {
                     e.GildOverpowered = true;
                 }
@@ -222,7 +222,7 @@ namespace TheEscort
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
-                e.GildRequiredPower = config.cfgSectretBuild.Value? e.GildStartPower : e.GildLevitateLimit;
+                e.GildRequiredPower = e.GildOverpowered? e.GildStartPower : e.GildLevitateLimit;
                 e.GildPowerUsage = Escort.GildUseLevitate;
                 e.GildCrushCooldown = 10;
             }

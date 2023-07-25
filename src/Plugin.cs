@@ -273,6 +273,8 @@ namespace TheEscort
             On.ShelterDoor.Close += StoreWinConditionData;
 
             On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
+
+            //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
         }
 
 
@@ -1050,7 +1052,7 @@ namespace TheEscort
                     -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
                     -4 => new(14, 7),  // Railgunner
-                    -3 => new(11, 7),  // Escapist
+                    -3 => !config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
                     -2 => new(14, 8),  // Deflector
                     -1 => new(14, 12),  // Brawler
                     _  => new(14, 9)  // Default and unspecified.

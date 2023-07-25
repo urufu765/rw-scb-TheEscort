@@ -59,8 +59,6 @@ namespace TheEscort
 
     class EscOptions : OptionInterface
     {
-
-
         //public readonly Plugin instance;
         public readonly RainWorld rainworld;
         public Configurable<bool> cfgMeanLizards;
@@ -89,6 +87,7 @@ namespace TheEscort
         public Configurable<bool> cfgFunnyDeflSlide;
         public Configurable<bool> cfgPoleBounce;
         public Configurable<bool> cfgOldSpeedster;
+        public Configurable<bool> cfgOldEscapist;
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
         public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod;
@@ -189,6 +188,7 @@ namespace TheEscort
             this.cfgFunnyDeflSlide = this.config.Bind<bool>("cfg_Funny_Deflector_Slide", false);
             this.cfgPoleBounce = this.config.Bind<bool>("cfg_Pole_Bounce", false);
             this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
+            this.cfgOldEscapist = this.config.Bind<bool>("cfg_Old_Escapist", false);
             this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
             this.cfgDeveloperMode.OnChange += LongDevLogChange;
             this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 765, new ConfigAcceptableRange<int>(0, 99999));
@@ -470,7 +470,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
                     color = bRailgunner * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {**___}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {*____}", true){
                     color = bSpeedster * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){

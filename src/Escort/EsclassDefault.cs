@@ -2155,9 +2155,9 @@ namespace TheEscort
                     {
                         try
                         {
-                            if (self.mainBodyChunk.vel.y < 6f)
+                            if (self.mainBodyChunk.vel.y < 10f && self.bodyChunks[myChunk].pos.y > creature.bodyChunks[otherChunk].pos.y)
                             {
-                                self.mainBodyChunk.vel.y += 10f;
+                                self.mainBodyChunk.vel.y = 16f;
                             }
                             e.DeflTrampoline = true;
                             self.Violence(null, null, self.mainBodyChunk, null, Creature.DamageType.Blunt, 0f, 0f);
