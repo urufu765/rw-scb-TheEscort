@@ -240,6 +240,7 @@ namespace TheEscort
 
             On.ScavengerBomb.Thrown += Esclass_RG_BombThrow;
 
+            //On.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
             On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
 
             On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
@@ -287,6 +288,11 @@ namespace TheEscort
                 {
                     MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
                 }
+                IL.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
+                IL.MoreSlugcats.Bullet.HitSomething += Escort_BulletHit;
+                IL.Spear.HitSomething += Escort_SpearHit;
+                IL.ScavengerBomb.HitSomething += Escort_BombHit;
+                // IL.FirecrackerPlant.Explode;
             }
             catch (Exception err)
             {
@@ -784,6 +790,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac = 1.2f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
+                        self.slugcatStats.throwingSkill = 1;
                         //minimumPips -= 1;
                         Ebug(self, "Deflector Build selected!", 2);
                         break;

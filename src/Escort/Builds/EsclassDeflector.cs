@@ -148,42 +148,6 @@ namespace TheEscort
 
         }
 
-        private void Esclass_DF_ThrownSpear(Player self, Spear spear, ref Escort e)
-        {
-            if (
-                !deflectorSpearVelFac.TryGet(self, out float[] dSpearVel) ||
-                !deflectorSpearDmgFac.TryGet(self, out float[] dSpearDmg)
-            )
-            {
-                return;
-            }
-            try
-            {
-                if (e.DeflAmpTimer > 0)
-                {
-                    if (e.DeflPowah == 1) spear.spearDamageBonus *= dSpearDmg[0] + e.DeflPerma;
-                    if (e.DeflPowah == 2) spear.spearDamageBonus *= 7f + e.DeflPerma;
-                    if (e.DeflPowah == 3) {
-                        spear.spearDamageBonus = 1000000f;
-                        self.room?.ScreenMovement(null, default, 1.2f);
-                    }
-                    spear.firstChunk.vel *= dSpearVel[0];
-                    e.DeflPowah = 0;
-                    e.DeflAmpTimer = 0;
-                }
-                else
-                {
-                    e.DeflPowah = 0;
-                    spear.spearDamageBonus *= dSpearDmg[1] + e.DeflPerma;
-                    spear.firstChunk.vel *= dSpearVel[1];
-                }
-            }
-            catch (Exception err)
-            {
-                Ebug(self, err, "Error while applying Deflector-specific speartoss");
-            }
-        }
-
         private void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
         {
             try
@@ -215,7 +179,7 @@ namespace TheEscort
                             escort.DeflPerma += arenaGameSession.arenaSitting.gameTypeSetup.killScores[i] * 0.01f;
                         }
                     }
-                    Ebug("Damage: " + escort.DeflPerma);
+                    Ebug(p, "Damage: " + escort.DeflPerma, ignoreRepetition: true);
                 }
                 orig(self, victim);
             }
@@ -255,6 +219,18 @@ namespace TheEscort
                     Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
                 }
 
+            }
+        }
+
+        public static void Esclass_DF_UltimatePower(Player self)
+        {
+            try
+            {
+                self.room?.ScreenMovement(null, default, 1.2f);
+            }
+            catch (Exception e)
+            {
+                Ebug(self, e, "Couldn't cause the screen to shake!");
             }
         }
     }

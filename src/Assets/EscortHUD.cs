@@ -12,11 +12,11 @@ public static class EscortHUD
 {
     public static void Attach()
     {
-        On.HUD.HUD.InitSinglePlayerHud += Escort_HUD;
+        On.HUD.HUD.InitSinglePlayerHud += Escort_Singleplayer_HUD;
     }
 
 
-    private static void Escort_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
+    private static void Escort_Singleplayer_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
     {
         orig(self, cam);
         if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
@@ -29,30 +29,35 @@ public static class EscortHUD
                         "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 - 80, 10), 
                         _ => new(60, 80)
                     };
-                    foreach(Trackrr<float> traction in e.floatTrackers){
-                        self.AddPart(
-                            traction.trackerName switch {
-                                "parry" => new ParryShield(self, traction, o),
-                                "hype" => new HypeRing(self, traction, o),
-                                "swimming" => new SwimmingVisuals(self, traction, o),
-                                "default" => new HypeRing(self, traction, o),
-                                "brawler" => new BrawWeaponSprites(self, traction, o),
-                                "deflector" => new DeflEmpowerSprites(self, traction, o),
-                                "deflectorPerma" => new DmgText(self, traction, o),
-                                "escapist" => new EscSprite(self, traction, o),
-                                "railgunnerUse" => new RailRing(self, traction, o),
-                                "speedster" => new SpeedRing(self, traction, o),
-                                "speedsterOld" => new OldSpeedRing(self, traction, o),
-                                "gilded" => new GildSprite(self, traction, o),
-                                _ => new GenericRing(self, traction, o)
-                            }
-                        );
-                    }
+                    self.Escort_HUD(ref e, o, Plugin.ins.config.cfgHudLocation.Value == "leftstack");
                 }
                 else {
                     Ebug(p, "No HUD for you!", ignoreRepetition: true);
                 }
             }
+        }
+    }
+
+    private static void Escort_HUD(this HUD.HUD self, ref Escort escort, Vector2 location, bool verticalStack = false, bool foodMeterAnchor = false)
+    {
+        foreach(Trackrr<float> traction in escort.floatTrackers){
+            self.AddPart(
+                traction.trackerName switch {
+                    "parry" => new ParryShield(self, traction, location, verticalStack, foodMeterAnchor),
+                    "hype" => new HypeRing(self, traction, location, verticalStack, foodMeterAnchor),
+                    "swimming" => new SwimmingVisuals(self, traction, location, verticalStack, foodMeterAnchor),
+                    "default" => new HypeRing(self, traction, location, verticalStack, foodMeterAnchor),
+                    "brawler" => new BrawWeaponSprites(self, traction, location, verticalStack, foodMeterAnchor),
+                    "deflector" => new DeflEmpowerSprites(self, traction, location, verticalStack, foodMeterAnchor),
+                    "deflectorPerma" => new DmgText(self, traction, location, verticalStack, foodMeterAnchor),
+                    "escapist" => new EscSprite(self, traction, location, verticalStack, foodMeterAnchor),
+                    "railgunnerUse" => new RailRing(self, traction, location, verticalStack, foodMeterAnchor),
+                    "speedster" => new SpeedRing(self, traction, location, verticalStack, foodMeterAnchor),
+                    "speedsterOld" => new OldSpeedRing(self, traction, location, verticalStack, foodMeterAnchor),
+                    "gilded" => new GildSprite(self, traction, location, verticalStack, foodMeterAnchor),
+                    _ => new GenericRing(self, traction, location, verticalStack, foodMeterAnchor)
+                }
+            );
         }
     }
 
@@ -65,11 +70,13 @@ public static class EscortHUD
         public Vector2 lastPos;
         public FoodMeter foodmeter;
         public Vector2 offset;
-        public bool stackVertical => Plugin.ins.config.cfgHudLocation.Value == "leftstack";
+        public bool stackVertical, foodmeterAnchor;
 
-        public RingMeter(HUD.HUD hud, Vector2 offset) : base(hud) { 
+        public RingMeter(HUD.HUD hud, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
             this.offset = offset;  // TODO: Make this changeable later
+            this.stackVertical = stackVertical;
+            this.foodmeterAnchor = foodmeterAnchor;
         }
 
 		public Vector2 DrawPos(float timeStacker)
@@ -115,7 +122,7 @@ public static class EscortHUD
         public float flashColor;
         public bool staticFlash;
 
-        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool staticFlash = false) : base(hud, offset)
+        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor, bool staticFlash = false) : base(hud, offset, stackVertical, foodmeterAnchor)
         {
             this.tracked = tracked;
             this.staticFlash = staticFlash;
@@ -202,7 +209,7 @@ public static class EscortHUD
         private readonly FSprite progressGlow;
         private readonly FSprite normalSprite;
 
-        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             this.progressGlow = new FSprite("Futile_White")
             {
@@ -242,7 +249,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public RailRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public RailRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -284,7 +291,7 @@ public static class EscortHUD
     public class BrawWeaponSprites : GenericRing
     {
         private readonly FSprite[] brawlSprites;
-        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             brawlSprites = new FSprite[3];
             for (int i = 0; i < brawlSprites.Length; i++)
@@ -325,7 +332,7 @@ public static class EscortHUD
     public class DeflEmpowerSprites : GenericRing
     {
         private readonly FSprite[] sprites;
-        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -361,7 +368,7 @@ public static class EscortHUD
     {
         private readonly FSprite sprite;
 
-        public EscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public EscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             sprite = new FSprite("escort_hud_escshadow")
             {
@@ -395,7 +402,7 @@ public static class EscortHUD
         private readonly FSprite gearSprite;
         private float pulseColor, gradientColor;
 
-        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, offset)
+        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
         {
             this.tracked = tracked;
             this.progressSprite = new FSprite("Futile_White")
@@ -485,7 +492,7 @@ public static class EscortHUD
         private readonly FSprite[] sprites;
         private readonly float[] spriteGradient;
 
-        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool staticFlash = false) : base(hud, tracked, offset, staticFlash)
+        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor, bool staticFlash = false) : base(hud, tracked, offset, stackVertical, foodmeterAnchor, staticFlash)
         {
             sprites = new FSprite[4];
             spriteGradient = new float[4];
@@ -534,7 +541,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public GildSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, tracked, offset)
+        public GildSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
         {
             sprites = new FSprite[7];
             for (int i = 0; i < sprites.Length; i++)
@@ -573,7 +580,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite normalSprite;
 
-        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset) : base(hud, offset)
+        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
         {
             this.tracked = trackrr;
             this.normalSprite = new FSprite(trackrr.centerSprite){
@@ -610,7 +617,7 @@ public static class EscortHUD
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
-        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset) : base(hud, offset)
+        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
         {
             this.tracked = trackrr;
             damage = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
@@ -684,7 +691,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite[] shallowSprites, deepSprites;
         private readonly FSprite defaultSprite;
-        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset) : base(hud, offset)
+        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
         {
             this.tracked = tracked;
             shallowSprites = new FSprite[12];

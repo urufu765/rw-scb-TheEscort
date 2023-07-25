@@ -94,6 +94,19 @@ namespace TheEscort
         public bool DeflSlideKick;
         public int DeflPowah;
         public float DeflPerma;
+        public float DeflDamageMult 
+        { 
+            get 
+            {
+                return DeflPowah switch
+                {
+                    3 => 1000000f,
+                    2 => 7f,
+                    1 => 3f,
+                    _ => 0.5f
+                };
+            }
+        }
         public bool Escapist;
         public int EscDangerExtend;
         public Creature.Grasp EscDangerGrasp;

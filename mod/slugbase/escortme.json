@@ -86,7 +86,7 @@
 		"theescort/deflector/dk_h_dmg": [3, 0.5],
 		"theescort/deflector/slide_launch_fac": 0.5,
 		"theescort/deflector/slide_launch_mod": 8,
-		"theescort/deflector/spear_vel_fac": [2, 1.2],
+		"theescort/deflector/spear_vel_fac": [1.5, 0.98],
 		"theescort/deflector/spear_dmg_fac": [3, 0.5],
 
 		"theescort/escapist/slide_launch_mod": 32,
