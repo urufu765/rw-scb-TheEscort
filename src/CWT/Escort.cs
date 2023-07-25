@@ -185,7 +185,7 @@ namespace TheEscort
             this.slideFromSpear = false;
             this.lizzieVengenceClock = 400;
             this.lizzieVengenceTick = 40;
-            this.vengefulLizards = new List<AbstractCreature>(18);
+            this.vengefulLizards = new List<AbstractCreature>(30);
             this.lizzieVengenceTolerance = UnityEngine.Random.Range(3, 7);
             //this.lizzieVengenceTolerance = 1;
             this.lizzieDestination = player.abstractCreature.pos;
@@ -477,12 +477,13 @@ namespace TheEscort
         {
             if (self != null && self.room != null && self.room.game != null && self.room.game.world != null)
             {
-                this.vengefulLizardsCount = UnityEngine.Random.Range(5, 18);
+                this.vengefulLizardsCount = UnityEngine.Random.Range(12, vengefulLizards.Count);
                 for (int i = 0; i < this.vengefulLizardsCount; i++)
                 {
                     this.vengefulLizards.Add(new AbstractCreature(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID()));
                     this.vengefulLizards[i].saveCreature = false;
                     this.vengefulLizards[i].ignoreCycle = true;
+                    this.vengefulLizards[i].voidCreature = true;
                     self.room.abstractRoom.AddEntity(this.vengefulLizards[i]);
                 }
             }
@@ -495,7 +496,8 @@ namespace TheEscort
                 AbstractCreature ac = new(self.room.game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, Escat_get_cornerable_rooms(self), self.room.game.GetNewID())
                 {
                     saveCreature = false,
-                    ignoreCycle = true
+                    ignoreCycle = true,
+                    voidCreature = true
                 };
 
                 this.vengefulLizards.Add(ac);

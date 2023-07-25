@@ -598,7 +598,7 @@ public static class ETrackrr
         public override void UpdateTracker()
         {
             base.UpdateTracker();
-            if (this.Limit < e.DeflPerma - 0.001f)
+            if (this.Limit < e.DeflPerma)
             {
                 if (!firstInit) tickSlowly++;
                 if (sizeIncrease < 30 && tickSlowly >= 4) 

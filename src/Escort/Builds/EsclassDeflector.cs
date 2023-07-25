@@ -209,12 +209,12 @@ namespace TheEscort
                 {
                     bonusDamage = storyGameSession.saveState.deathPersistentSaveData.karmaCap switch 
                     {
-                        9 => 0.01f,
-                        8 => 0.008f,
-                        7 => 0.006f,
-                        6 => 0.004f,
-                        4 => 0.002f,
-                        3 => 0.001f,
+                        9 => 0.05f,
+                        8 => 0.03f,
+                        7 => 0.02f,
+                        6 => 0.01f,
+                        4 => 0.004f,
+                        3 => 0.002f,
                         _ => 0
                     };
                 }
