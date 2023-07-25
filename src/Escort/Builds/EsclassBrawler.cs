@@ -187,18 +187,25 @@ namespace TheEscort
             }
             try
             {
-                spear.spearDamageBonus *= bSpearDmg[0];
-                if (self.bodyMode == Player.BodyModeIndex.Crawl)
+                if (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection)
                 {
-                    spear.firstChunk.vel.x *= bSpearVel[0];
-                }
-                else if (self.bodyMode == Player.BodyModeIndex.Stand)
-                {
-                    spear.firstChunk.vel.x *= bSpearVel[1];
+
                 }
                 else
                 {
-                    spear.firstChunk.vel.x *= bSpearVel[2];
+                    spear.spearDamageBonus *= bSpearDmg[0];
+                    if (self.bodyMode == Player.BodyModeIndex.Crawl)
+                    {
+                        spear.firstChunk.vel.x *= bSpearVel[0];
+                    }
+                    else if (self.bodyMode == Player.BodyModeIndex.Stand)
+                    {
+                        spear.firstChunk.vel.x *= bSpearVel[1];
+                    }
+                    else
+                    {
+                        spear.firstChunk.vel.x *= bSpearVel[2];
+                    }
                 }
                 if (self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump){
                     thrust *= 2;
@@ -214,6 +221,11 @@ namespace TheEscort
                     //spear.firstChunk.pos += new Vector2(0f, bSpearY[1]);
                     spear.firstChunk.vel *= bSpearY[0];
                     //spear.doNotTumbleAtLowSpeed = true;
+                    if (e.BrawLastWeapon == "supershank")
+                    {
+                        spear.firstChunk.vel.x *= 0.15f;
+                        spear.doNotTumbleAtLowSpeed = true;
+                    }
                     e.BrawShankMode = false;
                     spear.spearDamageBonus = bSpearDmg[1];
                     spear.spearDamageBonus *= Mathf.Max(0.15f, Mathf.InverseLerp(0, 20, 20 - self.slowMovementStun));
@@ -266,7 +278,7 @@ namespace TheEscort
 
         private bool Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
-            if (self.Malnourished)
+            if (self.Malnourished || (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection))
             {
                 return false;
             }
@@ -287,7 +299,7 @@ namespace TheEscort
                     {
                         break;
                     }
-                    if (self.slowMovementStun > 40){
+                    if (self.slowMovementStun > 30){
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
                         Eshelp_Player_Shaker(self, 1.4f);
@@ -303,7 +315,7 @@ namespace TheEscort
                     //}
 
                     //s.firstChunk.pos = self.mainBodyChunk.pos + new Vector2(0f, 80f);
-                    s.firstChunk.vel = new Vector2(c.mainBodyChunk.pos.x - s.firstChunk.pos.x, (c.mainBodyChunk.pos.y - s.firstChunk.pos.y) + 5f);
+                    //s.firstChunk.vel = new Vector2(c.mainBodyChunk.pos.x - s.firstChunk.pos.x, c.mainBodyChunk.pos.y - s.firstChunk.pos.y - 5f);
                     //s.firstChunk.pos = c.mainBodyChunk.pos;
                     //Vector2 v = (c.firstChunk.pos - s.firstChunk.pos).normalized * 3f;
                     e.BrawShankDir = c.mainBodyChunk.pos;
