@@ -13,49 +13,105 @@ public static class EscortHUD
     public static void Attach()
     {
         On.HUD.HUD.InitSinglePlayerHud += Escort_Singleplayer_HUD;
+        On.HUD.PlayerSpecificMultiplayerHud.ctor += Escort_Multiplayer_HUD;
     }
 
+    private static void Escort_Multiplayer_HUD(On.HUD.PlayerSpecificMultiplayerHud.orig_ctor orig, PlayerSpecificMultiplayerHud self, HUD.HUD hud, ArenaGameSession session, AbstractCreature abstractPlayer)
+    {
+        orig(self, hud, session, abstractPlayer);
+        try
+        {
+            if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
+            if (abstractPlayer.realizedCreature is Player p)
+            {
+                if (Plugin.eCon.TryGetValue(p, out Escort e))
+                {
+                    Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
+                    Vector2 location = p.playerState.playerNumber switch
+                    {
+                        3 => self.cornerPos + new Vector2(-100, -40),
+                        2 => self.cornerPos + new Vector2(100, -40),
+                        1 => self.cornerPos + new Vector2(100, 20),
+                        _ => self.cornerPos + new Vector2(-100, 20)
+                    };
+                    hud.Escort_HUD(ref e, location);
+                }
+                else
+                {
+                    Ebug(p, "No HUD for you!", ignoreRepetition: true);
+                }
+            }
+            else 
+            {
+                Ebug("Escort Hud not applicable", ignoreRepetition: true);
+            }
+
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Couldn't init multiplayer hud!");
+        }
+    }
 
     private static void Escort_Singleplayer_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
     {
         orig(self, cam);
-        if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
-        if (self.owner is Player p){
-            for (int i = 0; i < cam.room.game.session.Players.Count; i++){
-                if (cam.room.game.session.Players[i].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e)){
-                    Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
-                    Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
+        try
+        {
+            if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
+            if (self.owner is Player)
+            {
+                for (int i = 0; i < cam.room.game.session.Players.Count; i++)
+                {
+                    if (cam.room.game.session.Players[i].realizedCreature is Player player)
                     {
-                        "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 - 80, 10), 
-                        _ => new(60, 80)
-                    };
-                    self.Escort_HUD(ref e, o, Plugin.ins.config.cfgHudLocation.Value == "leftstack");
-                }
-                else {
-                    Ebug(p, "No HUD for you!", ignoreRepetition: true);
+                        if (Plugin.eCon.TryGetValue(player, out Escort e))
+                        {
+                            Ebug(player, "Found player! Applying hud", ignoreRepetition: true);
+                            Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
+                            {
+                                "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 - (120f - 80f * player.playerState.playerNumber), 20),
+                                "leftstack" => new(60, 80 + 80f * player.playerState.playerNumber),
+                                _ => new(60 + 80f * player.playerState.playerNumber, 80)
+                            };
+                            self.Escort_HUD(ref e, o, true);
+                        }
+                        else
+                        {
+                            Ebug(player, "No HUD for you!", ignoreRepetition: true);
+                        }
+                    }
+                    else 
+                    {
+                        Ebug("Escort Hud not applicable", ignoreRepetition: true);
+                    }
                 }
             }
         }
+        catch (Exception err)
+        {
+            Ebug(err, "Couldn't init singleplayer hud!");
+        }
     }
 
-    private static void Escort_HUD(this HUD.HUD self, ref Escort escort, Vector2 location, bool verticalStack = false, bool foodMeterAnchor = false)
+    private static void Escort_HUD(this HUD.HUD self, ref Escort escort, Vector2 location, bool foodMeterAnchor = false)
     {
         foreach(Trackrr<float> traction in escort.floatTrackers){
             self.AddPart(
                 traction.trackerName switch {
-                    "parry" => new ParryShield(self, traction, location, verticalStack, foodMeterAnchor),
-                    "hype" => new HypeRing(self, traction, location, verticalStack, foodMeterAnchor),
-                    "swimming" => new SwimmingVisuals(self, traction, location, verticalStack, foodMeterAnchor),
-                    "default" => new HypeRing(self, traction, location, verticalStack, foodMeterAnchor),
-                    "brawler" => new BrawWeaponSprites(self, traction, location, verticalStack, foodMeterAnchor),
-                    "deflector" => new DeflEmpowerSprites(self, traction, location, verticalStack, foodMeterAnchor),
-                    "deflectorPerma" => new DmgText(self, traction, location, verticalStack, foodMeterAnchor),
-                    "escapist" => new EscSprite(self, traction, location, verticalStack, foodMeterAnchor),
-                    "railgunnerUse" => new RailRing(self, traction, location, verticalStack, foodMeterAnchor),
-                    "speedster" => new SpeedRing(self, traction, location, verticalStack, foodMeterAnchor),
-                    "speedsterOld" => new OldSpeedRing(self, traction, location, verticalStack, foodMeterAnchor),
-                    "gilded" => new GildSprite(self, traction, location, verticalStack, foodMeterAnchor),
-                    _ => new GenericRing(self, traction, location, verticalStack, foodMeterAnchor)
+                    "parry" => new ParryShield(self, traction, location, foodMeterAnchor),
+                    "hype" => new HypeRing(self, traction, location, foodMeterAnchor),
+                    "swimming" => new SwimmingVisuals(self, traction, location, foodMeterAnchor),
+                    "default" => new HypeRing(self, traction, location, foodMeterAnchor),
+                    "brawler" => new BrawWeaponSprites(self, traction, location, foodMeterAnchor),
+                    "deflector" => new DeflEmpowerSprites(self, traction, location, foodMeterAnchor),
+                    "deflectorPerma" => new DmgText(self, traction, location, foodMeterAnchor),
+                    "escapist" => new EscSprite(self, traction, location, foodMeterAnchor),
+                    "railgunnerUse" => new RailRing(self, traction, location, foodMeterAnchor),
+                    "speedster" => new SpeedRing(self, traction, location, foodMeterAnchor),
+                    "speedsterOld" => new OldSpeedRing(self, traction, location, foodMeterAnchor),
+                    "gilded" => new GildSprite(self, traction, location, foodMeterAnchor),
+                    _ => new GenericRing(self, traction, location, foodMeterAnchor)
                 }
             );
         }
@@ -70,12 +126,11 @@ public static class EscortHUD
         public Vector2 lastPos;
         public FoodMeter foodmeter;
         public Vector2 offset;
-        public bool stackVertical, foodmeterAnchor;
+        public bool foodmeterAnchor;
 
-        public RingMeter(HUD.HUD hud, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud) { 
+        public RingMeter(HUD.HUD hud, Vector2 offset, bool foodmeterAnchor) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
             this.offset = offset;  // TODO: Make this changeable later
-            this.stackVertical = stackVertical;
             this.foodmeterAnchor = foodmeterAnchor;
         }
 
@@ -89,13 +144,14 @@ public static class EscortHUD
             base.Draw(timeStacker);
             pos = DrawPos(timeStacker);
             pos.x = offset.x;
-            if (this.foodmeter is not null) pos.y = this.foodmeter.pos.y + offset.y;
+            pos.y = offset.y;
+            if (this.foodmeter is not null) pos.y += this.foodmeter.pos.y;
         }
 
         public override void Update()
         {
             base.Update();
-            if (foodmeter == null)
+            if (foodmeterAnchor && foodmeter == null)
             {
                 for (int i = 0; i < hud.parts.Count; i++)
                 {
@@ -122,7 +178,7 @@ public static class EscortHUD
         public float flashColor;
         public bool staticFlash;
 
-        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor, bool staticFlash = false) : base(hud, offset, stackVertical, foodmeterAnchor)
+        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor, bool staticFlash = false) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = tracked;
             this.staticFlash = staticFlash;
@@ -165,15 +221,6 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-
-            if (stackVertical)
-            {
-                pos.y += 80f * tracked.playerNumber;
-            }
-            else
-            {
-                pos.x += 80f * tracked.playerNumber;
-            }
             progressBacking.x = progressBacking2.x = progressSprite.x = progressSprite2.x = DrawPos(timeStacker).x;
             progressBacking.y = progressBacking2.y = progressSprite.y = progressSprite2.y = DrawPos(timeStacker).y;
             progressBacking.alpha = progressBacking2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -209,7 +256,7 @@ public static class EscortHUD
         private readonly FSprite progressGlow;
         private readonly FSprite normalSprite;
 
-        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public HypeRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             this.progressGlow = new FSprite("Futile_White")
             {
@@ -233,10 +280,10 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.55f, 0.9f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
+            normalSprite.color = tracked.Value > tracked.Limit? Color.Lerp(tracked.trackerColor, tracked.trackerColor * 0.7f, flashColor) : tracked.trackerColor * Mathf.Lerp(0.7f, 0.95f, Mathf.InverseLerp(0, tracked.Limit, tracked.Value));
             progressGlow.x = normalSprite.x = DrawPos(timeStacker).x;
             progressGlow.y = normalSprite.y = DrawPos(timeStacker).y;
-            progressGlow.alpha = 0.15f;
+            progressGlow.alpha = 0.2f;
             normalSprite.alpha = tracked.overridden? 0f : 1f;
             progressBacking.color = progressBacking2.color = Color.Lerp(tracked.effectColor, tracked.trackerColor, flashColor);
         }
@@ -249,7 +296,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public RailRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public RailRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -291,7 +338,7 @@ public static class EscortHUD
     public class BrawWeaponSprites : GenericRing
     {
         private readonly FSprite[] brawlSprites;
-        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public BrawWeaponSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             brawlSprites = new FSprite[3];
             for (int i = 0; i < brawlSprites.Length; i++)
@@ -332,7 +379,7 @@ public static class EscortHUD
     public class DeflEmpowerSprites : GenericRing
     {
         private readonly FSprite[] sprites;
-        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public DeflEmpowerSprites(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             sprites = new FSprite[4];
             for (int i = 0; i < sprites.Length; i++)
@@ -368,7 +415,7 @@ public static class EscortHUD
     {
         private readonly FSprite sprite;
 
-        public EscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public EscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             sprite = new FSprite("escort_hud_escshadow")
             {
@@ -402,7 +449,7 @@ public static class EscortHUD
         private readonly FSprite gearSprite;
         private float pulseColor, gradientColor;
 
-        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
+        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = tracked;
             this.progressSprite = new FSprite("Futile_White")
@@ -444,14 +491,6 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            if (stackVertical)
-            {
-                pos.y += 80f * tracked.playerNumber;
-            }
-            else
-            {
-                pos.x += 80f * tracked.playerNumber;
-            }
             progressBacking.x = progressSprite.x = chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
             progressBacking.y = progressSprite.y = chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
@@ -492,7 +531,7 @@ public static class EscortHUD
         private readonly FSprite[] sprites;
         private readonly float[] spriteGradient;
 
-        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor, bool staticFlash = false) : base(hud, tracked, offset, stackVertical, foodmeterAnchor, staticFlash)
+        public OldSpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor, bool staticFlash = false) : base(hud, tracked, offset, foodmeterAnchor, staticFlash)
         {
             sprites = new FSprite[4];
             spriteGradient = new float[4];
@@ -541,7 +580,7 @@ public static class EscortHUD
     {
         private readonly FSprite[] sprites;
 
-        public GildSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, tracked, offset, stackVertical, foodmeterAnchor)
+        public GildSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
             sprites = new FSprite[7];
             for (int i = 0; i < sprites.Length; i++)
@@ -580,7 +619,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite normalSprite;
 
-        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
+        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = trackrr;
             this.normalSprite = new FSprite(trackrr.centerSprite){
@@ -595,14 +634,6 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            if (stackVertical)
-            {
-                pos.y += 80f * tracked.playerNumber;
-            }
-            else
-            {
-                pos.x += 80f * tracked.playerNumber;
-            }
             normalSprite.x = base.DrawPos(timeStacker).x;
             normalSprite.y = base.DrawPos(timeStacker).y;
             normalSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, tracked.Limit);
@@ -617,7 +648,7 @@ public static class EscortHUD
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
-        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
+        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = trackrr;
             damage = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
@@ -652,15 +683,6 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            if (stackVertical)
-            {
-                pos.y += 80f * tracked.playerNumber;
-            }
-            else
-            {
-                pos.x += 80f * tracked.playerNumber;
-            }
-
             string multiplier = (tracked.Max + tracked.Limit).ToString("###0.000");
             // string multiplier = (tracked.Max + tracked.Limit).ToString();
             
@@ -691,7 +713,7 @@ public static class EscortHUD
         private readonly Trackrr<float> tracked;
         private readonly FSprite[] shallowSprites, deepSprites;
         private readonly FSprite defaultSprite;
-        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool stackVertical, bool foodmeterAnchor) : base(hud, offset, stackVertical, foodmeterAnchor)
+        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
         {
             this.tracked = tracked;
             shallowSprites = new FSprite[12];
@@ -725,15 +747,6 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            if (stackVertical)
-            {
-                pos.y += 80f * tracked.playerNumber;
-            }
-            else
-            {
-                pos.x += 80f * tracked.playerNumber;
-            }
-
 
             for (int i = 0; i < deepSprites.Length; i++)
             {
