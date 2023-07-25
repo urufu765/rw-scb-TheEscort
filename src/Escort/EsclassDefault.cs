@@ -1421,8 +1421,8 @@ namespace TheEscort
                 Ebug(player, "Is there a hitChunk? " + (hitChunk != null), 2);
                 Ebug(player, "Is there a hitAppendage? " + (hitAppendage != null), 2);
                 Ebug(player, "Is there a type? " + (type != null), 2);
-                Ebug(player, "Is there damage? " + (damage > 0f), 2);
-                Ebug(player, "Is there stunBonus? " + (stunBonus > 0f), 2);
+                Ebug(player, $"Is there damage? {damage > 0f} | {damage}", 2);
+                Ebug(player, $"Is there stunBonus? {stunBonus > 0f} | {stunBonus}", 2);
 
                 if (source != null)
                 {

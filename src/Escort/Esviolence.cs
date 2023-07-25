@@ -55,7 +55,7 @@ partial class Plugin : BaseUnityPlugin
         //Ebug(self, "Collision Triggered!");
         try
         {
-            if (e.consoleTick == 0)
+            if (e.consoleTick == 0 && false)
             {
                 Ebug(self, "Escort collides!");
                 Ebug(self, "Has physical object? " + otherObject != null);
@@ -670,7 +670,7 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.GotoPrev(MoveType.After,
-                i => i.MatchLdloc(out _)
+                i => i.MatchLdfld<LillyPuck>(nameof(LillyPuck.spearDamageBonus))
             );
         }
         catch (Exception ex)
@@ -794,7 +794,7 @@ partial class Plugin : BaseUnityPlugin
                                 baseDamage = 0.25f;
                             }
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, e.Railgunner ? (e.RailDoubleRock ? 0.25f : 0.2f) : (e.Escapist ? 0.1f : 0.02f), (e.Brawler ? stunBonus *= 1.5f : stunBonus));
+                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, e.Brawler ? stunBonus *= 1.5f : stunBonus);
                     }
                 }
                 else if (result.chunk != null)
@@ -907,7 +907,7 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.GotoPrev(MoveType.After,
-                i => i.MatchLdloc(out _)
+                i => i.MatchLdfld<Spear>(nameof(Spear.spearDamageBonus))
             );
         }
         catch (Exception ex)

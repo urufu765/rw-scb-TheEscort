@@ -598,7 +598,7 @@ public static class ETrackrr
         public override void UpdateTracker()
         {
             base.UpdateTracker();
-            if (this.Limit < e.DeflPerma)
+            if (this.Limit < e.DeflPerma - 0.001f)
             {
                 if (!firstInit) tickSlowly++;
                 if (sizeIncrease < 30 && tickSlowly >= 4) 
@@ -612,7 +612,13 @@ public static class ETrackrr
                     this.Limit += this.Limit < e.DeflPerma - 10? 0.123f : (this.Limit < e.DeflPerma - 0.75f? 0.012f : 0.001f);
                     tickExtremelySlowly = 8;
                 }
-                else if (tickEvenSlowly >= Custom.LerpMap(e.DeflPerma - Limit, 0.001f, 0.025f, 20, 0))
+                else if (e.escortArena && tickEvenSlowly >= Custom.LerpMap(e.DeflPerma - Limit, 0.01f, 0.25f, 20, 0))
+                {
+                    this.Limit += 0.01f;
+                    tickEvenSlowly = 0;
+                    tickExtremelySlowly = 20;
+                }
+                else if (!e.escortArena && tickEvenSlowly >= Custom.LerpMap(e.DeflPerma - Limit, 0.001f, 0.025f, 20, 0))
                 {
                     this.Limit += 0.001f;
                     tickEvenSlowly = 0;
@@ -626,6 +632,7 @@ public static class ETrackrr
                 {
                     sizeIncrease--;
                 }
+                this.Limit = e.DeflPerma;
             }
             if (tickExtremelySlowly > 0)
             {
