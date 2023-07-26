@@ -365,13 +365,35 @@ namespace TheEscort
                 }
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
-                e.Escat_Draw_Ring_Trackers(t);
+                //e.Escat_Draw_Ring_Trackers(t);
             }
             catch (Exception err)
             {
                 orig(self, s, rCam, t, camP);
                 Ebug(self.player, err, "Something happened while trying to draw sprites!");
             }
+        }
+
+        private void Escort_HUD_Draw(On.HUD.HudPart.orig_Draw orig, HUD.HudPart self, float timeStacker)
+        {
+            try
+            {
+                if (self.hud.owner is Player player && player?.room?.game?.session is not null)
+                {
+                    foreach(AbstractCreature abstractPlayer in player.room.game.session.Players)
+                    {
+                        if (abstractPlayer?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort e))
+                        {
+                            e.Escat_Draw_Ring_Trackers(timeStacker);
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Couldn't update HUD trackers!");
+            }
+            orig(self, timeStacker);
         }
 
         private void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)

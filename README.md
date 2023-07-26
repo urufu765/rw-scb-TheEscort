@@ -28,7 +28,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev18** Deflector perma damage fix for arena mode
     * **dev19** More deflector arena fix
     * **dev20** Chasing lizards are golden and more spawn. Deflector gets more benefits from resting
-    * *dev21* Fix the speedster for not saving for some reason
+    * **dev21** Fix the speedster for not saving for some reason, Deflector multiplier gets saved as long as someone survives if on easy difficulty, hud now updates for out of room players
     * *dev21* Add global Deflector multiplier option
     * *dev22* Deflector multiplier saves as long as just one person makes it to safe area
 

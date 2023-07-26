@@ -177,6 +177,7 @@ namespace TheEscort
             On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
             On.PlayerGraphics.Update += Escort_GFXUpdate;
             On.PlayerGraphics.DefaultSlugcatColor += Escort_Colorz;
+            On.HUD.HudPart.Draw += Escort_HUD_Draw;
 
             // Jolly UI
             On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.HasUniqueSprite += Escort_Jolly_Sprite;

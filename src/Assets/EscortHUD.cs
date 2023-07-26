@@ -127,11 +127,17 @@ public static class EscortHUD
         public FoodMeter foodmeter;
         public Vector2 offset;
         public bool foodmeterAnchor;
+        public Trackrr<float> tracked;
+        public readonly int playerNum;
+        public readonly string trackerName;
 
-        public RingMeter(HUD.HUD hud, Vector2 offset, bool foodmeterAnchor) : base(hud) { 
+        public RingMeter(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud) { 
             this.pos = new Vector2(40f, 40f);
             this.offset = offset;  // TODO: Make this changeable later
             this.foodmeterAnchor = foodmeterAnchor;
+            this.tracked = tracked;
+            this.playerNum = tracked.playerNumber;
+            this.trackerName = tracked.trackerName;
         }
 
 		public Vector2 DrawPos(float timeStacker)
@@ -151,13 +157,39 @@ public static class EscortHUD
         public override void Update()
         {
             base.Update();
-            if (foodmeterAnchor && foodmeter == null)
+            if (foodmeterAnchor && foodmeter is null)
             {
                 for (int i = 0; i < hud.parts.Count; i++)
                 {
                     if (hud.parts[i] is FoodMeter)
                     {
                         foodmeter = hud.parts[i] as FoodMeter;
+                    }
+                }
+            }
+            if (tracked is null)
+            {
+                Ebug("Tracker went null! Attempting to fetch another tracker", 0, true);
+                if (hud.owner is Player p && p.room?.game?.session.Players is not null)
+                {
+                    if (p.room.game.session.Players.Count > playerNum && p.room.game.session.Players[playerNum].realizedCreature is Player player && Plugin.eCon.TryGetValue(player, out Escort e))
+                    {
+                        Ebug(player, "Traced HUD to player, beginning tracker search", 0, true);
+                        bool trackerFound = false;
+                        foreach(Trackrr<float> trackrr in e.floatTrackers)
+                        {
+                            if (trackrr is not null && trackrr.trackerName == trackerName)
+                            {
+                                tracked = trackrr;
+                                trackerFound = true;
+                                break;
+                            }
+                        }
+                        if (!trackerFound) Ebug(player, "Tracker could not be found", 0, true);
+                    }
+                    else
+                    {
+                        Ebug("Unable to trace to player to retrieve tracker for HUD", 0, true);
                     }
                 }
             }
@@ -174,13 +206,11 @@ public static class EscortHUD
         public readonly FSprite progressSprite2;
         public readonly FSprite progressBacking;
         public readonly FSprite progressBacking2;
-        public readonly Trackrr<float> tracked;
         public float flashColor;
         public bool staticFlash;
 
-        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor, bool staticFlash = false) : base(hud, offset, foodmeterAnchor)
+        public GenericRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor, bool staticFlash = false) : base(hud, tracked, offset, foodmeterAnchor)
         {
-            this.tracked = tracked;
             this.staticFlash = staticFlash;
 
             this.progressSprite = new FSprite("Futile_White")
@@ -442,16 +472,14 @@ public static class EscortHUD
     /// </summary>
     public class SpeedRing : RingMeter
     {
-        private readonly Trackrr<float> tracked;
         private readonly FSprite progressSprite;
         private readonly FSprite progressBacking;
         private readonly FSprite chargeSprite;
         private readonly FSprite gearSprite;
         private float pulseColor, gradientColor;
 
-        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
+        public SpeedRing(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
-            this.tracked = tracked;
             this.progressSprite = new FSprite("Futile_White")
             {
                 x = pos.x,
@@ -616,12 +644,10 @@ public static class EscortHUD
 
     public class ParryShield : RingMeter
     {
-        private readonly Trackrr<float> tracked;
         private readonly FSprite normalSprite;
 
-        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
+        public ParryShield(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, trackrr, offset, foodmeterAnchor)
         {
-            this.tracked = trackrr;
             this.normalSprite = new FSprite(trackrr.centerSprite){
                 x = pos.x,
                 y = pos.y,
@@ -644,15 +670,13 @@ public static class EscortHUD
 
     public class DmgText : RingMeter
     {
-        private readonly Trackrr<float> tracked;
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
         private readonly String formatting;
 
-        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
+        public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, trackrr, offset, foodmeterAnchor)
         {
-            this.tracked = trackrr;
             damage = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + trackrr.Limit)
             {
                 x = pos.x,
@@ -714,12 +738,10 @@ public static class EscortHUD
 
     public class SwimmingVisuals : RingMeter
     {
-        private readonly Trackrr<float> tracked;
         private readonly FSprite[] shallowSprites, deepSprites;
         private readonly FSprite defaultSprite;
-        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, offset, foodmeterAnchor)
+        public SwimmingVisuals(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
         {
-            this.tracked = tracked;
             shallowSprites = new FSprite[12];
             deepSprites = new FSprite[12];
             for(int i = 0; i < 12; i++)
