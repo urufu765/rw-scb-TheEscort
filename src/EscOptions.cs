@@ -113,6 +113,13 @@ namespace TheEscort
         public OpCheckBox[] buildEasy;
         //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
         public OpSliderTick[] buildPlayer;
+        private OpDragger buildDragger;
+        private Configurable<int> buildDraggerHelper;
+        private OpComboBox buildSelect;
+        private Configurable<string> buildSelectHelper;
+        private OpCheckBox easySelect;
+        private Configurable<bool> easySelectHelper;
+        public List<ListItem> buildItems;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private Color[] buildColors;
@@ -201,8 +208,8 @@ namespace TheEscort
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
-            this.buildEasy = new OpCheckBox[4];  // hardcoded to 4 players due to graphical stuff
-            this.buildPlayer = new OpSliderTick[4];
+            this.buildEasy = new OpCheckBox[PlayerCount];  // Only the first four are shown. The rest are hidden.
+            this.buildPlayer = new OpSliderTick[PlayerCount];
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
             this.hudShowOptions = new()
             {
@@ -220,6 +227,20 @@ namespace TheEscort
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
+            this.buildDraggerHelper = config.Bind("escort_builddragger_helper_ignore_this", 0);
+            this.buildItems = new()
+            {
+                new ListItem("default", Translate("Default"), 0),
+                new ListItem("brawler", Translate("Brawler"), -1),
+                new ListItem("deflector", Translate("Deflector"), -2),
+                new ListItem("escapist", Translate("Escapist"), -3),
+                new ListItem("railgunner", Translate("Railgunner"), -4),
+                new ListItem("speedster", Translate("Speedster"), -5),
+                new ListItem("gilded", Translate("Gilded"), -6),
+            };
+            this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
+            this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
+
 
             // Plugin.ins.L().Christmas(this.cfgSectret.Value);
             // Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
@@ -334,6 +355,25 @@ namespace TheEscort
                 greyedOut = !cfgSFX.Value,
                 description = OptionInterface.Translate("escoptions_noflipsfx_desc") + SetDefault(cfgNoMoreFlips.defaultValue)
             };
+
+            this.buildDragger = new OpDragger(buildDraggerHelper, new Vector2(xo + (xp * 0), yo - (yp * 14)))
+            {
+                min = 1,
+                max = PlayerCount
+            };
+            this.buildDragger.OnValueChanged += SelectABuild;
+            this.buildSelect = new OpComboBox(buildSelectHelper, new Vector2(xo + (xp * 1), yo - (yp * 14)), 100, buildItems)
+            {
+                description = Swapper(Translate("escoptions_buildeasy_desc"), "Player")
+            };
+            this.buildSelect.OnValueChanged += ChangeTheBuild;
+            this.easySelect = new OpCheckBox(easySelectHelper, new Vector2(xo + (xp * 4), yo - (yp * 14)))
+            {
+                colorEdge = easyColor,
+                description = Swapper(Translate("escoptions_buildeasy_desc"), "Player")
+            };
+            this.easySelect.OnValueChanged += ChangeTheEasy;
+
 
             /*
             this.buildP1 = new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
@@ -523,7 +563,7 @@ namespace TheEscort
                 };
             }
             // Checkbox/buildtick and it's fancy functions
-            for (int j = 0; j < this.buildEasy.Length; j++)
+            for (int j = 0; j < PlayerCount; j++)
             {
                 this.buildEasy[j] = new OpCheckBox(
                     /*
@@ -620,10 +660,16 @@ namespace TheEscort
                     2 => (p3Color * 0.9f, p3Color),
                     _ => (p4Color * 2.4f, p4Color * 2.8f)
                 };
+                if (j > 3)
+                {
+                    buildEasy[j].Hide();
+                    buildPlayer[j].Hide();
+                }
+
                 this.buildEasy[j].OnValueChanged += (UIconfig config, string value, string oldValue) =>
                 {
                     int target = -1;
-                    for (int s = 0; s < this.buildEasy.Length; s++)
+                    for (int s = 0; s < 4; s++)
                     {
                         if (this.buildEasy[s].cfgEntry.BoundUIconfig == config)
                         {
@@ -637,6 +683,31 @@ namespace TheEscort
                         return;
                     }
                     this.buildPlayer[target].colorFill = value == "true" ? easyColor * 0.5f : Menu.MenuColorEffect.rgbBlack;
+                    if (ValueConverter.ConvertToValue<int>(buildDragger.value) - 1 == target)
+                    {
+                        easySelect.value = value;
+                    }
+                };
+                this.buildPlayer[j].OnValueChanged += (UIconfig config, string value, string oldValue) =>
+                {
+                    int target = -1;
+                    for (int s = 0; s < 4; s++)
+                    {
+                        if (this.buildPlayer[s].cfgEntry.BoundUIconfig == config)
+                        {
+                            target = s;
+                            break;
+                        }
+                    }
+                    if (target == -1)
+                    {
+                        Ebug("Config index not found!");
+                        return;
+                    }
+                    if (ValueConverter.ConvertToValue<int>(buildDragger.value) - 1 == target)
+                    {
+                        buildSelect.value = buildItems[buildItems.FindIndex(x => x.value == ValueConverter.ConvertToValue<int>(value))].name;
+                    }
                 };
                 /*
                 this.buildPlayer[j].OnValueUpdate += (UIconfig config, string value, string oldValue) =>
@@ -708,20 +779,24 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2) + (tp * 1.5f), yo - 3f - (yp * 2) + tp/2, Translate("escoptions_buildeasy_text")){
                     color = easyColor
                 },
-                this.buildEasy[0],
-                this.buildEasy[1],
-                this.buildEasy[2],
-                this.buildEasy[3],
+                // this.buildEasy[0],
+                // this.buildEasy[1],
+                // this.buildEasy[2],
+                // this.buildEasy[3],
 
                 new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), "(1)   (2)   (3)   (4) <-PLAYER #"){
                     color = new Color(0.5f, 0.5f, 0.5f)
                 },
 
-                // Sliders
-                this.buildPlayer[0],
-                this.buildPlayer[1],
-                this.buildPlayer[2],
-                this.buildPlayer[3],
+                // // Sliders
+                // this.buildPlayer[0],
+                // this.buildPlayer[1],
+                // this.buildPlayer[2],
+                // this.buildPlayer[3],
+
+                this.buildDragger,
+                this.buildSelect,
+                this.easySelect
             };
             this.gimmickSet = new UIelement[]{
                 new OpLabel(xo, yo, Translate("Gimmicks"), true),
@@ -815,19 +890,21 @@ namespace TheEscort
                     max = 4,
                     description = OptionInterface.Translate("escoptions_devlog_desc") + SetDefault(cfgLogImportance.defaultValue),
                 },
+                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudloc_text") + Translate("[Beta]")),
+                new OpComboBox(this.cfgHudLocation, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudLocaOptions){
+                    description = Translate("escoptions_hudloc_desc") + SetDefault(cfgHudLocation.defaultValue)
+                },
 
                 new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 5), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
                 new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 160, hudShowOptions){
                     description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
-                },
-
-                new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 6), Translate("escoptions_hudloc_text") + Translate("[Beta]")),
-                new OpComboBox(this.cfgHudLocation, new Vector2(xo + (xp * 0), yo - (yp * 6) - tp), 160, hudLocaOptions){
-                    description = Translate("escoptions_hudloc_desc") + SetDefault(cfgHudLocation.defaultValue)
                 }
+
             };
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
+            buildTab.AddItems(buildEasy);
+            buildTab.AddItems(buildPlayer);
             buildTab.AddItems(this.buildTitle);
             buildTab.AddItems(this.buildShadow);
             buildTab.AddItems(this.buildText);
@@ -838,6 +915,30 @@ namespace TheEscort
                 cfgVersion.Value = VERSION;
                 //this._SaveConfigFile();
             }
+        }
+
+        private void ChangeTheEasy(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(buildDragger.value) - 1;
+            bool oldValueThing = buildEasy[playerNumber].GetValueBool();
+            buildEasy[playerNumber].SetValueBool(ValueConverter.ConvertToValue<bool>(value));
+            Ebug($"Set build from {oldValueThing} to {buildEasy[playerNumber].GetValueBool()}", 1, true);
+        }
+
+        private void ChangeTheBuild(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(buildDragger.value) - 1;
+            int oldValueThing = buildPlayer[playerNumber].GetValueInt();
+            buildPlayer[playerNumber].SetValueInt(buildItems[buildItems.FindIndex(x => x.name == value)].value);
+            Ebug($"Set build from {oldValueThing} to {buildPlayer[playerNumber].GetValueInt()}", 1, true);
+        }
+
+        private void SelectABuild(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(value) - 1;
+            buildSelect.value = buildItems[buildItems.FindIndex(x => x.value == buildPlayer[playerNumber].GetValueInt())].name;
+            easySelect.value = buildEasy[playerNumber].value;
+            Ebug($"Settings focus from {oldValue} to {value}", 1, true);
         }
 
         public override void Update()

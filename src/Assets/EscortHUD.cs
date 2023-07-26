@@ -5,11 +5,15 @@ using System.CodeDom;
 using System.Collections.Generic;
 using static TheEscort.Eshelp;
 using System.Diagnostics;
+using SlugBase.Features;
+using static SlugBase.Features.FeatureTypes;
 
 namespace TheEscort;
 
 public static class EscortHUD
 {
+    public static readonly GameFeature<float[]> hudLocations = GameFloats("theescort/hudloc");
+
     public static void Attach()
     {
         On.HUD.HUD.InitSinglePlayerHud += Escort_Singleplayer_HUD;
@@ -56,6 +60,10 @@ public static class EscortHUD
     private static void Escort_Singleplayer_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
     {
         orig(self, cam);
+        if (!hudLocations.TryGet(cam.room.game, out float[] campositions))
+        {
+            return;
+        }
         try
         {
             if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
@@ -70,7 +78,7 @@ public static class EscortHUD
                             Ebug(player, "Found player! Applying hud", ignoreRepetition: true);
                             Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
                             {
-                                "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 - (120f - 80f * player.playerState.playerNumber), 20),
+                                "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 + (cam.room.game.session.Players.Count % 2 == 0? campositions[0]: 0) + (campositions[1] * player.playerState.playerNumber) + (campositions[2] * (cam.room.game.session.Players.Count - 1)), 40),
                                 "leftstack" => new(60, 80 + 80f * player.playerState.playerNumber),
                                 _ => new(60 + 80f * player.playerState.playerNumber, 80)
                             };

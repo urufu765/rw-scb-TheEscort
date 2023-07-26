@@ -186,6 +186,12 @@ public static class ETrackrr
                 "supershank" => 0,
                 _ => -1
             };
+            this.Max = e.BrawLastWeapon switch
+            {
+                "shank" => 60,
+                "supershank" => 60,
+                _ => 30
+            };
         }
     }
 
@@ -195,13 +201,18 @@ public static class ETrackrr
         public DeflectorEmpowerTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "deflector", new Color(0.69f, 0.55f, 0.9f))
         {
             this.e = escort;
-            this.Max = 320;
         }
 
         public override void DrawTracker(float timeStacker)
         {
+            this.Max = e.DeflPowah switch
+            {
+                3 => 800,
+                2 => 400,
+                _ => 200
+            };
             this.Value = Mathf.Lerp(PreValue, e.DeflAmpTimer, timeStacker);
-            this.Limit = e.DeflPowah == 3? 0 : 160;
+            this.Limit = e.DeflPowah == 3? 0 : 200;
             spriteNumber = e.DeflPowah;
         }
     }

@@ -1804,7 +1804,7 @@ namespace TheEscort
 
                         // Other builds
                         if (escort.Deflector) Esclass_DF_WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
-                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, inShelter && notDead, ref escort);
+                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
                         escort.shelterSaveComplete++;
                     }
                 }

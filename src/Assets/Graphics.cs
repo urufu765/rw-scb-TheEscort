@@ -507,6 +507,7 @@ namespace TheEscort
         private static void EscortBuildSelectFromJollyMenu(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_ctor orig, JollyCoop.JollyMenu.JollySlidingMenu self, JollyCoop.JollyMenu.JollySetupDialog menu, MenuObject owner, Vector2 pos)
         {
             orig(self, menu, owner, pos);
+            if (ins.config.PlayerCount > 4) return;  // Just disable the menu for coherency sake
             // I'm not calculating this crap.
             int num = 100;
             float num2 = (1024f - num * 4f) / 5f;

@@ -54,8 +54,7 @@ namespace TheEscort
                     if (self.slowMovementStun > 0) self.Blink(30);
                     else 
                     {
-                        if (e.BrawLastWeapon == "shank") self.slowMovementStun += 30;
-                        self.slowMovementStun += 10;
+                        self.slowMovementStun += 40;
                     }
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
