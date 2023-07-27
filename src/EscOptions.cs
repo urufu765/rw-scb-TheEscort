@@ -90,7 +90,7 @@ namespace TheEscort
         public Configurable<bool> cfgOldEscapist;
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
-        public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod;
+        public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod, cfgSectretMagic;
         public Configurable<float> cfgEscLaunchV, cfgEscLaunchH, cfgEscLaunchSH;
         public Configurable<int> cfgLogImportance;
         public Configurable<string> cfgShowHud;
@@ -205,6 +205,7 @@ namespace TheEscort
             this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
             this.cfgSectretBuild = this.config.Bind<bool>("cfg_EscSectretBuild", false);
             this.cfgSectretGod = this.config.Bind<bool>("cfg_EscSectretGod", false);
+            this.cfgSectretMagic = this.config.Bind<bool>("cfg_EscSectretMagic", false);
             this.cfgEscLaunchH = this.config.Bind<float>("cfg_Escort_Launch_Horizontal", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgEscLaunchV = this.config.Bind<float>("cfg_Escort_Launch_Vertical", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
@@ -1032,7 +1033,7 @@ namespace TheEscort
         private void ResultsBaby(string value = "")
         {
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            int nu2 = 1500; int nu3 = 87769;
+            int nu2 = 1500; int nu3 = 87769; int nu4 = 602;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
@@ -1087,11 +1088,26 @@ namespace TheEscort
                 Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
                 Ebug("Set secret 3");
             }
+            else if (value == nu4.ToString())
+            {
+                if (!this.cfgSectretMagic.Value)
+                {
+                    this.cfgSectretMagic.Value = true;
+                    ConfigConnector.CreateDialogBoxMultibutton(
+                        Translate(
+                            "??????????"
+                        ), insult, doThing
+                    );
+                }
+                Plugin.ins.L().NewYears(this.cfgSectretMagic.Value);
+                Ebug("Set secret 4");
+            }
             else
             {
                 this.cfgSectret.Value = false;
                 this.cfgSectretBuild.Value = false;
                 this.cfgSectretGod.Value = false;
+                this.cfgSectretMagic.Value = false;
                 Plugin.ins.L().Holiday();
                 try
                 {

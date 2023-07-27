@@ -71,6 +71,7 @@ namespace TheEscort
             public bool Crispmunch { get; private set; }
             public bool Eastabun { get; private set; }
             public bool Vegetable { get; private set; }
+            public bool Farmsarray { get; private set; }
 
             public EFC()
             {
@@ -79,6 +80,7 @@ namespace TheEscort
                 this.Crispmunch = true;
                 this.Eastabun = true;
                 this.Vegetable = true;
+                this.Farmsarray = true;
             }
 
             public void TurnOnLog()
@@ -111,11 +113,18 @@ namespace TheEscort
                 this.Vegetable = !hasArrived;
             }
 
+            public void NewYears(bool hasArrived = false)
+            {
+                if (hasArrived) UnityEngine.Debug.Log("NewYears!");
+                this.Farmsarray = !hasArrived;
+            }
+
             public void Holiday()
             {
                 Christmas();
                 Easter();
                 Valentines();
+                NewYears();
             }
 
             public void Set(bool isChecked = false, [CallerMemberName] string callerName = "")

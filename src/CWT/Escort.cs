@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RWCustom;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
@@ -137,13 +138,14 @@ namespace TheEscort
         public int EscUnGraspLimit;
         public int EscUnGraspCD;
         public bool NewEscapist;
-        public int NEsLastInput;
-        public int NEsInputLean;
-        public int NEsRecharge;
+        public IntVector2 NEsLastInput;
+        public int NEsSetCooldown;
         public int NEsCooldown;
-        public int NEsChangeRoom;
         public List<AbstractCreature> NEsVulnerable;
         public int NEsClearVulnerable;
+        public int NEsAbilityTime;
+        public AbstractCreature NEsAbstractShadowPlayer;
+        public Player NEsShadowPlayer;
         public bool Railgunner;
         public int RailGaussed;
         public Creature RailThrower;
@@ -246,6 +248,11 @@ namespace TheEscort
             this.EscUnGraspTime = 0;
             this.EscUnGraspLimit = 0;
             this.EscUnGraspCD = 0;
+
+            this.NewEscapist = false;
+            this.NEsLastInput = new IntVector2(0, 0);
+            this.NEsSetCooldown = 0;
+            this.NEsCooldown = 0;
 
             this.Railgunner = false;
             this.RailGaussed = 0;

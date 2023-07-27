@@ -722,8 +722,12 @@ namespace TheEscort
                     // Stylist build (Do combos that build up to a super move)
                     // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
-                    case -7:  // Testing build
+                    case -8:  // Testing build
                         e.EsTest = true;
+                        break;
+                    case -7:  // New Escapist build
+                        e.NewEscapist = true;
+                        Ebug(self, "New Escapist Build selected!", 2);
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
