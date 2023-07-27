@@ -84,7 +84,7 @@ namespace TheEscort
                     }
                 }
 
-                // Up
+                // Up (May not end up implementing)
                 if (self.input[0].y > 0 && self.input[1].y <= 0)
                 {
                     if (e.NEsLastInput.y > 0)
@@ -99,6 +99,19 @@ namespace TheEscort
                 }
 
             }
+        }
+
+
+
+        private static void Esclass_NE_CreateShadow(Player self, ref Escort e)
+        {
+            if (e.NEsAbstractShadowPlayer is not null)
+            {
+                e.NEsAbstractShadowPlayer.Destroy();
+            }
+            e.NEsAbstractShadowPlayer = new AbstractCreature(self.abstractCreature.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Slugcat), null, self.coord, self.room.game.GetNewID());
+            e.NEsAbstractShadowPlayer.RealizeInRoom();
+            e.NEsShadowPlayer = (e.NEsAbstractShadowPlayer.realizedCreature as Player);
         }
     }
 }
