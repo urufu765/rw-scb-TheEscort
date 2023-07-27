@@ -7,7 +7,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.2 - The Escort
-  * **(0.2.11)** HUD update
+  * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).
     * **dev02** Speedster speed trail now a standalone object and an IDrawable object, trackers update on rwg.update instead, ended up using an ISingleCameraDrawable anyways.
     * **dev03** Exception logger updated
@@ -31,6 +31,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev21** Fix the speedster for not saving for some reason, Deflector multiplier gets saved as long as someone survives if on easy difficulty, hud now updates for out of room players
     * **dev22** More than four player support, fixed Deflector hud not having correct maximum, and fixed brawler's hud not having the correct maximum
     * **dev23** Add global Deflector multiplier option and unbound dropkick knockback power from the aliveness requirement. Default can now punt and spike (lizard dunking mechanics slightly altered for the rest)
+    * **dev24** Fixed hud not working in arena mode and fixed pool share in arena mode (by disabling it), fixed hud not working in singleplayer, and reduced glow of damage number
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 

@@ -374,13 +374,13 @@ namespace TheEscort
             }
         }
 
-        private void Escort_HUD_Draw(On.HUD.HudPart.orig_Draw orig, HUD.HudPart self, float timeStacker)
+        private void Escort_HUD_Draw(On.RoomCamera.orig_DrawUpdate orig, RoomCamera self, float timeStacker, float timeSpeed)
         {
             try
             {
-                if (self.hud.owner is Player player && player?.room?.game?.session is not null)
+                if (self.game?.session is not null)
                 {
-                    foreach(AbstractCreature abstractPlayer in player.room.game.session.Players)
+                    foreach(AbstractCreature abstractPlayer in self.game.session.Players)
                     {
                         if (abstractPlayer?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort e))
                         {
@@ -393,7 +393,7 @@ namespace TheEscort
             {
                 Ebug(err, "Couldn't update HUD trackers!");
             }
-            orig(self, timeStacker);
+            orig(self, timeStacker, timeSpeed);
         }
 
         private void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)

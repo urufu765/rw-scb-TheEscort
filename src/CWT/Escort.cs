@@ -99,7 +99,7 @@ namespace TheEscort
         {
             get
             {
-                if (Plugin.ins.config.cfgDeflecterSharedPool.Value)
+                if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
                 {
                     return Plugin.DeflSharedPerma;
                 }
@@ -107,7 +107,7 @@ namespace TheEscort
             }
             set
             {
-                if (Plugin.ins.config.cfgDeflecterSharedPool.Value)
+                if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
                 {
                     Plugin.DeflSharedPerma = value;
                 }

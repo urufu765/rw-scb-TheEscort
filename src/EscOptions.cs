@@ -377,7 +377,7 @@ namespace TheEscort
             };
             this.easySelect.OnValueChanged += ChangeTheEasy;
             this.buildManyCats = new OpLabel(xo + (xp * 0), yo - (yp * 13), Translate("escoptions_moreplayerbuilds_text"));
-            if (PlayerCount > 4)
+            if (PlayerCount <= 4)
             {
                 buildDragger.Hide();
                 buildSelect.Hide();

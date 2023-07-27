@@ -30,7 +30,7 @@ public static class EscortHUD
             {
                 if (Plugin.eCon.TryGetValue(p, out Escort e))
                 {
-                    Ebug(p, "Found player! Applying hud", ignoreRepetition: true);
+                    Ebug(p, "Found player! Applying multi hud", ignoreRepetition: true);
                     Vector2 location = p.playerState.playerNumber switch
                     {
                         3 => self.cornerPos + new Vector2(-100, -40),
@@ -60,10 +60,6 @@ public static class EscortHUD
     private static void Escort_Singleplayer_HUD(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)
     {
         orig(self, cam);
-        if (!hudLocations.TryGet(cam.room.game, out float[] campositions))
-        {
-            return;
-        }
         try
         {
             if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
@@ -75,10 +71,10 @@ public static class EscortHUD
                     {
                         if (Plugin.eCon.TryGetValue(player, out Escort e))
                         {
-                            Ebug(player, "Found player! Applying hud", ignoreRepetition: true);
+                            Ebug(player, "Found player! Applying single hud", ignoreRepetition: true);
                             Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
                             {
-                                "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 + (cam.room.game.session.Players.Count % 2 == 0? campositions[0]: 0) + (campositions[1] * player.playerState.playerNumber) + (campositions[2] * (cam.room.game.session.Players.Count - 1)), 40),
+                                "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 + (80 * player.playerState.playerNumber) + (-40 * (cam.room.game.session.Players.Count - 1)), 40),
                                 "leftstack" => new(60, 80 + 80f * player.playerState.playerNumber),
                                 _ => new(60 + 80f * player.playerState.playerNumber, 80)
                             };
@@ -704,7 +700,7 @@ public static class EscortHUD
                 y = pos.y + 40,
                 scaleX = 6,
                 scaleY = 1,
-                alpha = 0.5f,
+                alpha = 0.3f,
                 color = tracked.trackerColor,
                 shader = hud.rainWorld.Shaders["FlatLight"]
             };
