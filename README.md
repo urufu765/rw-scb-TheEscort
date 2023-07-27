@@ -30,8 +30,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev20** Chasing lizards are golden and more spawn. Deflector gets more benefits from resting
     * **dev21** Fix the speedster for not saving for some reason, Deflector multiplier gets saved as long as someone survives if on easy difficulty, hud now updates for out of room players
     * **dev22** More than four player support, fixed Deflector hud not having correct maximum, and fixed brawler's hud not having the correct maximum
-    * *dev23* Default can spike and punt
-    * *dev24* Add global Deflector multiplier option
+    * **dev23** Add global Deflector multiplier option and unbound dropkick knockback power from the aliveness requirement. Default can now punt and spike (lizard dunking mechanics slightly altered for the rest)
 
   * **(0.2.10.1)** Applied the secret code in such a way that you can use the karma 10 stuff in arena. Removed legacy configs. Slight sprite fix for parry. Void sea stops Gilded charge.
 

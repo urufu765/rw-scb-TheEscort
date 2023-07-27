@@ -276,6 +276,8 @@ namespace TheEscort
 
             On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
 
+            On.SaveState.SessionEnded += Escort_Reset_Values;
+
             //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
         }
 
@@ -741,8 +743,10 @@ namespace TheEscort
                         if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                         {
                             Ebug(self, "Get Speedster save!");
-                            speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging);
-                            e.SpeCharge = charging;
+                            if (speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging))
+                            {
+                                e.SpeCharge = charging;
+                            }
                             //Ebug(self, "Misc: " + JsonConvert.SerializeObject(speedsterSession.saveState.miscWorldSaveData.Esave()));
                         }
                         self.slugcatStats.lungsFac += 0.3f;
@@ -784,8 +788,18 @@ namespace TheEscort
                         if (self.room?.game?.session is StoryGameSession deflectorSession)
                         {
                             Ebug(self, "Get Deflector save!");
-                            deflectorSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage.TryGetValue(self.playerState.playerNumber, out float permaDamage);
-                            e.DeflPerma = permaDamage;
+                            if (deflectorSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage.TryGetValue(self.playerState.playerNumber, out float permaDamage))
+                            {
+                                if (permaDamage > e.DeflPerma)
+                                {
+                                    e.DeflPerma = permaDamage;
+                                    DeflInitSharedPerma = permaDamage;
+                                }
+                            }
+                            else
+                            {
+                                Ebug(self, "Couldn't find deflector save!");
+                            }
                         }
 
                         self.slugcatStats.runspeedFac = 1.2f;
@@ -819,6 +833,11 @@ namespace TheEscort
                 }
                 self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
                 self.buoyancy -= 0.05f;
+                if (config.cfgDeflecterSharedPool.Value)
+                {
+                    e.DeflPerma = DeflInitSharedPerma;
+                }
+
 #if false
                 if (self.room?.game?.StoryCharacter == EscortMe){
                     Ebug(self, "Session is Escort!", 1);
@@ -1081,6 +1100,29 @@ namespace TheEscort
             {
                 Ebug(err, "Generic exception when setting food meter.");
                 return orig(slugcat);
+            }
+        }
+
+
+        private void Escort_Reset_Values(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+        {
+            try
+            {
+                Ebug($"Savestate SEB: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", 1, true);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Error on trying to print savestate before session ended");
+            }
+            orig(self, game, survived, newMalnourished);
+            DeflSharedPerma = 0;
+            try
+            {
+                Ebug($"Savestate SEA: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", 1, true);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Error on trying to print savestate after session ended");
             }
         }
 

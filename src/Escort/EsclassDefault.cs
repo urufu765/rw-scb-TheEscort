@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using Newtonsoft.Json;
 
 namespace TheEscort
 {
@@ -1221,7 +1222,7 @@ namespace TheEscort
                     return;
                 }
                 if (!eCon.TryGetValue(self, out Escort e) ||
-                    !NoMoreGutterWater.TryGet(self, out float[] theGut))
+                    !NoMoreGutterWater.TryGet(self, out float[] theGut))  // why is this here, investigate.
                 {
                     orig(self, grasp, eu);
                     return;
@@ -1792,12 +1793,12 @@ namespace TheEscort
 
                         if (inShelter && notDead && isWinner)
                         {
-                            Ebug(player, "Is successful!", ignoreRepetition: true);
+                            //Ebug(player, "Is successful!", ignoreRepetition: true);
                             // do things when successful
                         }
                         else
                         {
-                            Ebug(player, "Is failure!", ignoreRepetition: true);
+                            //Ebug(player, "Is failure!", ignoreRepetition: true);
                             // do things when failure
                         }
                         Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);

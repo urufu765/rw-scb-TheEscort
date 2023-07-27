@@ -182,3 +182,7 @@ I cannot offer you hospitality either, poor thing. Run along now, before my stru
 My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.|My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.
 There is not much I can do, and I urge you to move on, before my structure fails.|There is not much I can do, and I urge you to move on, before my structure fails.
 I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.|I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.
+HUD B UPDATE|HUD B UPDATE
+escoptions_deflshared_text|Shared <DEFLECTOR> Permadamage
+escoptions_deflshared_desc|Share <DEFLECTOR> permadamage multiplier so anyone can get a kill and profit.
+escoptions_moreplayerbuilds_text|vvv Configure builds for more than 4 players vvv

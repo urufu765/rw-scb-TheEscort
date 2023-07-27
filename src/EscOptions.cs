@@ -98,6 +98,7 @@ namespace TheEscort
         public Configurable<string> cfgHudLocation;
         public List<ListItem> hudLocaOptions;
         public Configurable<bool> cfgNoMoreFlips;
+        public Configurable<bool> cfgDeflecterSharedPool;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -114,11 +115,12 @@ namespace TheEscort
         //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
         public OpSliderTick[] buildPlayer;
         private OpDragger buildDragger;
-        private Configurable<int> buildDraggerHelper;
+        private readonly Configurable<int> buildDraggerHelper;
         private OpComboBox buildSelect;
-        private Configurable<string> buildSelectHelper;
+        private readonly Configurable<string> buildSelectHelper;
         private OpCheckBox easySelect;
-        private Configurable<bool> easySelectHelper;
+        private readonly Configurable<bool> easySelectHelper;
+        private OpLabel buildManyCats;
         public List<ListItem> buildItems;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
@@ -197,6 +199,7 @@ namespace TheEscort
             this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
             this.cfgOldEscapist = this.config.Bind<bool>("cfg_Old_Escapist", false);
             this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
+            this.cfgDeflecterSharedPool = this.config.Bind<bool>("cfg_Deflector_Shared_Pool", false);
             this.cfgDeveloperMode.OnChange += LongDevLogChange;
             this.cfgSecret = this.config.Bind<int>("cfg_EscSecret", 765, new ConfigAcceptableRange<int>(0, 99999));
             this.cfgSectret = this.config.Bind<bool>("cfg_EscSectret", false);
@@ -227,7 +230,7 @@ namespace TheEscort
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
-            this.buildDraggerHelper = config.Bind("escort_builddragger_helper_ignore_this", 0);
+            this.buildDraggerHelper = config.Bind("escort_builddragger_helper_ignore_this", 0, new ConfigAcceptableRange<int>(1, PlayerCount));
             this.buildItems = new()
             {
                 new ListItem("default", Translate("Default"), 0),
@@ -373,6 +376,14 @@ namespace TheEscort
                 description = Swapper(Translate("escoptions_buildeasy_desc"), "Player")
             };
             this.easySelect.OnValueChanged += ChangeTheEasy;
+            this.buildManyCats = new OpLabel(xo + (xp * 0), yo - (yp * 13), Translate("escoptions_moreplayerbuilds_text"));
+            if (PlayerCount > 4)
+            {
+                buildDragger.Hide();
+                buildSelect.Hide();
+                easySelect.Hide();
+                buildManyCats.Hide();
+            }
 
 
             /*
@@ -793,7 +804,7 @@ namespace TheEscort
                 // this.buildPlayer[1],
                 // this.buildPlayer[2],
                 // this.buildPlayer[3],
-
+                this.buildManyCats,
                 this.buildDragger,
                 this.buildSelect,
                 this.easySelect
@@ -849,6 +860,13 @@ namespace TheEscort
                     description = Swapper(Translate("escoptions_oldspeed_desc")) + SetDefault(cfgOldSpeedster.defaultValue),
                 },
 
+                new OpLabel(xo + (xp * 1), yo - (yp * 8) + tp/2, Swapper(Translate("escoptions_deflshared_text"))){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgDeflecterSharedPool, new Vector2(xo + (xp * 0), yo - (yp * 8))){
+                    colorEdge = tempColor,
+                    description = Swapper(Translate("escoptions_deflshared_desc")) + SetDefault(cfgDeflecterSharedPool.defaultValue),
+                },
 
                 secretText
             };

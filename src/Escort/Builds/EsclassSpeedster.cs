@@ -604,7 +604,7 @@ namespace TheEscort
                 Ebug("Saved successfully to " + playerNumber + ": " + charging);
                 if (escort.shelterSaveComplete <= 1)
                 {
-                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), 1, true);
                 }
             }
         }

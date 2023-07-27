@@ -243,17 +243,14 @@ partial class Plugin : BaseUnityPlugin
 
                     creature.SetKillTag(self.abstractCreature);
 
-                    String message = (e.easyKick ? "Easykicked!" : "Dropkicked!");
+                    String message = e.easyKick ? "Easykicked!" : "Dropkicked!";
 
-                    if (!creature.dead)
-                    {
-                        DKMultiplier *= creature.TotalMass;
-                    }
-                    float normSlamDamage = (e.easyKick ? 0.001f : 0.05f);
+                    DKMultiplier *= creature.TotalMass * 0.66f;
+                    float normSlamDamage = e.easyKick ? 0.001f : 0.05f;
                     if (e.DropKickCD == 0)
                     {
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
-                        normSlamDamage = (hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f));
+                        normSlamDamage = hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f);
                         creature.LoseAllGrasps();
                         if (hypedMode && self.aerobicLevel > hypeRequirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
                         if (e.Deflector)
@@ -270,12 +267,32 @@ partial class Plugin : BaseUnityPlugin
                     {
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Bounce_Terrain, self.mainBodyChunk, false, 1f, 0.9f);
                     }
+                    Vector2 momentum = new(
+                        self.mainBodyChunk.vel.x * DKMultiplier, 
+                        self.mainBodyChunk.vel.y * DKMultiplier);
+                    if (e.LizardDunk)
+                    {
+                        bool diffYDirection = Mathf.Sign(momentum.y) != Mathf.Sign(self.input[0].y) && self.input[0].y != 0;
+                        if (e.isDefault)
+                        {
+                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 20), 20)) * (diffYDirection? -1 : 1);
+                            momentum.x = Mathf.Abs(momentum.y) * self.input[0].x;
+                        }
+                        else
+                        {
+                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 15), 15));
+                        }
+                    }
+                    if (e.Gilded)
+                    {
+                        momentum *= 0.5f;
+                    }
                     creature.Violence(
-                        self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x * DKMultiplier, self.mainBodyChunk.vel.y * DKMultiplier * (e.LizardDunk ? 0.2f : 1f) * (e.Gilded? 0.5f : 1f)),
+                        self.mainBodyChunk, momentum,
                         creature.firstChunk, null, Creature.DamageType.Blunt,
                         normSlamDamage, (e.DeflAmpTimer > 0 ? bodySlam[1] : bodySlam[3])
                     );
-                    Ebug(self, "Dunk the lizard: " + e.LizardDunk, 2);
+                    Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", 2);
                     if (e.DropKickCD == 0)
                     {
                         e.LizardDunk = false;

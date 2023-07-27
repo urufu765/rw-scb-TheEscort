@@ -94,7 +94,29 @@ namespace TheEscort
         public int DeflSlideCom;
         public bool DeflSlideKick;
         public int DeflPowah;
-        public float DeflPerma;
+        private float _deflperma;
+        public float DeflPerma
+        {
+            get
+            {
+                if (Plugin.ins.config.cfgDeflecterSharedPool.Value)
+                {
+                    return Plugin.DeflSharedPerma;
+                }
+                return _deflperma;
+            }
+            set
+            {
+                if (Plugin.ins.config.cfgDeflecterSharedPool.Value)
+                {
+                    Plugin.DeflSharedPerma = value;
+                }
+                else
+                {
+                    _deflperma = value;
+                }
+            }
+        }
         public float DeflDamageMult 
         { 
             get 

@@ -22,6 +22,8 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> deflectorSpearVelFac = PlayerFloats("theescort/deflector/spear_vel_fac");
         public static readonly PlayerFeature<float[]> deflectorSpearDmgFac = PlayerFloats("theescort/deflector/spear_dmg_fac");
 
+        public static float DeflSharedPerma;
+        public static float DeflInitSharedPerma;
 
         public void Esclass_DF_Tick(Player self, ref Escort e)
         {
@@ -219,9 +221,9 @@ namespace TheEscort
                     };
                 }
                 storyGameSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage[playerNumber] = escort.DeflPerma + bonusDamage;
-                if (escort.shelterSaveComplete <= 1)
+                if (escort.shelterSaveComplete <= 2)
                 {
-                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()));
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), 1, true);
                 }
 
             }

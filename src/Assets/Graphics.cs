@@ -631,7 +631,7 @@ namespace TheEscort
         private static void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
         {
             orig(self, pIndex);
-            if (!(ins != null && ins.config != null && ins.config.jollyEscortBuilds != null && ins.config.jollyEscortBuilds.Length > 0))
+            if (!(ins.config.jollyEscortBuilds is not null && ins.config.jollyEscortBuilds.Length > 0))
             {
                 return;
             }
@@ -698,7 +698,7 @@ namespace TheEscort
         private static void EscortHideShowBuildCopium(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_Update orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
         {
             orig(self);
-            if (ins.config.jollyEscortBuilds.Length > 0)
+            if (ins.config.jollyEscortBuilds is not null && ins.config.jollyEscortBuilds.Length > 0)
             {
                 if (self.slugName == EscortMe) { 
                     ins.config.jollyEscortBuilds[self.index].Reactivate(); 
