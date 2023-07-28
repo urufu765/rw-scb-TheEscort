@@ -188,8 +188,8 @@ public static class ETrackrr
             };
             this.Max = e.BrawLastWeapon switch
             {
-                "shank" => 60,
-                "supershank" => 60,
+                "shank" => 50,
+                "supershank" => 50,
                 _ => 30
             };
         }

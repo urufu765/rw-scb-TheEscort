@@ -93,6 +93,7 @@ namespace TheEscort
 #region Plugin Variable Declarations
         public static readonly SlugcatStats.Name EscortMe = new("EscortMe");
         public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
+        public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
 
         public static SoundID Escort_SFX_Death;
@@ -713,6 +714,11 @@ namespace TheEscort
                         _ => pal
                     };
                 }
+                if (config.cfgSectretMagic.Value)
+                {
+                    pal = -7;
+                }
+                // Fix this by turning it off for expedition or add multiplier or somethingidk
 
                 //int maximumPips = self.slugcatStats.maxFood;
                 //int minimumPips = self.slugcatStats.foodToHibernate;
@@ -728,6 +734,7 @@ namespace TheEscort
                     case -7:  // New Escapist build
                         e.NewEscapist = true;
                         Ebug(self, "New Escapist Build selected!", 2);
+                        self.slugcatStats.visualStealthInSneakMode = 1;
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
@@ -1025,7 +1032,7 @@ namespace TheEscort
                             }
                             if (escort.NewEscapist)
                             {
-                                Esclass_NE_AbsoluteTick(player, ref escort);
+                                //Esclass_NE_AbsoluteTick(player, ref escort);
                             }
                         }
                     }
