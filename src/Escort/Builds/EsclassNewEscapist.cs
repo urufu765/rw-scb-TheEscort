@@ -28,6 +28,12 @@ namespace TheEscort
                 e.NEsShadowPlayer.GoAwayShadow();
                 e.NEsResetCooldown = false;
             }
+
+            if (e.NEsShadowPlayer is null)
+            {
+                e.NEsAbility = 0;
+            }
+
             if (e.NEsCooldown > 0)
             {
                 e.NEsCooldown--;
@@ -63,6 +69,11 @@ namespace TheEscort
             else if (e.NEsVulnerable.Count > 0)
             {
                 e.NEsVulnerable.Clear();
+            }
+
+            if (e.NEsAbility > 0 || e.NEsCooldown > 0)
+            {
+                self.Blink(5);
             }
         }
 
@@ -249,23 +260,19 @@ namespace TheEscort
 
         private void Esclass_NE_CheckKiller(On.Creature.orig_SetKillTag orig, Creature self, AbstractCreature killer)
         {
-            orig(self, killer);
-            if (killer?.realizedCreature is null) return;
             try
             {
-                if (killer?.realizedCreature is Player player && eCon.TryGetValue(player, out Escort e) && e.NewEscapist)
+                if (self is ShadowPlayer)
                 {
-                    if (e.NEsVulnerable.Contains(self))
-                    {
-                        e.NEsResetCooldown = true;
-                    }
-                    Ebug(player, "Hit a vulnerable!");
+                    Ebug("Ignoring shadowscort", 1, true);
+                    return;
                 }
             }
             catch (Exception err)
             {
-                Ebug(err, "Couldn't detect killer!");
+                Ebug(err, "Couldn't bypass killtag setter");
             }
+            orig(self, killer);
         }
 
 

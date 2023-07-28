@@ -9,6 +9,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 * ### 0.2 - The Escort
   * **(0.2.12)** Brand New Escapist
     * **dev01** Get the Shadowscort spawning correctly and have dash work
+    * **dev02** Get Shadowscort to do different effects
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).
