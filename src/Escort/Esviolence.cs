@@ -655,7 +655,13 @@ partial class Plugin : BaseUnityPlugin
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
                             e.DeflPowah = 0;
-                            Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}");
+                            Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}", 3, true);
+                        }
+
+                        if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+                        {
+                            original *= 5;
+                            Ebug(player, $"Hurt that modafoka! Damage: {original}", 3, true);
                         }
                     }
                     return original;
@@ -718,7 +724,18 @@ partial class Plugin : BaseUnityPlugin
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
                             e.DeflPowah = 0;
-                            Ebug(player, $"Death upon thee! Sponsored by Lillypuck. Damage: {original}");
+                            Ebug(player, $"Death upon thee! Sponsored by Lillypuck. Damage: {original}", ignoreRepetition: true);
+                        }
+
+                        if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+                        {
+                            original *= 2.5f;
+                            if (creature?.Template is not null && creature.Template.baseDamageResistance > 1)
+                            {
+                                original *= creature.Template.baseDamageResistance;
+                            }
+                            Ebug(player, $"Escapists hits harder! Damage: {original}", ignoreRepetition: true);
+                            e.NEsResetCooldown = true;
                         }
                     }
                     return original;
@@ -793,6 +810,10 @@ partial class Plugin : BaseUnityPlugin
                     else
                     {
                         float baseDamage = 0.02f;
+                        if (e.Brawler)
+                        {
+                            stunBonus *= 1.5f;
+                        }
                         if (e.Deflector && !c.dead)
                         {
                             baseDamage *= e.DeflDamageMult + e.DeflPerma;
@@ -811,7 +832,22 @@ partial class Plugin : BaseUnityPlugin
                                 baseDamage = 0.25f;
                             }
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, e.Brawler ? stunBonus *= 1.5f : stunBonus);
+                        if (e.NewEscapist && e.NEsVulnerable.Contains(c))
+                        {
+                            baseDamage = 0.25f;
+                            if (c?.Template is not null && c.Template.baseDamageResistance > 1)
+                            {
+                                baseDamage *= c.Template.baseDamageResistance;
+                            }
+                            stunBonus *= 5;
+                            if (c?.Template is not null && c.Template.baseStunResistance > 1)
+                            {
+                                stunBonus *= c.Template.baseStunResistance;
+                            }
+                            e.NEsResetCooldown = true;
+                            Ebug(p, $"Hit a vulnerable with rock! Damage: {baseDamage}, Stun bonus: {stunBonus}", ignoreRepetition: true);
+                        }
+                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
                     }
                 }
                 else if (result.chunk != null)
@@ -893,7 +929,20 @@ partial class Plugin : BaseUnityPlugin
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
                             e.DeflPowah = 0;
-                            Ebug(player, $"Death upon thee! Sponsored by Bomb. Damage: {original}");
+                            Ebug(player, $"Death upon thee! Sponsored by Bomb. Damage: {original}", ignoreRepetition: true);
+                        }
+
+                        if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+                        {
+                            int stunner = 100;
+                            if (creature?.Template is not null && creature.Template.baseStunResistance > 1)
+                            {
+                                stunner = (int)(stunner * creature.Template.baseStunResistance);
+                            }
+                            creature.Stun(stunner);
+                            original *= 2;
+                            e.NEsResetCooldown = true;
+                            Ebug(player, $"Direct bomb hit! Damage: {original}, Stun: {stunner}", ignoreRepetition: true);
                         }
                     }
                     return original;
@@ -955,7 +1004,18 @@ partial class Plugin : BaseUnityPlugin
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
                             e.DeflPowah = 0;
-                            Ebug(player, $"Death upon thee! Sponsored by Spear. Damage: {original}");
+                            Ebug(player, $"Death upon thee! Sponsored by Spear. Damage: {original}", ignoreRepetition: true);
+                        }
+
+                        if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+                        {
+                            original *= 2;
+                            if (creature?.Template is not null && creature.Template.baseDamageResistance > 1)
+                            {
+                                original *= creature.Template.baseDamageResistance;
+                            } 
+                            e.NEsResetCooldown = true;
+                            Ebug(player, $"Reset from spear! Damage: {original}", ignoreRepetition: true);
                         }
                     }
                     return original;
@@ -970,6 +1030,20 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
+    private bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        bool ending = orig(self, result, eu);
+        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+        {
+            if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+            {
+                e.NEsResetCooldown = true;
+                self.room?.AddObject(new Explosion(self.room, self, Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f), 4, 40f, 5f, 2.5f, 200f, 0.01f, self.thrownBy, 0.7f, 100f, 1f));
+                Ebug(player, $"Flarebomb? More like EXPLOSIVE!", ignoreRepetition: true);
+            }
+        }
+        return ending;
+    }
 
 #endregion
 

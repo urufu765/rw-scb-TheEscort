@@ -15,7 +15,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[WIP] The Escort", "0.2.11")]
+    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.2.12")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -223,6 +223,7 @@ namespace TheEscort
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
             On.Player.Stun += Esclass_RG_Spasm;
             On.RainWorldGame.Update += Escort_AbsoluteTick;
+            //On.Creature.SetKillTag += Esclass_NE_CheckKiller;
             //On.RoomCamera.DrawUpdate += Escort_AdditionalDraw;
             //On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
 
@@ -242,6 +243,8 @@ namespace TheEscort
             On.Rock.Thrown += Escort_RockThrow;
 
             On.ScavengerBomb.Thrown += Esclass_RG_BombThrow;
+
+            On.FlareBomb.HitSomething += Escort_FlareHit;
 
             //On.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
             On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;

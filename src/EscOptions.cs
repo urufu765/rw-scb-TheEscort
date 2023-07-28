@@ -281,7 +281,7 @@ namespace TheEscort
             Color bDefault = new Color(0.75f, 0.75f, 0.75f);
             Color bBrawler = new Color(0.8f, 0.4f, 0.6f);
             Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
-            Color bEscapist = new Color(0.42f, 0.75f, 0.1f);
+            Color bEscapist = new Color(0.0f, 0.8f, 0.5f);
             Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
             Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
