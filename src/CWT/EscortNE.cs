@@ -202,6 +202,12 @@ public class ShadowPlayer : Player
     }
 
 
+    public override bool SpearStick(Weapon source, float dmg, BodyChunk chunk, Appendage.Pos appPos, Vector2 direction)
+    {
+        return true;
+    }
+
+
     public void GoAwayShadow()
     {
         killTime = 0;

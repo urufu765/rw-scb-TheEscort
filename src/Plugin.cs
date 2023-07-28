@@ -223,7 +223,7 @@ namespace TheEscort
             On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
             On.Player.Stun += Esclass_RG_Spasm;
             On.RainWorldGame.Update += Escort_AbsoluteTick;
-            //On.Creature.SetKillTag += Esclass_NE_CheckKiller;
+            On.Creature.SetKillTag += Esclass_NE_CheckKiller;
             //On.RoomCamera.DrawUpdate += Escort_AdditionalDraw;
             //On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
 

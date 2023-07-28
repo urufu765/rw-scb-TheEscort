@@ -730,10 +730,6 @@ partial class Plugin : BaseUnityPlugin
                         if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
                         {
                             original *= 2.5f;
-                            if (creature?.Template is not null && creature.Template.baseDamageResistance > 1)
-                            {
-                                original *= creature.Template.baseDamageResistance;
-                            }
                             Ebug(player, $"Escapists hits harder! Damage: {original}", ignoreRepetition: true);
                             e.NEsResetCooldown = true;
                         }
@@ -835,10 +831,6 @@ partial class Plugin : BaseUnityPlugin
                         if (e.NewEscapist && e.NEsVulnerable.Contains(c))
                         {
                             baseDamage = 0.25f;
-                            if (c?.Template is not null && c.Template.baseDamageResistance > 1)
-                            {
-                                baseDamage *= c.Template.baseDamageResistance;
-                            }
                             stunBonus *= 5;
                             if (c?.Template is not null && c.Template.baseStunResistance > 1)
                             {
@@ -1010,10 +1002,6 @@ partial class Plugin : BaseUnityPlugin
                         if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
                         {
                             original *= 2;
-                            if (creature?.Template is not null && creature.Template.baseDamageResistance > 1)
-                            {
-                                original *= creature.Template.baseDamageResistance;
-                            } 
                             e.NEsResetCooldown = true;
                             Ebug(player, $"Reset from spear! Damage: {original}", ignoreRepetition: true);
                         }
