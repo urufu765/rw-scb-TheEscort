@@ -93,7 +93,7 @@ namespace TheEscort
 #region Plugin Variable Declarations
         public static readonly SlugcatStats.Name EscortMe = new("EscortMe");
         public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
-        public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
+        //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
 
         public static SoundID Escort_SFX_Death;
@@ -193,7 +193,6 @@ namespace TheEscort
 
             // Arena UI
             //On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
-
 
             // Escort stuff
             On.Player.Jump += Escort_Jump;

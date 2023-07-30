@@ -20,6 +20,7 @@ public partial class Escort
     public ShadowPlayer NEsShadowPlayer;
     public const int NEsAbilityTime = 400;
     public bool NEsResetCooldown;
+    public bool NEsShelterCloseTime;
 
 
     public void EscortNE()
@@ -32,6 +33,7 @@ public partial class Escort
         this.NEsClearVulnerable = 0;
         this.NEsAbility = 0;
         this.NEsResetCooldown = false;
+        this.NEsShelterCloseTime = false;
     }
 
 }
@@ -44,7 +46,8 @@ public class ShadowPlayer : Player
 
     public ShadowPlayer(AbstractCreature abstractCreature, World world, Player basePlayer) : base(abstractCreature, world)
     {
-        this.controller = new NullController();
+        this.controller = new ArenaGameSession.PlayerStopController();
+        
         this.standing = true;
         this.killTagPlayer = basePlayer;
         for (int i = 0; i < this.bodyChunks.Length; i++)
@@ -58,7 +61,7 @@ public class ShadowPlayer : Player
         {
             smoke = new(basePlayer.room);
         }
-        Ebug($"Shadowplayer created with ai? {this.AI is null}", 1, true);
+        Ebug($"Shadowplayer created with ai? {this.AI is not null}", 1, true);
         Ebug($"I am a {this.slugcatStats.name.value}!", 1, true);
     }
 
@@ -204,12 +207,35 @@ public class ShadowPlayer : Player
 
     public override bool SpearStick(Weapon source, float dmg, BodyChunk chunk, Appendage.Pos appPos, Vector2 direction)
     {
+        Ebug("Spearstick!", ignoreRepetition: true);
         return true;
+    }
+
+
+    public override void Collide(PhysicalObject otherObject, int myChunk, int otherChunk)
+    {
+        base.Collide(otherObject, myChunk, otherChunk);
+        if (otherObject is Weapon)
+        {
+            Ebug("Detected spear!", ignoreRepetition: true);
+        }
     }
 
 
     public void GoAwayShadow()
     {
         killTime = 0;
+    }
+
+
+    public override void Die()
+    {
+        base.dead = true;
+        base.Die();
+    }
+
+    public override void Destroy()
+    {
+        slatedForDeletetion = true;
     }
 }

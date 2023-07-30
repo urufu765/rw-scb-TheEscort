@@ -13,6 +13,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev03** Damage fix and spears always hit
     * **dev04** Brawler can now shank and punch while malnourished
     * **dev05** Check for ALL bodychunks of creatures instead of just firstchunk
+    * **dev06** No more jolly gameover
+    * *dev07* Camera and get hit by things fix
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

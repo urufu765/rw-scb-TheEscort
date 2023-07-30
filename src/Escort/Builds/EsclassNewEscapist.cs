@@ -138,7 +138,7 @@ namespace TheEscort
 
         private static void Esclass_NE_CreateShadow(Player self, ref Escort e)
         {
-            if (self.room is null) 
+            if (self.room is null || e.NEsShelterCloseTime) 
             {
                 e.NEsAbility = 0;
                 e.NEsSetCooldown = 0;
@@ -151,7 +151,7 @@ namespace TheEscort
             {
                 saveCreature = false
             };
-            e.NEsAbstractShadowPlayer.state = new PlayerState(e.NEsAbstractShadowPlayer, self.playerState.playerNumber, ShadowEscort, false);
+            e.NEsAbstractShadowPlayer.state = new PlayerState(e.NEsAbstractShadowPlayer, self.playerState.playerNumber, EscortMe, false);
             //e.NEsAbstractShadowPlayer.RealizeInRoom();
             e.NEsAbstractShadowPlayer.realizedCreature = e.NEsShadowPlayer = new ShadowPlayer(e.NEsAbstractShadowPlayer, self.abstractCreature.world, self);
             self.room.AddObject(e.NEsShadowPlayer);

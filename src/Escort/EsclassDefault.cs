@@ -1784,29 +1784,38 @@ namespace TheEscort
                 List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
                 foreach (AbstractCreature abstractPlayer in playersInThisGame)
                 {
-                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort) && escort.shelterSaveComplete < 2)
+                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
-                        int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
-                        bool inShelter = shelterPlayers.Contains(abstractPlayer);
-                        bool isWinner = playersToProgressOrWin.Contains(abstractPlayer);
-                        bool notDead = !player.dead;
-
-                        if (inShelter && notDead && isWinner)
+                        if (escort.shelterSaveComplete < 2)
                         {
-                            //Ebug(player, "Is successful!", ignoreRepetition: true);
-                            // do things when successful
-                        }
-                        else
-                        {
-                            //Ebug(player, "Is failure!", ignoreRepetition: true);
-                            // do things when failure
-                        }
-                        Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
+                            int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
+                            bool inShelter = shelterPlayers.Contains(abstractPlayer);
+                            bool isWinner = playersToProgressOrWin.Contains(abstractPlayer);
+                            bool notDead = !player.dead;
 
-                        // Other builds
-                        if (escort.Deflector) Esclass_DF_WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
-                        if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
-                        escort.shelterSaveComplete++;
+                            if (inShelter && notDead && isWinner)
+                            {
+                                //Ebug(player, "Is successful!", ignoreRepetition: true);
+                                // do things when successful
+                            }
+                            else
+                            {
+                                //Ebug(player, "Is failure!", ignoreRepetition: true);
+                                // do things when failure
+                            }
+                            Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
+
+                            // Other builds
+                            if (escort.Deflector) Esclass_DF_WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
+                            if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
+                            escort.shelterSaveComplete++;
+                        }
+
+                        if (escort.NewEscapist)
+                        {
+                            escort.NEsShadowPlayer?.GoAwayShadow();
+                            escort.NEsShelterCloseTime = true;
+                        }
                     }
                 }
             }
