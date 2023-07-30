@@ -101,6 +101,39 @@ public class ShadowPlayer : Player
         base.Violence(source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
         if (type is null || (source is not null && source.owner is Player)) return;
         bool electricExplosion = false;
+        bool targetted = false;
+        Stack<Creature> creatureList = new();
+        try
+        {
+            foreach (UpdatableAndDeletable thing in this.room.updateList)
+            {
+                if (thing is Player and not ShadowPlayer)
+                {
+                    targetted = true;
+                }
+                if (
+                    thing is Creature creature and not ShadowPlayer &&
+                    creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && 
+                    creature != this && 
+                    !(
+                        creature is Player && 
+                        ModManager.CoopAvailable && 
+                        !Custom.rainWorld.options.friendlyFire
+                    ) && 
+                    !creature.dead && 
+                    Custom.Dist(creature.firstChunk.pos, this.firstChunk.pos) < 180f
+                )
+                {
+                    creatureList.Push(creature);
+                }
+            }
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Targetter didn't work!");
+        }
+
+
         float frc, dmg, stn;
         frc = dmg = stn = 0;
         if (type == DamageType.Blunt)
@@ -170,6 +203,14 @@ public class ShadowPlayer : Player
             frc = 4f;
             dmg = 0.1f;
             stn = 80;
+        }
+        if (targetted)
+        {
+            dmg = 0.1f;
+            foreach (Creature cr in creatureList)
+            {
+                cr.Violence(this.mainBodyChunk, new Vector2(0, 0), cr.firstChunk, null, DamageType.Explosion, Mathf.Lerp(3, 0.1f, Mathf.InverseLerp(0, 175, Custom.Dist(cr.firstChunk.pos, this.firstChunk.pos))), 0);
+            }
         }
 
         room?.AddObject(new Explosion(room: room, sourceObject: this, pos: bodyChunks[1].pos, lifeTime: 6, rad: 175f, force: frc, damage: dmg, stun: stn, deafen: 0.25f, killTagHolder: killTagPlayer, killTagHolderDmgFactor: 0.7f, minStun: stn * 0.8f, backgroundNoise: 1));
