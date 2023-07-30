@@ -472,6 +472,36 @@ public static class EscortHUD
     }
 
     /// <summary>
+    /// Ring that uses the generic ring while adding custom sprites
+    /// </summary>
+    public class NewEscSprite : GenericRing
+    {
+        private readonly FSprite sprite;
+
+        public NewEscSprite(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
+        {
+            sprite = new FSprite("escort_hud_escshadow")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1
+            };
+            hud.fContainers[1].AddChild(sprite);
+        }
+
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            sprite.x = DrawPos(timeStacker).x;
+            sprite.y = DrawPos(timeStacker).y;
+            sprite.alpha = tracked.overridden? 1 : 0;
+        }
+    }
+
+
+    /// <summary>
     /// Ring for tracking the speedster's charge.
     /// </summary>
     public class SpeedRing : RingMeter

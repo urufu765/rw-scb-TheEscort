@@ -277,13 +277,33 @@ public static class ETrackrr
 
     public class NewEscapistTraction : Trackrr<float>
     {
-        public NewEscapistTraction(int playerNumber, int trackerNumber) : base(playerNumber, trackerNumber, "NewEscapist", new Color(0.0f, 0.8f, 0.5f))
+        private readonly Escort escort;
+        public NewEscapistTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "NewEscapist", new Color(0.0f, 0.8f, 0.5f))
         {
+            this.escort = escort;
         }
 
         public override void DrawTracker(float timeStacker)
         {
-            throw new NotImplementedException();
+            if (escort.NEsAbility > 0)
+            {
+                Max = Escort.NEsAbilityTime;
+                Limit = Escort.NEsAbilityTime;
+                Value = Mathf.Lerp(PreValue, escort.NEsAbility, timeStacker);
+                overridden = true;
+            }
+            else if (escort.NEsSetCooldown > 0)
+            {
+                Max = escort.NEsSetCooldown;
+                Limit = 0;
+                Value = Mathf.Lerp(PreValue, escort.NEsSetCooldown - escort.NEsCooldown, timeStacker);
+                overridden = false;
+            }
+            else
+            {
+                Max = Limit = Value = 1;
+                overridden = false;
+            }
         }
     }
 
