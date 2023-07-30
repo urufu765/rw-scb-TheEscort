@@ -11,7 +11,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev01** Get the Shadowscort spawning correctly and have dash work
     * **dev02** Get Shadowscort to do different effects
     * **dev03** Damage fix and spears always hit
-    * *dev04* Check for ALL bodychunks of creatures instead of just firstchunk
+    * **dev04** Brawler can now shank and punch while malnourished
+    * **dev05** Check for ALL bodychunks of creatures instead of just firstchunk
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

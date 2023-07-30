@@ -277,7 +277,7 @@ namespace TheEscort
 
         private bool Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
-            if (self.Malnourished || (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection))
+            if (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection)
             {
                 return false;
             }

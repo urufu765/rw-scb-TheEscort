@@ -218,7 +218,7 @@ namespace TheEscort
                             !Custom.rainWorld.options.friendlyFire
                         ) && 
                         !creature.dead && 
-                        Custom.BetweenLines(creature.firstChunk.pos, a1, a2, b1, b2) &&
+                        Esclass_NE_BodyChecker(creature, a1, a2, b1, b2) &&
                         creature.firstChunk.pos.y > y2 && creature.firstChunk.pos.y < y1
                     )
                     {
@@ -255,6 +255,17 @@ namespace TheEscort
             }
             self.bodyChunks[0].pos.x += self.input[0].x * dashDistance;
             self.bodyChunks[1].pos.x += self.input[0].x * dashDistance;
+        }
+
+
+        private static bool Esclass_NE_BodyChecker(Creature creature, Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+        {
+            bool insideQuad = false;
+            for (int i = 0; i < creature.bodyChunks.Length && !insideQuad; i++)
+            {
+                insideQuad = Custom.BetweenLines(creature.bodyChunks[i].pos, a1, a2, b1, b2);
+            }
+            return insideQuad;
         }
 
 
