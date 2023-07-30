@@ -275,6 +275,18 @@ public static class ETrackrr
         }
     }
 
+    public class NewEscapistTraction : Trackrr<float>
+    {
+        public NewEscapistTraction(int playerNumber, int trackerNumber) : base(playerNumber, trackerNumber, "NewEscapist", new Color(0.0f, 0.8f, 0.5f))
+        {
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class RailgunnerCDTraction : Trackrr<float>
     {
         private readonly Player player;

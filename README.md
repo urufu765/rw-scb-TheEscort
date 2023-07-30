@@ -15,6 +15,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** Check for ALL bodychunks of creatures instead of just firstchunk
     * **dev06** No more jolly gameover
     * **dev07** Camera and get hit by things fix. Also Escapist can only hold one weapon now (but can also backspear)
+    * **dev08** Got started on the tracker
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).
