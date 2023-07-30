@@ -593,6 +593,11 @@ namespace TheEscort
                 hypeSprite = "escort_hud_gilded";
                 floatTrackers.Add(new ETrackrr.GildedPoweredTraction(n, 1, this));
             }
+            if (NewEscapist)
+            {
+                hypeSprite = "escort_hud_escapist";
+                floatTrackers.Add(new ETrackrr.NewEscapistTraction(n, 1, this));
+            }
             this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
             this.floatTrackers.Add(new ETrackrr.SwimTracker(n, 0, self, this));

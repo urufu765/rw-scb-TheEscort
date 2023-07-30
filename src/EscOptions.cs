@@ -122,6 +122,16 @@ namespace TheEscort
         private readonly Configurable<bool> easySelectHelper;
         private OpLabel buildManyCats;
         public List<ListItem> buildItems;
+        private OpDragger bindDragger;
+        private readonly Configurable<int> bindDraggerHelper;
+        private OpCheckBox bindSelect;
+        private readonly Configurable<bool> bindSelectHelper;
+        private OpKeyBinder bindKey;
+        private readonly Configurable<KeyCode> bindKeyHelper;
+        private OpKeyBinder bindAltKey;
+        private readonly Configurable<KeyCode> bindAltKeyHelper;
+        private OpSimpleButton bindReset;
+        private OpLabel bindText;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private Color[] buildColors;
@@ -210,6 +220,7 @@ namespace TheEscort
             this.cfgEscLaunchV = this.config.Bind<float>("cfg_Escort_Launch_Vertical", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
+            
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
             this.buildEasy = new OpCheckBox[PlayerCount];  // Only the first four are shown. The rest are hidden.
@@ -244,6 +255,10 @@ namespace TheEscort
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
+
+            this.bindDraggerHelper = config.Bind("escort_binddragger_helper_ignore_this", 0, new ConfigAcceptableRange<int>(1, PlayerCount));
+            this.bindSelectHelper = config.Bind("escort_bindselect_helper", false);
+            this.bindKeyHelper = config.Bind("escort_bindkey_helper", KeyCode.None);
 
 
             // Plugin.ins.L().Christmas(this.cfgSectret.Value);
@@ -385,6 +400,11 @@ namespace TheEscort
                 easySelect.Hide();
                 buildManyCats.Hide();
             }
+
+            this.bindDragger = new OpDragger(bindDraggerHelper, xo + (xp * 0), yo - (yp * 7));
+            this.bindSelect = new OpCheckBox(bindSelectHelper, new Vector2(xo + (xp * 1), yo - (yp * 7)));
+            this.bindKey = new OpKeyBinder(bindKeyHelper, new(xo + (xp * 2), yo - (yp * 7)), new(100, 30));
+            this.bindText = new OpLabel(xo + (xp * 4), yo - (yp * 7), Translate("escoptions_bindescapist_text"));
 
 
             /*

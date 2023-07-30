@@ -111,6 +111,7 @@ public static class EscortHUD
                     "deflector" => new DeflEmpowerSprites(self, traction, location, foodMeterAnchor),
                     "deflectorPerma" => new DmgText(self, traction, location, foodMeterAnchor),
                     "escapist" => new EscSprite(self, traction, location, foodMeterAnchor),
+                    "newescapist" => new NewEscSprite(self, traction, location, foodMeterAnchor),
                     "railgunnerUse" => new RailRing(self, traction, location, foodMeterAnchor),
                     "speedster" => new SpeedRing(self, traction, location, foodMeterAnchor),
                     "speedsterOld" => new OldSpeedRing(self, traction, location, foodMeterAnchor),

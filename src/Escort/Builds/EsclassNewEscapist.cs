@@ -232,7 +232,7 @@ namespace TheEscort
                             Ebug("There's a creature between!", 2, true);
                         }
                     }
-                    else if (emptyHanded && thing is Weapon weapon &&                         Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) &&
+                    else if (emptyHanded && thing is Weapon weapon && Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) &&
                         weapon.firstChunk.pos.y > y2 && weapon.firstChunk.pos.y < y1)  // Pick up weapon if empty handed.
                     {
                         weaponList.Push(weapon);

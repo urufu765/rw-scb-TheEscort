@@ -278,7 +278,7 @@ public static class ETrackrr
     public class NewEscapistTraction : Trackrr<float>
     {
         private readonly Escort escort;
-        public NewEscapistTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "NewEscapist", new Color(0.0f, 0.8f, 0.5f))
+        public NewEscapistTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "newescapist", new Color(0.0f, 0.8f, 0.5f))
         {
             this.escort = escort;
         }
