@@ -47,6 +47,7 @@ public class ShadowPlayer : Player
     public ShadowPlayer(AbstractCreature abstractCreature, World world, Player basePlayer) : base(abstractCreature, world)
     {
         this.controller = new ArenaGameSession.PlayerStopController();
+        this.cameraSwitchDelay = -1;
         
         this.standing = true;
         this.killTagPlayer = basePlayer;

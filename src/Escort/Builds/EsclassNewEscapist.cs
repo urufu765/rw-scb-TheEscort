@@ -286,6 +286,14 @@ namespace TheEscort
             orig(self, killer);
         }
 
+        private bool Esclass_NE_HitShadowscort(On.Weapon.orig_HitThisObject orig, Weapon self, PhysicalObject obj)
+        {
+            if (obj is ShadowPlayer)
+            {
+                return true;
+            }
+            return orig(self, obj);
+        }
 
     }
 }

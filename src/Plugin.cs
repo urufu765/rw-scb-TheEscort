@@ -249,6 +249,7 @@ namespace TheEscort
             On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
 
             On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
+            On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
 
             On.SlugcatStats.SpearSpawnModifier += Escort_SpearSpawnMod;
             On.SlugcatStats.SpearSpawnElectricRandomChance += Escort_EleSpearSpawnChance;
@@ -737,6 +738,7 @@ namespace TheEscort
                         e.NewEscapist = true;
                         Ebug(self, "New Escapist Build selected!", 2);
                         self.slugcatStats.visualStealthInSneakMode = 1;
+                        self.spearOnBack = new Player.SpearOnBack(self);
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;

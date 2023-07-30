@@ -1263,6 +1263,11 @@ namespace TheEscort
                     return orig(self, obj);
                 }
 
+                if (e.NewEscapist && obj is Weapon)
+                {
+                    return Player.ObjectGrabability.BigOneHand;
+                }
+
                 if (dW && e.dualWield)
                 {
                     if (obj is Weapon)
