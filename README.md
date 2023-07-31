@@ -18,6 +18,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08** Got started on the tracker
     * **dev10** Exploding a thing near a player will do a targetted attack instead
     * **dev11** Continue developing the visuals and implement keybinds
+    * **dev12** More work on the teleport code and keybind implementation continues to be developed
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

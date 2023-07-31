@@ -51,6 +51,10 @@ namespace TheEscort
             {
                 e.NEsLastInput.y--;
             }
+            if (e.NEsLastInput.y < 0)
+            {
+                e.NEsLastInput.y++;
+            }
         
             if (e.NEsAbility > 0)
             {
@@ -98,7 +102,7 @@ namespace TheEscort
                     }
                     else
                     {
-                        e.NEsLastInput.x = -20;
+                        e.NEsLastInput.x = -15;
                     }
                 }
 
@@ -113,21 +117,37 @@ namespace TheEscort
                     }
                     else
                     {
-                        e.NEsLastInput.x = 20;
+                        e.NEsLastInput.x = 15;
                     }
                 }
 
                 // Up (May not end up implementing)
                 if (self.input[0].y > 0 && self.input[1].y <= 0)
                 {
-                    if (e.NEsLastInput.y > 0)
+                    if (e.NEsLastInput.y > 0 && self.animation == Player.AnimationIndex.Flip)
                     {
                         e.NEsLastInput.y = 0;
-                        e.NEsAbility = 200;
+                        e.NEsAbility = Escort.NEsAbilityTime;
+                        Esclass_NE_CreateShadow(self, ref e, true);
                     }
                     else
                     {
-                        e.NEsLastInput.y = 20;
+                        e.NEsLastInput.y = 15;
+                    }
+                }
+
+                // Down (May not end up implementing)
+                if (self.input[0].y < 0 && self.input[1].y >= 0)
+                {
+                    if (e.NEsLastInput.y < 0 && self.animation == Player.AnimationIndex.Flip)
+                    {
+                        e.NEsLastInput.y = 0;
+                        e.NEsAbility = Escort.NEsAbilityTime;
+                        Esclass_NE_CreateShadow(self, ref e, true);
+                    }
+                    else
+                    {
+                        e.NEsLastInput.y = -15;
                     }
                 }
 
@@ -136,9 +156,16 @@ namespace TheEscort
 
 
 
-        private static void Esclass_NE_CreateShadow(Player self, ref Escort e)
+        private static void Esclass_NE_CreateShadow(Player self, ref Escort e, bool vertical = false)
         {
-            if (self.room is null || e.NEsShelterCloseTime) 
+            if (self.room is null || e.NEsShelterCloseTime)  // Prevents a new one from being spawned in a shelter to not chance an accidental save
+            {
+                e.NEsAbility = 0;
+                e.NEsSetCooldown = 0;
+                return;
+            }
+
+            if (self.room.abstractRoom.gate)  // Prevents a new one from being spawned in a gate and causing a softcrash
             {
                 e.NEsAbility = 0;
                 e.NEsSetCooldown = 0;
@@ -151,7 +178,10 @@ namespace TheEscort
             {
                 saveCreature = false
             };
-            e.NEsAbstractShadowPlayer.state = new PlayerState(e.NEsAbstractShadowPlayer, self.playerState.playerNumber, EscortMe, false);
+            e.NEsAbstractShadowPlayer.state = new PlayerState(e.NEsAbstractShadowPlayer, self.playerState.playerNumber, EscortMe, false)
+            {
+                meatLeft = 0
+            };
             //e.NEsAbstractShadowPlayer.RealizeInRoom();
             e.NEsAbstractShadowPlayer.realizedCreature = e.NEsShadowPlayer = new ShadowPlayer(e.NEsAbstractShadowPlayer, self.abstractCreature.world, self);
             self.room.AddObject(e.NEsShadowPlayer);
@@ -165,7 +195,17 @@ namespace TheEscort
                 {
                     for (int j = 0; j < self.bodyChunks.Length; j++)
                     {
-                        Room.Tile rt = self.room.GetTile(self.room.GetTilePosition(new(self.bodyChunks[j].pos.x + (20 * i * self.input[0].x), self.bodyChunks[j].pos.y)));
+                        float xComparitor = self.bodyChunks[j].pos.x;
+                        float yComparitor = self.bodyChunks[j].pos.y;
+                        if (vertical)
+                        {
+                            yComparitor += 20 * i * self.input[0].y;
+                        }
+                        else
+                        {
+                            xComparitor += 20 * i * self.input[0].x;
+                        }
+                        Room.Tile rt = self.room.GetTile(self.room.GetTilePosition(new(xComparitor, yComparitor)));
                         if (rt.Solid) // hit something
                         {
                             Ebug(self, $"Wall detected at: {dashDistance}", 2, true);
@@ -189,20 +229,38 @@ namespace TheEscort
             bool emptyHanded = self.FreeHand() != -1;
             Vector2 a1, a2, b1, b2;
             float y1, y2;
-            if (self.bodyChunks[0].pos.y > self.bodyChunks[0].pos.y)
+            if (vertical)
             {
-                y1 = self.bodyChunks[0].pos.y + 30;
-                y2 = self.bodyChunks[1].pos.y - 50;
+                if (self.bodyChunks[0].pos.x > self.bodyChunks[0].pos.x)
+                {
+                    y1 = self.bodyChunks[0].pos.x + 30;
+                    y2 = self.bodyChunks[1].pos.x - 30;
+                }
+                else
+                {
+                    y1 = self.bodyChunks[1].pos.x + 30;
+                    y2 = self.bodyChunks[0].pos.x - 30;
+                }
+                b1 = new(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y + self.input[0].y * dashDistance);
+                b2 = new(self.bodyChunks[1].pos.x, self.bodyChunks[1].pos.y + self.input[0].y * dashDistance);
             }
             else
             {
-                y1 = self.bodyChunks[1].pos.y + 30;
-                y2 = self.bodyChunks[0].pos.y - 50;
+                if (self.bodyChunks[0].pos.y > self.bodyChunks[0].pos.y)
+                {
+                    y1 = self.bodyChunks[0].pos.y + 30;
+                    y2 = self.bodyChunks[1].pos.y - 50;
+                }
+                else
+                {
+                    y1 = self.bodyChunks[1].pos.y + 30;
+                    y2 = self.bodyChunks[0].pos.y - 50;
+                }
+                b1 = new(self.bodyChunks[0].pos.x + self.input[0].x * dashDistance, self.bodyChunks[0].pos.y);
+                b2 = new(self.bodyChunks[1].pos.x + self.input[0].x * dashDistance, self.bodyChunks[1].pos.y);
             }
             a1 = self.bodyChunks[0].pos;
             a2 = self.bodyChunks[1].pos;
-            b1 = new(self.bodyChunks[0].pos.x + self.input[0].x * dashDistance, self.bodyChunks[0].pos.y);
-            b2 = new(self.bodyChunks[1].pos.x + self.input[0].x * dashDistance, self.bodyChunks[1].pos.y);
             try
             {
                 Stack<Weapon> weaponList = new();
@@ -219,7 +277,11 @@ namespace TheEscort
                         ) && 
                         !creature.dead && 
                         Esclass_NE_BodyChecker(creature, a1, a2, b1, b2) &&
-                        creature.firstChunk.pos.y > y2 && creature.firstChunk.pos.y < y1
+                        (
+                            vertical? 
+                                (creature.firstChunk.pos.x > y2 && creature.firstChunk.pos.x < y1) : 
+                                (creature.firstChunk.pos.y > y2 && creature.firstChunk.pos.y < y1)
+                        )
                     )
                     {
                         creaturePass = true;  // Reduce dash range to max 200 if you pass a creature or will pass creature
@@ -232,8 +294,16 @@ namespace TheEscort
                             Ebug("There's a creature between!", 2, true);
                         }
                     }
-                    else if (emptyHanded && thing is Weapon weapon && Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) &&
-                        weapon.firstChunk.pos.y > y2 && weapon.firstChunk.pos.y < y1)  // Pick up weapon if empty handed.
+                    else if (
+                        emptyHanded && 
+                        thing is Weapon weapon && 
+                        Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) && 
+                        (
+                            vertical? 
+                                (weapon.firstChunk.pos.x > y2 && weapon.firstChunk.pos.x < y1) : 
+                                (weapon.firstChunk.pos.y > y2 && weapon.firstChunk.pos.y < y1)
+                        )
+                    )  // Pick up weapon if empty handed.
                     {
                         weaponList.Push(weapon);
                         Ebug("Yoink a weapon while you're at it", 2, true);

@@ -85,6 +85,10 @@ public class ShadowPlayer : Player
                 smoke = null;
             }
         }
+        if (room is not null && room.abstractRoom.gate)
+        {
+            GoAwayShadow();
+        }
         killTime--;
         standing = true;
         
@@ -140,7 +144,7 @@ public class ShadowPlayer : Player
         {
             frc = 10;
             dmg = 0.75f;
-            stn = 320;
+            stn = 480;
             Ebug("Shadowscort Blunt hit!", ignoreRepetition: true);
         }
         if (type == DamageType.Bite)
@@ -206,11 +210,11 @@ public class ShadowPlayer : Player
         }
         if (targetted)
         {
-            dmg = 0.1f;
             foreach (Creature cr in creatureList)
             {
-                cr.Violence(this.mainBodyChunk, new Vector2(0, 0), cr.firstChunk, null, DamageType.Explosion, Mathf.Lerp(3, 0.1f, Mathf.InverseLerp(0, 175, Custom.Dist(cr.firstChunk.pos, this.firstChunk.pos))), 0);
+                cr.Violence(this.mainBodyChunk, new Vector2(0, 0), cr.firstChunk, null, DamageType.Explosion, Mathf.Lerp(dmg, 0.1f, Mathf.InverseLerp(0, 175, Custom.Dist(cr.firstChunk.pos, this.firstChunk.pos))), 0);
             }
+            dmg = 0.1f;
         }
 
         room?.AddObject(new Explosion(room: room, sourceObject: this, pos: bodyChunks[1].pos, lifeTime: 6, rad: 175f, force: frc, damage: dmg, stun: stn, deafen: 0.25f, killTagHolder: killTagPlayer, killTagHolderDmgFactor: 0.7f, minStun: stn * 0.8f, backgroundNoise: 1));
