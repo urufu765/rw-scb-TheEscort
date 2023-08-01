@@ -100,7 +100,7 @@ namespace TheEscort
                             e.NEsAbility = Escort.NEsAbilityTime;
                             Esclass_NE_CreateShadow(self, ref e, true);
                         }
-                        if (self.input[0].x != 0)
+                        else if (self.input[0].x != 0)
                         {
                             e.NEsAbility = Escort.NEsAbilityTime;
                             Esclass_NE_CreateShadow(self, ref e);

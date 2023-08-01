@@ -22,6 +22,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev13** Keybinds implemented for New Escapist
     * **dev14** Keybinds for Speedster and Gilded, fixed vertical dash, and made it such that only when you select the escapist the code replaces them
     * **dev15** Fixed error when bites happen or tried to anyways
+    * **dev16** Fixed doublespawn and regions
     * *dev16* Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears
     * *dev17* Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole
     * *dev18* A shadow Escapist trail following Escapist when power is ready

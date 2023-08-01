@@ -1108,7 +1108,7 @@ namespace TheEscort
                     -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
                     -4 => new(14, 7),  // Railgunner
-                    -3 => !config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                    -3 => config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
                     -2 => new(14, 8),  // Deflector
                     -1 => new(14, 12),  // Brawler
                     _  => new(14, 9)  // Default and unspecified.
@@ -1561,7 +1561,7 @@ namespace TheEscort
                     0 => "CC_SUMP02",  // Default
                     -1 => "SU_A02",  // Brawler
                     -2 => "SI_C03",  // Deflector
-                    -3 => "DM_LEG02",  // Escapist
+                    -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
                     -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
