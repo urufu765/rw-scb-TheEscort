@@ -341,8 +341,17 @@ namespace TheEscort
             {
                 dashDistance = 200;
             }
-            self.bodyChunks[0].pos.x += self.input[0].x * dashDistance;
-            self.bodyChunks[1].pos.x += self.input[0].x * dashDistance;
+
+            if (vertical)
+            {
+                self.bodyChunks[0].pos.y += self.input[0].y * dashDistance;
+                self.bodyChunks[1].pos.y += self.input[0].y * dashDistance;
+            }
+            else
+            {
+                self.bodyChunks[0].pos.x += self.input[0].x * dashDistance;
+                self.bodyChunks[1].pos.x += self.input[0].x * dashDistance;
+            }
         }
 
 

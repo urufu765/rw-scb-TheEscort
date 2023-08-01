@@ -791,11 +791,23 @@ namespace TheEscort
                         Ebug(self, "Railgunner Build selected!", 2);
                         break;
                     case -3:  // Escapist build
-                        e.Escapist = true;
-                        e.dualWield = false;
-                        self.slugcatStats.runspeedFac += 0.1f;
-                        self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.bodyWeightFac -= 0.15f;
+                        if (config.cfgSectretMagic.Value)
+                        {
+                            e.NewEscapist = true;
+                            Ebug(self, "New Escapist Build selected!", 2);
+                            self.slugcatStats.visualStealthInSneakMode = 1;
+                            self.slugcatStats.lungsFac += 0.2f;
+                            self.slugcatStats.bodyWeightFac -= 0.15f;
+                            self.spearOnBack = new Player.SpearOnBack(self);
+                        }
+                        else
+                        {
+                            e.Escapist = true;
+                            e.dualWield = false;
+                            self.slugcatStats.runspeedFac += 0.1f;
+                            self.slugcatStats.lungsFac += 0.2f;
+                            self.slugcatStats.bodyWeightFac -= 0.15f;
+                        }
                         //minimumPips -= 3;
                         Ebug(self, "Escapist Build selected!", 2);
                         break;

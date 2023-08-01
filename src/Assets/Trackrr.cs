@@ -281,6 +281,7 @@ public static class ETrackrr
         public NewEscapistTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "newescapist", new Color(0.0f, 0.8f, 0.5f))
         {
             this.escort = escort;
+            this.effectColor = Color.grey;
         }
 
         public override void DrawTracker(float timeStacker)

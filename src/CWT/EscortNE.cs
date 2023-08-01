@@ -152,6 +152,10 @@ public class ShadowPlayer : Player
             frc = 3.5f;
             dmg = 1.8f;
             stn = 160;
+            if (source?.owner is Creature c)
+            {
+                c.LoseAllGrasps();
+            }
             Ebug("Shadowscort Bite hit!", ignoreRepetition: true);
         }
         if (type == DamageType.Stab)

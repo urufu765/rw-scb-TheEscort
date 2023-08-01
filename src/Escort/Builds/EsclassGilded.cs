@@ -179,10 +179,16 @@ namespace TheEscort
                     e.GildLevitateLimit = 480;
                 }
             }
+            bool deCondition = e.CustomKeybindEnabled? !Input.GetKey(e.CustomKeybind) : !self.input[0].jmp;
+            bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : self.wantToJump > 0 && (
+                    e.GildLevitateCooldown <= 0 || 
+                    self.input[0].jmp && !self.input[1].jmp
+                );
+            bool condition2 = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : self.input[0].jmp;
 
             // Deactivate levitation
             if ((
-                !self.input[0].jmp || 
+                deCondition || 
                 self.animation == Player.AnimationIndex.ClimbOnBeam || 
                 self.animation == Player.AnimationIndex.HangFromBeam || 
                 self.bodyMode == Player.BodyModeIndex.CorridorClimb ||
@@ -207,17 +213,13 @@ namespace TheEscort
                     self.bodyMode == Player.BodyModeIndex.ZeroG ||
                     self.bodyMode == Player.BodyModeIndex.CorridorClimb
                 ) && 
-                self.wantToJump > 0 && 
                 self.canJump == 0 && 
                 !e.GildFloatState && 
                 !e.GildCrush &&
                 e.GildPower >= Escort.GildUseLevitate &&
                 e.GildReservePower < 10 &&
                 self.bodyChunks[1].contactPoint.y != -1 &&
-                (
-                    e.GildLevitateCooldown <= 0 || 
-                    self.input[0].jmp && !self.input[1].jmp
-                )
+                condition
             )
             {
                 e.Escat_float_state(self);
@@ -229,7 +231,7 @@ namespace TheEscort
 
             // Main code
             // TODO: Allow simultaneous usage of power, e.g. float while making a spear.
-            if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && self.input[0].jmp && e.GildFloatState)
+            if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && condition2 && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
                 self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);

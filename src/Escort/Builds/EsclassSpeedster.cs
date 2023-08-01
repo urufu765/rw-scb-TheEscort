@@ -205,7 +205,7 @@ namespace TheEscort
                         */
                         e.SpeGain += self.animation switch {
                             var value when value == Player.AnimationIndex.Flip => 1,
-                            var value when value == Player.AnimationIndex.BellySlide => 5,
+                            var value when value == Player.AnimationIndex.BellySlide => e.CustomKeybindEnabled? 1.3f : 5,
                             var value when value == Player.AnimationIndex.Roll => 1.1f,
                             var value when value == Player.AnimationIndex.StandOnBeam => 0.7f,
                             var value when value == Player.AnimationIndex.SurfaceSwim => 1.2f,
@@ -384,9 +384,10 @@ namespace TheEscort
                     self.bodyChunks[1].vel.x += self.input[0].x * n * 3;
                 }
             }
-            else if (!e.SpeOldSpeed)
+            else if (!e.SpeOldSpeed)  // Trigger speed ability
             {
-                if (e.SpeCharge > 0 && self.animation == Player.AnimationIndex.BellySlide && !e.slideFromSpear && self.rollCounter > 10)
+                bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : (self.animation == Player.AnimationIndex.BellySlide && !e.slideFromSpear && self.rollCounter > 10);
+                if (e.SpeCharge > 0 && condition)
                 {
                     e.SpeGear = e.SpeCharge - 1;
                     self.slugcatStats.throwingSkill = 1;
