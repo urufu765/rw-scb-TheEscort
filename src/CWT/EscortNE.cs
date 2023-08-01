@@ -152,10 +152,6 @@ public class ShadowPlayer : Player
             frc = 3.5f;
             dmg = 1.8f;
             stn = 160;
-            if (source?.owner is Creature c)
-            {
-                c.LoseAllGrasps();
-            }
             Ebug("Shadowscort Bite hit!", ignoreRepetition: true);
         }
         if (type == DamageType.Stab)
@@ -241,7 +237,7 @@ public class ShadowPlayer : Player
             room?.PlaySound(SoundID.Bomb_Explode, bodyChunks[1].pos);
             room?.InGameNoise(new Noise.InGameNoise(bodyChunks[1].pos, 9000, this, 1f));
         }
-        this.Destroy();
+        GoAwayShadow();
     }
 
 
@@ -272,9 +268,9 @@ public class ShadowPlayer : Player
     }
 
 
-    public void GoAwayShadow()
+    public void GoAwayShadow(int setTime = 0)
     {
-        killTime = 0;
+        killTime = setTime;
     }
 
 

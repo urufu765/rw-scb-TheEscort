@@ -20,11 +20,12 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev11** Continue developing the visuals and implement keybinds
     * **dev12** More work on the teleport code and keybind implementation continues to be developed
     * **dev13** Keybinds implemented for New Escapist
-    * **dev14** Keybinds for Speedster and Gilded, fixed vertical dash and fixed exception from creature biting clone, and made it such that only when you select the escapist the code replaces them
-    * *dev15* Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears
-    * *dev16* Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole
-    * *dev17* A shadow Escapist trail following Escapist when power is ready
-    * *dev18* Make arenamode an exception to player hits and introduce cooldown
+    * **dev14** Keybinds for Speedster and Gilded, fixed vertical dash, and made it such that only when you select the escapist the code replaces them
+    * **dev15** Fixed error when bites happen or tried to anyways
+    * *dev16* Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears
+    * *dev17* Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole
+    * *dev18* A shadow Escapist trail following Escapist when power is ready
+    * *dev19* Make arenamode an exception to player hits and introduce cooldown
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

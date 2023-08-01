@@ -717,10 +717,6 @@ namespace TheEscort
                         _ => pal
                     };
                 }
-                if (config.cfgSectretMagic.Value)
-                {
-                    pal = -7;
-                }
                 // Fix this by turning it off for expedition or add multiplier or somethingidk
 
                 //int maximumPips = self.slugcatStats.maxFood;
