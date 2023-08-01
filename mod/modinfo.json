@@ -1,7 +1,7 @@
 ﻿{
 	"id": "urufudoggo.theescort",
 	"name": "[Beta] The Escort",
-	"version": "0.2.12.dev12",
+	"version": "0.2.12.dev13",
 	"authors": "Urufudoggo",
 	"description": "A mod that will add The Escort and (eventually) their very special slugpup.<LINE><LINE>Currently implements The Escort and some of their abilities and movement tech. <LINE>SHOULD be fully compatible for playing in other campaigns or arena.<LINE><LINE>Feedback of any sort is HIGHLY appreciated!",
 	"requirements": [ "slime-cubed.slugbase", "moreslugcats" ],

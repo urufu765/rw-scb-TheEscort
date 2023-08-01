@@ -128,10 +128,12 @@ namespace TheEscort
         private readonly Configurable<bool> bindSelectHelper;
         private OpKeyBinder bindKey;
         private readonly Configurable<KeyCode> bindKeyHelper;
-        private OpKeyBinder bindAltKey;
-        private readonly Configurable<KeyCode> bindAltKeyHelper;
         private OpSimpleButton bindReset;
         private OpLabel bindText;
+        public Configurable<KeyCode>[] cfgBindKeys;
+        public Configurable<bool>[] cfgCustomBinds;
+        public OpKeyBinder[] cfgBindKeysContainer;
+        public OpCheckBox[] cfgCustomBindsContainer;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
         private Color[] buildColors;
@@ -188,9 +190,13 @@ namespace TheEscort
             PlayerCount = Mathf.Max(4, RainWorld.PlayerObjectBodyColors.Length, rainworld.options.controls.Length);
             this.cfgBuild = new Configurable<int>[PlayerCount];  // Make this expandable to more than 4 players by checking how many players are being logged in?
             this.cfgEasy = new Configurable<bool>[PlayerCount];  // This too
-            for (int x = 0; x < this.cfgBuild.Length; x++){
+            this.cfgBindKeys = new Configurable<KeyCode>[PlayerCount];
+            this.cfgCustomBinds = new Configurable<bool>[PlayerCount];
+            for (int x = 0; x < PlayerCount; x++){
                 this.cfgBuild[x] = this.config.Bind<int>("cfg_Build_Player" + x, 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
                 this.cfgEasy[x] = this.config.Bind<bool>("cfg_Easy_Player" + x, false);
+                this.cfgBindKeys[x] = this.config.Bind<KeyCode>("cfg_Custom_Escort_Keybinds_Player" + x, KeyCode.None);
+                this.cfgCustomBinds[x] = this.config.Bind<bool>("cfg_Enable_Custom_Escort_Binds_Player" + x, false);
             }
             //this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
             //this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
@@ -401,10 +407,35 @@ namespace TheEscort
                 buildManyCats.Hide();
             }
 
+            cfgBindKeysContainer = new OpKeyBinder[PlayerCount];
+            cfgCustomBindsContainer = new OpCheckBox[PlayerCount];
+            for (int l = 0; l < PlayerCount; l++)
+            {
+                cfgBindKeysContainer[l] = new OpKeyBinder(cfgBindKeys[l], default, default, false);
+                cfgBindKeysContainer[l].Hide();
+                cfgCustomBindsContainer[l] = new OpCheckBox(cfgCustomBinds[l], default);
+                cfgCustomBindsContainer[l].Hide();
+            }
+
+
             this.bindDragger = new OpDragger(bindDraggerHelper, xo + (xp * 0), yo - (yp * 7));
-            this.bindSelect = new OpCheckBox(bindSelectHelper, new Vector2(xo + (xp * 1), yo - (yp * 7)));
-            this.bindKey = new OpKeyBinder(bindKeyHelper, new(xo + (xp * 2), yo - (yp * 7)), new(100, 30));
-            this.bindText = new OpLabel(xo + (xp * 4), yo - (yp * 7), Translate("escoptions_bindescapist_text"));
+            this.bindDragger.OnValueChanged += SelectAPlayer;
+            this.bindSelect = new OpCheckBox(bindSelectHelper, new Vector2(xo + (xp * 1), yo - (yp * 7)))
+            {
+                description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Allow")) + bindDragger.value
+            };
+            this.bindSelect.OnValueChanged += ToggleCustomKeybind;
+            this.bindKey = new OpKeyBinder(bindKeyHelper, new(xo + (xp * 2), yo - (yp * 7)), new(160, 30))
+            {
+                description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Set")) + bindDragger.value
+            };
+            this.bindKey.OnValueChanged += SetCustomKeybind;
+            this.bindReset = new OpSimpleButton(new(xo + (xp * 7), yo - (yp * 7f)), new(100, 30), Translate("Reset Keybind"))
+            {
+                description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Reset")) + bindDragger.value
+            };
+            this.bindReset.OnClick += ResetCustomKeybind;
+            this.bindText = new OpLabel(xo + (xp * 10), yo - (yp * 7) + tp/2, Translate("escoptions_custombinds_text"));
 
 
             /*
@@ -937,7 +968,13 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 5), Translate("escoptions_hudshow_text") + Translate("[Beta]")),
                 new OpComboBox(this.cfgShowHud, new Vector2(xo + (xp * 0), yo - (yp * 5) - tp), 160, hudShowOptions){
                     description = Translate("escoptions_hudshow_desc") + SetDefault(cfgShowHud.defaultValue)
-                }
+                },
+
+                bindDragger,
+                bindKey,
+                bindSelect,
+                bindReset,
+                bindText
 
             };
             mainTab.AddItems(this.mainSet);
@@ -949,11 +986,62 @@ namespace TheEscort
             buildTab.AddItems(this.buildText);
             gimmickTab.AddItems(this.gimmickSet);
             accessibilityTab.AddItems(this.accessibleSet);
+            accessibilityTab.AddItems(cfgBindKeysContainer);
+            accessibilityTab.AddItems(cfgCustomBindsContainer);
             if (cfgVersion.Value != VERSION){
                 ConfigConnector.CreateDialogBoxNotify(HelloWorld);
                 cfgVersion.Value = VERSION;
                 //this._SaveConfigFile();
             }
+        }
+
+        private void ResetCustomKeybind(UIfocusable trigger)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(bindDragger.value) - 1;
+            string oldValueThing = cfgBindKeysContainer[playerNumber].value;
+            cfgBindKeysContainer[playerNumber].value = ValueConverter.ConvertToString(KeyCode.None);
+            bindKey.value = ValueConverter.ConvertToString(KeyCode.None);
+            Ebug($"Reset bind from {oldValueThing} to {cfgBindKeysContainer[playerNumber].value}", 1, true);
+        }
+
+        private void SetCustomKeybind(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(bindDragger.value) - 1;
+            Ebug($"Value is {value}", 1, true);
+            string oldValueThing = cfgBindKeysContainer[playerNumber].value;
+            cfgBindKeysContainer[playerNumber].value = value;
+            Ebug($"Set bind from {oldValueThing} to {cfgBindKeysContainer[playerNumber].value}", 1, true);
+        }
+
+        private void ToggleCustomKeybind(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(bindDragger.value) - 1;
+            bool oldValueThing = cfgCustomBindsContainer[playerNumber].GetValueBool();
+            cfgCustomBindsContainer[playerNumber].value = value;
+            if (cfgCustomBindsContainer[playerNumber].GetValueBool())
+            {
+                bindKey.greyedOut = false;
+                bindReset.greyedOut = false;
+            }
+            else
+            {
+                bindKey.greyedOut = true;
+                bindReset.greyedOut = true;
+            }
+            Ebug($"Set custom bind from {oldValueThing} to {cfgCustomBindsContainer[playerNumber].GetValueBool()}", 1, true);
+        }
+
+        private void SelectAPlayer(UIconfig config, string value, string oldValue)
+        {
+            int playerNumber = ValueConverter.ConvertToValue<int>(value) - 1;
+            bindSelect.value = cfgCustomBindsContainer[playerNumber].value;
+            bindSelect.description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Allow")) + value;
+            bindKey.value = ValueConverter.ConvertToString(ValueConverter.ConvertToValue<KeyCode>(cfgBindKeysContainer[playerNumber].value));
+            bindKey.description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Set")) + value;
+            bindKey.greyedOut = !cfgCustomBindsContainer[playerNumber].GetValueBool();
+            bindReset.description = Swapper(Translate("escoptions_custombinds_desc"), Translate("Reset")) + value;
+            bindReset.greyedOut = !cfgCustomBindsContainer[playerNumber].GetValueBool();
+            Ebug($"Settings focus from {oldValue} to {value}", 1, true);
         }
 
         private void ChangeTheEasy(UIconfig config, string value, string oldValue)

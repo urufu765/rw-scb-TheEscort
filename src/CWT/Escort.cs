@@ -73,6 +73,8 @@ namespace TheEscort
         public float viscoDance;
         public Color viscoColor;
         public bool escortArena;
+        public bool CustomKeybindEnabled {get; private set;}
+        public KeyCode CustomKeybind {get; private set;}
 
         // Build stuff
         public bool Brawler;
@@ -210,6 +212,11 @@ namespace TheEscort
             this.isDefault = false;
             this.acidSwim = 0.4f;
             this.viscoColor = Color.black;
+            this.CustomKeybindEnabled = Plugin.ins.config.cfgCustomBinds[player.playerState.playerNumber].Value && Plugin.ins.config.cfgBindKeys[player.playerState.playerNumber].Value is not KeyCode.None;
+            if (CustomKeybindEnabled)
+            {
+                CustomKeybind = Plugin.ins.config.cfgBindKeys[player.playerState.playerNumber].Value;
+            }
 
             // Build specific
             this.Brawler = false;

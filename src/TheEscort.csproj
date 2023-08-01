@@ -52,6 +52,9 @@
     <Reference Include="..\lib\Guardian.dll">
       <HintPath>..\lib\Guardian.dll</HintPath>
     </Reference>
+    <Reference Include="..\lib\UnityEngine.InputLegacyModule.dll">
+      <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">
     <ItemGroup>

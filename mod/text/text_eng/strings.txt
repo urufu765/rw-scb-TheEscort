@@ -186,3 +186,6 @@ HUD B UPDATE|HUD B UPDATE
 escoptions_deflshared_text|Shared <DEFLECTOR> Permadamage
 escoptions_deflshared_desc|Share <DEFLECTOR> permadamage multiplier so anyone can get a kill and profit.
 escoptions_moreplayerbuilds_text|vvv Configure builds for more than 4 players vvv
+NEW ESCAPIST UPDATE|NEW ESCAPIST UPDATE
+escoptions_custombinds_text|Escort Custom Keybinds
+escoptions_custombinds_desc|<REPLACE> custom keybinds for P

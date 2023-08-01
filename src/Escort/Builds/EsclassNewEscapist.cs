@@ -91,66 +91,84 @@ namespace TheEscort
             // Check if player has inputted the direction for ability activation
             if (e.NEsAbility == 0 && e.NEsCooldown == 0)  // Doubletap direction checker
             {
-                // Left
-                if (self.input[0].x < 0 && self.input[1].x >= 0)
+                if (e.CustomKeybindEnabled)
                 {
-                    if (e.NEsLastInput.x < 0)
+                    if (Input.GetKey(e.CustomKeybind))
                     {
-                        e.NEsLastInput.x = 0;
-                        e.NEsAbility = Escort.NEsAbilityTime;
-                        Esclass_NE_CreateShadow(self, ref e);
-                    }
-                    else
-                    {
-                        e.NEsLastInput.x = -15;
+                        if (self.animation == Player.AnimationIndex.Flip && self.input[0].y != 0)
+                        {
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e, true);
+                        }
+                        if (self.input[0].x != 0)
+                        {
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e);
+                        }
                     }
                 }
-
-                // Right
-                if (self.input[0].x > 0 && self.input[1].x <= 0)
+                else
                 {
-                    if (e.NEsLastInput.x > 0)
+                    // Left
+                    if (self.input[0].x < 0 && self.input[1].x >= 0)
                     {
-                        e.NEsLastInput.x = 0;
-                        e.NEsAbility = Escort.NEsAbilityTime;
-                        Esclass_NE_CreateShadow(self, ref e);
+                        if (e.NEsLastInput.x < 0)
+                        {
+                            e.NEsLastInput.x = 0;
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e);
+                        }
+                        else
+                        {
+                            e.NEsLastInput.x = -15;
+                        }
                     }
-                    else
+
+                    // Right
+                    if (self.input[0].x > 0 && self.input[1].x <= 0)
                     {
-                        e.NEsLastInput.x = 15;
+                        if (e.NEsLastInput.x > 0)
+                        {
+                            e.NEsLastInput.x = 0;
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e);
+                        }
+                        else
+                        {
+                            e.NEsLastInput.x = 15;
+                        }
+                    }
+
+                    // Up (May not end up implementing)
+                    if (self.input[0].y > 0 && self.input[1].y <= 0)
+                    {
+                        if (e.NEsLastInput.y > 0 && self.animation == Player.AnimationIndex.Flip)
+                        {
+                            e.NEsLastInput.y = 0;
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e, true);
+                        }
+                        else
+                        {
+                            e.NEsLastInput.y = 15;
+                        }
+                    }
+
+                    // Down (May not end up implementing)
+                    if (self.input[0].y < 0 && self.input[1].y >= 0)
+                    {
+                        if (e.NEsLastInput.y < 0 && self.animation == Player.AnimationIndex.Flip)
+                        {
+                            e.NEsLastInput.y = 0;
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e, true);
+                        }
+                        else
+                        {
+                            e.NEsLastInput.y = -15;
+                        }
                     }
                 }
-
-                // Up (May not end up implementing)
-                if (self.input[0].y > 0 && self.input[1].y <= 0)
-                {
-                    if (e.NEsLastInput.y > 0 && self.animation == Player.AnimationIndex.Flip)
-                    {
-                        e.NEsLastInput.y = 0;
-                        e.NEsAbility = Escort.NEsAbilityTime;
-                        Esclass_NE_CreateShadow(self, ref e, true);
-                    }
-                    else
-                    {
-                        e.NEsLastInput.y = 15;
-                    }
-                }
-
-                // Down (May not end up implementing)
-                if (self.input[0].y < 0 && self.input[1].y >= 0)
-                {
-                    if (e.NEsLastInput.y < 0 && self.animation == Player.AnimationIndex.Flip)
-                    {
-                        e.NEsLastInput.y = 0;
-                        e.NEsAbility = Escort.NEsAbilityTime;
-                        Esclass_NE_CreateShadow(self, ref e, true);
-                    }
-                    else
-                    {
-                        e.NEsLastInput.y = -15;
-                    }
-                }
-
             }
         }
 
