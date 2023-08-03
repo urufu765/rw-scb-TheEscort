@@ -291,20 +291,21 @@ public static class ETrackrr
                 Max = Escort.NEsAbilityTime;
                 Limit = Escort.NEsAbilityTime;
                 Value = Mathf.Lerp(PreValue, escort.NEsAbility, timeStacker);
-                overridden = true;
+                escort.overrideSprite = true;
             }
-            else if (escort.NEsSetCooldown > 0)
+            else if (escort.NEsCooldown > 0)
             {
-                Max = escort.NEsSetCooldown;
+                Max = escort.NEsLastCooldown;
                 Limit = 0;
-                Value = Mathf.Lerp(PreValue, escort.NEsSetCooldown - escort.NEsCooldown, timeStacker);
-                overridden = false;
+                Value = Mathf.Lerp(PreValue, escort.NEsLastCooldown - escort.NEsCooldown, timeStacker);
+                escort.overrideSprite = false;
             }
             else
             {
                 Max = Limit = Value = 1;
-                overridden = false;
+                escort.overrideSprite = false;
             }
+            overridden = escort.overrideSprite;
         }
     }
 

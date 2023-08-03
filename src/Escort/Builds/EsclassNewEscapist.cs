@@ -29,14 +29,19 @@ namespace TheEscort
                 e.NEsResetCooldown = false;
             }
 
-            if (e.NEsShadowPlayer is null)
+            if (e.NEsShadowPlayer is null || e.NEsShadowPlayer.dead)
             {
+                e.NEsSetCooldown += e.NEsAbility;
                 e.NEsAbility = 0;
             }
 
             if (e.NEsCooldown > 0)
             {
                 e.NEsCooldown--;
+            }
+            else
+            {
+                e.NEsLastCooldown = 0;
             }
 
             if (e.NEsLastInput.x > 0)
@@ -59,10 +64,11 @@ namespace TheEscort
             if (e.NEsAbility > 0)
             {
                 e.NEsAbility--;
+                e.NEsSetCooldown = 80;
             }
             else if (e.NEsSetCooldown > 0)
             {
-                e.NEsCooldown = e.NEsSetCooldown;
+                e.NEsCooldown = e.NEsLastCooldown = e.NEsSetCooldown;
                 e.NEsSetCooldown = 0;
             }
 
@@ -204,15 +210,19 @@ namespace TheEscort
 
             // Dash
             float dashDistance = 0;
+            bool[] getOnBeam = new bool[self.bodyChunks.Length];
+            IntVector2 lastBeamPos = default;
+            bool solidWall = false;
             try
             {
-                // Check for wall (max dash distance) so you don't go through it
+                // Check for terrain stuff
                 for (int i = 1; i < 15; i++)
                 {
                     for (int j = 0; j < self.bodyChunks.Length; j++)
                     {
-                        float xComparitor = self.bodyChunks[j].pos.x;
-                        float yComparitor = self.bodyChunks[j].pos.y;
+                        // Calculate positions
+                        float xComparitor = self.bodyChunks[j].pos.x;  // for regular dashes
+                        float yComparitor = self.bodyChunks[j].pos.y;  // for vertical dashes
                         if (vertical)
                         {
                             yComparitor += 20 * i * self.input[0].y;
@@ -221,22 +231,55 @@ namespace TheEscort
                         {
                             xComparitor += 20 * i * self.input[0].x;
                         }
-                        Room.Tile rt = self.room.GetTile(self.room.GetTilePosition(new(xComparitor, yComparitor)));
-                        if (rt.Solid) // hit something
+
+                        IntVector2 tPos = self.room.GetTilePosition(new(xComparitor, yComparitor));
+                        Room.Tile rt = self.room.GetTile(tPos);
+
+                        // Latch onto the first vertical pole you dash at and stop (player doesn't grab the pole automatically without holding up for some reason so might as well have that as a requirement)
+                        if (!vertical && rt.verticalBeam && self.input[0].y != 0 && dashDistance > 0)
+                        {
+                            self.dropGrabTile = tPos;
+                            self.animation = Player.AnimationIndex.ClimbOnBeam;
+                            self.bodyMode = Player.BodyModeIndex.ClimbingOnBeam;
+                            Ebug(self, $"Vertical beam detected at: {dashDistance}", 2, true);
+                            goto breakAll;
+                        }
+
+                        // Horizontal beam dash, stop at the end of a horizontal beam
+                        if (rt.horizontalBeam && (self.animation == Player.AnimationIndex.HangFromBeam || self.animation == Player.AnimationIndex.StandOnBeam) && dashDistance > 50)
+                        {
+                            lastBeamPos = tPos;
+                            getOnBeam[j] = true;
+                            Ebug(self, $"Horizontal beam detected at: {dashDistance}", 2, true);
+                        }
+                        if (getOnBeam[j] && (!rt.horizontalBeam || i == 14 || solidWall))
+                        {
+                            self.dropGrabTile = lastBeamPos;
+                            dashDistance -= 20;
+                            Ebug(self, $"End of horizontal beam detected at: {dashDistance}", 2, true);
+                            goto breakAll;
+                        }
+
+                        if (rt.Solid) // Hit a wall and stop
                         {
                             Ebug(self, $"Wall detected at: {dashDistance}", 2, true);
-                            goto breakAll;
+                            solidWall = true;
+                            bool breakit = true;
+                            foreach(bool onBeam in getOnBeam)
+                            {
+                                if (onBeam) breakit = false;
+                            }
+                            if (breakit) goto breakAll;
                         }
                     }
                     dashDistance += 20;
                 }
                 breakAll:
-                Ebug(self, "Wall check all done!", 2, true);
-
+                Ebug(self, "Terrain check all done!", 2, true);
             }
             catch (Exception ex)
             {
-                Ebug(ex, "Wallfinder didn't work!");
+                Ebug(ex, "Terrainfinder didn't work!");
             }
 
 

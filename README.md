@@ -24,12 +24,16 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev15** Fixed error when bites happen or tried to anyways
     * **dev16** Fixed doublespawn and regions
     * **dev17** Added tutorial in new region and added zero g special case, priority on horizontal shadows than vertical, attempt at fixing error again as well as the exception from parrying a vulture tusk.
+    * **dev18** Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole, reduced ability time to 8s, and fixed sprite override not working for hud
     * *dev* Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears
-    * *dev* Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole
     * *dev* A shadow Escapist trail following Escapist when power is ready
     * *dev* Make arenamode an exception to player hits and introduce cooldown
     * *dev* Let Escort jump poles quirkly
     * *dev* Escapist can pull out of dangergrasps in 5 seconds instead of 0.75s and bite lethality is reduced
+    * *dev* Changed Escort's basic spearthrow from slide to roll (with stand)
+    * *dev* Change Escort dropkick sound when kicking dead creatures
+    * *dev* Fix Escort throwing up or down when peeking out of a shortcut
+    * *dev* remove ability to pick up another spear
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

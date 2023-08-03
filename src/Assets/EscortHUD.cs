@@ -486,7 +486,8 @@ public static class EscortHUD
                 x = pos.x,
                 y = pos.y,
                 alpha = 0,
-                scale = 1
+                scale = 1,
+                color = new Color(0.0f, 0.8f, 0.5f)
             };
             hud.fContainers[1].AddChild(sprite);
         }

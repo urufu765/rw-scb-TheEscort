@@ -18,9 +18,10 @@ public partial class Escort
     public int NEsAbility;
     public AbstractCreature NEsAbstractShadowPlayer;
     public ShadowPlayer NEsShadowPlayer;
-    public const int NEsAbilityTime = 400;
+    public const int NEsAbilityTime = 320;
     public bool NEsResetCooldown;
     public bool NEsShelterCloseTime;
+    public int NEsLastCooldown;
 
     public void EscortNE()
     {
@@ -48,7 +49,7 @@ public class ShadowPlayer : Player
         this.controller = new ArenaGameSession.PlayerStopController();
         this.cameraSwitchDelay = -1;
         
-        this.standing = true;
+        this.dropGrabTile = basePlayer.dropGrabTile;
         this.killTagPlayer = basePlayer;
         for (int i = 0; i < this.bodyChunks.Length; i++)
         {
@@ -57,6 +58,8 @@ public class ShadowPlayer : Player
             this.bodyChunks[i].pos.x = basePlayer.bodyChunks[i].pos.x;
             this.bodyChunks[i].pos.y = basePlayer.bodyChunks[i].pos.y;
         }
+        this.animation = basePlayer.animation;
+        this.bodyMode = basePlayer.bodyMode;
         if (basePlayer.room is not null)
         {
             smoke = new(basePlayer.room);
@@ -89,7 +92,10 @@ public class ShadowPlayer : Player
             GoAwayShadow();
         }
         killTime--;
-        standing = true;
+        if (bodyMode != BodyModeIndex.ClimbingOnBeam)
+        {
+            standing = true;
+        }
         
         if (killTime <= 0)
         {
@@ -257,6 +263,7 @@ public class ShadowPlayer : Player
 
     public override void Destroy()
     {
+        base.dead = true;
         slatedForDeletetion = true;
     }
 }
