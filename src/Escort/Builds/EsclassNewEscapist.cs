@@ -181,6 +181,13 @@ namespace TheEscort
             {
                 e.NEsShadowPlayer.GoAwayShadow();
             }
+
+
+            // Make swallowing and spitting out twice as fast
+            if (self.input[0].pckp && self.swallowAndRegurgitateCounter > 4)
+            {
+                self.swallowAndRegurgitateCounter++;
+            }
         }
 
 
@@ -286,6 +293,13 @@ namespace TheEscort
             // Check for creature (if they're between your current position and your dash target position)
             bool creaturePass = false;
             bool emptyHanded = self.FreeHand() != -1;
+            for (int a = 0; a < self.grasps.Length && emptyHanded; a++)
+            {
+                if (self.grasps[a]?.grabbed is Weapon)
+                {
+                    emptyHanded = false;
+                }
+            }
             Vector2 a1, a2, b1, b2;
             float y1, y2;
             if (vertical)
@@ -368,7 +382,7 @@ namespace TheEscort
                         Ebug("Yoink a weapon while you're at it", 2, true);
                     }
                 }
-                while (weaponList.Count > 0 && self.FreeHand() != -1)
+                if (weaponList.Count > 0 && self.FreeHand() != -1)
                 {
                     self.SlugcatGrab(weaponList.Pop(), self.FreeHand());
                 }

@@ -60,6 +60,7 @@ public class ShadowPlayer : Player
         }
         this.animation = basePlayer.animation;
         this.bodyMode = basePlayer.bodyMode;
+        this.slugcatStats.lungsFac = 0.01f;
         if (basePlayer.room is not null)
         {
             smoke = new(basePlayer.room);
