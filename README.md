@@ -26,7 +26,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev17** Added tutorial in new region and added zero g special case, priority on horizontal shadows than vertical, attempt at fixing error again as well as the exception from parrying a vulture tusk.
     * **dev18** Add part where dashing onto a pole makes them autograb the pole if they dashed from a pole, and holding up dashes to the closest pole, reduced ability time to 8s, and fixed sprite override not working for hud
     * **dev19** remove ability to pick up another spear, speed up spitting speed
-    * *dev* Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears
+    * **dev20** Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears and prevented spears from getting pulled out of walls unless config is set
     * *dev* A shadow Escapist trail following Escapist when power is ready
     * *dev* Make arenamode an exception to player hits and introduce cooldown
     * *dev* Let Escort jump poles quirkly

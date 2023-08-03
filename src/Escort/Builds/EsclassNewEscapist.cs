@@ -1,4 +1,5 @@
 using BepInEx;
+using MoreSlugcats;
 using RWCustom;
 using SlugBase.Features;
 using System;
@@ -375,7 +376,8 @@ namespace TheEscort
                             vertical? 
                                 (weapon.firstChunk.pos.x > y2 && weapon.firstChunk.pos.x < y1) : 
                                 (weapon.firstChunk.pos.y > y2 && weapon.firstChunk.pos.y < y1)
-                        )
+                        ) &&
+                        (weapon.mode != Weapon.Mode.StuckInWall || MMF.cfgDislodgeSpears.Value)
                     )  // Pick up weapon if empty handed.
                     {
                         weaponList.Push(weapon);

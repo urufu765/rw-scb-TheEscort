@@ -42,7 +42,9 @@ public class ShadowPlayer : Player
 {
     private int killTime = Escort.NEsAbilityTime;
     private Smoke.FireSmoke smoke;
+    private Smoke.BlackHaze smokeScreen;
     public readonly Creature killTagPlayer;
+    private Color smokeColor;
 
     public ShadowPlayer(AbstractCreature abstractCreature, World world, Player basePlayer) : base(abstractCreature, world)
     {
@@ -61,9 +63,11 @@ public class ShadowPlayer : Player
         this.animation = basePlayer.animation;
         this.bodyMode = basePlayer.bodyMode;
         this.slugcatStats.lungsFac = 0.01f;
+        smokeColor = Color.grey;
         if (basePlayer.room is not null)
         {
             smoke = new(basePlayer.room);
+            smokeScreen = new(basePlayer.room, bodyChunks[1].pos);
         }
         Ebug($"Shadowplayer created with ai? {this.AI is not null}", 1, true);
         Ebug($"I am a {this.slugcatStats.name.value}!", 1, true);
@@ -72,20 +76,33 @@ public class ShadowPlayer : Player
     public override void Update(bool eu)
     {
         base.Update(eu);
-        if (smoke is null && this.room is not null)
+        if (Plugin.eCon.TryGetValue(this, out Escort escort))
         {
-            smoke = new(room);
+            smokeColor = escort.hypeColor;
+        }
+        if (this.room is not null)
+        {
+            smoke ??= new(room);
+            smokeScreen ??= new(room, bodyChunks[1].pos);
         }
         if (smoke is not null)
         {
             smoke.Update(eu);
             if (room.ViewedByAnyCamera(firstChunk.pos, 300f))
             {
-                smoke.EmitSmoke(bodyChunks[1].pos, new(0, 2), Color.grey, 40);
+                smoke.EmitSmoke(bodyChunks[1].pos, new(0, 2), smokeColor, 40);
             }
             if (smoke.Dead)
             {
                 smoke = null;
+            }
+        }
+        if (smokeScreen is not null)
+        {
+            smokeScreen.MoveTo(bodyChunks[1].pos, eu);
+            if (smokeScreen.slatedForDeletetion)
+            {
+                smokeScreen = null;
             }
         }
         if (room is not null && room.abstractRoom.gate)
@@ -264,8 +281,46 @@ public class ShadowPlayer : Player
 
     public override void Destroy()
     {
+        // InsectCoordinator si = null;
+        // foreach(UpdatableAndDeletable uad in room?.updateList)
+        // {
+        //     if (uad is InsectCoordinator ic)
+        //     {
+        //         si = ic;
+        //         break;
+        //     }
+        // }
+
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     SporeCloud sc = new(bodyChunks[1].pos, new(UnityEngine.Random.Range(-1.5f, 1.5f), UnityEngine.Random.Range(-0.5f, i * 0.1f)), Color.black, 1f, null, 0, si)
+        //     {
+        //         nonToxic = true
+        //     };
+        //     room?.AddObject(sc);
+        // }
+        // for (int j = 0; j < 8; j++)
+        // {
+        //     room?.AddObject(new Explosion.ExplosionSmoke(bodyChunks[1].pos, new(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-0.5f, 1.5f)), 6));
+        // }
+        if (room.ViewedByAnyCamera(firstChunk.pos, 300f))
+        {
+            smokeScreen.EmitSmoke(new(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-0.5f, 0.8f)), 3.8f);
+            //smokeScreen.EmitBigSmoke(UnityEngine.Random.Range(1.7f, 4f));
+        }
+
         base.dead = true;
         slatedForDeletetion = true;
+    }
+
+    public override void TerrainImpact(int chunk, IntVector2 direction, float speed, bool firstContact)
+    {
+        base.TerrainImpact(chunk, direction, speed, firstContact);
+        if (firstContact && speed > 30f)
+        {
+            this.Violence(null, firstChunk.pos * 0.1f, firstChunk, null, DamageType.Explosion, 0.1f, 40);
+            Ebug("Deploy explosive!", 2, true);
+        }
     }
 }
 
