@@ -154,24 +154,32 @@ namespace TheEscort
 
     public class BodyDouble : SlugcatTrail
     {
+        public bool ReadyToKill => lifeTime <= 0;
+        private int etLife;
 
-        public BodyDouble(RoomCamera camera, RoomCamera.SpriteLeaser sLeaser, Color color, int life = 10) : base(camera, sLeaser, color, life)
+        public BodyDouble(RoomCamera camera, RoomCamera.SpriteLeaser sLeaser, int life = 10) : base(camera, sLeaser, Color.black, life)
         {
-            for (int i = 0; i < playerSprites.Length; i++)
+            if (RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH)
             {
-                playerSprites[i].color = Color.black;
+                etLife = 1;
+            }
+            else if (RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM)
+            {
+                etLife = 3;
+            }
+            else if (RWCustom.Custom.rainWorld.options.quality == Options.Quality.LOW)
+            {
+                etLife = 8;
             }
         }
 
         public override void Draw(RoomCamera camera, float timeStacker, Vector2 camPos)
         {
             base.Draw(camera, timeStacker, camPos);
+
             for (int i = 0; i < playerSprites.Length; i++)
             {
-                if (lifeTime < 1)
-                {
-                    playerSprites[i].isVisible = true;
-                }
+                playerSprites[i].isVisible = lifeTime <= etLife;
             }
         }
     }

@@ -1044,6 +1044,7 @@ namespace TheEscort
                             }
                             if (escort.NewEscapist)
                             {
+                                //escort.Escat_NE_ShowTrail();
                                 //Esclass_NE_AbsoluteTick(player, ref escort);
                             }
                         }

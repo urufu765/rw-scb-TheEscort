@@ -22,6 +22,8 @@ public partial class Escort
     public bool NEsResetCooldown;
     public bool NEsShelterCloseTime;
     public int NEsLastCooldown;
+    public Queue<BodyDouble> NEsShadow;
+    public int NEsAddToTrailCD;
 
     public void EscortNE()
     {
@@ -34,8 +36,47 @@ public partial class Escort
         this.NEsAbility = 0;
         this.NEsResetCooldown = false;
         this.NEsShelterCloseTime = false;
+        this.NEsShadow = new();
     }
 
+
+    public void Escat_NE_AddTrail(RoomCamera roomCamera, RoomCamera.SpriteLeaser s)
+    {
+        if (NEsAddToTrailCD == 0 && NEsCooldown == 0 && NEsAbility == 0)
+        {
+            NEsShadow.Enqueue(new BodyDouble(roomCamera, s));
+            if (Custom.rainWorld.options.quality == Options.Quality.MEDIUM)
+            {
+                NEsAddToTrailCD = 2;
+            }
+            else if (Custom.rainWorld.options.quality == Options.Quality.LOW)
+            {
+                NEsAddToTrailCD = 7;
+            }
+        }
+        else
+        {
+            NEsAddToTrailCD--;
+        }
+    }
+
+    public void Escat_NE_ShowTrail()
+    {
+        int killCount = 0;
+        foreach (BodyDouble bodyDouble in NEsShadow)
+        {
+            if (bodyDouble.ReadyToKill)
+            {
+                killCount++;
+                continue;
+            }
+            bodyDouble.Update();
+        }
+        for (int i = 0; i < killCount && NEsShadow.Count > 0; i++)
+        {
+            NEsShadow.Dequeue().Kill();
+        }
+    }
 }
 
 public class ShadowPlayer : Player

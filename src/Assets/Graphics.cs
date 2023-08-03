@@ -285,6 +285,10 @@ namespace TheEscort
                     e.hipScaleX = bD[0];
                     e.hipScaleY = bD[0];
                 }
+                if (e.NewEscapist)
+                {
+                    //e.Escat_NE_AddTrail(rCam, s);
+                }
                 orig(self, s, rCam, t, camP);
                 if (s.sprites.Length > e.mainSpriteIndex)
                 {

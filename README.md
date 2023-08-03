@@ -28,8 +28,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev19** remove ability to pick up another spear, speed up spitting speed
     * **dev20** Change smoke effect color to hype color and add a smoke puff effect when the shadow disappears and prevented spears from getting pulled out of walls unless config is set
     * **dev21** Fix Expedition spawn locations
-    * *dev* A shadow Escapist trail following Escapist when power is ready
-    * *dev* Make arenamode an exception to player hits and introduce cooldown
+    * **dev22** A shadow Escapist trail following Escapist when power is ready... or tried, but then it just made everything lag so I had to disable it
+    * *dev* Make arenamode an exception to player hits
     * *dev* Let Escort jump poles quirkly
     * *dev* Escapist can pull out of dangergrasps in 5 seconds instead of 0.75s and bite lethality is reduced
     * *dev* Changed Escort's basic spearthrow from slide to roll (with stand)
