@@ -1207,7 +1207,7 @@ namespace TheEscort
                         ), insult, doThing
                     );
                 }
-                this.cfgOldEscapist.Value = true;
+                this.cfgOldEscapist.Value = false;
                 Plugin.ins.L().NewYears(this.cfgSectretMagic.Value);
                 Ebug("Set secret 4");
             }
@@ -1217,7 +1217,7 @@ namespace TheEscort
                 this.cfgSectretBuild.Value = false;
                 this.cfgSectretGod.Value = false;
                 this.cfgSectretMagic.Value = false;
-                this.cfgOldEscapist.Value = false;
+                this.cfgOldEscapist.Value = true;
                 Plugin.ins.L().Holiday();
                 try
                 {

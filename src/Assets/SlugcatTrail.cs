@@ -154,30 +154,25 @@ namespace TheEscort
 
     public class BodyDouble : SlugcatTrail
     {
-        private readonly Player.BodyModeIndex playerBodyMode;
-        private readonly Player.AnimationIndex playerAnimation;
-        private readonly Vector2[] playerPos, playerVel;
 
-        public BodyDouble(RoomCamera camera, RoomCamera.SpriteLeaser sLeaser, Color color, Player player, int life = 80) : base(camera, sLeaser, color, life)
+        public BodyDouble(RoomCamera camera, RoomCamera.SpriteLeaser sLeaser, Color color, int life = 10) : base(camera, sLeaser, color, life)
         {
-            playerBodyMode = player.bodyMode;
-            playerAnimation = player.animation;
-            playerPos = new Vector2[2];
-            playerVel = new Vector2[2];
-            playerPos[0] = player.bodyChunks[0].pos;
-            playerPos[1] = player.bodyChunks[1].pos;
-            playerVel[0] = player.bodyChunks[0].vel;
-            playerVel[1] = player.bodyChunks[1].vel;
+            for (int i = 0; i < playerSprites.Length; i++)
+            {
+                playerSprites[i].color = Color.black;
+            }
         }
 
-        public void Set_Recall(Player player)
+        public override void Draw(RoomCamera camera, float timeStacker, Vector2 camPos)
         {
-            player.bodyMode = playerBodyMode;
-            player.animation = playerAnimation;
-            player.bodyChunks[0].pos = playerPos[0];
-            player.bodyChunks[1].pos = playerPos[1];
-            player.bodyChunks[0].vel = playerVel[0];
-            player.bodyChunks[1].vel = playerVel[1];
+            base.Draw(camera, timeStacker, camPos);
+            for (int i = 0; i < playerSprites.Length; i++)
+            {
+                if (lifeTime < 1)
+                {
+                    playerSprites[i].isVisible = true;
+                }
+            }
         }
     }
 

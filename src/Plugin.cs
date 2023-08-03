@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using IL.ScavengerCosmetic;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using RWCustom;
@@ -158,9 +157,10 @@ namespace TheEscort
             On.RainWorld.OnModsInit += Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please;
             On.RainWorld.PostModsInit += Escort_PostInit;
 
-            On.RainWorldGame.ctor += EscortChangingRoom;
+            //On.RainWorldGame.ctor += EscortChangingRoom;
 
             On.SaveState.setDenPosition += Escort_ChangingRoom;
+            //On.SaveState.GetStoryDenPosition += 
 
             //IL.AbstractCreature.Realize += Backpack_ILRealize;
             //On.AbstractCreature.Realize += Backpack_Realize;
@@ -1556,6 +1556,15 @@ namespace TheEscort
             orig(self);
             Ebug("Changing room 2!");
             Ebug(self.denPosition);
+            if (
+                (ModManager.MSC && self.progression.rainWorld.safariMode) ||
+                (self.progression.rainWorld.setup.startMap != "") ||
+                (ModManager.Expedition && self.progression.rainWorld.ExpeditionMode)
+            )
+            {
+                return;
+            }
+            
             if(self.saveStateNumber == EscortMe){
                 self.denPosition = config.cfgBuild[0].Value switch {
                     0 => "CC_SUMP02",  // Default
