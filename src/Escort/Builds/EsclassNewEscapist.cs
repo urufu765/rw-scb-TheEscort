@@ -95,15 +95,15 @@ namespace TheEscort
                 {
                     if (Input.GetKey(e.CustomKeybind))
                     {
-                        if (self.animation == Player.AnimationIndex.Flip && self.input[0].y != 0)
-                        {
-                            e.NEsAbility = Escort.NEsAbilityTime;
-                            Esclass_NE_CreateShadow(self, ref e, true);
-                        }
-                        else if (self.input[0].x != 0)
+                        if (self.input[0].x != 0)
                         {
                             e.NEsAbility = Escort.NEsAbilityTime;
                             Esclass_NE_CreateShadow(self, ref e);
+                        }
+                        else if ((self.animation == Player.AnimationIndex.Flip || self.bodyMode == Player.BodyModeIndex.ZeroG) && self.input[0].y != 0)
+                        {
+                            e.NEsAbility = Escort.NEsAbilityTime;
+                            Esclass_NE_CreateShadow(self, ref e, true);
                         }
                     }
                 }
@@ -125,7 +125,7 @@ namespace TheEscort
                     }
 
                     // Right
-                    if (self.input[0].x > 0 && self.input[1].x <= 0)
+                    else if (self.input[0].x > 0 && self.input[1].x <= 0)
                     {
                         if (e.NEsLastInput.x > 0)
                         {
@@ -140,9 +140,9 @@ namespace TheEscort
                     }
 
                     // Up (May not end up implementing)
-                    if (self.input[0].y > 0 && self.input[1].y <= 0)
+                    else if (self.input[0].y > 0 && self.input[1].y <= 0)
                     {
-                        if (e.NEsLastInput.y > 0 && self.animation == Player.AnimationIndex.Flip)
+                        if (e.NEsLastInput.y > 0 && (self.animation == Player.AnimationIndex.Flip || self.bodyMode == Player.BodyModeIndex.ZeroG))
                         {
                             e.NEsLastInput.y = 0;
                             e.NEsAbility = Escort.NEsAbilityTime;
@@ -155,9 +155,9 @@ namespace TheEscort
                     }
 
                     // Down (May not end up implementing)
-                    if (self.input[0].y < 0 && self.input[1].y >= 0)
+                    else if (self.input[0].y < 0 && self.input[1].y >= 0)
                     {
-                        if (e.NEsLastInput.y < 0 && self.animation == Player.AnimationIndex.Flip)
+                        if (e.NEsLastInput.y < 0 && (self.animation == Player.AnimationIndex.Flip || self.bodyMode == Player.BodyModeIndex.ZeroG))
                         {
                             e.NEsLastInput.y = 0;
                             e.NEsAbility = Escort.NEsAbilityTime;
@@ -170,20 +170,18 @@ namespace TheEscort
                     }
                 }
             }
+
+            if (e.NEsShadowPlayer is not null && self?.room?.abstractRoom is not null && self.room.abstractRoom.gate)
+            {
+                e.NEsShadowPlayer.GoAwayShadow();
+            }
         }
 
 
 
         private static void Esclass_NE_CreateShadow(Player self, ref Escort e, bool vertical = false)
         {
-            if (self.room is null || e.NEsShelterCloseTime)  // Prevents a new one from being spawned in a shelter to not chance an accidental save
-            {
-                e.NEsAbility = 0;
-                e.NEsSetCooldown = 0;
-                return;
-            }
-
-            if (self.room.abstractRoom.gate)  // Prevents a new one from being spawned in a gate and causing a softcrash
+            if (self.room is null || e.NEsShelterCloseTime || (self?.room?.abstractRoom is not null && self.room.abstractRoom.gate))  // Prevents a new one from being spawned in a shelter or gate to not chance an accidental save
             {
                 e.NEsAbility = 0;
                 e.NEsSetCooldown = 0;
@@ -337,7 +335,7 @@ namespace TheEscort
                 Ebug(err, "Creaturefinder didn't work!");
             }
 
-            if (dashDistance > 200 && creaturePass)
+            if (dashDistance > 200 && (creaturePass || vertical && self.animation == Player.AnimationIndex.Flip))
             {
                 dashDistance = 200;
             }

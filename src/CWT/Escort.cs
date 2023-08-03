@@ -73,6 +73,10 @@ namespace TheEscort
         public float viscoDance;
         public Color viscoColor;
         public bool escortArena;
+        public Stack<Vulture> offendingKingTusk;
+        public int offendingKTtusk;
+        public int offendingRemoval;
+
         public bool CustomKeybindEnabled {get; private set;}
         public KeyCode CustomKeybind {get; private set;}
 
@@ -217,6 +221,9 @@ namespace TheEscort
             {
                 CustomKeybind = Plugin.ins.config.cfgBindKeys[player.playerState.playerNumber].Value;
             }
+            this.offendingKingTusk = new(1);
+            this.offendingKTtusk = -1;
+            this.offendingRemoval = 0;
 
             // Build specific
             this.Brawler = false;

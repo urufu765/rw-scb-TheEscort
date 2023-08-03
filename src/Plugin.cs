@@ -1541,7 +1541,7 @@ namespace TheEscort
                     0 => "CC_SUMP02", // Default
                     -1 => "SU_A02",  // Brawler
                     -2 => "SI_C03",  // Deflector
-                    -3 => "DM_LEG02",  // Escapist
+                    -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
                     -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded

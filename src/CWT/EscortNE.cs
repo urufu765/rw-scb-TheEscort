@@ -22,7 +22,6 @@ public partial class Escort
     public bool NEsResetCooldown;
     public bool NEsShelterCloseTime;
 
-
     public void EscortNE()
     {
         this.NewEscapist = false;
@@ -42,7 +41,7 @@ public class ShadowPlayer : Player
 {
     private int killTime = Escort.NEsAbilityTime;
     private Smoke.FireSmoke smoke;
-    private readonly Creature killTagPlayer;
+    public readonly Creature killTagPlayer;
 
     public ShadowPlayer(AbstractCreature abstractCreature, World world, Player basePlayer) : base(abstractCreature, world)
     {
@@ -96,6 +95,11 @@ public class ShadowPlayer : Player
         {
             smoke.Destroy();
             this.Destroy();
+        }
+
+        if (dangerGrasp is not null && dangerGraspTime > 2)
+        {
+            this.Violence(dangerGrasp.grabber.firstChunk, Custom.DirVec(dangerGrasp.grabber.mainBodyChunk.pos, firstChunk.pos) * 0.1f, firstChunk, null, DamageType.Bite, 0.1f, 40);
         }
     }
 
@@ -217,37 +221,8 @@ public class ShadowPlayer : Player
             dmg = 0.1f;
         }
 
-        room?.AddObject(new Explosion(room: room, sourceObject: this, pos: bodyChunks[1].pos, lifeTime: 6, rad: 175f, force: frc, damage: dmg, stun: stn, deafen: 0.25f, killTagHolder: killTagPlayer, killTagHolderDmgFactor: 0.7f, minStun: stn * 0.8f, backgroundNoise: 1));
-        room?.AddObject(new ShockWave(bodyChunks[1].pos, 200f, 0.075f, 5));
-        if (electricExplosion)
-        {
-            room?.AddObject(new Explosion.ExplosionLight(firstChunk.pos, 40, 1, 2, new Color(0.0f, 0.8f, 0.5f)));
-            room?.AddObject(new Explosion.ExplosionLight(firstChunk.pos, 200, 1, 4, new Color(0.7f, 1f, 1f)));
-            room?.PlaySound(SoundID.Fire_Spear_Pop, firstChunk.pos);
-            room?.PlaySound(SoundID.Firecracker_Bang, firstChunk.pos);
-            room?.PlaySound(SoundID.Jelly_Fish_Tentacle_Stun, firstChunk.pos);
-            room?.InGameNoise(new Noise.InGameNoise(firstChunk.pos, 800, this, 1f));
-        }
-        else
-        {
-            room?.AddObject(new Explosion.ExplosionLight(bodyChunks[1].pos, 175, 1f, 7, new Color(0.0f, 0.8f, 0.5f)));
-            room?.AddObject(new Explosion.ExplosionLight(bodyChunks[1].pos, 120, 1f, 3, Color.white));
-            room?.AddObject(new SootMark(room, bodyChunks[1].pos, 80f, true));
-            room?.ScreenMovement(bodyChunks[1].pos, default, 1.3f);
-            room?.PlaySound(SoundID.Bomb_Explode, bodyChunks[1].pos);
-            room?.InGameNoise(new Noise.InGameNoise(bodyChunks[1].pos, 9000, this, 1f));
-        }
+        this.DoExplode(room, frc, dmg, stn, electricExplosion);
         GoAwayShadow();
-    }
-
-
-    public override void Grabbed(Grasp grasp)
-    {
-        base.Grabbed(grasp);
-        if (dangerGrasp is not null)
-        {
-            this.Violence(dangerGrasp.grabber.firstChunk, Custom.DirVec(dangerGrasp.grabber.mainBodyChunk.pos, firstChunk.pos) * 0.1f, firstChunk, null, DamageType.Bite, 0.1f, 40);
-        }
     }
 
 
@@ -283,5 +258,33 @@ public class ShadowPlayer : Player
     public override void Destroy()
     {
         slatedForDeletetion = true;
+    }
+}
+
+
+public static class NewEscapistHelpers
+{
+    public static void DoExplode(this ShadowPlayer source, Room room, float force, float damage, float stun, bool electric = false)
+    {
+        room?.AddObject(new Explosion(room: room, sourceObject: source, pos: source.bodyChunks[1].pos, lifeTime: 6, rad: 175f, force: force, damage: damage, stun: stun, deafen: 0.25f, killTagHolder: source.killTagPlayer, killTagHolderDmgFactor: 0.7f, minStun: stun * 0.8f, backgroundNoise: 1));
+        room?.AddObject(new ShockWave(source.bodyChunks[1].pos, 200f, 0.075f, 5));
+        if (electric)
+        {
+            room?.AddObject(new Explosion.ExplosionLight(source.firstChunk.pos, 40, 1, 2, new Color(0.0f, 0.8f, 0.5f)));
+            room?.AddObject(new Explosion.ExplosionLight(source.firstChunk.pos, 200, 1, 4, new Color(0.7f, 1f, 1f)));
+            room?.PlaySound(SoundID.Fire_Spear_Pop, source.firstChunk.pos);
+            room?.PlaySound(SoundID.Firecracker_Bang, source.firstChunk.pos);
+            room?.PlaySound(SoundID.Jelly_Fish_Tentacle_Stun, source.firstChunk.pos);
+            room?.InGameNoise(new Noise.InGameNoise(source.firstChunk.pos, 800, source, 1f));
+        }
+        else
+        {
+            room?.AddObject(new Explosion.ExplosionLight(source.bodyChunks[1].pos, 175, 1f, 7, new Color(0.0f, 0.8f, 0.5f)));
+            room?.AddObject(new Explosion.ExplosionLight(source.bodyChunks[1].pos, 120, 1f, 3, Color.white));
+            room?.AddObject(new SootMark(room, source.bodyChunks[1].pos, 80f, true));
+            room?.ScreenMovement(source.bodyChunks[1].pos, default, 1.3f);
+            room?.PlaySound(SoundID.Bomb_Explode, source.bodyChunks[1].pos);
+            room?.InGameNoise(new Noise.InGameNoise(source.bodyChunks[1].pos, 9000, source, 1f));
+        }
     }
 }

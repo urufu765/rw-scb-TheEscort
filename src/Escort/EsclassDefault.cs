@@ -186,6 +186,11 @@ namespace TheEscort
                 e.verticalPoleTech = false;
                 e.verticalPoleToggle = false;
             }
+
+            if (e.offendingRemoval > 0)
+            {
+                e.offendingRemoval--;
+            }
         }
 
 
@@ -648,6 +653,28 @@ namespace TheEscort
                 }
             }
 
+            // Delayed Kingvulture tusk removal so it doesn't exception
+            if (e.offendingKingTusk.Count > 0 && e.offendingRemoval <= 0 && e.offendingKTtusk != -1)
+            {
+                try
+                {
+                    if (e.offendingKingTusk.Peek()?.kingTusks?.tusks[e.offendingKTtusk]?.impaleChunk?.owner is Player)
+                    {
+                        e.offendingKingTusk.Pop().kingTusks.tusks[e.offendingKTtusk].impaleChunk = null;
+                        e.offendingKTtusk = -1;
+                    }
+                    else
+                    {
+                        e.offendingKingTusk.Pop();
+                        e.offendingKTtusk = -1;
+                        Ebug("King vulture tusk no longer has an impale owner?", 1, true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Ebug(ex, "Couldn't remove king vulture tusk from player!");
+                }
+            }
 
             // Update tracker
             //e.Escat_Update_Ring_Trackers();
@@ -1487,33 +1514,36 @@ namespace TheEscort
                         {
                             damage = 0f;
                             type = Creature.DamageType.Blunt;
-                            bool keepLooping = true;
+                            bool foundOffender = false;
                             for (int a = 0; a < self.room.physicalObjects.Length; a++)
                             {
                                 for (int b = 0; b < self.room.physicalObjects[a].Count; b++)
                                 {
                                     if (self.room.physicalObjects[a][b] is Vulture vulture && vulture.IsKing)
                                     {
-                                        if (vulture.kingTusks.tusks[0].impaleChunk != null && vulture.kingTusks.tusks[0].impaleChunk.owner == self)
+                                        for (int c = 0; c < vulture.kingTusks.tusks.Length; c++)
                                         {
-                                            vulture.kingTusks.tusks[0].impaleChunk = null;
-                                            keepLooping = false;
-                                            break;
-                                        }
-                                        else if (vulture.kingTusks.tusks[1].impaleChunk != null && vulture.kingTusks.tusks[1].impaleChunk.owner == self)
-                                        {
-                                            vulture.kingTusks.tusks[1].impaleChunk = null;
-                                            keepLooping = false;
-                                            break;
+                                            if (vulture.kingTusks.tusks[c].impaleChunk?.owner is Player p && p == self)
+                                            {
+                                                foundOffender = true;
+                                                if (e.offendingKingTusk.Count > 0)
+                                                {
+                                                    e.offendingKingTusk.Pop();
+                                                }
+                                                e.offendingKingTusk.Push(vulture);
+                                                e.offendingKTtusk = c;
+                                                e.offendingRemoval = 2;
+                                                goto getOut;
+                                            }
                                         }
                                     }
                                 }
-                                if (!keepLooping)
-                                {
-                                    Ebug(player, "Tusk unimpaled!", 2);
-                                    Debug.LogError("-> Escort: Please pay no attention to this! This is how Escort parry works (on King Tusks)!");
-                                    break;
-                                }
+                            }
+                            getOut:
+                            if (foundOffender)
+                            {
+                                Ebug(player, "Tusk unimpaled!", 2);
+                                //Debug.LogError("-> Escort: Please pay no attention to this! This is how Escort parry works (on King Tusks)!");
                             }
                             e.ParrySuccess = true;
                             Ebug(player, "Escort parried a generic stabby thing", 2);
