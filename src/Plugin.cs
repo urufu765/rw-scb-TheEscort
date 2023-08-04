@@ -794,6 +794,7 @@ namespace TheEscort
                             self.slugcatStats.visualStealthInSneakMode = 1;
                             self.slugcatStats.lungsFac += 0.2f;
                             self.slugcatStats.bodyWeightFac -= 0.15f;
+                            self.slugcatStats.throwingSkill = 1;
                             self.spearOnBack = new Player.SpearOnBack(self);
                         }
                         else

@@ -496,21 +496,34 @@ partial class Plugin : BaseUnityPlugin
                         self.rollCounter = 0;
                         if (self.canJump != 0)
                         {
-                            self.whiplashJump = true;
-                            if (self.animation != Player.AnimationIndex.BellySlide && self.input[0].x != 0)
+                            //self.whiplashJump = false;
+                            if (self.slugcatStats.throwingSkill == 0)
                             {
-                                self.animation = Player.AnimationIndex.BellySlide;
-                                e.slideFromSpear = true;
+                                self.animation = Player.AnimationIndex.Roll;
+                                e.RollinCount = 0;
                             }
+                            // if (self.input[0].x != 0)
+                            // {
+                            //     //e.slideFromSpear = true;
+                            // }
                             if (self.input[0].jmp && self.input[0].thrw)
                             {
+                                self.whiplashJump = true;
+                                self.animation = Player.AnimationIndex.BellySlide;
                                 spear.firstChunk.vel.x *= 1.6f;
                                 Ebug(self, "Spear Go!", 2);
+                            }
+                            else
+                            {
+                                self.standing = false;
                             }
                         }
                         else
                         {
-                            self.animation = Player.AnimationIndex.Flip;
+                            if (self.slugcatStats.throwingSkill == 0)
+                            {
+                                self.animation = Player.AnimationIndex.Flip;
+                            }
                             self.standing = false;
                         }
                     }
@@ -548,7 +561,7 @@ partial class Plugin : BaseUnityPlugin
                 {
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
                 }
-                if (self.bodyMode == Player.BodyModeIndex.CorridorClimb)
+                if (self.bodyMode == Player.BodyModeIndex.CorridorClimb && self.IsTileSolid(0, 1, 0) && self.IsTileSolid(0, -1, 0))
                 {
                     spear.throwDir = new IntVector2((int)(self.mainBodyChunk.Rotation.x * 2), (int)(self.mainBodyChunk.Rotation.y * 2));
                     if (spear.throwDir.y != 0)
