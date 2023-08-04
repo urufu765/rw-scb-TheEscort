@@ -148,13 +148,25 @@ partial class Plugin : BaseUnityPlugin
                     {
                         normSlideStun *= 0.75f;
                     }
-                    float deflectorSlidingDamage = dSlideDmg;
-                    if (e.DeflPowah == 2) deflectorSlidingDamage *= 1.4f;
-                    if (e.DeflPowah == 3) deflectorSlidingDamage *= 2.4f;
+                    float dmg = bodySlam[0];
+                    if (e.Deflector)
+                    {
+                        if (e.DeflAmpTimer > 0)
+                        {
+                            dmg = dSlideDmg;
+                            if (e.DeflPowah == 2) dmg *= 1.4f;
+                            if (e.DeflPowah == 3) dmg *= 2.4f;
+                        }
+                    }
+                    if (e.isChunko)
+                    {
+                        dmg *= self.TotalMass / e.originalMass;
+                        normSlideStun *= self.TotalMass / e.originalMass;
+                    }
                     creature.Violence(
                         self.mainBodyChunk, new Vector2(self.mainBodyChunk.vel.x / 4f, self.mainBodyChunk.vel.y / 4f),
                         creature.firstChunk, null, e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt,
-                        e.DeflAmpTimer > 0 ? deflectorSlidingDamage : bodySlam[0], normSlideStun
+                        dmg, normSlideStun
                     );
                     /*
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -247,6 +259,7 @@ partial class Plugin : BaseUnityPlugin
 
                     DKMultiplier *= creature.TotalMass * 0.66f;
                     float normSlamDamage = e.easyKick ? 0.001f : 0.05f;
+                    float stunDur = bodySlam[3];
                     if (e.DropKickCD == 0)
                     {
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
@@ -267,6 +280,10 @@ partial class Plugin : BaseUnityPlugin
                     {
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Bounce_Terrain, self.mainBodyChunk, false, 1f, 0.9f);
                     }
+                    if ((creature.State is HealthState hs && hs.ClampedHealth == 0f) || creature.State.dead)
+                    {
+                        self.room.PlaySound(SoundID.Spear_Stick_In_Creature, e.SFXChunk, loop: false, 1f, 0.95f);
+                    }
                     Vector2 momentum = new(
                         self.mainBodyChunk.vel.x * DKMultiplier, 
                         self.mainBodyChunk.vel.y * DKMultiplier);
@@ -283,14 +300,26 @@ partial class Plugin : BaseUnityPlugin
                             momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 15), 15));
                         }
                     }
+                    if (e.Deflector)
+                    {
+                        if (e.DeflAmpTimer > 0)
+                        {
+                            stunDur = bodySlam[1];
+                        }
+                    }
                     if (e.Gilded)
                     {
                         momentum *= 0.5f;
                     }
+                    if (e.isChunko)
+                    {
+                        normSlamDamage *= self.TotalMass / e.originalMass;
+                        stunDur *= self.TotalMass / e.originalMass;
+                    }
                     creature.Violence(
                         self.mainBodyChunk, momentum,
                         creature.firstChunk, null, Creature.DamageType.Blunt,
-                        normSlamDamage, (e.DeflAmpTimer > 0 ? bodySlam[1] : bodySlam[3])
+                        normSlamDamage, stunDur
                     );
                     Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", 2);
                     if (e.DropKickCD == 0)
@@ -534,6 +563,12 @@ partial class Plugin : BaseUnityPlugin
             else
             {
                 spear.spearDamageBonus *= 1.25f;
+            }
+
+            if (e.isChunko)
+            {
+                spear.spearDamageBonus *= self.TotalMass / e.originalMass;
+                thrust *= self.TotalMass / e.originalMass;
             }
         }
         catch (Exception err)
@@ -798,10 +833,17 @@ partial class Plugin : BaseUnityPlugin
                         c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
                     )
                     {
-                        c.Violence(self.firstChunk, self.firstChunk.vel, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, 0.2f, 30f);
+                        float dmg = 0.2f;
+                        float stn = 30f;
+                        if (e.isChunko)
+                        {
+                            dmg *= p.TotalMass / e.originalMass;
+                            stn *= p.TotalMass / e.originalMass;
+                        }
+                        c.Violence(self.firstChunk, self.firstChunk.vel, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, dmg, stn);
                         if (ModManager.MSC && c is Player pl)
                         {
-                            pl.playerState.permanentDamageTracking += 0.2 / pl.Template.baseDamageResistance;
+                            pl.playerState.permanentDamageTracking += dmg / pl.Template.baseDamageResistance;
                             if (pl.playerState.permanentDamageTracking >= 1)
                             {
                                 pl.Die();
@@ -815,6 +857,10 @@ partial class Plugin : BaseUnityPlugin
                         self.vibrate = 0;
                         e.BrawThrowGrab = 0;
                         issaPunch = true;
+                        if ((c.State is HealthState hs && hs.ClampedHealth == 0f) || c.State.dead)
+                        {
+                            issaPunch = false;
+                        }
                     }
                     else
                     {

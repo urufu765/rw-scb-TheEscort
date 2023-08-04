@@ -54,12 +54,12 @@ namespace TheEscort
                     if (self.slowMovementStun > 0) self.Blink(30);
                     else 
                     {
-                        self.slowMovementStun += 30;
+                        self.slowMovementStun += 20;
                     }
                 }
                 else if (e.BrawMeleeWeapon.Peek() is Rock)
                 {
-                    self.slowMovementStun += 30;
+                    self.slowMovementStun += 25;
                     e.BrawPunch = false;
                 }
                 if (e.BrawMeleeWeapon.Peek() is Spear)
@@ -74,6 +74,11 @@ namespace TheEscort
                 else {
                     e.BrawMeleeWeapon.Pop();
                 }
+                if (e.isChunko)
+                {
+                    self.slowMovementStun = (int)(self.slowMovementStun * (self.TotalMass / e.originalMass));
+                }
+                e.BrawSetCooldown = self.slowMovementStun;
                 e.BrawThrowGrab = -1;
                 e.BrawThrowUsed = -1;
             }
@@ -328,7 +333,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(s);
                     e.BrawThrowGrab = 5;
                     e.BrawThrowUsed = j;
-                    e.BrawLastWeapon = "shank";
+                    e.BrawLastWeapon = "supershank";
                     s.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
                     //self.SlugcatGrab(s, j);
@@ -360,7 +365,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(sa);
                     e.BrawThrowGrab = 5;
                     e.BrawThrowUsed = j;
-                    e.BrawLastWeapon = "knife";
+                    e.BrawLastWeapon = "shank";
                     sa.doNotTumbleAtLowSpeed = true;
                     orig(self, j, eu);
                     return true;
@@ -389,7 +394,7 @@ namespace TheEscort
                     e.BrawMeleeWeapon.Push(r);
                     e.BrawThrowGrab = 4;
                     e.BrawThrowUsed = j;
-                    e.BrawLastWeapon = "brass";
+                    e.BrawLastWeapon = "punch";
                     orig(self, j, eu);
                     return true;
                 }

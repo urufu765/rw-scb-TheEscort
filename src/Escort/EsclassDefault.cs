@@ -1685,16 +1685,26 @@ namespace TheEscort
                     player.animation = Player.AnimationIndex.Flip;
                     player.mainBodyChunk.vel.y *= 1.5f;
                     player.mainBodyChunk.vel.x *= 0.15f;
-                    if (e.DeflSFXcd == 0)
+                    if (e.DeflTrampoline)
                     {
-                        self.room.PlaySound(SoundID.Snail_Warning_Click, self.mainBodyChunk, false, 1.6f, 0.65f);
-                        e.DeflSFXcd = 9;
+                        if (e.DeflPowah < 1)
+                        {
+                            e.DeflPowah = 1;
+                        }
+                        if (e.DeflSFXcd == 0)
+                        {
+                            self.room.PlaySound(SoundID.Snail_Warning_Click, self.mainBodyChunk, false, 1.6f, 0.65f);
+                            e.DeflSFXcd = 8;
+                        }
                     }
-                    if (!e.DeflTrampoline && e.DeflPowah < 3){
-                        e.DeflPowah++;
-                    }
-                    else if (e.DeflTrampoline && e.DeflPowah < 2){
-                        e.DeflPowah = 1;
+                    else
+                    {
+                        if (e.DeflPowah < 3)
+                        {
+                            e.DeflPowah++;
+                        }
+                        self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
+                        self.room.PlaySound(Escort_SFX_Parry, e.SFXChunk);
                     }
                     e.DeflAmpTimer = e.DeflPowah switch {
                         1 => 200,
@@ -1720,6 +1730,10 @@ namespace TheEscort
                 }
                 Ebug(player, "Parry successful!", 1);
                 e.iFrames = 6;
+                if (e.Deflector)
+                {
+                    e.iFrames = 8;
+                }
                 e.parrySlideLean = 0;
                 if (e.Railgunner && e.RailIReady)
                 {

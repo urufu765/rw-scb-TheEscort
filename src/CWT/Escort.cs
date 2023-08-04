@@ -94,6 +94,7 @@ namespace TheEscort
         public int BrawRevertWall;
         public Stack<Spear> BrawWallSpear;
         public string BrawLastWeapon;
+        public int BrawSetCooldown;
         public bool Deflector;
         public int DeflAmpTimer;
         public bool DeflTrampoline;

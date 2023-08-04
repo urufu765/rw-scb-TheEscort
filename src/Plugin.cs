@@ -730,7 +730,7 @@ namespace TheEscort
                     case -8:  // Testing build
                         e.EsTest = true;
                         break;
-                    case -7:  // New Escapist build
+                    case -7:  // New Escapist build (Testing, obsolete)
                         e.NewEscapist = true;
                         Ebug(self, "New Escapist Build selected!", 2);
                         self.slugcatStats.visualStealthInSneakMode = 1;
@@ -742,8 +742,8 @@ namespace TheEscort
                         self.slugcatStats.bodyWeightFac = 1f;
                         self.slugcatStats.lungsFac += 0.3f;
                         self.slugcatStats.runspeedFac = 0.9f;
-                        self.slugcatStats.corridorClimbSpeedFac = 0.9f;
-                        self.slugcatStats.poleClimbSpeedFac = 0.9f;
+                        self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
+                        self.slugcatStats.poleClimbSpeedFac -= 0.7f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
                         //maximumPips -= 4;
                         //minimumPips -= 3;
@@ -777,7 +777,7 @@ namespace TheEscort
                     case -4:  // Railgunner build
                         e.Railgunner = true;
                         e.acidSwim = 0.3f;
-                        self.slugcatStats.lungsFac = 1.2f;
+                        self.slugcatStats.lungsFac += 0.7f;
                         self.slugcatStats.throwingSkill = 2;
                         self.slugcatStats.loudnessFac += 2f;
                         self.slugcatStats.generalVisibilityBonus += 1f;
@@ -791,7 +791,7 @@ namespace TheEscort
                         {
                             e.NewEscapist = true;
                             Ebug(self, "New Escapist Build selected!", 2);
-                            self.slugcatStats.visualStealthInSneakMode = 1;
+                            self.slugcatStats.visualStealthInSneakMode += 1;
                             self.slugcatStats.lungsFac += 0.2f;
                             self.slugcatStats.bodyWeightFac -= 0.15f;
                             self.slugcatStats.throwingSkill = 1;
@@ -827,7 +827,7 @@ namespace TheEscort
                             }
                         }
 
-                        self.slugcatStats.runspeedFac = 1.2f;
+                        self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac += 0.12f;
                         self.slugcatStats.throwingSkill = 1;
@@ -873,8 +873,17 @@ namespace TheEscort
                 }
 #endif
                 Ebug(self, "Set build complete!", 1);
-                Ebug(self, "Movement Speed: " + self.slugcatStats.runspeedFac, 2);
-                Ebug(self, "Lung capacity fac: " + self.slugcatStats.lungsFac, 2);
+                Ebug(self, new string[]{
+                    $"Weightfac: {self.slugcatStats.bodyWeightFac}",
+                    $"Movespeed: {self.slugcatStats.runspeedFac}",
+                    $"Lungcapfc: {self.slugcatStats.lungsFac}",
+                    $"Corridors: {self.slugcatStats.corridorClimbSpeedFac}",
+                    $"Poleclimb: {self.slugcatStats.poleClimbSpeedFac}",
+                    $"Throwskil: {self.slugcatStats.throwingSkill}",
+                    $"Loudnessf: {self.slugcatStats.loudnessFac}",
+                    $"Stealthyf: {self.slugcatStats.visualStealthInSneakMode}",
+                    $"Visibilit: {self.slugcatStats.generalVisibilityBonus}"
+                }, 2);
                 return true;
             }
             catch (Exception err)
@@ -971,7 +980,7 @@ namespace TheEscort
                 if (world?.game?.session is ArenaGameSession) e.escortArena = true;
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
-                e.originalMass = self.TotalMass;
+                e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;
                 logImportance = config.cfgLogImportance.Value;
                 try
                 {
