@@ -31,10 +31,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev22** A shadow Escapist trail following Escapist when power is ready... or tried, but then it just made everything lag so I had to disable it
     * **dev23** Changed Escort's basic spearthrow from slide to roll (with stand), Fix Escort throwing up or down when peeking out of a shortcut
     * **dev24** Fatter = stronger melee attacks, Brawler has shorter rock and spear cooldown (but also gets increased cooldown if chunko), different sfx for punching dead things and changed Escort dropkick sound when kicking dead creatures, Deflector has slightly longer iframes, and changed SFX for deflector's deflects to differenciate which is which
-    * *dev* Make arenamode an exception to player hits
+    * **dev25** Escapist can pull out of dangergrasps in 4.5 seconds instead of 0.75s and bite lethality is reduced, Make arenamode an exception to player hits
     * *dev* Let Escort jump poles quirkly
-    * *dev* Escapist can pull out of dangergrasps in 5 seconds instead of 0.75s and bite lethality is reduced
-    * *dev* Change Escort dropkick sound when kicking dead creatures
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1
     * *dev* Remove/reduce voideffect in depths

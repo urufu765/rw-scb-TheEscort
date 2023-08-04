@@ -24,6 +24,7 @@ public partial class Escort
     public int NEsLastCooldown;
     public Queue<BodyDouble> NEsShadow;
     public int NEsAddToTrailCD;
+    public int NEsDangerGraspExtend;
 
     public void EscortNE()
     {
@@ -37,6 +38,7 @@ public partial class Escort
         this.NEsResetCooldown = false;
         this.NEsShelterCloseTime = false;
         this.NEsShadow = new();
+        this.NEsDangerGraspExtend = 0;
     }
 
 
@@ -180,14 +182,17 @@ public class ShadowPlayer : Player
         {
             foreach (UpdatableAndDeletable thing in this.room.updateList)
             {
-                if (thing is Player and not ShadowPlayer)
+                // Determine if a targetted damage should be used or just a simple explosion
+                // Prevents Escapists from killing other players by accident when spearhits are off
+                if (thing is Player p and not ShadowPlayer && p != killTagPlayer && !(ModManager.CoopAvailable && !Custom.rainWorld.options.friendlyFire))
                 {
                     targetted = true;
                 }
+
                 if (
                     thing is Creature creature and not ShadowPlayer &&
                     creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && 
-                    creature != this && 
+                    creature != this &&
                     !(
                         creature is Player && 
                         ModManager.CoopAvailable && 

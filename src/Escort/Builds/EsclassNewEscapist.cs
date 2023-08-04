@@ -86,6 +86,26 @@ namespace TheEscort
             {
                 self.Blink(5);
             }
+
+            if (self.dangerGrasp is not null)
+            {
+                if (e.NEsDangerGraspExtend > 0)
+                {
+                    if (self.dangerGraspTime > 1 && self.dangerGraspTime < 29)
+                    {
+                        self.dangerGraspTime--;
+                    }
+                    e.NEsDangerGraspExtend--;
+                }
+                else
+                {
+                    e.NEsDangerGraspExtend = 4;
+                }
+            }
+            else
+            {
+                e.NEsDangerGraspExtend = 0;
+            }
         }
 
         public void Esclass_NE_AbsoluteTick(Player self, ref Escort e)
