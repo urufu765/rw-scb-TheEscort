@@ -189,3 +189,6 @@ escoptions_moreplayerbuilds_text|vvv Configure builds for more than 4 players vv
 NEW ESCAPIST UPDATE|NEW ESCAPIST UPDATE
 escoptions_custombinds_text|Escort Custom Keybinds
 escoptions_custombinds_desc|<REPLACE> custom keybinds for P
+escoptions_oldescape_text|Old <ESCAPIST> Mechanics
+escoptions_oldescape_desc|Go back to the original <ESCAPIST> who can simply pop out of grasps
+escoptions_sectret_magic|Don't complain when your wallclip goes wrong.

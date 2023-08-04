@@ -161,7 +161,7 @@ namespace TheEscort
             //On.RainWorldGame.ctor += EscortChangingRoom;
 
             On.SaveState.setDenPosition += Escort_ChangingRoom;
-            On.SaveState.SessionEnded += Escort_RespawnPup;
+            //On.SaveState.SessionEnded += Escort_RespawnPup;
             
             //On.SaveState.GetStoryDenPosition += 
 
@@ -810,26 +810,26 @@ namespace TheEscort
                         Ebug(self, "Railgunner Build selected!", 2);
                         break;
                     case -3:  // Escapist build
-                        if (config.cfgSectretMagic.Value)
-                        {
-                            e.NewEscapist = true;
-                            Ebug(self, "New Escapist Build selected!", 2);
-                            self.slugcatStats.visualStealthInSneakMode += 1;
-                            self.slugcatStats.lungsFac += 0.2f;
-                            self.slugcatStats.bodyWeightFac -= 0.15f;
-                            self.slugcatStats.throwingSkill = 1;
-                            self.spearOnBack = new Player.SpearOnBack(self);
-                        }
-                        else
+                        if (config.cfgOldEscapist.Value)
                         {
                             e.Escapist = true;
                             e.dualWield = false;
                             self.slugcatStats.runspeedFac += 0.1f;
                             self.slugcatStats.lungsFac += 0.2f;
                             self.slugcatStats.bodyWeightFac -= 0.15f;
+                            Ebug(self, "Old Escapist Build selected!", 2);
+                        }
+                        else
+                        {
+                            e.NewEscapist = true;
+                            self.slugcatStats.visualStealthInSneakMode += 1;
+                            self.slugcatStats.lungsFac += 0.2f;
+                            self.slugcatStats.bodyWeightFac -= 0.15f;
+                            self.slugcatStats.throwingSkill = 1;
+                            self.spearOnBack = new Player.SpearOnBack(self);
+                            Ebug(self, "New Escapist Build selected!", 2);
                         }
                         //minimumPips -= 3;
-                        Ebug(self, "Escapist Build selected!", 2);
                         break;
                     case -2:  // Deflector build
                         e.Deflector = true;

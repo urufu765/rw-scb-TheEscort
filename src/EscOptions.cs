@@ -149,12 +149,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.11";
+        private static readonly string VERSION = "0.2.12";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- HUD is given a lot more sprites to visualize each build's abilities better<LINE>- You can now place the HUD in two different places<LINE>- HUD also appears in arena mode<LINE>- HUD updates correctly for players outside the viewed room<LINE>- Dropkick knockback also applies correctly to dead bodies<LINE>- Vengeful lizards spawn more plentifully and more golden<LINE>- Nerfed Brawler's shank a tiny bit by adding a little bit of cooldown<LINE>- Brawler can now throw rocks or spears when sliding (extended slides won't throw these objects like before)<LINE>- Deflector's permanent damage stacking will no longer crash the game<LINE>- Deflector's permadamage works in arena mode<LINE>- Added an option to enable Deflector's permadamage stacking to be shared across all players<LINE>- Deflector's damage stacking saves as long as one person survives (in easy jolly mode)<LINE>- Speedster shelter save fixed<LINE>- Speedster now negates stun when sliding into creatures or wall and wall pounces are much stronger the faster you are<LINE>- Gilded's karma 10 matches unshackled (code) Gilded<LINE>- Exception logger is better at its job<LINE>- More than four player support when that rolls around<LINE>- Speedster trail works a bit more consistently now<LINE>- New secret code for next update ;)");
+                "- Escapist rework! The Escapist build has been completely reworked for a more active playstyle. Style on your enemies, make them regret trying to eat you!<LINE>-Brawler can now shank when malnourished<LINE>- Brawler's shank and punch cooldowns reduced<LINE>- Expedition spawn location works correctly now<LINE>- More rotund support (Fatter = stronger melee/spear attacks)<LINE>- Void effect at the depths has been reduced for just Escort<LINE>- Karma 10 grants Escort an alliance with the guardians<LINE>- Option to bind some abilities to custom keybinds (Escapist shadow ability, Speedster speed, Gilded levitate)");
             }
         }
 
@@ -567,7 +567,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), Translate("Deflector") + " {*****}", true){
                     color = bDeflector * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Escapist") + " {*____}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Escapist") + " {**___}", true){
                     color = bEscapist * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
@@ -920,6 +920,14 @@ namespace TheEscort
                     description = Swapper(Translate("escoptions_deflshared_desc")) + SetDefault(cfgDeflecterSharedPool.defaultValue),
                 },
 
+                new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, Swapper(Translate("escoptions_oldescape_text"))){
+                    color = tempColor
+                },
+                new OpCheckBox(this.cfgOldEscapist, new Vector2(xo + (xp * 0), yo - (yp * 9))){
+                    colorEdge = tempColor,
+                    description = Swapper(Translate("escoptions_oldescape_desc")) + SetDefault(cfgOldEscapist.defaultValue),
+                },
+
                 secretText
             };
             this.accessibleSet = new UIelement[]{
@@ -1203,11 +1211,10 @@ namespace TheEscort
                     this.cfgSectretMagic.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Translate(
-                            "??????????"
+                            "escoptions_sectret_magic"
                         ), insult, doThing
                     );
                 }
-                this.cfgOldEscapist.Value = false;
                 Plugin.ins.L().NewYears(this.cfgSectretMagic.Value);
                 Ebug("Set secret 4");
             }
@@ -1217,7 +1224,6 @@ namespace TheEscort
                 this.cfgSectretBuild.Value = false;
                 this.cfgSectretGod.Value = false;
                 this.cfgSectretMagic.Value = false;
-                this.cfgOldEscapist.Value = true;
                 Plugin.ins.L().Holiday();
                 try
                 {

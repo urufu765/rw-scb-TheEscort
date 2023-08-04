@@ -6,6 +6,14 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
+* ### 0.3 - Ending I
+  * *(0.3.0)* The End...?
+    * *dev* Let Escort jump poles quirkly
+    * *dev* Add tutorial to new area
+    * *dev* Escort Ending 1
+    * *dev* Escort stats screen where it shows the number of ascended creatures
+    * *dev* Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
+
 * ### 0.2 - The Escort
   * **(0.2.12)** Brand New Escapist
     * **dev01** Get the Shadowscort spawning correctly and have dash work
@@ -35,9 +43,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev26** Added voideffect areas
     * **dev27** Remove/reduce voideffect in depths
     * **dev28** new condition where Guardians will grant passage (ignore creatures) if Escort is at max karma
-    * *dev* Let Escort jump poles quirkly
-    * *dev* Add tutorial to new area
-    * *dev* Escort Ending 1
+    * **dev29** Added option for old escapist && secret code now allows Escapist to go through walls, and new thumbnail, fixed rollin volume
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).

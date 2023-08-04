@@ -243,6 +243,7 @@ namespace TheEscort
             bool solidWall = false;
             try
             {
+                bool goThroughWalls = Plugin.ins.config.cfgSectretMagic.Value;
                 // Check for terrain stuff
                 for (int i = 1; i < 15; i++)
                 {
@@ -292,7 +293,7 @@ namespace TheEscort
                         {
                             Ebug(self, $"Wall detected at: {dashDistance}", 2, true);
                             solidWall = true;
-                            bool breakit = true;
+                            bool breakit = !goThroughWalls;
                             foreach(bool onBeam in getOnBeam)
                             {
                                 if (onBeam) breakit = false;

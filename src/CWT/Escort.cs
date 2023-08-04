@@ -288,7 +288,8 @@ namespace TheEscort
             {
                 this.Rollin = new ChunkDynamicSoundLoop(SFXChunk)
                 {
-                    sound = sound
+                    sound = sound,
+                    Volume = 0
                 };
             }
             catch (Exception err)
