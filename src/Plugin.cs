@@ -1941,7 +1941,37 @@ namespace TheEscort
             {
                 Ebug(err, "Something happened while replacing room setting file paths!");
             }
-            return orig(self, index);
+            bool theOriginal = orig(self, index);
+            try
+            {
+                if (index is null)
+                {
+                    Ebug("Voidmelter failed due to nulled slugcat name!");
+                    return orig(self, index);
+                }
+                if (self is null || self.name is null)
+                {
+                    Ebug("Voidmelter failed due to nulled roomSettings name");
+                    return orig(self, index);
+                }
+                if (index == EscortMe)
+                {
+                    foreach(RoomSettings.RoomEffect effect in self.effects)
+                    {
+                        if (effect.type == RoomSettings.RoomEffect.Type.VoidMelt)
+                        {
+                            effect.amount *= 0.75f;
+                            Ebug("Voidmelt effectiveness reduced by 1/4!");
+                        }
+                        
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Something happened while reducing voidmelt effect!");
+            }
+            return theOriginal;
         }
 
     }
