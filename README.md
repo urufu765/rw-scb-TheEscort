@@ -32,10 +32,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev23** Changed Escort's basic spearthrow from slide to roll (with stand), Fix Escort throwing up or down when peeking out of a shortcut
     * **dev24** Fatter = stronger melee attacks, Brawler has shorter rock and spear cooldown (but also gets increased cooldown if chunko), different sfx for punching dead things and changed Escort dropkick sound when kicking dead creatures, Deflector has slightly longer iframes, and changed SFX for deflector's deflects to differenciate which is which
     * **dev25** Escapist can pull out of dangergrasps in 4.5 seconds instead of 0.75s and bite lethality is reduced, Make arenamode an exception to player hits
+    * **dev26** Added voideffect areas
+    * *dev27* Remove/reduce voideffect in depths and new condition where Guardians will grant passage (ignore creatures) if Escort is at max karma
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1
-    * *dev* Remove/reduce voideffect in depths
 
   * **(0.2.11)** HUD update B
     * **dev01** Sprites adjusted and created, added overtake in tracker to make other sprites take priority over the hyped sprite (to be implemented properly soon).
