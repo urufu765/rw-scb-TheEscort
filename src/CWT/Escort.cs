@@ -76,6 +76,8 @@ namespace TheEscort
         public Stack<Vulture> offendingKingTusk;
         public int offendingKTtusk;
         public int offendingRemoval;
+        public int tryFindingPup;
+        public Player slugPup;
 
         public bool CustomKeybindEnabled {get; private set;}
         public KeyCode CustomKeybind {get; private set;}
@@ -225,6 +227,8 @@ namespace TheEscort
             this.offendingKingTusk = new(1);
             this.offendingKTtusk = -1;
             this.offendingRemoval = 0;
+            this.tryFindingPup = 40;
+            this.slugPup = null;
 
             // Build specific
             this.Brawler = false;

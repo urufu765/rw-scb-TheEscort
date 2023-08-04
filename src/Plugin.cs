@@ -127,6 +127,7 @@ namespace TheEscort
         public float hypeRequirement;
         private float DKMultiplier;
         float ratioed;
+        public static bool templeGuardIsFriendly;
 
 
         // Patches
@@ -160,6 +161,8 @@ namespace TheEscort
             //On.RainWorldGame.ctor += EscortChangingRoom;
 
             On.SaveState.setDenPosition += Escort_ChangingRoom;
+            On.SaveState.SessionEnded += Escort_RespawnPup;
+            
             //On.SaveState.GetStoryDenPosition += 
 
             //IL.AbstractCreature.Realize += Backpack_ILRealize;
@@ -277,6 +280,8 @@ namespace TheEscort
 
             On.MoreSlugcats.HRGuardManager.Update += Esclass_GD_KillGuardianWithOneHit;
 
+            On.TempleGuardAI.ThrowOutScore += Escort_Friendship;
+
             On.ShelterDoor.Close += StoreWinConditionData;
 
             On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
@@ -286,6 +291,24 @@ namespace TheEscort
             //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
         }
 
+        private void Escort_RespawnPup(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+        {
+            if (survived && self.miscWorldSaveData.Esave().RespawnPupReady)
+            {
+                self.miscWorldSaveData.Esave().RespawnPupReady = false;
+                self.deathPersistentSaveData.reinforcedKarma = false;
+            }
+            orig(self, game, survived, newMalnourished);
+        }
+
+        private float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
+        {
+            if (templeGuardIsFriendly)
+            {
+                return 0f;
+            }
+            return orig(self, crit);
+        }
 
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
         {

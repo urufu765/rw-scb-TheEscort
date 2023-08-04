@@ -34,7 +34,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev25** Escapist can pull out of dangergrasps in 4.5 seconds instead of 0.75s and bite lethality is reduced, Make arenamode an exception to player hits
     * **dev26** Added voideffect areas
     * **dev27** Remove/reduce voideffect in depths
-    * *dev28* new condition where Guardians will grant passage (ignore creatures) if Escort is at max karma
+    * **dev28** new condition where Guardians will grant passage (ignore creatures) if Escort is at max karma
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1

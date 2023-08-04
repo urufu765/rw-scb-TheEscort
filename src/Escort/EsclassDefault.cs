@@ -191,6 +191,11 @@ namespace TheEscort
             {
                 e.offendingRemoval--;
             }
+
+            if (e.tryFindingPup > 0)
+            {
+                e.tryFindingPup--;
+            }
         }
 
 
@@ -673,6 +678,36 @@ namespace TheEscort
                 catch (Exception ex)
                 {
                     Ebug(ex, "Couldn't remove king vulture tusk from player!");
+                }
+            }
+
+            // Make guardian passive
+            if (self.room?.game?.session is StoryGameSession s)
+            {
+                if (s.saveState.deathPersistentSaveData.karmaCap >= 9 && self?.room?.world?.region is not null && self.room.world.region.name == "SB")
+                {
+                    templeGuardIsFriendly = true;
+                    Ebug("Templeguard is friendly!");
+                }
+            }
+
+            if (e.isDefault && self.playerState.playerNumber == 0 && self.room?.game?.session is StoryGameSession sgs)
+            {
+                if (sgs.saveState.cycleNumber == 0)
+                {
+                    // spawn pup
+                }
+                if (e.slugPup is null)
+                {
+                    if (e.tryFindingPup > 0)
+                    {
+                        // locate pup
+                    }
+                    else
+                    {
+                        // schedule pup to respawn next cycle if reinforced
+                        sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = sgs.saveState.deathPersistentSaveData.reinforcedKarma;
+                    }
                 }
             }
 
