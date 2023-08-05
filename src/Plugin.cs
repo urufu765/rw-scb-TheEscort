@@ -14,7 +14,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.2.12.1")]
+    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.0")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -161,7 +161,7 @@ namespace TheEscort
             //On.RainWorldGame.ctor += EscortChangingRoom;
 
             On.SaveState.setDenPosition += Escort_ChangingRoom;
-            //On.SaveState.SessionEnded += Escort_RespawnPup;
+            On.SaveState.SessionEnded += Escort_RespawnPup;
             
             //On.SaveState.GetStoryDenPosition += 
 

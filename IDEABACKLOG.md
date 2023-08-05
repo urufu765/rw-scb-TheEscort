@@ -39,6 +39,7 @@
     * Add spiking
     * *dev23* Default can spike and punt and also get rebound
     * Redo dropkick and slidestun code as a method
+    * Convert lizard dunking into a separate thing instead of relying on dropkick to do the thing
 
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))

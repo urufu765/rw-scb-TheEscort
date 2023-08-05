@@ -691,7 +691,7 @@ namespace TheEscort
                 }
             }
 
-            if (false && e.isDefault && self.playerState.playerNumber == 0 && self.room?.game?.session is StoryGameSession sgs)
+            if (e.isDefault && self.playerState.playerNumber == 0 && self.room?.game?.session is StoryGameSession sgs)
             {
                 if (sgs.saveState.cycleNumber == 0)
                 {
