@@ -77,7 +77,18 @@ namespace TheEscort
         public int offendingKTtusk;
         public int offendingRemoval;
         public int tryFindingPup;
-        public Player slugPup;
+        public Player SocksAliveAndHappy
+        {
+            get 
+            {
+                if (socksAbstract is not null && socksAbstract.state.alive)
+                {
+                    return socksAbstract.realizedCreature as Player;
+                }
+                return null;
+            }
+        }
+        public AbstractCreature socksAbstract;
 
         public bool CustomKeybindEnabled {get; private set;}
         public KeyCode CustomKeybind {get; private set;}
@@ -228,7 +239,6 @@ namespace TheEscort
             this.offendingKTtusk = -1;
             this.offendingRemoval = 0;
             this.tryFindingPup = 40;
-            this.slugPup = null;
 
             // Build specific
             this.Brawler = false;

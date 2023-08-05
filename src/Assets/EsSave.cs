@@ -49,6 +49,7 @@ namespace TheEscort
         public Dictionary<int, int> SpeChargeStore {get; set;} = new();
         public Dictionary<int, float> DeflPermaDamage {get; set;} = new();
         public bool RespawnPupReady {get; set;} = false;
+        public bool HackPupSpawn {get; set;} = false;
     }
 
 
@@ -59,7 +60,8 @@ namespace TheEscort
     {
         public static readonly EscortTutorial SuperWallFlip = new("EscorTutorialSuperWallFlip", true);
         public static readonly EscortTutorial GildKillGuardian = new("EscorTutorialGildedKillAGuardian", true);
-        public static readonly EscortTutorial EscortPupSpawnReady = new("SpawnTheGoddamnSlugpup", true);
+        public static readonly EscortTutorial EscortPupRespawned = new("EscorTutorialPupRespawn", true);
+        public static readonly EscortTutorial EscortPupRespawnedNotify = new("EscorTutorialPupRespawnNote", true);
 
         public EscortTutorial(string value, bool register = false) : base(value, register)
         {

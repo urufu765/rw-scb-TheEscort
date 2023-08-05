@@ -9,7 +9,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 * ### 0.3 - Ending I
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
-    * *dev02* Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
+    * **dev02** Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1

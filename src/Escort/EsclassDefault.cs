@@ -691,22 +691,59 @@ namespace TheEscort
                 }
             }
 
-            if (e.isDefault && self.playerState.playerNumber == 0 && self.room?.game?.session is StoryGameSession sgs)
+
+            // Currently pup is only supported in story mode
+            if (self.playerState.playerNumber == 0 && self.room?.game?.session is StoryGameSession sgs)
             {
-                if (sgs.saveState.cycleNumber == 0)
+                // Debug
+                if (self.room.game.devToolsActive && (self.room.game.cameras[0].room == self.room || !ModManager.CoopAvailable) && self.playerState.playerNumber == 0 && Input.GetKeyDown("="))
                 {
-                    // spawn pup
-                }
-                if (e.slugPup is null)
-                {
-                    if (e.tryFindingPup > 0)
+                    if (e.SocksAliveAndHappy is null)
                     {
-                        // locate pup
+                        sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn = true;
+                        SpawnThePup(ref e, self.room, self.coord);
+                        e.SocksAliveAndHappy.mainBodyChunk.pos = e.SocksAliveAndHappy.mainBodyChunk.lastPos = new Vector2(Futile.mousePosition.x, Futile.mousePosition.y) + self.room.game.cameras[0].pos;
+                        Ebug("DEBUG SOCKS on", 2, true);
                     }
                     else
                     {
-                        // schedule pup to respawn next cycle if reinforced
-                        sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = sgs.saveState.deathPersistentSaveData.reinforcedKarma;
+                        sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn = false;
+                        e.SocksAliveAndHappy.Destroy();
+                        Ebug("DEBUG SOCKS off", 2, true);
+                    }
+                }
+
+                // Regular stuff
+                if (e.isDefault)
+                {
+                    // Spawn in shelter on cycle 0 for expedition
+                    if (e.SocksAliveAndHappy is null && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
+                    {
+                        SpawnThePup(ref e, self.room, self.coord);
+                        Ebug("Socks has been added to expedition!", 1, true);
+                    }
+
+                    // Socks (impostor) check
+                    if (e.SocksAliveAndHappy is null)
+                    {
+                        if (e.tryFindingPup > 0 && TryFindThePup(self.room, out AbstractCreature ac))
+                        {
+                            e.socksAbstract = ac;
+                            Ebug($"Socks has been found with {e.tryFindingPup} tries remaining!", 1, true);
+                        }
+                        else
+                        {
+                            // schedule pup to respawn next cycle if reinforced
+                            sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = sgs.saveState.deathPersistentSaveData.reinforcedKarma;
+                        }
+                    }
+
+                    // Show tutorial when Socks respawns
+                    if (self.room?.game?.session is StoryGameSession storyGameSession && storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned))
+                    {
+                        Ebug("Show socks respawn tutorial!", 1, true);
+                        self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("At the cost of a karma flower, the slugpup respawns!"), 40, 300, true, true);
+                        storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify, true);
                     }
                 }
             }

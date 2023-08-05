@@ -161,7 +161,7 @@ namespace TheEscort
             //On.RainWorldGame.ctor += EscortChangingRoom;
 
             On.SaveState.setDenPosition += Escort_ChangingRoom;
-            On.SaveState.SessionEnded += Escort_RespawnPup;
+            On.SaveState.SessionEnded += Escort_Reset_Values;
             
             //On.SaveState.GetStoryDenPosition += 
 
@@ -283,22 +283,12 @@ namespace TheEscort
             On.TempleGuardAI.ThrowOutScore += Escort_Friendship;
 
             On.ShelterDoor.Close += StoreWinConditionData;
+            On.ShelterDoor.DoorClosed += SpawnPupInShelterAtWin;
 
             On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
 
-            On.SaveState.SessionEnded += Escort_Reset_Values;
 
             //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
-        }
-
-        private void Escort_RespawnPup(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
-        {
-            if (survived && self.miscWorldSaveData.Esave().RespawnPupReady)
-            {
-                self.miscWorldSaveData.Esave().RespawnPupReady = false;
-                self.deathPersistentSaveData.reinforcedKarma = false;
-            }
-            orig(self, game, survived, newMalnourished);
         }
 
         private float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
@@ -1172,6 +1162,20 @@ namespace TheEscort
             {
                 Ebug(err, "Error on trying to print savestate before session ended");
             }
+
+            // Respawn pup so karma reinforcement go away
+            if (survived && self.miscWorldSaveData.Esave().RespawnPupReady)
+            {
+                self.miscWorldSaveData.Esave().RespawnPupReady = false;
+
+                // Show tutorial message saying that the pup has been revived
+                if (!self.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify))
+                {
+                    self.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, true);
+                }
+                self.deathPersistentSaveData.reinforcedKarma = false;
+            }
+
             orig(self, game, survived, newMalnourished);
             DeflSharedPerma = 0;
             try
@@ -1185,228 +1189,130 @@ namespace TheEscort
         }
 
 
-
-#region Escort Has A Public Github Repo You Know
-        protected void Escort_Has_A_Public_Github_Repo_Lol(Player self)
+        private void SpawnPupInShelterAtWin(On.ShelterDoor.orig_DoorClosed orig, ShelterDoor self)
         {
-            Purgitory:
             try
             {
-                Escort_Has_A_Public_Github_Repo_Lol(self);
-                goto Purgitory;
-            }
-            catch (Exception err)
-            {
-                Ebug(self, err);
-                RedundantlyTrue(true);
-                RedundantlyFalse(false);
-            }
-            finally
-            {
-                Ebug(What_Will_This_Do());
-                이건_아무겄도_안함();
-            }
-            throw new NotImplementedException();
-        }
-
-        protected bool RedundantlyTrue(bool? thing = true)
-        {
-            if (thing == null)
-            {
-                return true;
-            }
-
-            thing = true;
-            bool? b = true;
-            if ((bool)thing)
-            {
-                thing = true;
-                b = thing.ToString() == "True" || (true.ToString() == "True");
-            }
-            else if (true)
-            {
-                thing = true;
-            }
-            if (b == thing)
-            {
-                thing = b;
-                b = thing;
-            }
-            if ((bool)thing && (bool)b)
-            {
-                switch (true)
+                if (self?.room is null)
                 {
-                    case false:
-                    case var value when value == false:
-                    case true:
-                        break;
-                    default:
+                    orig(self);
+                    return;
                 }
-                if (1 == 0)
-                {
-                }
-                return true;
-            }
-            return true;
-        }
 
-        protected bool RedundantlyFalse(bool thing = true)
-        {
-            if (thing)
-            {
-                thing = false;
-            }
-            else if (thing)
-            {
-                thing = false;
-            }
-            if (!true) { }
-            while (thing)
-            {
-                for (int a = 0; a < 1000; a++)
+                bool winCondition = true;
+                if (ModManager.CoopAvailable)
                 {
-                    for (int b = 0; a < 10000; b++)
+                    List<PhysicalObject> listOfShelterers = (
+                        from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> y) => y)
+                        where x is Player
+                        select x).ToList();
+
+                    winCondition = listOfShelterers.Count >= self.room.game.PlayersToProgressOrWin.Count;
+                }
+                else
+                {
+                    foreach (AbstractCreature abstractPlayer in self.room.game.Players)
                     {
-                        bool?[] secretThing = new bool?[] { true, false, false, false, false, false, false, false };
-                        for (int c = 0; b < 100000; c++)
+                        if (!abstractPlayer.state.alive)
                         {
-                            for (int d = 0; c < 1000000; d++)
+                            winCondition = false;
+                        }
+                    }
+                }
+
+                if (winCondition && self.room?.game?.session is StoryGameSession s && s.saveState.miscWorldSaveData.Esave().RespawnPupReady)
+                {
+                    Player focus = null;
+                    foreach (AbstractCreature abstractCreature in self.room.game.Players)
+                    {
+                        if (abstractCreature?.realizedCreature is Player player && player.playerState.playerNumber == 0)
+                        {
+                            focus = player;
+                            break;
+                        }
+                    }
+                    if (eCon.TryGetValue(focus, out Escort e))
+                    {
+                        if (TryFindThePup(self.room, out AbstractCreature ac))
+                        {
+                            if (ac.state.dead)
                             {
-                                for (int e = 0; d < 0; a++)
-                                {
-                                    if (e == 0)
-                                    {
-                                        foreach (bool f in secretThing.Select(v => (bool)v))
-                                        {
-                                            if (f)
-                                            {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
+                                // Pup exists in the room but is dead so must be respawned!
+                                JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                                Ebug("Socks has revived from dead!", 1, true);
                             }
+                            else
+                            {
+                                // Pup exists in the room and is well and alive!
+                                Ebug("Socks has made it!", 1, true);
+                            }
+                        }
+                        else if (e.socksAbstract?.realizedCreature is not null)
+                        {
+                            // Pup exists somewhere in the world so must just be respawned!
+                            JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                            Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
+                        }
+                        else
+                        {
+                            // Pup no longer exists so must be recreated and respawned!
+                            SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0));
                         }
                     }
                 }
             }
-            bool? someThing = false;
-            bool anotherThing = someThing switch
+            catch (Exception err)
             {
-                true => false,
-                false => false,
-                _ => false
-            };
-            if (true)
+                Ebug(err, "Failed to respawn slugpup!");
+            }
+            orig(self);
+        }
+
+
+        /// <summary>
+        /// Spawns the slugpup
+        /// </summary>
+        /// <param name="escort">Escort instance</param>
+        /// <param name="room">Room to spawn in</param>
+        /// <param name="worldCoordinate">Coordinates to spawn at</param>
+        /// <param name="iD">Set ID</param>
+        private void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null)
+        {
+            iD ??= room.game.GetNewID();
+            escort.socksAbstract?.Destroy();
+            escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugcat"), null, worldCoordinate, iD.Value);
+            escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
+            escort.socksAbstract.ID.setAltSeed(3118);
+            escort.socksAbstract.RealizeInRoom();
+            escort.socksAbstract.realizedCreature.PlaceInRoom(room);
+            Ebug("Spawn socks (unofficially)!", 1, true);
+        }
+
+
+        private void FinishSpawningPup(ref Player player)
+        {
+        }
+
+
+        /// <summary>
+        /// Locates the pup
+        /// </summary>
+        /// <param name="room">Room to look in</param>
+        /// <param name="abstractSocks">The abstractcreature of Socks</param>
+        /// <returns>If the pup exists in the same room or not</returns>
+        private bool TryFindThePup(Room room, out AbstractCreature abstractSocks)
+        {
+            abstractSocks = null;
+            foreach (UpdatableAndDeletable thing in room.updateList)
             {
-                if (false || (false && true) || false || (true && true))
+                if (thing is Player player && player.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && player.abstractCreature.ID.altSeed == 3118)
                 {
-                    anotherThing = false;
-                    someThing = anotherThing;
-                    someThing = false;
+                    abstractSocks = player.abstractCreature;
+                    return true;
                 }
             }
             return false;
         }
-
-        protected void 이건_아무겄도_안함()
-        {
-            bool 모함 = false;
-            Ebug(모함);
-        }
-
-
-        protected int What_Will_This_Do(bool? startHere = true, int w = 0, int r = 0)
-        {
-            if (r >= 123)
-            {
-                return r;
-            }
-            int x, y, z = w;
-            profoundLeap:
-            x = y = z;
-            notsoProfoundLeap:
-            y++;
-            profoundlyNotLeap:
-            if (startHere is null)
-            {
-                if (w >= 777)
-                {
-                    return 0;
-                }
-            }
-            else if ((bool)startHere)
-            {
-                goto one;
-            }
-            else if (startHere is bool)
-            {
-                What_Will_This_Do(true, r: r + 1);
-            }
-            else
-            {
-                goto abandonment;
-            }
-            one:
-            bool[] g = new bool[] { false, true, true, false, true, false, false, true, false, true, true };
-            foreach (bool f in g)
-            {
-                if (x >= g.Length)
-                {
-                    w = UnityEngine.Random.Range(0, g.Length);
-                    startHere = false;
-                }
-                if (f)
-                {
-                    goto helloThere;
-                }
-                x++;
-                if ((startHere.Value && g.Reverse().ToArray()[x] is true) || g[w])
-                {
-                    goto somethingIndeed;
-                }
-            }
-            helloThere:
-            if (z == 0)
-            {
-                z++;
-                goto profoundLeap;
-            }
-            else
-            {
-                z = y;
-            }
-            if (y < 10)
-            {
-                x += y;
-                goto notsoProfoundLeap;
-            }
-            somethingIndeed:
-            switch (x) 
-            {
-                case > 1984:
-                    return y;
-                case > 100:
-                    goto sanctuary;
-                case 69:
-                    y += z;
-                    break;
-                case > 10:
-                    y = 0;
-                    goto helloThere;
-                case > 0:
-                    z = x * y;
-                    goto case 69;
-                default:
-                    goto one;
-            }
-            goto profoundlyNotLeap;
-            abandonment:
-            return What_Will_This_Do(null, x * y * -z, r + 2);
-            sanctuary:
-            return What_Will_This_Do(startHere, z, r + 3);
-        }
-#endregion
 
 
         /// <summary>

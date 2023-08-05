@@ -192,3 +192,5 @@ escoptions_custombinds_desc|<REPLACE> custom keybinds for P
 escoptions_oldescape_text|Old <ESCAPIST> Mechanics
 escoptions_oldescape_desc|Go back to the original <ESCAPIST> who can simply pop out of grasps
 escoptions_sectret_magic|Don't complain when your wallclip goes wrong.
+ENDING ONE UPDATE|ENDING ONE UPDATE
+At the cost of a karma flower, the slugpup respawns!|At the cost of a karma flower, the slugpup respawns!

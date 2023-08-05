@@ -19,18 +19,17 @@
     * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
     * Properly implement Grapple Backpack template
     * Parry Upgrade update
-    * Fix Escapist wall spears
     * Remove reverb from shank noise
-    * Might remove Brawler shank for zeroG
+    * Might remove Brawler shank for zeroG (or at least lessen it)
     * Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
     * Each escort build changes color if custom colors are off, or default jolly colors are on.
     * Normal Escort cutscene: Swims up from the water, grabs two spears, and spears one in the weird jump.
-    * Brawler starts at Outskirts [SU-A02], cutscene: Shanks a freaking pink
-    * Deflector starts at Sky Islands [SI-C03], cutscene: Deflects king tusk harpoons, then upspears it
-    * Escapist starts at Exterior (Moon) [DM-LEG02], cutscene: Spider grabby and carry
-    * Railgunner starts at Garbage Wastes [GW-C02_PAST], cutscene: Waits, aims and shoots a lizard
-    * Speedster starts at Farms Array [LF-E03], cutscene: Running from lizor, boosts, but slams into a scav at the toll, and now scavs angy
-    * Gilded starts at Rubicon and ends at Rubicon there is no escape teehee
+    * Brawler starts at Outskirts [SU-A02], cutscene: Brawler is given a letter (which is a pipe bomb) and told to go visit Pebbles for a tea party (Hunter campaign)
+    * Deflector starts at Sky Islands [SI-C03], cutscene: Gamer voice is heard, then Deflector falls from the sky, then the point HUD appears, then Deflector is told to KILL THEM ALL in big letters (Enot campaign)
+    * Escapist starts at Subterranean (filtration system) [], cutscene: Broadcast is put where they are, told to go to moon for a briefing (Monk campaign)
+    * Railgunner starts at Garbage Wastes [GW-C02_PAST], cutscene: Waits, aims and shoots a lizard (Artificer campaign)
+    * Speedster starts at Farms Array [LF-E03], cutscene: A slideshow of different kinds of cheese, then runs into a scavenger, causing the cheese to flicker away for a moment, before getting chased down by scavs (rivulet campaign)
+    * Gilded starts at Flatlands and goes towards the Gutters/Drainage
     * Add/remove sound effect to tell if Escort is dropkicking a live creature or a dead one
     * Add Railgunner knockback for other double-ups (maybe by having the knockback get introduced in frame 2 or 3)
     * Reduce stunslide uncontrollability by changeing it to a roll and balance it. Also have a new way to trigger the combo
@@ -40,6 +39,8 @@
     * *dev23* Default can spike and punt and also get rebound
     * Redo dropkick and slidestun code as a method
     * Convert lizard dunking into a separate thing instead of relying on dropkick to do the thing
+    * When brawler picks up the inspector, they can use it to traverse zero g (heavy metal theme playes if silly sfx is on)
+    * For hydrox cat, cursor color is body color and cursor outline is eyes, if there's more than one of the same color give or take 5%, set a random color (recursion, have a separate array with whether the color is set or unset and recurse until all colors are set)
 
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
