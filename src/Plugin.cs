@@ -14,7 +14,7 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.2.12")]
+    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.2.12.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -1410,7 +1410,7 @@ namespace TheEscort
 
 
         /// <summary>
-        /// Check Escort's parry condition
+        /// Check Escort's parry condition (LEGACY)
         /// </summary>
         /// <param name="self">A creature</param>
         /// <returns>false if not a player or Escort, true if in parry condition</returns>
@@ -1455,6 +1455,11 @@ namespace TheEscort
             if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
             {
                 Ebug(self, "Parryteched condition!", 2);
+                return true;
+            }
+            if (e.NewEscapist && e.NEsAbility > 0 && (self.animation == Player.AnimationIndex.Flip))
+            {
+                Ebug(self, "New Escapist trickz parry condition!", 2);
                 return true;
             }
             else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)

@@ -505,6 +505,11 @@ namespace TheEscort
                 {
                     float slamDam = 1f + 0.6f * e.SpeGear;
                     float slamStun = 45f + 15f * e.SpeGear;
+                    if (e.isChunko)
+                    {
+                        slamDam *= self.TotalMass / e.originalMass;
+                        slamStun *= self.TotalMass / e.originalMass;
+                    }
                     creature.SetKillTag(self.abstractCreature);
                     creature.LoseAllGrasps();
                     creature.Violence(
@@ -523,8 +528,15 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x += self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
-                    creature.firstChunk.vel.y += self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
+                    float velocityX = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
+                    float velocityY = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
+                    if (e.isChunko)
+                    {
+                        velocityX *= self.TotalMass / e.originalMass;
+                        velocityY *= self.TotalMass / e.originalMass;
+                    }
+                    creature.firstChunk.vel.x += velocityX;
+                    creature.firstChunk.vel.y += velocityY;
                     //self.WallJump(-self.flipDirection);
                     if (!checkSlide)
                     {

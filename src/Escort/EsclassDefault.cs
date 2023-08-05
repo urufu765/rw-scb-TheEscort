@@ -970,8 +970,22 @@ namespace TheEscort
                 //self.EatMeatUpdate(n);
             }*/
             orig(self, eu);
-            if (e.Railgunner) Esclass_RG_GrabUpdate(self, ref e);
-            if (e.Gilded) Esclass_GD_GrabUpdate(self, eu, ref e);
+            try
+            {
+                if (e.Railgunner) Esclass_RG_GrabUpdate(self, ref e);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Railgunner grabby fail!");
+            }
+            try
+            {
+                if (e.Gilded) Esclass_GD_GrabUpdate(self, eu, ref e);
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Gilded grabby fail!");
+            }
         }
 
 
@@ -1398,6 +1412,10 @@ namespace TheEscort
                     if (e.Escapist)
                     {
                         biteMult -= 0.15f;
+                    }
+                    if (e.NewEscapist)
+                    {
+                        biteMult -= 0.45f;
                     }
                     if (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump))
                     {

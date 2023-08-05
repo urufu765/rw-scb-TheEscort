@@ -108,11 +108,6 @@ namespace TheEscort
             }
         }
 
-        public void Esclass_NE_AbsoluteTick(Player self, ref Escort e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void Esclass_NE_Update(Player self, ref Escort e)
         {
             // Check if player has inputted the direction for ability activation

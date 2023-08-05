@@ -243,6 +243,7 @@ namespace TheEscort
             this.BrawThrowGrab = -1;
             this.BrawThrowUsed = -1;
             this.BrawLastWeapon = "";
+            this.BrawSetCooldown = 20;
 
             this.Deflector = false;
             this.DeflAmpTimer = 0;

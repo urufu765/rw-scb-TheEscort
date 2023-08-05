@@ -15,6 +15,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
 
 * ### 0.2 - The Escort
+  * **(0.2.12.1)** Speedster rotund compatibility, Fix Brawler initial cooldown, Escapist lowered bite lethality, Escapist flip parries while ability is active 
   * **(0.2.12)** Brand New Escapist
     * **dev01** Get the Shadowscort spawning correctly and have dash work
     * **dev02** Get Shadowscort to do different effects
