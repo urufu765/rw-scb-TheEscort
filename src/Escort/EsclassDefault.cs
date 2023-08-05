@@ -11,6 +11,7 @@ using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using Newtonsoft.Json;
+using static EscortCutsceneTool.EsInLogger;
 
 namespace TheEscort
 {
@@ -221,6 +222,11 @@ namespace TheEscort
                           "| JS: ", self.jumpStun,
                           "| FC: ", self.freezeControls
                     });
+                }
+
+                if (logForCutscene && self.playerState.playerNumber == 0)
+                {
+                    this.GetEIL().Capture(self);
                 }
                 //self.jumpStun = 0;
             }

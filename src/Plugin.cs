@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using static EscortCutsceneTool.EsInLogger;
 
 namespace TheEscort
 {
@@ -128,6 +129,7 @@ namespace TheEscort
         private float DKMultiplier;
         float ratioed;
         public static bool templeGuardIsFriendly;
+        public static readonly bool logForCutscene = true;
 
 
         // Patches
@@ -1161,6 +1163,11 @@ namespace TheEscort
             catch (Exception err)
             {
                 Ebug(err, "Error on trying to print savestate before session ended");
+            }
+
+            if (logForCutscene)
+            {
+                this.GetEIL().Release();
             }
 
             // Respawn pup so karma reinforcement go away
