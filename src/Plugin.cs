@@ -1,7 +1,9 @@
 ﻿using BepInEx;
+using Menu;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using RWCustom;
+using SlugBase;
 using SlugBase.Features;
 using System;
 using System.Collections.Generic;
@@ -88,6 +90,9 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> bodyDraw = PlayerFloats("theescort/bodything");
 
         public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
+
+        public static readonly GameFeature<MenuScene.SceneID> AltSleepScene = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene");
+        public static readonly GameFeature<MenuScene.SceneID> AltSleepSceneDuo = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene_together");
         #endregion
 
 #region Plugin Variable Declarations
@@ -132,6 +137,7 @@ namespace TheEscort
         public static readonly bool logForCutscene = false;
         public static bool checkPupStatusAgain = false;
         public static bool pupAvailable;
+        public static bool pupIsAlive;
 
 
         // Patches
@@ -288,6 +294,8 @@ namespace TheEscort
 
             On.ShelterDoor.Close += StoreWinConditionData;
             On.ShelterDoor.DoorClosed += SpawnPupInShelterAtWin;
+
+            On.Menu.SleepAndDeathScreen.AddBkgIllustration += Escort_Add_Slugpup;
 
             On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
 
@@ -998,6 +1006,7 @@ namespace TheEscort
                 if (world?.game?.session is StoryGameSession s)
                 {
                     pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
+                    Ebug(self, $"Pup available? {pupAvailable}", 1, true);
                     if (s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID == 0)
                     {
                         s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID = UnityEngine.Random.value switch
@@ -1254,7 +1263,7 @@ namespace TheEscort
                     }
                 }
 
-                if (winCondition && self.room?.game?.session is StoryGameSession s && s.saveState.miscWorldSaveData.Esave().RespawnPupReady)
+                if (winCondition && self.room?.game?.session is StoryGameSession s)
                 {
                     Player focus = null;
                     foreach (AbstractCreature abstractCreature in self.room.game.Players)
@@ -1267,47 +1276,53 @@ namespace TheEscort
                     }
                     if (eCon.TryGetValue(focus, out Escort e))
                     {
-                        float like, tempLike;
-                        like = s.saveState.miscWorldSaveData.Esave().EscortPupLike;
-                        tempLike = s.saveState.miscWorldSaveData.Esave().EscortPupTempLike;
-                        if (like == -1)
+                        if (s.saveState.miscWorldSaveData.Esave().RespawnPupReady || s.saveState.miscWorldSaveData.Esave().AltRespawnReady)
                         {
-                            like = 1;
-                        }
-                        if (tempLike == -1)
-                        {
-                            tempLike = 1;
-                        }
-                        
-                        if (TryFindThePup(self.room, out AbstractCreature ac))
-                        {
-                            if (ac.state.dead)  // There's probably a better way but for now this will suffice
+                            float like, tempLike;
+                            like = s.saveState.miscWorldSaveData.Esave().EscortPupLike;
+                            tempLike = s.saveState.miscWorldSaveData.Esave().EscortPupTempLike;
+                            if (like == -1)
                             {
-                                // Pup exists in the room but is dead so must be respawned!
+                                like = 1;
+                            }
+                            if (tempLike == -1)
+                            {
+                                tempLike = 1;
+                            }
+                            
+                            if (TryFindThePup(self.room, out AbstractCreature ac))
+                            {
+                                if (ac.state.dead)  // There's probably a better way but for now this will suffice
+                                {
+                                    // Pup exists in the room but is dead so must be respawned!
+                                    //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                                    ac.Destroy();
+                                    SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
+                                    Ebug("Socks has revived from dead!", 1, true);
+                                }
+                                else
+                                {
+                                    // Pup exists in the room and is well and alive!
+                                    Ebug("Socks has made it!", 1, true);
+                                }
+                            }
+                            else if (e.socksAbstract?.realizedCreature is not null)
+                            {
+                                // Pup exists somewhere in the world so must just be respawned!
                                 //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
-                                ac.Destroy();
                                 SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
-                                Ebug("Socks has revived from dead!", 1, true);
+                                Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
                             }
                             else
                             {
-                                // Pup exists in the room and is well and alive!
-                                Ebug("Socks has made it!", 1, true);
+                                // Pup no longer exists so must be recreated and respawned!
+                                SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0));
+                                Ebug("Hello Socks!", 1, true);
                             }
                         }
-                        else if (e.socksAbstract?.realizedCreature is not null)
-                        {
-                            // Pup exists somewhere in the world so must just be respawned!
-                            //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
-                            SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
-                            Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
-                        }
-                        else
-                        {
-                            // Pup no longer exists so must be recreated and respawned!
-                            SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0));
-                            Ebug("Hello Socks!", 1, true);
-                        }
+                        bool flag = TryFindThePup(self.room, out _);
+                        s.saveState.miscWorldSaveData.Esave().SocksIsAlive = flag;
+                        pupIsAlive = flag;
                     }
                 }
             }
@@ -1333,8 +1348,8 @@ namespace TheEscort
             int socksID = escort.PupCampaignID;
             escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugpup"), null, worldCoordinate, new(-1, socksID));
             //escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
-            escort.socksAbstract.state = new MoreSlugcats.PlayerNPCState(escort.socksAbstract, 0);
-            escort.socksAbstract.ID.setAltSeed(socksID);
+            //escort.socksAbstract.state = new MoreSlugcats.PlayerNPCState(escort.socksAbstract, 0);
+            //escort.socksAbstract.ID.setAltSeed(socksID);
             room.abstractRoom.AddEntity(escort.socksAbstract);
             escort.socksAbstract.RealizeInRoom();
             //escort.socksAbstract.realizedCreature.PlaceInRoom(room);
@@ -1351,6 +1366,77 @@ namespace TheEscort
         private void FinishSpawningPup(ref Player player)
         {
         }
+
+        private void Escort_Add_Slugpup(On.Menu.SleepAndDeathScreen.orig_AddBkgIllustration orig, Menu.SleepAndDeathScreen self)
+        {
+            MenuScene.SceneID newScene = null;
+            SlugcatStats.Name name;
+            if (self.manager.currentMainLoop is RainWorldGame)
+                name = (self.manager.currentMainLoop as RainWorldGame).StoryCharacter;
+            else
+                name = self.manager.rainWorld.progression.PlayingAsSlugcat;
+
+            if (Eshelp_IsMe(name, true))
+            {
+                Ebug("Not an escort!", 1);
+                orig(self);
+                return;
+            }
+            if (SlugBaseCharacter.TryGet(name, out var chara))
+            {
+                if (self.IsSleepScreen) 
+                {
+                    try
+                    {
+                        //bool flag = false;
+                        // if (self.saveState?.miscWorldSaveData?.Esave() is not null)
+                        // {
+                        //     Ebug("Sleep Savestate found on menu", 1, true);
+                        //     flag = self.saveState.miscWorldSaveData.Esave().SocksIsAlive;
+                        // }
+                        // else if (self.manager.currentMainLoop is RainWorldGame rwg && rwg.session is StoryGameSession sgs)
+                        // {
+                        //     Ebug("Sleep Savestate found on storysession", 1, true);
+                        //     flag = sgs.saveState.miscWorldSaveData.Esave().SocksIsAlive;
+                        // }
+                        // else 
+                        // {
+                        //     Ebug("Sleep Savestate couldn't be found!", 1, true);
+                        // }
+                        if (pupIsAlive)
+                        {
+                            Ebug("Socks is alive!", 1, true);
+                            if (AltSleepSceneDuo.TryGet(chara, out MenuScene.SceneID sleepTogether))
+                            {
+                                newScene = sleepTogether;
+                            }
+                        }
+                        else
+                        {
+                            Ebug("Socks is dead!", 1, true);
+                            if (AltSleepScene.TryGet(chara, out MenuScene.SceneID sleepAlone))
+                            {
+                                newScene = sleepAlone;
+                            }
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        Ebug(err, "Something happened while trying to show sleep screen!");
+                    }
+                }
+            }
+
+            if(newScene != null && newScene.Index != -1)
+            {
+                self.scene = new InteractiveMenuScene(self, self.pages[0], newScene);
+                self.pages[0].subObjects.Add(self.scene);
+                return;
+            }
+            else
+                orig(self);        
+        }
+
 
 
         /// <summary>

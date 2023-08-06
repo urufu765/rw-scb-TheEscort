@@ -194,3 +194,6 @@ escoptions_oldescape_desc|Go back to the original <ESCAPIST> who can simply pop 
 escoptions_sectret_magic|Don't complain when your wallclip goes wrong.
 ENDING ONE UPDATE|ENDING ONE UPDATE
 At the cost of a karma flower, the slugpup respawns!|At the cost of a karma flower, the slugpup respawns!
+Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!|Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!
+escoptions_pupsforeveryone_text|Unlocked Escort Slugpup
+escoptions_pupsforeveryone_desc|Allow other Escort builds to have the slugpup. WARNING: May cause unintended behaviour

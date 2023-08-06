@@ -39,7 +39,8 @@
 		"timeline_after": "Spear",
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Slugcat_End_EscortMe",
-		"sleep_scene": "Sleep_EscortMe",
+		"alt_sleep_scene": "Sleep_EscortMe",
+		"alt_sleep_scene_together": "Sleep_EscortMeAndSocks",
 		"the_mark": false,
 
 		"playescort/realtime_edits": false,

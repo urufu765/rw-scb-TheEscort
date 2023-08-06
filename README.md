@@ -18,6 +18,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08** Fixed infinite slugpup exploit
     * **dev09** If karma flower is used, use that rather than reinforcement
     * **dev10** Images!
+    * **dev11** The End
     * *dev08* added foodpips for default escort (later), 
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area

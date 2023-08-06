@@ -5,6 +5,8 @@ using SlugBase;
 using static TheEscort.Eshelp;
 using static RWCustom.Custom;
 using static TheEscort.EscortTutorial;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace TheEscort;
 
@@ -33,6 +35,11 @@ public class EscortRoomScript
             {
                 Ebug("Start Escort cutscene!");
                 room.AddObject(new DefaultWatchesAPupFall(room));
+            }
+            if (name is "SB_L01")
+            {
+                Ebug("Ending 1 zone!");
+                room.AddObject(new EscortEndingA(room));
             }
         }
     }
@@ -464,13 +471,13 @@ public class EscortRoomScript
                     Ebug("Cutscene init!", 2);
                     initDone = true;
                 }
-                if (this.Playr is not null)
+                if (this.Playr is not null && Playr.room == room)
                 {
                     if (Playr.mainBodyChunk.pos.y > 1068)
                     {
                         cutsceneTimer++;
                     }
-                    if (cutsceneTimer > 100)
+                    if (cutsceneTimer > 80)
                     {
                         if (this.Playr.playerState.playerNumber != 0)
                         {
@@ -517,7 +524,7 @@ public class EscortRoomScript
                     Plugin.pupAvailable = true;
                     pupInit = true;
                 }
-                if (cutsceneTimer > 150)
+                if (cutsceneTimer > 100)
                 {
                     phase = Phase.End;
                     return;
@@ -539,4 +546,221 @@ public class EscortRoomScript
         }
 
     }
+
+    private class EscortEndingA : UpdatableAndDeletable
+    {
+        StartController startController;
+        int cutsceneTimer;
+        Phase phase;
+        List<AbstractCreature> creatures;
+        bool initDone, movePlayerDone, creatureMoveDone, fadeDone, endDone, missionComplete;
+        float voidMeltInit;
+        MoreSlugcats.FadeOut fadeOut;
+
+        public Player Playr
+        {
+            get
+            {
+                AbstractCreature firstAlivePlayer = this.room.game.FirstAlivePlayer;
+                if (this.room.game.Players.Count > 0 && firstAlivePlayer?.realizedCreature is Player)
+                {
+                    return firstAlivePlayer.realizedCreature as Player;
+                }
+                return null;
+            }
+        }
+
+
+        public class Phase : ExtEnum<Phase>
+        {
+            public Phase(string value, bool register = false) : base(value, register)
+            {
+            }
+            public static readonly Phase Init = new("EEn1Init", true);
+            public static readonly Phase MovePlayer = new("EEn1MovePlayer", true);
+            public static readonly Phase CreatureMove = new("EEn1CreatureMove", true);
+            public static readonly Phase Fade = new("EEn1Fade", true);
+            public static readonly Phase End = new("EEn1End", true);
+
+        }
+
+
+        public class StartController : Player.PlayerController
+        {
+            private readonly EscortEndingA owner;
+
+            public StartController(EscortEndingA owner)
+            {
+                this.owner = owner;
+            }
+
+            public override Player.InputPackage GetInput()
+            {
+                return new Player.InputPackage(false, Options.ControlSetup.Preset.None, owner.GetXInput(), owner.GetYInput(), false, false, false, false, false);
+            }
+        }
+
+
+        public EscortEndingA(Room room)
+        {
+            this.room = room;
+            this.phase = Phase.Init;
+            creatures = new List<AbstractCreature>();
+            this.voidMeltInit = room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.VoidMelt);
+        }
+
+
+        public override void Update(bool eu)
+        {
+            base.Update(eu);
+            if (this.phase == Phase.Init)
+            {
+                if (!initDone)
+                {
+                    Ebug("Cutscene init!", 2);
+                    initDone = true;
+                }
+                if (this.Playr is not null && Playr.room == room)
+                {
+                    if (Playr.mainBodyChunk.pos.x > 1000)
+                    {
+                        if (this.room?.game?.cameras[0] is not null)
+                        {
+                            this.room.game.cameras[0].followAbstractCreature = this.Playr.abstractCreature;
+                        }
+                        this.startController = new StartController(this);
+                        this.Playr.controller = this.startController;
+                        for (int i = 0; i < Playr.grasps.Length; i++)
+                        {
+                            if (Playr.grasps[i]?.grabbed is not null)
+                            {
+                                this.Playr.ReleaseGrasp(i);
+                            }
+                        }
+                        this.phase = Phase.MovePlayer;
+                        return;
+                    }
+                }
+            }
+            if (this.phase == Phase.MovePlayer)
+            {
+                cutsceneTimer++;
+                if (!movePlayerDone)
+                {
+                    Ebug("Cutscene moving!", 2);
+                    movePlayerDone = true;
+                }
+                if (Playr is not null && Playr.CanRetrieveSlugFromBack)
+                {
+                    Playr.slugOnBack.increment = true;
+                }
+                if (cutsceneTimer > 120)
+                {
+                    foreach(UpdatableAndDeletable uad in room.updateList)
+                    {
+                        if (uad is Creature c and not Player)
+                        {
+                            creatures.Add(c.abstractCreature);
+                        }
+                        else if (uad is Player p && p.Template.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)
+                        {
+                            creatures.Add(p.abstractCreature);
+                        }
+                    }
+                    if (Playr is not null)
+                    {
+                        Playr.standing = true;
+                        for (int i = 0; i < Playr.grasps.Length; i++)
+                        {
+                            if (Playr.grasps[i]?.grabbed is not null)
+                            {
+                                this.Playr.ReleaseGrasp(i);
+                            }
+                        }
+                    }
+                    this.phase = Phase.CreatureMove;
+                }
+            }
+            if (this.phase == Phase.CreatureMove || this.phase == Phase.Fade)
+            {
+                cutsceneTimer++;
+                foreach(AbstractCreature ac in creatures)
+                {
+                    // if (ac.abstractAI?.RealAI is not null)
+                    // {
+                    //     ac.abstractAI.RealAI.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                    // }
+                    //ac.abstractAI?.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                    ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                }
+                room.roomSettings.GetEffect(RoomSettings.RoomEffect.Type.VoidMelt).amount = Mathf.Lerp(voidMeltInit, 1, Mathf.InverseLerp(0, 400, cutsceneTimer));
+                if (this.phase == Phase.CreatureMove)
+                {
+                    if (!creatureMoveDone)
+                    {
+                        Ebug("Cutscene moving creatures!", 2);
+                        creatureMoveDone = true;
+                    }
+                    if (cutsceneTimer > 200)
+                    {
+                        phase = Phase.Fade;
+                        return;
+                    }
+                }
+                if (this.phase == Phase.Fade)
+                {
+                    if (!fadeDone)
+                    {
+                        Ebug("Cutscene fade!", 2);
+                        fadeDone = true;
+                    }
+                    if (fadeOut is null)
+                    {
+                        fadeOut = new MoreSlugcats.FadeOut(room, Color.black, 200, false);
+                        room.AddObject(fadeOut);
+                    }
+                    if (fadeOut is not null && fadeOut.IsDoneFading())
+                    {
+                        phase = Phase.End;
+                        return;
+                    }
+                }
+            }
+            if (this.phase == Phase.End)
+            {
+                if (!endDone)
+                {
+                    Ebug("Cutscene end!", 2);
+                    endDone = true;
+                }
+                if (!missionComplete)
+                {
+                    room.game.GoToRedsGameOver();
+                    RainWorldGame.BeatGameMode(room.game, true);
+                    missionComplete = true;
+                }
+            }
+        }
+
+        public int GetXInput()
+        {
+            if (phase == Phase.MovePlayer)
+            {
+                if (Playr is not null && Playr.mainBodyChunk.pos.x < 1210)
+                {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        public int GetYInput()
+        {
+            if (phase == Phase.CreatureMove || phase == Phase.Fade)
+            {
+                return 1;
+            }
+            return 0;
+        }
+    }
+
 }

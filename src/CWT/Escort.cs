@@ -83,7 +83,7 @@ namespace TheEscort
         {
             get 
             {
-                if (socksAbstract is not null && socksAbstract.state.alive)
+                if (socksAbstract?.realizedCreature is not null && socksAbstract.state is not null && socksAbstract.state.alive)
                 {
                     return socksAbstract.realizedCreature as Player;
                 }
@@ -244,7 +244,7 @@ namespace TheEscort
             this.offendingKingTusk = new(1);
             this.offendingKTtusk = -1;
             this.offendingRemoval = 0;
-            this.tryFindingPup = 40;
+            this.tryFindingPup = 80;
 
             // Build specific
             this.Brawler = false;

@@ -1972,7 +1972,7 @@ namespace TheEscort
                 {
                     if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
-                        if (escort.shelterSaveComplete < 2)
+                        if (escort.shelterSaveComplete < 4)
                         {
                             int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
                             bool inShelter = shelterPlayers.Contains(abstractPlayer);
@@ -1992,8 +1992,16 @@ namespace TheEscort
                             }
 
 
-                            if (self.room?.game?.session is StoryGameSession sgs)
+
+
+                            if (self.room?.game?.session is StoryGameSession sgs && player.playerState.playerNumber == 0)
                             {
+                                bool socksExist = TryFindThePup(self.room, out _);
+                                if (escort.SocksAliveAndHappy is not null && !socksExist)
+                                {
+                                    escort.socksAbstract.Destroy();
+                                }
+
                                 // check for karma flower to set revival replacement
                                 if (sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady)
                                 {
@@ -2011,7 +2019,7 @@ namespace TheEscort
 
 
                                 // Get Sock's relationship and store it so it can be applied on revival
-                                if (player.playerState.playerNumber == 0 && escort.socksAbstract is not null)
+                                if (escort.socksAbstract is not null)
                                 {
                                     float alike, tlike;
                                     alike = tlike = -1;

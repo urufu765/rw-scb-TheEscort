@@ -32,7 +32,7 @@ static class CsInLogger
         public void Capture(in Player player)
         {
             num++;
-            StrippedPlayerInputPackage spip = new(num, player.input[0], player.mainBodyChunk.pos);
+            StrippedPlayerInputPackage spip = new(num, player.input[0], player.coord);
             if (recordEverything || !IsSimilar(spip, lastAIn))
             {
                 AllInputs.Add(spip);
@@ -91,7 +91,7 @@ static class CsInLogger
     /// </summary>
     public record StrippedPlayerInputPackage
     {
-        public readonly int n, x, y;
+        public readonly int n, x, y, room;
         public readonly bool jmp, thrw, pckp, mp, crouchToggle;
         public readonly float posX, posY;
         private const string separator = "<S>";
@@ -108,6 +108,7 @@ static class CsInLogger
             this.crouchToggle = pIn.crouchToggle;
             this.posX = pos.x;
             this.posY = pos.y;
+            this.room = -1000;
         }
         public StrippedPlayerInputPackage(int n, in Player.InputPackage pIn, in WorldCoordinate pos)
         {
@@ -121,6 +122,7 @@ static class CsInLogger
             this.crouchToggle = pIn.crouchToggle;
             this.posX = pos.x;
             this.posY = pos.y;
+            this.room = pos.room;
         }
 
         public override string ToString()
@@ -145,6 +147,11 @@ static class CsInLogger
             result += (posX < 0? "" : "+") + posX.ToString("0000.000");  // posX
             result += separator;
             result += (posY < 0? "" : "+") + posY.ToString("0000.000");  // posY
+            if (room != -1000)
+            {
+                result += separator;
+                result += room.ToString();
+            }
             return result;
         }
     }
