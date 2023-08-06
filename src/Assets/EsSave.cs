@@ -50,6 +50,7 @@ namespace TheEscort
         public Dictionary<int, float> DeflPermaDamage {get; set;} = new();
         public bool RespawnPupReady {get; set;} = false;
         public bool HackPupSpawn {get; set;} = false;
+        public bool EscortPupEncountered {get; set;} = false;
     }
 
 

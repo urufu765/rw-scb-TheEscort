@@ -45,7 +45,9 @@ namespace TheEscort
         /// <item>5: Non-hyped body speed</item>
         /// </list></summary>
         public static readonly PlayerFeature<float[]> BetterPoleHang = PlayerFloats("theescort/better_polehang");
+        
 
+        private int filenum;
 
         private void Esclass_Tick(Player self)
         {
@@ -227,6 +229,11 @@ namespace TheEscort
                 if (logForCutscene && self.playerState.playerNumber == 0)
                 {
                     this.GetCSIL().Capture(self);
+                    if (Input.GetKeyDown("-"))
+                    {
+                        this.GetCSIL().Release($"cutscene_input_log{filenum}");
+                        filenum++;
+                    }
                 }
                 //self.jumpStun = 0;
             }
@@ -721,8 +728,14 @@ namespace TheEscort
                 }
 
                 // Regular stuff
-                if (e.isDefault)
+                if ((e.isDefault && pupAvailable) || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn)
                 {
+                    if (checkPupStatusAgain)
+                    {
+                        e.tryFindingPup = 20;
+                        checkPupStatusAgain = false;
+                    }
+
                     // Spawn in shelter on cycle 0 for expedition
                     if (e.SocksAliveAndHappy is null && !e.expeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
                     {

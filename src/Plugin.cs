@@ -130,6 +130,8 @@ namespace TheEscort
         float ratioed;
         public static bool templeGuardIsFriendly;
         public static readonly bool logForCutscene = true;
+        public static bool checkPupStatusAgain = false;
+        public static bool pupAvailable;
 
 
         // Patches
@@ -993,6 +995,10 @@ namespace TheEscort
                     return;
                 }
                 if (world?.game?.session is ArenaGameSession) e.escortArena = true;
+                if (world?.game?.session is StoryGameSession s)
+                {
+                    pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
+                }
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
                 e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;
@@ -1284,7 +1290,7 @@ namespace TheEscort
         /// <param name="room">Room to spawn in</param>
         /// <param name="worldCoordinate">Coordinates to spawn at</param>
         /// <param name="iD">ID of player that the slugpup will like</param>
-        private void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null)
+        public static void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null)
         {
             escort.socksAbstract?.Destroy();
             //room.game.GetNewID()

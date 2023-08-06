@@ -18,7 +18,7 @@ static class CsInLogger
         protected List<StrippedPlayerInputPackage> AllInputs {get; private set;} = new();
         private int num;
         private StrippedPlayerInputPackage lastAIn;
-        private const bool recordEverything = false;
+        private const bool recordEverything = true;
 
         public CSIL()
         {
@@ -97,6 +97,19 @@ static class CsInLogger
         private const string separator = "<S>";
 
         public StrippedPlayerInputPackage(int n, in Player.InputPackage pIn, in Vector2 pos)
+        {
+            this.n = n;
+            this.x = pIn.x;
+            this.y = pIn.y;
+            this.jmp = pIn.jmp;
+            this.thrw = pIn.thrw;
+            this.pckp = pIn.pckp;
+            this.mp = pIn.mp;
+            this.crouchToggle = pIn.crouchToggle;
+            this.posX = pos.x;
+            this.posY = pos.y;
+        }
+        public StrippedPlayerInputPackage(int n, in Player.InputPackage pIn, in WorldCoordinate pos)
         {
             this.n = n;
             this.x = pIn.x;
