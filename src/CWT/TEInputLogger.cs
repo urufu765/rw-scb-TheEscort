@@ -5,34 +5,54 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using RWCustom;
 using System.IO;
-using TheEscort;
+using TheEscort;  // replace this with whatever namespace you have your Plugin in
 
-namespace EscortCutsceneTool;
-static class EsInLogger
+namespace UrufuCutsceneTool;
+static class CsInLogger
 {
-    public class EIL
+    /// <summary>
+    /// Only supports one player (make sure to use this for just one player, otherwise it'll attempt to record all active players)
+    /// </summary>
+    public class CSIL
     {
         protected List<StrippedPlayerInputPackage> AllInputs {get; private set;} = new();
         private int num;
+        private StrippedPlayerInputPackage lastAIn;
+        private const bool recordEverything = false;
 
-        public EIL()
+        public CSIL()
         {
             num = 0;
         }
 
+        /// <summary>
+        /// Capture player input. Optimal placement is in Player.Update(), though make sure to check if the playernumber of that player is 0 or whatever number you desire, otherwise it'll capture ALL active players
+        /// </summary>
+        /// <param name="player">Player to capture</param>
         public void Capture(in Player player)
         {
             num++;
-            AllInputs.Add(new(num, in player.input[0], in player.mainBodyChunk.pos));
+            StrippedPlayerInputPackage spip = new(num, player.input[0], player.mainBodyChunk.pos);
+            if (recordEverything || !IsSimilar(spip, lastAIn))
+            {
+                AllInputs.Add(spip);
+                lastAIn = spip;
+            }
         }
 
-        public void Release()
+        /// <summary>
+        /// Print everything stored in the logger. Optimal placement is wherever you'll reset the counter, be it a keypress or Savedata.SessionEnded (which you can trigger by purposefully dying)
+        /// </summary>
+        /// <param name="fileName">Filename to be outputted</param>
+        /// <param name="csv">Export as CSV? (TXT if false)</param>
+        /// <param name="separator">Separator between each inputs</param>
+        public void Release(string fileName = "cutscene_input_log", bool csv = false, string separator = "|")
         {
-            string filePath = Custom.RootFolderDirectory() + Path.DirectorySeparatorChar.ToString() + "escort_cuts_input_log.txt";
-            string printText = "NUMBR|   X|   Y| JMP|THRW|PCKP| MAP|CTGL|positionX|positionY\r\n";
+            string filePath = AssetManager.ResolveFilePath(fileName + (csv? ".csv" : ".txt"));
+            string printText = $"FRAME{separator}DPAD{separator} JMP{separator}THRW{separator}PCKP{separator} MAP{separator}CTGL{separator}positionX{separator}positionY\r\n";
             foreach(StrippedPlayerInputPackage spip in AllInputs)
             {
-                printText += spip.ToString() + "\r\n";
+                printText += spip.ToString().Replace("<S>", separator) + "\r\n";
             }
             using (StreamWriter streamWriter = File.CreateText(filePath))
             {
@@ -42,13 +62,39 @@ static class EsInLogger
             AllInputs.Clear();
             num = 0;
         }
+
+        private bool IsSimilar(StrippedPlayerInputPackage a, StrippedPlayerInputPackage b)
+        {
+            if (a is null || b is null)
+            {
+                return false;
+            }
+
+            if (
+                a.x == b.x &&
+                a.y == b.y &&
+                a.jmp == b.jmp &&
+                a.thrw == b.thrw &&
+                a.pckp == b.pckp &&
+                a.mp == b.mp &&
+                a.crouchToggle == b.crouchToggle
+            )
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
+    /// <summary>
+    /// A stripped way of keeping player inputs, meant to only keep the important bits
+    /// </summary>
     public record StrippedPlayerInputPackage
     {
         public readonly int n, x, y;
         public readonly bool jmp, thrw, pckp, mp, crouchToggle;
         public readonly float posX, posY;
+        private const string separator = "<S>";
 
         public StrippedPlayerInputPackage(int n, in Player.InputPackage pIn, in Vector2 pos)
         {
@@ -67,31 +113,30 @@ static class EsInLogger
         public override string ToString()
         {
             string result = n.ToString("00000");
-            result += "|";
-            result += x < 0? "" : "+";  // X
-            result += x.ToString("0.00");
-            result += "|";
-            result += y < 0? "" : "+";  // Y
-            result += y.ToString("0.00");
-            result += "|";
-            result += jmp? "XXXX":"    ";  // jmp
-            result += "|";
-            result += thrw? "XXXX":"    ";  // thrw
-            result += "|";
-            result += pckp? "XXXX":"    ";  // pckp
-            result += "|";
-            result += mp? "XXXX":"    ";  // mp
-            result += "|";
-            result += crouchToggle? "XXXX":"    ";  // ct
-            result += "|";
-            result += posX.ToString("0000.0000");  // posX
-            result += "|";
-            result += posY.ToString("0000.0000");  // posY
+            result += separator;
+            result += x < 0? "←" : " ";
+            result += y < 0? "↓" : " ";
+            result += y > 0? "↑" : " ";
+            result += x > 0? "→" : " ";
+            result += separator;
+            result += jmp? "■■■■":"    ";  // jmp
+            result += separator;
+            result += thrw? "■■■■":"    ";  // thrw
+            result += separator;
+            result += pckp? "■■■■":"    ";  // pckp
+            result += separator;
+            result += mp? "■■■■":"    ";  // mp
+            result += separator;
+            result += crouchToggle? "■■■■":"    ";  // ct
+            result += separator;
+            result += (posX < 0? "" : "+") + posX.ToString("0000.000");  // posX
+            result += separator;
+            result += (posY < 0? "" : "+") + posY.ToString("0000.000");  // posY
             return result;
         }
     }
 
-    private static readonly ConditionalWeakTable<Plugin, EIL> EILSTORE = new();
-    public static EIL GetEIL(this Plugin instance) => EILSTORE.GetValue(instance, _ => new());
+    private static readonly ConditionalWeakTable<Plugin, CSIL> EILSTORE = new();
+    public static CSIL GetCSIL(this Plugin instance) => EILSTORE.GetValue(instance, _ => new());
 }
 

@@ -77,6 +77,7 @@ namespace TheEscort
         public int offendingKTtusk;
         public int offendingRemoval;
         public int tryFindingPup;
+        public bool expeditionSpawnPup;
         public Player SocksAliveAndHappy
         {
             get 
@@ -92,6 +93,9 @@ namespace TheEscort
 
         public bool CustomKeybindEnabled {get; private set;}
         public KeyCode CustomKeybind {get; private set;}
+        public const int SocksID = 3118;
+        public const int DemonSocksID = 4118;
+        public const int SpeedSocksID = 765;
 
         // Build stuff
         public bool Brawler;

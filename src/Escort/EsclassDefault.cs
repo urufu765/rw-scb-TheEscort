@@ -11,7 +11,7 @@ using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using Newtonsoft.Json;
-using static EscortCutsceneTool.EsInLogger;
+using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
@@ -226,7 +226,7 @@ namespace TheEscort
 
                 if (logForCutscene && self.playerState.playerNumber == 0)
                 {
-                    this.GetEIL().Capture(self);
+                    this.GetCSIL().Capture(self);
                 }
                 //self.jumpStun = 0;
             }
@@ -707,8 +707,9 @@ namespace TheEscort
                     if (e.SocksAliveAndHappy is null)
                     {
                         sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn = true;
-                        SpawnThePup(ref e, self.room, self.coord);
+                        SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         e.SocksAliveAndHappy.mainBodyChunk.pos = e.SocksAliveAndHappy.mainBodyChunk.lastPos = new Vector2(Futile.mousePosition.x, Futile.mousePosition.y) + self.room.game.cameras[0].pos;
+
                         Ebug("DEBUG SOCKS on", 2, true);
                     }
                     else
@@ -723,9 +724,10 @@ namespace TheEscort
                 if (e.isDefault)
                 {
                     // Spawn in shelter on cycle 0 for expedition
-                    if (e.SocksAliveAndHappy is null && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
+                    if (e.SocksAliveAndHappy is null && !e.expeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
                     {
-                        SpawnThePup(ref e, self.room, self.coord);
+                        SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
+                        e.expeditionSpawnPup = true;
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
@@ -750,6 +752,7 @@ namespace TheEscort
                         Ebug("Show socks respawn tutorial!", 1, true);
                         self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("At the cost of a karma flower, the slugpup respawns!"), 40, 300, true, true);
                         storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify, true);
+                        storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, false);
                     }
                 }
             }

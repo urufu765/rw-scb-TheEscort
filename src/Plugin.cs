@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
-using static EscortCutsceneTool.EsInLogger;
+using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
@@ -1167,7 +1167,7 @@ namespace TheEscort
 
             if (logForCutscene)
             {
-                this.GetEIL().Release();
+                this.GetCSIL().Release();
             }
 
             // Respawn pup so karma reinforcement go away
@@ -1264,6 +1264,7 @@ namespace TheEscort
                         {
                             // Pup no longer exists so must be recreated and respawned!
                             SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0));
+                            Ebug("Hello Socks!", 1, true);
                         }
                     }
                 }
@@ -1282,16 +1283,30 @@ namespace TheEscort
         /// <param name="escort">Escort instance</param>
         /// <param name="room">Room to spawn in</param>
         /// <param name="worldCoordinate">Coordinates to spawn at</param>
-        /// <param name="iD">Set ID</param>
+        /// <param name="iD">ID of player that the slugpup will like</param>
         private void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null)
         {
-            iD ??= room.game.GetNewID();
             escort.socksAbstract?.Destroy();
-            escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugcat"), null, worldCoordinate, iD.Value);
-            escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
-            escort.socksAbstract.ID.setAltSeed(3118);
+            //room.game.GetNewID()
+            int socksID = UnityEngine.Random.value switch
+            {
+                > 0.2f => Escort.SocksID,
+                > 0.01f => Escort.DemonSocksID,
+                _ => Escort.SpeedSocksID
+            };
+            escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugpup"), null, worldCoordinate, new(-1, socksID));
+            //escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
+            escort.socksAbstract.state = new MoreSlugcats.PlayerNPCState(escort.socksAbstract, 0);
+            escort.socksAbstract.ID.setAltSeed(socksID);
+            room.abstractRoom.AddEntity(escort.socksAbstract);
             escort.socksAbstract.RealizeInRoom();
-            escort.socksAbstract.realizedCreature.PlaceInRoom(room);
+            //escort.socksAbstract.realizedCreature.PlaceInRoom(room);
+            if (iD is not null)
+            {
+                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceLike(1f);
+                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceTempLike(1f);
+            }
+            escort.SocksAliveAndHappy.Stun(100);
             Ebug("Spawn socks (unofficially)!", 1, true);
         }
 
@@ -1312,7 +1327,7 @@ namespace TheEscort
             abstractSocks = null;
             foreach (UpdatableAndDeletable thing in room.updateList)
             {
-                if (thing is Player player && player.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && player.abstractCreature.ID.altSeed == 3118)
+                if (thing is Player player && player.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && player.abstractCreature.ID.number is Escort.SocksID or Escort.DemonSocksID or Escort.SpeedSocksID)
                 {
                     abstractSocks = player.abstractCreature;
                     return true;

@@ -11,6 +11,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev01** It's time to develop
     * **dev02** Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
     * **dev03** Input recorder
+    * **dev04** Slugpup spawn fully implemented
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1
