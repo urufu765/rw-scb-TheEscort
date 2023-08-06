@@ -49,6 +49,8 @@ namespace TheEscort
         public Dictionary<int, int> SpeChargeStore {get; set;} = new();
         public Dictionary<int, float> DeflPermaDamage {get; set;} = new();
         public bool RespawnPupReady {get; set;} = false;
+        public bool CheatedSpawnPup {get; set;} = false;
+        public bool ExpeditionSpawnPup {get; set;} = false;
         public bool HackPupSpawn {get; set;} = false;
         public bool EscortPupEncountered {get; set;} = false;
         public float EscortPupLike {get; set;} = -1;

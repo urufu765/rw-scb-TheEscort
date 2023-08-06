@@ -741,19 +741,19 @@ namespace TheEscort
                     }
 
                     // Spawn in shelter on cycle 0 for expedition
-                    if (e.SocksAliveAndHappy is null && !e.expeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
+                    if (e.SocksAliveAndHappy is null && !sgs.saveState.miscWorldSaveData.Esave().ExpeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
-                        e.expeditionSpawnPup = true;
+                        sgs.saveState.miscWorldSaveData.Esave().ExpeditionSpawnPup = true;
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
+                    if (e.SocksAliveAndHappy is null && !sgs.saveState.miscWorldSaveData.Esave().CheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
-                        e.cheatedSpawnPup = true;
+                        sgs.saveState.miscWorldSaveData.Esave().CheatedSpawnPup = true;
                     }
 
                     // Socks (impostor) check
