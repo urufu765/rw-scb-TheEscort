@@ -17,6 +17,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev07** Turned off logger, slugpup ID changes only on first spawn, Fix issue where deathpit causes spup to not spawn
     * **dev08** Fixed infinite slugpup exploit
     * **dev09** If karma flower is used, use that rather than reinforcement
+    * **dev10** Images!
     * *dev08* added foodpips for default escort (later), 
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area

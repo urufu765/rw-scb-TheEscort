@@ -38,7 +38,7 @@
 		"world_state": ["EscortMe", "Spear"],
 		"timeline_after": "Spear",
 		"select_menu_scene": "Slugcat_EscortMe",
-		"select_menu_scene_ascended": "EsTemp",
+		"select_menu_scene_ascended": "Slugcat_End_EscortMe",
 		"sleep_scene": "Sleep_EscortMe",
 		"the_mark": false,
 
