@@ -1198,6 +1198,17 @@ namespace TheEscort
                 }
                 self.deathPersistentSaveData.reinforcedKarma = false;
             }
+            if (survived && self.miscWorldSaveData.Esave().AltRespawnReady)
+            {
+                self.miscWorldSaveData.Esave().AltRespawnReady = false;
+
+                // Show alternative tutorial message saying that the pup has been revived
+                if (!self.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawnedNotify))
+                {
+                    self.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, true);
+                }
+
+            }
 
             orig(self, game, survived, newMalnourished);
             DeflSharedPerma = 0;
@@ -1270,10 +1281,11 @@ namespace TheEscort
                         
                         if (TryFindThePup(self.room, out AbstractCreature ac))
                         {
-                            if (ac.state.dead)
+                            if (ac.state.dead)  // There's probably a better way but for now this will suffice
                             {
                                 // Pup exists in the room but is dead so must be respawned!
                                 //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                                ac.Destroy();
                                 SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                                 Ebug("Socks has revived from dead!", 1, true);
                             }

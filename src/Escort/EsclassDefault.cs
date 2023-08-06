@@ -741,19 +741,19 @@ namespace TheEscort
                     }
 
                     // Spawn in shelter on cycle 0 for expedition
-                    if (e.SocksAliveAndHappy is null && !sgs.saveState.miscWorldSaveData.Esave().ExpeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
+                    if (e.SocksAliveAndHappy is null && !e.expeditionSpawnPup && ModManager.Expedition && sgs.saveState.cycleNumber == 0 && self.room.game.rainWorld.ExpeditionMode && self.room.world is not null)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
-                        sgs.saveState.miscWorldSaveData.Esave().ExpeditionSpawnPup = true;
+                        e.expeditionSpawnPup = true;
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && !sgs.saveState.miscWorldSaveData.Esave().CheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
+                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
-                        sgs.saveState.miscWorldSaveData.Esave().CheatedSpawnPup = true;
+                        e.cheatedSpawnPup = true;
                     }
 
                     // Socks (impostor) check
@@ -772,12 +772,25 @@ namespace TheEscort
                     }
 
                     // Show tutorial when Socks respawns
-                    if (self.room?.game?.session is StoryGameSession storyGameSession && storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned))
+                    if (self.room?.game?.session is StoryGameSession storyGameSession)
                     {
-                        Ebug("Show socks respawn tutorial!", 1, true);
-                        self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("At the cost of a karma flower, the slugpup respawns!"), 40, 300, true, true);
-                        storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify, true);
-                        storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, false);
+                        // Reinforcement consumption
+                        if (storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned))
+                        {
+                            Ebug("Show socks respawn tutorial!", 1, true);
+                            self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("At the cost of a karma flower, the slugpup respawns!"), 40, 300, true, true);
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify, true);
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, false);
+                        }
+
+                        // Extra karma flower consumption
+                        if (storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned))
+                        {
+                            Ebug("Show alternative socks respawn tutorial!", 1, true);
+                            self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!"), 40, 300, true, true);
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawnedNotify, true);
+                            storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, false);
+                        }
                     }
                 }
             }
@@ -1966,6 +1979,7 @@ namespace TheEscort
                             bool isWinner = playersToProgressOrWin.Contains(abstractPlayer);
                             bool notDead = !player.dead;
 
+                            // I was gonna use this for something...
                             if (inShelter && notDead && isWinner)
                             {
                                 //Ebug(player, "Is successful!", ignoreRepetition: true);
@@ -1976,6 +1990,47 @@ namespace TheEscort
                                 //Ebug(player, "Is failure!", ignoreRepetition: true);
                                 // do things when failure
                             }
+
+
+                            if (self.room?.game?.session is StoryGameSession sgs)
+                            {
+                                // check for karma flower to set revival replacement
+                                if (sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady)
+                                {
+                                    foreach (UpdatableAndDeletable uad in self.room.updateList)
+                                    {
+                                        if (uad is KarmaFlower kf && kf.room.abstractRoom is not null && kf.room.abstractRoom.shelter)
+                                        {
+                                            Ebug("Socks revive using karma flower instead!");
+                                            sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = false;
+                                            sgs.saveState.miscWorldSaveData.Esave().AltRespawnReady = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+
+                                // Get Sock's relationship and store it so it can be applied on revival
+                                if (player.playerState.playerNumber == 0 && escort.socksAbstract is not null)
+                                {
+                                    float alike, tlike;
+                                    alike = tlike = -1;
+                                    try
+                                    {
+                                        alike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).like;
+                                        tlike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).tempLike;
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        Ebug(err, "Error when trying to get social memory to store!");
+                                    }
+                                    sgs.saveState.miscWorldSaveData.Esave().EscortPupLike = alike;
+                                    sgs.saveState.miscWorldSaveData.Esave().EscortPupTempLike = tlike;
+                                }
+
+                            }
+
+                            
                             Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
 
                             // Other builds

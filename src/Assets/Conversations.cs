@@ -531,6 +531,11 @@ namespace TheEscort
                             return;
                         }
                     }
+                    else if (self.oracle.room.game.GetStorySession.saveState.miscWorldSaveData.SSaiConversationsHad > 0)
+                    {
+                        // Kill slugcat on reentry
+                        self.NewAction(SSOracleBehavior.Action.ThrowOut_KillOnSight);
+                    }
                 }
                 else
                 {
