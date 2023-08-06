@@ -129,7 +129,7 @@ namespace TheEscort
         private float DKMultiplier;
         float ratioed;
         public static bool templeGuardIsFriendly;
-        public static readonly bool logForCutscene = true;
+        public static readonly bool logForCutscene = false;
         public static bool checkPupStatusAgain = false;
         public static bool pupAvailable;
 

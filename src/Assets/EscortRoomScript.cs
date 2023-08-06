@@ -418,6 +418,20 @@ public class EscortRoomScript
             }
         }
 
+        public Player FoodPlayer
+        {
+            get
+            {
+                AbstractCreature firstAlivePlayer = this.room.game.FirstAlivePlayer;
+                if (this.room.game.Players.Count > 0 && firstAlivePlayer?.realizedCreature is Player)
+                {
+                    return firstAlivePlayer.realizedCreature as Player;
+                }
+                return null;
+            }
+        }
+
+
         public class Phase : ExtEnum<Phase>
         {
             public Phase(string value, bool register = false) : base(value, register)

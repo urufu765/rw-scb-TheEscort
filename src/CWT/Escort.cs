@@ -78,6 +78,7 @@ namespace TheEscort
         public int offendingRemoval;
         public int tryFindingPup;
         public bool expeditionSpawnPup;
+        public bool cheatedSpawnPup;
         public Player SocksAliveAndHappy
         {
             get 
