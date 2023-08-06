@@ -13,6 +13,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev03** Input recorder
     * **dev04** Slugpup spawn fully implemented
     * **dev05** Intro sequence
+    * **dev06** Implemented an option that allows all slugcats to have the slugpup
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1

@@ -728,12 +728,16 @@ namespace TheEscort
                 }
 
                 // Regular stuff
-                if ((e.isDefault && pupAvailable) || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn)
+                if (((e.isDefault || config.cfgAllBuildsGetPup.Value) && pupAvailable) || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn || self.room.game.rainWorld.ExpeditionMode)
                 {
                     if (checkPupStatusAgain)
                     {
                         e.tryFindingPup = 20;
                         checkPupStatusAgain = false;
+                    }
+                    if (e.isDefault && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber > 0 && !pupAvailable)
+                    {
+                        pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
                     }
 
                     // Spawn in shelter on cycle 0 for expedition
@@ -742,6 +746,13 @@ namespace TheEscort
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         e.expeditionSpawnPup = true;
                         Ebug("Socks has been added to expedition!", 1, true);
+                    }
+
+                    if (e.SocksAliveAndHappy is null && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
+                    {
+                        SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
+                        Ebug("Socks has been added to an Escort with the power of options!", 1, true);
+                        pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
                     }
 
                     // Socks (impostor) check

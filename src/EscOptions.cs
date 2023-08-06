@@ -99,6 +99,7 @@ namespace TheEscort
         public List<ListItem> hudLocaOptions;
         public Configurable<bool> cfgNoMoreFlips;
         public Configurable<bool> cfgDeflecterSharedPool;
+        public Configurable<bool> cfgAllBuildsGetPup;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -265,6 +266,8 @@ namespace TheEscort
             this.bindDraggerHelper = config.Bind("escort_binddragger_helper_ignore_this", 0, new ConfigAcceptableRange<int>(1, PlayerCount));
             this.bindSelectHelper = config.Bind("escort_bindselect_helper", false);
             this.bindKeyHelper = config.Bind("escort_bindkey_helper", KeyCode.None);
+
+            this.cfgAllBuildsGetPup = config.Bind("cfg_Let_All_The_Builds_Have_Slugpups", false);
 
 
             // Plugin.ins.L().Christmas(this.cfgSectret.Value);
@@ -540,6 +543,11 @@ namespace TheEscort
                 new OpCheckBox(this.cfgSpears, new Vector2(xo + (xp * 0), yo - (yp * 11))){
                     description = Translate("escoptions_superspear_desc") + SetDefault(cfgSpears.defaultValue)
                 },
+                new OpLabel(xo + (xp * 1), yo - (yp * 12) + tp/2, Translate("escoptions_pupsforeveryone_text")),
+                new OpCheckBox(this.cfgAllBuildsGetPup, new Vector2(xo + (xp * 0), yo - (yp * 12))){
+                    description = Translate("escoptions_pupsforeveryone_desc") + SetDefault(cfgAllBuildsGetPup.defaultValue),
+                    colorEdge = tempColor
+                }
                 /*
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), "Lifting Power Multiplier"),
                 new OpUpdown(this.cfgEscLaunchH, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100, 2){
