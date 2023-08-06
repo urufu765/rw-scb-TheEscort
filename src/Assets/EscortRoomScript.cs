@@ -418,6 +418,7 @@ public class EscortRoomScript
             }
         }
 
+
         public class Phase : ExtEnum<Phase>
         {
             public Phase(string value, bool register = false) : base(value, register)
