@@ -51,6 +51,9 @@ namespace TheEscort
         public bool RespawnPupReady {get; set;} = false;
         public bool HackPupSpawn {get; set;} = false;
         public bool EscortPupEncountered {get; set;} = false;
+        public float EscortPupLike {get; set;} = -1;
+        public float EscortPupTempLike {get; set;} = -1;
+        public int EscortPupCampaignID {get; set;} = 0;
     }
 
 

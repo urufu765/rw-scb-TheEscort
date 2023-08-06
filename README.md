@@ -14,6 +14,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev04** Slugpup spawn fully implemented
     * **dev05** Intro sequence
     * **dev06** Implemented an option that allows all slugcats to have the slugpup
+    * **dev07** Turned off logger, slugpup ID changes only on first spawn, Fix issue where deathpit causes spup to not spawn
+    * *dev08* added foodpips for default escort (later), 
     * *dev* Let Escort jump poles quirkly
     * *dev* Add tutorial to new area
     * *dev* Escort Ending 1

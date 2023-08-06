@@ -78,6 +78,7 @@ namespace TheEscort
         public int offendingRemoval;
         public int tryFindingPup;
         public bool expeditionSpawnPup;
+        public bool cheatedSpawnPup;
         public Player SocksAliveAndHappy
         {
             get 
@@ -96,6 +97,7 @@ namespace TheEscort
         public const int SocksID = 3118;
         public const int DemonSocksID = 4118;
         public const int SpeedSocksID = 765;
+        public int PupCampaignID;
 
         // Build stuff
         public bool Brawler;

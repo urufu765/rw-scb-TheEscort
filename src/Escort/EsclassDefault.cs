@@ -728,7 +728,7 @@ namespace TheEscort
                 }
 
                 // Regular stuff
-                if (((e.isDefault || config.cfgAllBuildsGetPup.Value) && pupAvailable) || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn || self.room.game.rainWorld.ExpeditionMode)
+                if (e.isDefault || config.cfgAllBuildsGetPup.Value || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn || self.room.game.rainWorld.ExpeditionMode)
                 {
                     if (checkPupStatusAgain)
                     {
@@ -748,15 +748,16 @@ namespace TheEscort
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
+                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
+                        e.cheatedSpawnPup = true;
                     }
 
                     // Socks (impostor) check
-                    if (e.SocksAliveAndHappy is null)
+                    if (e.SocksAliveAndHappy is null && pupAvailable)
                     {
                         if (e.tryFindingPup > 0 && TryFindThePup(self.room, out AbstractCreature ac))
                         {

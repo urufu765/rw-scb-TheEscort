@@ -129,7 +129,7 @@ namespace TheEscort
         private float DKMultiplier;
         float ratioed;
         public static bool templeGuardIsFriendly;
-        public static readonly bool logForCutscene = true;
+        public static readonly bool logForCutscene = false;
         public static bool checkPupStatusAgain = false;
         public static bool pupAvailable;
 
@@ -998,6 +998,16 @@ namespace TheEscort
                 if (world?.game?.session is StoryGameSession s)
                 {
                     pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
+                    if (s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID == 0)
+                    {
+                        s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID = UnityEngine.Random.value switch
+                        {
+                            > 0.2f => Escort.SocksID,
+                            > 0.01f => Escort.DemonSocksID,
+                            _ => Escort.SpeedSocksID
+                        };
+                    }
+                    e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
                 }
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
@@ -1246,12 +1256,25 @@ namespace TheEscort
                     }
                     if (eCon.TryGetValue(focus, out Escort e))
                     {
+                        float like, tempLike;
+                        like = s.saveState.miscWorldSaveData.Esave().EscortPupLike;
+                        tempLike = s.saveState.miscWorldSaveData.Esave().EscortPupTempLike;
+                        if (like == -1)
+                        {
+                            like = 1;
+                        }
+                        if (tempLike == -1)
+                        {
+                            tempLike = 1;
+                        }
+                        
                         if (TryFindThePup(self.room, out AbstractCreature ac))
                         {
                             if (ac.state.dead)
                             {
                                 // Pup exists in the room but is dead so must be respawned!
-                                JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                                //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                                SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                                 Ebug("Socks has revived from dead!", 1, true);
                             }
                             else
@@ -1263,7 +1286,8 @@ namespace TheEscort
                         else if (e.socksAbstract?.realizedCreature is not null)
                         {
                             // Pup exists somewhere in the world so must just be respawned!
-                            JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                            //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
+                            SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                             Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
                         }
                         else
@@ -1290,16 +1314,11 @@ namespace TheEscort
         /// <param name="room">Room to spawn in</param>
         /// <param name="worldCoordinate">Coordinates to spawn at</param>
         /// <param name="iD">ID of player that the slugpup will like</param>
-        public static void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null)
+        public static void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null, float like = 1, float tempLike = 1)
         {
             escort.socksAbstract?.Destroy();
             //room.game.GetNewID()
-            int socksID = UnityEngine.Random.value switch
-            {
-                > 0.2f => Escort.SocksID,
-                > 0.01f => Escort.DemonSocksID,
-                _ => Escort.SpeedSocksID
-            };
+            int socksID = escort.PupCampaignID;
             escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugpup"), null, worldCoordinate, new(-1, socksID));
             //escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
             escort.socksAbstract.state = new MoreSlugcats.PlayerNPCState(escort.socksAbstract, 0);
@@ -1309,8 +1328,8 @@ namespace TheEscort
             //escort.socksAbstract.realizedCreature.PlaceInRoom(room);
             if (iD is not null)
             {
-                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceLike(1f);
-                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceTempLike(1f);
+                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceLike(like);
+                escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceTempLike(tempLike);
             }
             escort.SocksAliveAndHappy.Stun(100);
             Ebug("Spawn socks (unofficially)!", 1, true);
