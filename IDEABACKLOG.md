@@ -41,6 +41,12 @@
     * Convert lizard dunking into a separate thing instead of relying on dropkick to do the thing
     * When brawler picks up the inspector, they can use it to traverse zero g (heavy metal theme playes if silly sfx is on)
     * For hydrox cat, cursor color is body color and cursor outline is eyes, if there's more than one of the same color give or take 5%, set a random color (recursion, have a separate array with whether the color is set or unset and recurse until all colors are set)
+    * *dev08* added foodpips for default escort (later), 
+    * *dev* Let Escort jump poles quirkly
+    * *dev* Add tutorial to new area
+    * *dev* Escort Ending 1
+    * *dev* Escort stats screen where it shows the number of ascended creatures
+    * *dev* Add in all the tutorials
 
 
 * *(0.2.13)* Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))

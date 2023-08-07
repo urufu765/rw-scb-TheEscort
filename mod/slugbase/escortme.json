@@ -1,7 +1,7 @@
 {
 	"id": "EscortMe",
 	"name": "The Escort",
-	"description": "WARNING: The slugpup, the intros, and the endings are not implemented yet.<LINE><LINE>A guardian from a faraway land, entrusted to bring a special creature through the thick and thin.",
+	"description": "A guardian from a faraway land, entrusted to bring a special creature through the thick and thin.",
 	"features": {
 		"color" : "4169e1",
 		"custom_colors" : [

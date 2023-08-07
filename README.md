@@ -19,12 +19,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev09** If karma flower is used, use that rather than reinforcement
     * **dev10** Images!
     * **dev11** The End
-    * *dev08* added foodpips for default escort (later), 
-    * *dev* Let Escort jump poles quirkly
-    * *dev* Add tutorial to new area
-    * *dev* Escort Ending 1
-    * *dev* Escort stats screen where it shows the number of ascended creatures
-    * *dev* Add in all the tutorials
 
 * ### 0.2 - The Escort
   * **(0.2.12.1)** Speedster rotund compatibility, Fix Brawler initial cooldown, Escapist lowered bite lethality, Escapist flip parries while ability is active 

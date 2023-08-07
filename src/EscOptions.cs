@@ -150,12 +150,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;
         public int buildDiv = -6;
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.2.12.1";
+        private static readonly string VERSION = "0.3";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Escapist flip parries when shadow mode (so bombjumps can be a thing ;))<LINE>- Escapist's lizard bite lethality reduced significantly<LINE>- Attempted to fix Brawler's first cooldown<LINE>- Speedster rotund compatibility<LINE><LINE>If you missed it: 0.2.12<LINE>- Escapist rework! The Escapist build has been completely reworked for a more active playstyle. Style on your enemies, make them regret trying to eat you!<LINE>-Brawler can now shank when malnourished<LINE>- Brawler's shank and punch cooldowns reduced<LINE>- Expedition spawn location works correctly now<LINE>- More rotund support (Fatter = stronger melee/spear attacks)<LINE>- Void effect at the depths has been reduced for just Escort<LINE>- Karma 10 grants Escort an alliance with the guardians<LINE>- Option to bind some abilities to custom keybinds (Escapist shadow ability, Speedster speed, Gilded levitate)");
+                "The End Part 1<LINE>- Added slugpup to Escort's Default campaign<LINE>- option to allow other builds to access the slugpup<LINE>- A proper ending has been implemented(Ascension)<LINE>- Sleepscreen changes depending on whether you have the special slup or not<LINE>- This will be the final update for some time...");
             }
         }
 
