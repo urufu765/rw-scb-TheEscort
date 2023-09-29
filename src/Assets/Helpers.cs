@@ -21,8 +21,8 @@ namespace TheEscort
          4: Ebug errors (done by design)
         */
         public static int logImportance = 4;
-        private static readonly string[] prevLogs = new string[4];
-        private static readonly int[] logRepetitions = new int[4];
+        private static readonly string[] prevLogs = new string[RainWorld.PlayerObjectBodyColors.Length]; //THIS IS THE MYRIAD PLAYER COUNT -WW
+        private static readonly int[] logRepetitions = new int[RainWorld.PlayerObjectBodyColors.Length];
 
         public static Dictionary<string, int> themCreatureScores;
 
