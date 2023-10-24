@@ -8,7 +8,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
   * **(0.3.1)** Dropkick remake
-    * **dev01** Testing the waters on a military computer... far away from an ide...
+    * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
+    * **dev02** Creating a new file to fit all the code into
+    * *dev03* Code in the stuff but all commented out
+    * *dev04* Find someone to test it out
+    * *dev05* Begin implementing the changes
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
