@@ -605,10 +605,16 @@ namespace TheEscort
                     color = bDeflector
                 },
 
-                // Force out of grasps, though don't expect to be fighting much...
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc")){
+                // -insert new escapist's descriptor
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_new_desc")){
                     color = bEscapist
                 },
+
+                // Force out of grasps, though don't expect to be fighting much...
+                // insert code for the old escapist in place of the new escapist in case the old escapist option is checked. Also have a separate thing where the color of the thing changes depending on the option selected.
+                //new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc")){
+                //    color = bEscapist
+                //},
 
                 // With the aid of <REPLACE>, dual-wield weapons of the same type for extreme results
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), buildTextPad + Translate("railgunner_desc")){
