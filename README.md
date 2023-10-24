@@ -7,6 +7,9 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.3 - Ending I
+  * **(0.3.1)** Dropkick remake
+    * **dev01** Testing the waters on a military computer... far away from an ide...
+  * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
     * **dev02** Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
