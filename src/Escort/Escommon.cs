@@ -117,7 +117,7 @@ namespace TheEscort
         /// <summary>
         /// Immitates a wall jump but not really
         /// </summary>
-        private static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
+        public static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
             self.bodyChunks[0].vel.y = boostUp;
             self.bodyChunks[1].vel.y = boostUp - 1f;
             self.bodyChunks[0].pos.y += yankUp;
