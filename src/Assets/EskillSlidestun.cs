@@ -14,7 +14,7 @@ namespace TheEscort
     {
         /// <summary>
         /// The default option for Escorts. Makes them launch forwards for easy escape.
-        /// <summary>
+        /// </summary>
         public static void SS_Hurdle_Leap(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect
@@ -85,7 +85,7 @@ namespace TheEscort
 
         /// <summary>
         /// (INCOMPLETE) Launches Escort upwards instead of horizontally, allowing much easier downthrow skillshots.
-        /// <summary>
+        /// </summary>
         public static void SS_Hurdle_Launch(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect
@@ -122,7 +122,7 @@ namespace TheEscort
 
         /// <summary>
         /// (INCOMPLETE) Launches Escort the opposite direction from impact direction sort of like a whiplash but on steroids.
-        /// <summary>
+        /// </summary>
         public static void SS_Backfire(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect
@@ -159,7 +159,7 @@ namespace TheEscort
 
         /// <summary>
         /// (INCOMPLETE) Transfers Escort's sliding momentum right into the creature, stopping Escort dead in their tracks and dealing damage.
-        /// <summary>
+        /// </summary>
         public static void SS_Body_Slam(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect
@@ -196,7 +196,7 @@ namespace TheEscort
 
         /// <summary>
         /// (INCOMPLETE) Allows Escort to pass beneath the creature, before pushing off of them to slide further.
-        /// <summary>
+        /// </summary>
         public static void SS_Relay(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect
@@ -233,7 +233,7 @@ namespace TheEscort
 
         /// <summary>
         /// (INCOMPLETE) Allows Escort to pass under a creature, making them drop everything in their hands/mouth.
-        /// <summary>
+        /// </summary>
         public static void SS_Tackle(this Creature target, Player self, Vector2 momNdir, float dmg, float stn, float tossMod = 18, float tossFac = 1)
         {
             // Creature Affect

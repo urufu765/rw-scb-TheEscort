@@ -12,6 +12,12 @@ namespace TheEscort
 {
     public static class EskDK
     {
-        // Insert dropkick stuff here
+        /// <summary>
+        /// The default option for Escorts. Makes creatures drop everything in their grasp and kicks them far away so they can't touch you
+        /// </summary>
+        public static void DK_Drop_Kick(this Creature target, Player self, Vector2 momNdir, float dmg, float stn)
+        {
+            // code here lol
+        }
     }
 }
