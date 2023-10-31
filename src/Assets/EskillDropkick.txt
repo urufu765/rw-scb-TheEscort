@@ -17,7 +17,17 @@ namespace TheEscort
         /// </summary>
         public static void DK_Drop_Kick(this Creature target, Player self, Vector2 momNdir, float dmg, float stn)
         {
-            // code here lol
+            // Creature Affect
+            try
+            {
+                target.Violence();
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Failed to violence the creature!");
+            }
+
+
         }
     }
 }

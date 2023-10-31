@@ -11,10 +11,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
     * **dev02** Creating a new file to fit all the code into
     * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
-    * *dev04* Translate in the stuff (Dropkick) and have placeholders for each different dropkick moves
-    * *dev05* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
-    * *dev06* Find someone to test it out
-    * *dev07* Begin testing and implementing the changes
+    * **dev04** Translate in the stuff (Dropkick) and have placeholders for each different dropkick moves
+    * **dev05** Gave up on remaking these things for now... just random coding here folks. Warming up the brain after not being able to code for such a long time.
+    * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
+    * *dev* Find someone to test it out
+    * *dev* Begin testing and implementing the changes
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
