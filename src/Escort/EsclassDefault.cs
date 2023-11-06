@@ -1124,6 +1124,7 @@ namespace TheEscort
         /// </remarks>
         private void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
+            // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             orig(self);
             try
             {
@@ -1144,6 +1145,7 @@ namespace TheEscort
 
             //Ebug(self, "Jump Triggered!");
             // Decreases aerobiclevel gained from jumping
+            // TODO: May need to adjust it so it doesn't take away the aerobic level totally lol
             if (self.aerobicLevel > 0.1f)
             {
                 self.aerobicLevel -= 0.1f;

@@ -64,5 +64,44 @@ namespace TheEscort
             if (n < 3) return true;
             return UnityEngine.Random.value < Mathf.Pow(0.5f, n - 2);
         }
+
+
+        /// <summary>
+        /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair.
+        /// </summary>
+        private void Esclass_US_Jump(Player self, Escort e)
+        {
+            throw NotImplementedException;
+        }
+
+
+        /// <summary>
+        /// Handles the midair jumps
+        /// </summary>
+        public static void Esclass_US_MidJump(Player self, Escort e)
+        {
+            throw NotImplementedException;
+        }
+
+
+        /// <summary>
+        /// Checks terrain collisions for Unstable. Works semi-similarly to new escapist's except missing a few comparisons.
+        /// </summary>
+        public static float Esclass_US_Dash(Player self)
+        {
+            float dashDistance = 0;
+            for (int i = 1; i < 10; i++)
+            {
+                // Calculate positions
+                float xCom = self.bodyChunks[1].pos.x + 20 * i * self.input[0].x;
+                float yCom = self.bodyChunks[1].pos.y + 20 * i * self.input[0].y;
+                
+                IntVector2 tPos = self.room.GetTilePosition(new(xCom, yCom));
+                Room.Tile rt = self.room.GetTile(tPos);
+
+
+
+            }
+        }
     }
 }
