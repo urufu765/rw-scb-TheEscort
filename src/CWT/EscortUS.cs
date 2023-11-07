@@ -11,6 +11,7 @@ namespace TheEscort
         public int UnsBlinkCount;
         public int UnsBlinkWindow;
         public float UnsDamaged;
+        public IntVector2 UnsBlinkDir;
 
         public void EscortUS()
         {
@@ -18,6 +19,7 @@ namespace TheEscort
             UnsBlinkCount = 0;
             UnsBlinkWindow = 0;
             UnsDamaged = 0.0f;
+            UnsBlinkDir = new(0, 0);
         }
     }
 }
