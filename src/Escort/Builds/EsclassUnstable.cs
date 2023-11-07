@@ -168,8 +168,8 @@ namespace TheEscort
                 {
                     self.bodyChunks[0].pos.y += 20;
                     self.bodyChunks[1].pos.y += 20;
-                    self.bodyChunks[0].vel.y += 6;
-                    self.bodyChunks[1].vel.y += 5;
+                    self.bodyChunks[0].vel.y += 1.02f;
+                    self.bodyChunks[1].vel.y += 1;
                 }
                 else
                 {
@@ -177,10 +177,10 @@ namespace TheEscort
                     self.bodyChunks[1].pos.x += xMov;
                     self.bodyChunks[0].pos.y += yMov;
                     self.bodyChunks[1].pos.y += yMov;
-                    self.bodyChunks[0].vel.x += 5 * self.input[0].x;
-                    self.bodyChunks[1].vel.x += 5 * self.input[0].x;
-                    self.bodyChunks[0].vel.y += 5 * self.input[0].y;
-                    self.bodyChunks[1].vel.y += 5 * self.input[0].y;
+                    self.bodyChunks[0].vel.x += 1 * self.input[0].x;
+                    self.bodyChunks[1].vel.x += 1 * self.input[0].x;
+                    self.bodyChunks[0].vel.y += 1 * self.input[0].y;
+                    self.bodyChunks[1].vel.y += 1 * self.input[0].y;
                 }
             }
         }

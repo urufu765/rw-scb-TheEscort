@@ -15,6 +15,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** Gave up on remaking these things for now... just random coding here folks. Warming up the brain after not being able to code for such a long time.
     * **dev06** Unstable jump code start
     * **dev07** Continued work on Unstable jump code
+    * **dev08** Realized the velocity may send Unstable across the map from one blink
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes
