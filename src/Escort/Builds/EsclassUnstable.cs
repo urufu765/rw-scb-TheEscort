@@ -44,7 +44,7 @@ namespace TheEscort
                 }
             }
 
-            if (e.UnsBlinkCD > 0)
+            if (e.UnsBlinkCD > 0 && e.UnsBlinkFrame == 0)
             {
                 e.UnsBlinkCD--;
             }
@@ -76,6 +76,14 @@ namespace TheEscort
                     self.LoseAllGrasps();
                 }
             }
+
+            if (e.UnsBlinkFrame > 0)
+            {
+                if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir == (0, 1), e.UnsBlinkDifDir))
+                {
+                    e.UnsBlinkFrame = 0;
+                }
+            }
         }
 
 
@@ -90,20 +98,14 @@ namespace TheEscort
 
 
         /// <summary>
-        /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair.
+        /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair. Only meant to be used as the first blink
         /// </summary>
         private void Esclass_US_Jump(Player self, Escort e)
         {
-            if (e.UnsBlinkCD == 0 && (e.UnsBlinkCount == 0 || e.UnsBlinkWindow > 0))
+            if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
                 // May need to reevaluate
                 // The cooldown needs to be turned on when the blink window reaches 0 after blink is used or the player fails the blink check
-                if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
-                {
-                    e.UnsBlinkCD = self.malnourished? 120 : 80;
-                    e.UnsBlinking = false;
-                    return;
-                }
                 e.UnsBlinkCount++;
                 e.UnsBlinkWindow = 40;
                 e.UnsBlinkDir = (0, 1);
@@ -114,8 +116,14 @@ namespace TheEscort
                     self.room.PlaySound(SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, 0.75f, 0.95f);
                     self.room.AddObject(new Explosion.ExplosionLight(self.mainBodyChunk.pos, 90f, 0.7f, 4, Color.gray));
                 }
-                Esclass_US_Dash(self, true);
-            }            
+                e.UnsBlinkFrame++;  // Alt implementation
+                //Esclass_US_Dash(self, true);
+            }
+            if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
+            {
+                e.UnsBlinkCD = self.malnourished? 120 : 80;
+                e.UnsBlinking = false;
+            }
         }
 
 
@@ -124,22 +132,16 @@ namespace TheEscort
         /// </summary>
         public static void Esclass_US_MidJump(Player self, Escort e)
         {
-            if (e.UnsBlinkCD == 0 && (e.UnsBlinkCount == 0 || e.UnsBlinkWindow > 0))
+            if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
-                if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
-                {
-                    e.UnsBlinkCD = self.malnourished? 120 : 80;
-                    e.UnsBlinking = false;
-                    return;
-                }
                 e.UnsBlinkCount++;
                 e.UnsBlinkWindow = 40;
-                bool changeDirections = false;
+                e.UnsBlinkDifDir = false;
                 e.UnsBlinking = true;
                 if (e.UnsBlinkDir != (self.input[0].x, self.input[0].y))
                 {
                     e.UnsBlinkDir = (self.input[0].x, self.input[0].y);
-                    changeDirections = true;
+                    e.UnsBlinkDifDir = true;
                 }
                 if (self.room is not null)
                 {
@@ -147,7 +149,13 @@ namespace TheEscort
                     self.room.PlaySound(SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, 0.75f, 0.95f);
                     self.room.AddObject(new Explosion.ExplosionLight(self.mainBodyChunk.pos, 90f, 0.7f, 4, Color.white));
                 }
-                Esclass_US_Dash(self, false, changeDirections);
+                e.UnsBlinkFrame++;  // Alt implementation
+                //Esclass_US_Dash(self, false, e.UnsBlinkDifDir);
+            }
+            if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
+            {
+                e.UnsBlinkCD = self.malnourished? 120 : 80;
+                e.UnsBlinking = false;
             }
         }
 
@@ -228,9 +236,9 @@ namespace TheEscort
         }
 
         /// <summary>
-        /// Alternate implementation (INCOMPLETE) Returns true if end of blink
+        /// Alternate implementation Returns true if end of blink
         /// </summary>
-        public static bool Esclass_US_Dash2(Player self, int frame, bool upOnly = false, bool changeDir = false)
+        public static bool Esclass_US_Dash2(Player self, in int frame, bool upOnly = false, bool changeDir = false)
         {
             // Calculate positions
             float xCom = 0;

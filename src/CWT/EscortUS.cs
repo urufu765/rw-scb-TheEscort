@@ -14,6 +14,7 @@ namespace TheEscort
         public int UnsBlinkWindow;
         public int UnsBlinkCD;
         public int UnsBlinkFrame;
+        public bool UnsBlinkDifDir;
         public float UnsDamaged;
         public (int x, int y) UnsBlinkDir;
 
@@ -25,6 +26,7 @@ namespace TheEscort
             UnsBlinkWindow = 0;
             UnsBlinkCD = 0;
             UnsBlinkFrame = 0;
+            UnsBlinkDifDir = false;
             UnsDamaged = 0.0f;
             UnsBlinkDir = (0, 0);
         }
