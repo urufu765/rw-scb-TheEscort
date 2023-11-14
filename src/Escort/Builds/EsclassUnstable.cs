@@ -17,6 +17,7 @@ namespace TheEscort
 
         public void Esclass_US_Tick(Player self, ref Escort e)
         {
+            // Constant tripping clock
             if (e.UnsTripTime < 40)
             {
                 e.UnsTripTime++;
@@ -26,11 +27,13 @@ namespace TheEscort
                 e.UnsTripTime = 0;
             }
 
-            if (self.canJump > 0 && e.UnsBlinkCount > 0)
+            // May need revisiting
+            if (self.canJump > 0 && e.UnsBlinkCount > 0 && e.UnsBlinkCD == 0 && e.UnsBlinkWindow == 0)
             {
                 e.UnsBlinkCount--;
             }
 
+            // 
             if (e.UnsBlinkWindow > 0 && e.UnsBlinkFrame == 0)
             {
                 e.UnsBlinkWindow--;
@@ -44,6 +47,7 @@ namespace TheEscort
                 }
             }
 
+            //
             if (e.UnsBlinkCD > 0 && e.UnsBlinkFrame == 0)
             {
                 e.UnsBlinkCD--;
@@ -56,14 +60,14 @@ namespace TheEscort
             }
             else if (e.UnsBlinkFrame >= 10)
             {
-                e.UnsBlinkFrame = 0;
+                e.UnsBlinkFrame = 0;  // Redundancy never hurts
             }
         }
 
         private void Esclass_US_Update(Player self, ref Escort e)
         {
             // Trippin' time!
-            if (e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG)
+            if (e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
             {
                 Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                 self.standing = false;
@@ -79,10 +83,21 @@ namespace TheEscort
 
             if (e.UnsBlinkFrame > 0)
             {
-                if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir == (0, 1), e.UnsBlinkDifDir))
+                if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir, e.UnsBlinkDir == (0, 1) || e.UnsBlinkNoDir, e.UnsBlinkDifDir))
                 {
-                    e.UnsBlinkFrame = 0;
+                    e.UnsBlinkNoDir = false;
+                    e.UnsBlinkFrame = 0;  // Redundancy never hurts
                 }
+            }
+        }
+
+
+        private static void Esclass_US_MovementUpdate(Player self, ref Escort e)
+        {
+            // Midair jump
+            if (e.UnsBlinkCD == 0 && self.wantToJump > 0 && self.canJump == 0 && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
+            {
+                Esclass_US_MidJump(self, e);
             }
         }
 
@@ -103,6 +118,11 @@ namespace TheEscort
         /// </summary>
         private void Esclass_US_Jump(Player self, Escort e)
         {
+            if (self.bodyMode == Player.BodyModeIndex.ZeroG)
+            {
+                Esclass_US_MidJump(self, e);
+                return;
+            }
             if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
                 // May need to reevaluate
@@ -140,6 +160,7 @@ namespace TheEscort
                 e.UnsBlinkCount++;
                 e.UnsBlinkWindow = 40;
                 e.UnsBlinkDifDir = false;
+                e.UnsBlinkNoDir = self.input[0].x == 0 && self.input[0].y == 0;
                 e.UnsBlinking = true;
                 if (e.UnsBlinkDir != (self.input[0].x, self.input[0].y))
                 {
@@ -241,13 +262,13 @@ namespace TheEscort
         /// <summary>
         /// Alternate implementation Returns true if end of blink
         /// </summary>
-        public static bool Esclass_US_Dash2(Player self, in int frame, bool upOnly = false, bool changeDir = false)
+        public static bool Esclass_US_Dash2(Player self, in int frame, (int x, int y) dir, bool upOnly = false, bool changeDir = false)
         {
             // Calculate positions
             float xCom = 0;
             float yCom = 0;
-            float xMov = 20 * self.input[0].x;
-            float yMov = 20 * self.input[0].y;
+            float xMov = 20 * dir.x;
+            float yMov = 20 * dir.y;
 
             // Checks a tile ahead to see if it's possible to move to that space
             if (upOnly)
@@ -309,10 +330,10 @@ namespace TheEscort
                 self.bodyChunks[1].pos.y += yMov;
                 if (frame == 9)
                 {
-                    self.bodyChunks[0].vel.x += 10 * self.input[0].x;
-                    self.bodyChunks[1].vel.x += 10 * self.input[0].x;
-                    self.bodyChunks[0].vel.y += 10 * self.input[0].y;
-                    self.bodyChunks[1].vel.y += 10 * self.input[0].y;
+                    self.bodyChunks[0].vel.x += 10 * dir.x;
+                    self.bodyChunks[1].vel.x += 10 * dir.x;
+                    self.bodyChunks[0].vel.y += 10 * dir.y;
+                    self.bodyChunks[1].vel.y += 10 * dir.y;
                 }
             }
             return false;
