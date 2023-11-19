@@ -62,6 +62,19 @@ namespace TheEscort
             {
                 e.UnsBlinkFrame = 0;  // Redundancy never hurts
             }
+
+            // Cooldown for melee attacks
+            if (e.UnsMeleeStun > 0)
+            {
+                e.UnsMeleeStun--;
+            }
+
+            // Countdown to let whatever Unstable threw to return back to them upon reaching 0...
+            // Default state is -1, and will only get to that state upon retrieving whatever had been thrown
+            if (e.UnsMeleeGrab > 0)
+            {
+                e.UnsMeleeGrab--;
+            }
         }
 
         private void Esclass_US_Update(Player self, ref Escort e)
@@ -88,6 +101,39 @@ namespace TheEscort
                     e.UnsBlinkNoDir = false;
                     e.UnsBlinkFrame = 0;  // Redundancy never hurts
                 }
+            }
+
+            if (e.UnsMeleeGrab == 0 && e.UnsMeleeUsed >= 0 && self.grasps[e.UnsMeleeUsed] is null)
+            {
+                if (e.UnsMeleeWeapon.Peek() is null)
+                {
+                    e.UnsMeleeWeapon.Clear();
+                    return;
+                }
+                Ebug(self, "Unstable Weapon Mode was: " + e.UnsMeleeWeapon.Peek().mode);
+                if (self.room is not null && e.UnsMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
+                {
+                    self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
+                }
+
+                // Make Unstable be able to try tossing/throwing the explosive after they active it(no cooldown plz)
+                if (self.room is not null && e.UnsMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall)  // TODO: Also have it such that they pull it out if they have that dang remix option enabled
+                {
+                    if (e.UnsMeleeWeapon.Peek() is ScavengerBomb or SingularityBomb or ExplosiveSpear)
+                    {
+                        Ebug(self, "Unstable has explosives and is trying desperately to throw it away!");
+                    }
+                    else
+                    {
+                        e.UnsMeleeStun = 15;
+                    }
+                    self.SlugcatGrab(e.UnsMeleeWeapon.Pop(), e.UnsMeleeUsed);
+                }
+                else
+                {
+                    e.UnsMeleeWeapon.Pop();
+                }
+                e.UnsMeleeUsed = -1;
             }
         }
 
@@ -337,6 +383,11 @@ namespace TheEscort
                 }
             }
             return false;
+        }
+
+        priavte bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int graps, bool eu, ref Escort e)
+        {
+            // Insert code where they have 30% chance of melee-ing, 50% chance of throwing, and 20% chance of tossing
         }
     }
 }

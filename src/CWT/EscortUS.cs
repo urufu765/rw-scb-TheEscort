@@ -18,6 +18,10 @@ namespace TheEscort
         public bool UnsBlinkNoDir;  // Is player not pressing any directional buttons like a fokin monke?
         public float UnsDamaged;  // How chewed up is this fucker
         public (int x, int y) UnsBlinkDir;  // Direction of blink
+        public Stack<Weapon> UnsMeleeWeapon;  // When Unstable melees instead of toss or throw
+        public int UnsMeleeGrab;  // Regrab timer for melee attacks
+        public int UnsMeleeStun;  // Cooldown for preventing Unstable from trying to throw/toss/melee immediately
+        public int UnsMeleeUsed;  // The grasp hand that is used for melee toss
 
         public void EscortUS()
         {
@@ -31,6 +35,10 @@ namespace TheEscort
             UnsBlinkNoDir = false;
             UnsDamaged = 0.0f;
             UnsBlinkDir = (0, 0);
+            UnsMeleeWeapon = new Stack<Weapon>(1);
+            UnsMeleeGrab = -1;
+            UnsMeleeStun = 0;
+            UnsMeleeUsed = -1;
         }
     }
 }

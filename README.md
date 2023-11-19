@@ -20,6 +20,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev10** Fixes! And alternative implementation of blink becomes primary
     * **dev11** Investigation
     * **dev12** Preparing integration with the rest of the code... and this time I hope I actually save my stuff
+    * **dev13** Got started on the throwing stuff
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes
