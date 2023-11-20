@@ -1,6 +1,7 @@
 using BepInEx;
 using SlugBase.Features;
 using System;
+using MoreSlugcats;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -42,7 +43,7 @@ namespace TheEscort
             {
                 if (e.UnsBlinking)
                 {
-                    e.UnsBlinkCD = self.malnourished? 120 : 80;
+                    e.UnsBlinkCD = self.Malnourished ? 120 : 80;
                     e.UnsBlinking = false;
                 }
             }
@@ -188,7 +189,7 @@ namespace TheEscort
             }
             if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
             {
-                e.UnsBlinkCD = self.malnourished? 120 : 80;
+                e.UnsBlinkCD = self.Malnourished ? 120 : 80;
                 e.UnsBlinking = false;
             }
         }
@@ -224,7 +225,7 @@ namespace TheEscort
             }
             if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
             {
-                e.UnsBlinkCD = self.malnourished? 120 : 80;
+                e.UnsBlinkCD = self.Malnourished ? 120 : 80;
                 e.UnsBlinking = false;
             }
         }
@@ -254,7 +255,7 @@ namespace TheEscort
                     yCom = self.bodyChunks[1].pos.y + yMov;
                 }
                 
-                IntVector2 tPos = self.room.GetTilePosition(new(xCom, yCom));
+                var tPos = self.room.GetTilePosition(new(xCom, yCom));
                 Room.Tile rt = self.room.GetTile(tPos);
 
                 // Allow Unstable to automatically grab onto the pole if they are holding up or down and they go towards the pole. Also stops all momentum so the slugcat doesn't go flying off the pole.
@@ -327,7 +328,7 @@ namespace TheEscort
                 yCom = self.bodyChunks[1].pos.y + yMov;
             }
             
-            IntVector2 tPos = self.room.GetTilePosition(new(xCom, yCom));
+            var tPos = self.room.GetTilePosition(new(xCom, yCom));
             Room.Tile rt = self.room.GetTile(tPos);
 
             // Allow Unstable to automatically grab onto the pole if they are holding up or down and they go towards the pole. Also stops all momentum so the slugcat doesn't go flying off the pole.
@@ -352,7 +353,7 @@ namespace TheEscort
             }
 
             // If no obstacle, move!
-            if (i == 1 && changeDir)  // destroy all momentum if direction had been changed
+            if (frame == 1 && changeDir)  // destroy all momentum if direction had been changed
             {
                 self.bodyChunks[0].vel *= 0;
                 self.bodyChunks[1].vel *= 0;
@@ -385,8 +386,10 @@ namespace TheEscort
             return false;
         }
 
-        priavte bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int graps, bool eu, ref Escort e)
+        private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int graps, bool eu, ref Escort e)
         {
+            orig(self, graps, eu);
+            return false;
             // Insert code where they have 30% chance of melee-ing, 50% chance of throwing, and 20% chance of tossing
         }
     }
