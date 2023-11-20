@@ -146,6 +146,8 @@ namespace TheEscort
             {
                 Esclass_US_MidJump(self, e);
             }
+
+            // Might want to deal with walljumps too later on
         }
 
 
@@ -163,7 +165,7 @@ namespace TheEscort
         /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair. Only meant to be used as the first blink
         /// It has come to my attention that this jump should replace the player jump since this is essentially how the player basically makes a jump.
         /// </summary>
-        private void Esclass_US_Jump(Player self, Escort e)
+        private void Esclass_US_Jump(Player self, ref Escort e)
         {
             if (self.bodyMode == Player.BodyModeIndex.ZeroG)
             {

@@ -64,6 +64,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
+            if (e.Unstable) Esclass_US_Tick(self, ref e);
 
             // Dropkick damage cooldown
             if (e.DropKickCD > 0)
@@ -265,6 +266,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);
+            if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
 
@@ -1125,24 +1127,32 @@ namespace TheEscort
         private void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
             // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
-            orig(self);
             try
             {
                 if (Eshelp_IsMe(self.slugcatStats.name))
                 {
+                    orig(self);
                     return;
                 }
             }
             catch (Exception err)
             {
                 Ebug(self, err);
+                orig(self);
                 return;
             }
             if (!eCon.TryGetValue(self, out Escort e))
             {
+                orig(self);
                 return;
             }
 
+            if (e.Unstable)
+            {
+                Esclass_US_Jump(self, ref e);
+                return;
+            }
+            orig(self);
             //Ebug(self, "Jump Triggered!");
             // Decreases aerobiclevel gained from jumping
             // TODO: May need to adjust it so it doesn't take away the aerobic level totally lol
@@ -1392,6 +1402,7 @@ namespace TheEscort
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Unstable && Esclass_US_ThrowObject(orig, self, grasp, eu, ref e)) return;
             }
             catch (Exception err)
             {

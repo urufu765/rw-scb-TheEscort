@@ -23,6 +23,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev13** Got started on the throwing stuff
     * **dev14 [Vigaro]** Quick overview of code to check for obvious errors
     * **dev15** Continuation of throwing stuff
+    * **dev16** Actual integration... minus the activations such as movement speed, food pips, options, etc.
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes
