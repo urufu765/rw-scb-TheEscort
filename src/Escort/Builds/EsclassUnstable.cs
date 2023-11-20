@@ -386,11 +386,36 @@ namespace TheEscort
             return false;
         }
 
-        private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int graps, bool eu, ref Escort e)
+        private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
-            orig(self, graps, eu);
+            if (self.grasps[grasp]?.grabbed is Weapon w)  // Only accepts throwing weapons. Normal stuff that will be just tossed may not need to be percentaged
+            {
+                float v = UnityEngine.Random.value;
+                if (v > 0.5f)  // regular throw (50%)
+                {
+                    return false;  // does orig
+                }
+                else if (v > 0.2f)  // melee (30%)
+                {
+                    if (e.UnsMeleeWeapon.Count > 0)
+                    {
+                        e.UnsMeleeWeapon.Pop();
+                    }
+                    e.UnsMeleeWeapon.Push(w);
+                    e.UnsMeleeGrab = 3;  // Do throw for 3 frames (may need to do 5 incase it doesn't travel far enough)
+                    e.UnsMeleeUsed = grasp;
+                    return true;
+                }
+                else  // pathetic toss (20%)
+                {
+                    self.TossObject(grasp, eu);
+                    Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
+                    self.dontGrabStuff = 15;
+                    self.ReleaseGrasp(grasp);
+                    return true;
+                }
+            }
             return false;
-            // Insert code where they have 30% chance of melee-ing, 50% chance of throwing, and 20% chance of tossing
         }
     }
 }
