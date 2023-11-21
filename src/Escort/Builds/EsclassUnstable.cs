@@ -121,7 +121,7 @@ namespace TheEscort
 
             try
             {
-                if (e.UnsMeleeGrab == 0 && e.UnsMeleeUsed >= 0 && self.grasps[e.UnsMeleeUsed] is null)
+                if (e.UnsMeleeGrab == 0 && e.UnsMeleeWeapon.Count > 0 && e.UnsMeleeUsed >= 0 && self.grasps[e.UnsMeleeUsed] == null)
                 {
                     if (e.UnsMeleeWeapon.Peek() is null)
                     {
@@ -355,6 +355,13 @@ namespace TheEscort
             var tPos = self.room.GetTilePosition(new(xCom, yCom));
             Room.Tile rt = self.room.GetTile(tPos);
 
+
+            // Hit a wall?!
+            if (rt.Solid)
+            {
+                return true;
+            }
+
             // Allow Unstable to automatically grab onto the pole if they are holding up or down and they go towards the pole. Also stops all momentum so the slugcat doesn't go flying off the pole.
             if (self.input[0].y != 0 && rt.verticalBeam)
             {
@@ -370,11 +377,6 @@ namespace TheEscort
                 return true;
             }
 
-            // Hit a wall?!
-            if (rt.Solid)
-            {
-                return true;
-            }
 
             // If no obstacle, move!
             if (frame == 1 && changeDir)  // destroy all momentum if direction had been changed
