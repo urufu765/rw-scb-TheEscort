@@ -81,60 +81,82 @@ namespace TheEscort
         private void Esclass_US_Update(Player self, ref Escort e)
         {
             // Trippin' time!
-            if (e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+            try
             {
-                Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
-                self.standing = false;
-                self.bodyChunks[0].vel.x += self.rollDirection * 7f;
-                self.bodyChunks[1].vel.x -= self.rollDirection * 5f;
-                self.bodyChunks[0].vel.y -= 3f;
-                self.Stun(20);
-                if (UnityEngine.Random.value > 0.7f)
+                if (e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
-                    self.LoseAllGrasps();
-                }
-            }
-
-            if (e.UnsBlinkFrame > 0)
-            {
-                if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir, e.UnsBlinkDir == (0, 1) || e.UnsBlinkNoDir, e.UnsBlinkDifDir))
-                {
-                    e.UnsBlinkNoDir = false;
-                    e.UnsBlinkFrame = 0;  // Redundancy never hurts
-                }
-            }
-
-            if (e.UnsMeleeGrab == 0 && e.UnsMeleeUsed >= 0 && self.grasps[e.UnsMeleeUsed] is null)
-            {
-                if (e.UnsMeleeWeapon.Peek() is null)
-                {
-                    e.UnsMeleeWeapon.Clear();
-                    return;
-                }
-                Ebug(self, "Unstable Weapon Mode was: " + e.UnsMeleeWeapon.Peek().mode);
-                if (self.room is not null && e.UnsMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
-                {
-                    self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
-                }
-
-                // Make Unstable be able to try tossing/throwing the explosive after they active it(no cooldown plz)
-                if (self.room is not null && e.UnsMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall)  // TODO: Also have it such that they pull it out if they have that dang remix option enabled
-                {
-                    if (e.UnsMeleeWeapon.Peek() is ScavengerBomb or SingularityBomb or ExplosiveSpear)
+                    Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
+                    self.standing = false;
+                    self.bodyChunks[0].vel.x += self.rollDirection * 7f;
+                    self.bodyChunks[1].vel.x -= self.rollDirection * 5f;
+                    self.bodyChunks[0].vel.y -= 3f;
+                    self.Stun(20);
+                    if (UnityEngine.Random.value > 0.7f)
                     {
-                        Ebug(self, "Unstable has explosives and is trying desperately to throw it away!");
+                        self.LoseAllGrasps();
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Unstable tripping failed!");
+            }
+
+            try
+            {
+                if (e.UnsBlinkFrame > 0)
+                {
+                    if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir, e.UnsBlinkDir == (0, 1) || e.UnsBlinkNoDir, e.UnsBlinkDifDir))
+                    {
+                        e.UnsBlinkNoDir = false;
+                        e.UnsBlinkFrame = 0;  // Redundancy never hurts
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Unstable tripping failed!");
+            }
+
+
+            try
+            {
+                if (e.UnsMeleeGrab == 0 && e.UnsMeleeUsed >= 0 && self.grasps[e.UnsMeleeUsed] is null)
+                {
+                    if (e.UnsMeleeWeapon.Peek() is null)
+                    {
+                        e.UnsMeleeWeapon.Clear();
+                        return;
+                    }
+                    Ebug(self, "Unstable Weapon Mode was: " + e.UnsMeleeWeapon.Peek().mode);
+                    if (self.room is not null && e.UnsMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
+                    {
+                        self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
+                    }
+
+                    // Make Unstable be able to try tossing/throwing the explosive after they active it(no cooldown plz)
+                    if (self.room is not null && e.UnsMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall)  // TODO: Also have it such that they pull it out if they have that dang remix option enabled
+                    {
+                        if (e.UnsMeleeWeapon.Peek() is ScavengerBomb or SingularityBomb or ExplosiveSpear)
+                        {
+                            Ebug(self, "Unstable has explosives and is trying desperately to throw it away!");
+                        }
+                        else
+                        {
+                            e.UnsMeleeStun = 15;
+                        }
+                        self.SlugcatGrab(e.UnsMeleeWeapon.Pop(), e.UnsMeleeUsed);
                     }
                     else
                     {
-                        e.UnsMeleeStun = 15;
+                        e.UnsMeleeWeapon.Pop();
                     }
-                    self.SlugcatGrab(e.UnsMeleeWeapon.Pop(), e.UnsMeleeUsed);
+                    e.UnsMeleeUsed = -1;
                 }
-                else
-                {
-                    e.UnsMeleeWeapon.Pop();
-                }
-                e.UnsMeleeUsed = -1;
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Unstable melee failed!");
             }
         }
 
