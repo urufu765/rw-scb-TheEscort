@@ -332,15 +332,16 @@ namespace TheEscort
 
             this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Unstable] {?????}", true){
                 color = bTesting * 0.7f
-            },
-            if (this.sctTestBuild.Value)
-            {
-                this.sctTestBuildText.Show();
-            }
-            else
-            {
-                this.sctTestBuildText.Hide();
-            }
+            };
+            // This is meaningless since the option isn't actually hidden
+            // if (this.sctTestBuild.Value)
+            // {
+            //     this.sctTestBuildText.Show();
+            // }
+            // else
+            // {
+            //     this.sctTestBuildText.Hide();
+            // }
 
             /*
             this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){

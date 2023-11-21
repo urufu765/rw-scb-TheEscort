@@ -1674,6 +1674,7 @@ namespace TheEscort
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
                     -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
+                    -7 => "SS_A18",  // Unstable
                     _ => "SB_C09"  // Unspecified
                 };
                 Ebug("It's time OwO");
