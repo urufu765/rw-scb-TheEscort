@@ -26,6 +26,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev16** Actual integration... minus the activations such as movement speed, food pips, options, etc.
     * **dev17** Playtesting enabled
     * **dev18** Quick fixes while playtesters are being found
+    * **dev19** More fixes involving being able to actually test the damn slugcat
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

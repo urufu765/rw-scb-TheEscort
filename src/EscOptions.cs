@@ -262,6 +262,7 @@ namespace TheEscort
                 new ListItem("railgunner", Translate("Railgunner"), -4),
                 new ListItem("speedster", Translate("Speedster"), -5),
                 new ListItem("gilded", Translate("Gilded"), -6),
+                new ListItem("unstable", Translate("Unstable"), -7)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
