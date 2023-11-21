@@ -29,6 +29,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev19** More fixes involving being able to actually test the damn slugcat
     * **dev20** Added a few trycatches for Unstable update method due to unknown null exception
     * **dev21** Fixed melee Unstable causing the game to lag
+    * **dev22** Fixed the Unstable error where things weren't initialized
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

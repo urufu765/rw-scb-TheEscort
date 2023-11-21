@@ -296,6 +296,7 @@ namespace TheEscort
             EscortSS();
             EscortGD(player);
             EscortNE();
+            EscortUS();
         }
 
 
