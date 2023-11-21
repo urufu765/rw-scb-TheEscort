@@ -164,7 +164,7 @@ namespace TheEscort
         private static void Esclass_US_MovementUpdate(Player self, ref Escort e)
         {
             // Midair jump
-            if (e.UnsBlinkCD == 0 && self.wantToJump > 0 && self.canJump == 0 && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
+            if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.canJump == 0 && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
             {
                 Esclass_US_MidJump(self, e);
             }
