@@ -100,6 +100,8 @@ namespace TheEscort
         public Configurable<bool> cfgNoMoreFlips;
         public Configurable<bool> cfgDeflecterSharedPool;
         public Configurable<bool> cfgAllBuildsGetPup;
+        public Configurable<bool> sctTestBuild;
+        private OpLabel sctTestBuildText;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -147,8 +149,8 @@ namespace TheEscort
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        public readonly int buildDivFix = -5;
-        public int buildDiv = -6;
+        public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
+        public int buildDiv = -7;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.3";
         private readonly Configurable<string> cfgVersion;
@@ -227,6 +229,7 @@ namespace TheEscort
             this.cfgEscLaunchV = this.config.Bind<float>("cfg_Escort_Launch_Vertical", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
+            this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
             
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
@@ -310,6 +313,7 @@ namespace TheEscort
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
             Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
             Color bUltKill = new Color(0.7f, 0.2f, 0.2f);
+            Color bTesting = new Color(0.9f, 0.0f, 0.9f);
             this.buildColors = new Color[]{
                 bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
@@ -325,6 +329,19 @@ namespace TheEscort
                 maxLength = 5
             };
             this.secretText.OnValueChanged += InputTheSecret;
+
+            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Unstable] {?????}", true){
+                color = bTesting * 0.7f
+            },
+            if (this.sctTestBuild.Value)
+            {
+                this.sctTestBuildText.Show();
+            }
+            else
+            {
+                this.sctTestBuildText.Hide();
+            }
+
             /*
             this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
                 description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
@@ -587,6 +604,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
+                sctTestBuildText,
             };
             const string buildTextPad = "  ";
             this.buildText = new UIelement[]{
@@ -1163,7 +1181,7 @@ namespace TheEscort
         private void ResultsBaby(string value = "")
         {
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            int nu2 = 1500; int nu3 = 87769; int nu4 = 602;
+            int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
@@ -1232,12 +1250,24 @@ namespace TheEscort
                 Plugin.ins.L().NewYears(this.cfgSectretMagic.Value);
                 Ebug("Set secret 4");
             }
+            else if (value == nu5.ToString())
+            {
+                if (!this.sctTestBuild.Value)
+                {
+                    this.sctTestBuild.Value = true;
+                    ConfigConnector.CreateDialogBoxMultibutton(
+                        "Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!", insult, doThing
+                    );
+                }
+                Ebug("Set secret build testing mode");
+            }
             else
             {
                 this.cfgSectret.Value = false;
                 this.cfgSectretBuild.Value = false;
                 this.cfgSectretGod.Value = false;
                 this.cfgSectretMagic.Value = false;
+                this.sctTestBuild.Value = false;
                 Plugin.ins.L().Holiday();
                 try
                 {

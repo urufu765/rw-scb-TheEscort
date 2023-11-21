@@ -17,7 +17,7 @@ using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.0.1")]
+    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.1")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -752,14 +752,23 @@ namespace TheEscort
                     // Stylist build (Do combos that build up to a super move)
                     // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
-                    case -8:  // Testing build
+                    case -99:  // Testing build
                         e.EsTest = true;
                         break;
-                    case -7:  // New Escapist build (Testing, obsolete)
+                    case -98:  // New Escapist build (Testing, obsolete)
                         e.NewEscapist = true;
                         Ebug(self, "New Escapist Build selected!", 2);
                         self.slugcatStats.visualStealthInSneakMode = 1;
                         self.spearOnBack = new Player.SpearOnBack(self);
+                        break;
+                    case -7:  // Unstable test build
+                        e.Unstable = true;
+                        Ebug(self, "Unstable (WIP) Build selected!", 2);
+                        self.slugcatStats.runspeedFac += 0.45f;
+                        self.slugcatStats.poleClimbSpeedFac += 0.4f;
+                        self.slugcatStats.corridorClimbSpeedFac += 0.55f;
+                        self.slugcatStats.bodyWeightFac += 0.15f;
+                        self.slugcatStats.lungsFac += 0.5f;
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
@@ -1156,6 +1165,7 @@ namespace TheEscort
             {
                 if (Eshelp_IsMe(slugcat)) return orig(slugcat);
                 return config.cfgBuild[0].Value switch{
+                    -7 => new(14, UnityEngine.Random.Range(1, 14)),
                     -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
                     -4 => new(14, 7),  // Railgunner
