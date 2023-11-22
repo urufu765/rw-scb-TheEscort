@@ -32,6 +32,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev22** Fixed the Unstable error where things weren't initialized
     * **dev23** Fixed jolly error
     * **dev24** Attempt at fixing jump
+    * **dev25** Fixed dumb mistakes and added a few devlogs
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

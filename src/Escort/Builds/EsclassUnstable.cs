@@ -83,7 +83,7 @@ namespace TheEscort
             // Trippin' time!
             try
             {
-                if (self.input.x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
                     Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                     self.standing = false;
@@ -115,7 +115,7 @@ namespace TheEscort
             }
             catch (Exception err)
             {
-                Ebug(err, "Unstable tripping failed!");
+                Ebug(err, "Unstable movin failed!");
             }
 
 
@@ -161,11 +161,12 @@ namespace TheEscort
         }
 
 
-        private static void Esclass_US_MovementUpdate(Player self, ref Escort e)
+        private void Esclass_US_MovementUpdate(Player self, ref Escort e)
         {
             // Midair jump
             if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
             {
+                Ebug(self, "Midjump!");
                 Esclass_US_MidJump(self, e);
             }
 
@@ -225,7 +226,7 @@ namespace TheEscort
         /// May need to have an extra condition made in MovementUpdate or something for midair jumps
         /// Also I just realized this doesn't account for if the player is not holding a direction and they attenpt to press jump
         /// </summary>
-        public static void Esclass_US_MidJump(Player self, Escort e)
+        private void Esclass_US_MidJump(Player self, Escort e)
         {
             if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
@@ -361,12 +362,14 @@ namespace TheEscort
             // Hit a wall?!
             if (rt.Solid)
             {
+                Ebug(self, "WALL!");
                 return true;
             }
 
             // Allow Unstable to automatically grab onto the pole if they are holding up or down and they go towards the pole. Also stops all momentum so the slugcat doesn't go flying off the pole.
             if (self.input[0].y != 0 && rt.verticalBeam)
             {
+                Ebug(self, "Cling to pole!");
                 self.bodyChunks[0].pos.x += xMov;
                 self.bodyChunks[1].pos.x += xMov;
                 self.bodyChunks[0].pos.y += yMov;
