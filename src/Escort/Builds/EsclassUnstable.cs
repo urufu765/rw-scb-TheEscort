@@ -37,12 +37,14 @@ namespace TheEscort
             // 
             if (e.UnsBlinkWindow > 0 && e.UnsBlinkFrame == 0)
             {
+                Ebug(self, "Window: " + e.UnsBlinkWindow, ignoreRepetition: true)
                 e.UnsBlinkWindow--;
             }
             else
             {
                 if (e.UnsBlinking)
                 {
+                    Ebug(self, "Blink window end!", ignoreRepetition: true);
                     e.UnsBlinkCD = self.Malnourished ? 120 : 80;
                     e.UnsBlinking = false;
                 }
@@ -106,6 +108,7 @@ namespace TheEscort
             {
                 if (e.UnsBlinkFrame > 0)
                 {
+                    Ebug(self, "Frame: " + e.UnsBlinkFrame, ignoreRepetition: true);
                     if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir, e.UnsBlinkDir == (0, 1) || e.UnsBlinkNoDir, e.UnsBlinkDifDir))
                     {
                         e.UnsBlinkNoDir = false;
@@ -166,7 +169,7 @@ namespace TheEscort
             // Midair jump
             if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
             {
-                Ebug(self, "Midjump!");
+                Ebug(self, "Midjump!", ignoreRepetition: true);
                 Esclass_US_MidJump(self, e);
             }
 
