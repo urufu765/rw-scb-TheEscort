@@ -636,6 +636,12 @@ namespace TheEscort
                 hypeSprite = "escort_hud_escapist";
                 floatTrackers.Add(new ETrackrr.NewEscapistTraction(n, 1, this));
             }
+            if (Unstable)
+            {
+                hypeSprite = "escort_hud_brawler_alt";  // Placeholder
+                floatTrackers.Add(new ETrackrr.UnstableTraction(n, 1, self, this));
+                floatTrackers.Add(new ETrackrr.UnstableFrameTraction(n, 1, this));
+            }
             this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
             this.floatTrackers.Add(new ETrackrr.SwimTracker(n, 0, self, this));

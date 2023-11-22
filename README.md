@@ -34,7 +34,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev24** Attempt at fixing jump
     * **dev25** Fixed dumb mistakes and added a few devlogs
     * **dev26** MOre deflogs
-    * **dev27** Probably a fix
+    * **dev27** Probably a fix (it was!)
+    * **dev28** Created meter for Escort so the player has a better idea when they're allowed to do crap
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

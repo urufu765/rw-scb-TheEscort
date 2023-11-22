@@ -54,6 +54,7 @@ namespace TheEscort
 
                 if (e.UnsBlinkCD > 0)
                 {
+                    self.Blink(5);
                     e.UnsBlinkCD--;
                 }
             }
