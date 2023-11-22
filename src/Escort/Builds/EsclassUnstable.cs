@@ -83,7 +83,7 @@ namespace TheEscort
             // Trippin' time!
             try
             {
-                if (e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+                if (self.input.x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
                     Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                     self.standing = false;
@@ -164,7 +164,7 @@ namespace TheEscort
         private static void Esclass_US_MovementUpdate(Player self, ref Escort e)
         {
             // Midair jump
-            if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.canJump == 0 && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
+            if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
             {
                 Esclass_US_MidJump(self, e);
             }
@@ -214,6 +214,7 @@ namespace TheEscort
             if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
             {
                 e.UnsBlinkCD = self.Malnourished ? 120 : 80;
+                e.UnsBlinkCount = 0;
                 e.UnsBlinking = false;
             }
         }
@@ -250,6 +251,7 @@ namespace TheEscort
             if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
             {
                 e.UnsBlinkCD = self.Malnourished ? 120 : 80;
+                e.UnsBlinkCount = 0;
                 e.UnsBlinking = false;
             }
         }
