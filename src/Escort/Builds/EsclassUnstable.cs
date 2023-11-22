@@ -35,26 +35,30 @@ namespace TheEscort
             }
 
             // 
-            if (e.UnsBlinkWindow > 0 && e.UnsBlinkFrame == 0)
+            if (e.UnsBlinkFrame == 0)
             {
-                Ebug(self, "Window: " + e.UnsBlinkWindow, ignoreRepetition: true)
-                e.UnsBlinkWindow--;
-            }
-            else
-            {
-                if (e.UnsBlinking)
+                if (e.UnsBlinkWindow > 0)
                 {
-                    Ebug(self, "Blink window end!", ignoreRepetition: true);
-                    e.UnsBlinkCD = self.Malnourished ? 120 : 80;
-                    e.UnsBlinking = false;
+                    Ebug(self, "Window: " + e.UnsBlinkWindow, ignoreRepetition: true);
+                    e.UnsBlinkWindow--;
+                }
+                else
+                {
+                    if (e.UnsBlinking)
+                    {
+                        Ebug(self, "Blink window end!", ignoreRepetition: true);
+                        e.UnsBlinkCD = self.Malnourished ? 120 : 80;
+                        e.UnsBlinking = false;
+                    }
+                }
+
+                if (e.UnsBlinkCD > 0)
+                {
+                    e.UnsBlinkCD--;
                 }
             }
 
             //
-            if (e.UnsBlinkCD > 0 && e.UnsBlinkFrame == 0)
-            {
-                e.UnsBlinkCD--;
-            }
 
             // For alternate version of blink
             if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < 10)
