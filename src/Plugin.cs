@@ -767,7 +767,7 @@ namespace TheEscort
                         self.slugcatStats.runspeedFac += 0.45f;
                         self.slugcatStats.poleClimbSpeedFac += 0.4f;
                         self.slugcatStats.corridorClimbSpeedFac += 0.55f;
-                        self.slugcatStats.bodyWeightFac += 0.15f;
+                        self.slugcatStats.bodyWeightFac -= 0.15f;
                         self.slugcatStats.lungsFac += 0.5f;
                         break;
                     case -6:  // Gilded build

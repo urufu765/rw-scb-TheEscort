@@ -39,6 +39,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev29** Fix for being unable to upjump
     * **dev30** a printing attempts to fix the jump, killed one of the huds for now, and one more frame of throw
     * **dev31** Fixed the damn jump
+    * **dev32** Hud fixes, velocity adjustments, and gave Escort antigrav a little as well as increasing melee frames to 5
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

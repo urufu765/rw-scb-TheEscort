@@ -1,6 +1,7 @@
 using BepInEx;
 using SlugBase.Features;
 using System;
+using RWCustom;
 using MoreSlugcats;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
@@ -399,6 +400,17 @@ namespace TheEscort
                 self.bodyChunks[0].vel *= 0;
                 self.bodyChunks[1].vel *= 0;
             }
+
+            float velT = 10;
+            if (self.bodyMode == Player.BodyModeIndex.ZeroG)
+            {  // Reduce velocity speed
+                velT /= 6;
+            }
+            else  // Give levitation to cancel out gravity
+            {
+                self.bodyChunks[0].vel.y += 1.4f;
+                self.bodyChunks[1].vel.y += 1.4f;
+            }
             if (upOnly)
             {
                 self.bodyChunks[0].pos.y += 20;
@@ -406,8 +418,8 @@ namespace TheEscort
                 // Though I could get away with increasing the velocity every frame, having it increase only at the end seemed funner
                 if (frame == 9)
                 {
-                    self.bodyChunks[0].vel.y += 11f;
-                    self.bodyChunks[1].vel.y += 10;
+                    self.bodyChunks[0].vel.y += velT + 1f;
+                    self.bodyChunks[1].vel.y += velT;
                 }
             }
             else
@@ -418,10 +430,10 @@ namespace TheEscort
                 self.bodyChunks[1].pos.y += yMov;
                 if (frame == 9)
                 {
-                    self.bodyChunks[0].vel.x += 10 * dir.x;
-                    self.bodyChunks[1].vel.x += 10 * dir.x;
-                    self.bodyChunks[0].vel.y += 10 * dir.y;
-                    self.bodyChunks[1].vel.y += 10 * dir.y;
+                    self.bodyChunks[0].vel.x += velT * dir.x;
+                    self.bodyChunks[1].vel.x += velT * dir.x;
+                    self.bodyChunks[0].vel.y += velT * dir.y;
+                    self.bodyChunks[1].vel.y += velT * dir.y;
                 }
             }
             return false;
@@ -443,7 +455,7 @@ namespace TheEscort
                         e.UnsMeleeWeapon.Pop();
                     }
                     e.UnsMeleeWeapon.Push(w);
-                    e.UnsMeleeGrab = 4;  // Do throw for 4 frames (may need to do 5 incase it doesn't travel far enough)
+                    e.UnsMeleeGrab = 5;  // Do throw for 5 frames
                     e.UnsMeleeUsed = grasp;
                     return true;
                 }

@@ -794,7 +794,7 @@ public static class ETrackrr
         public UnstableFrameTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "unstableFrame")
         {
             this.e = escort;
-            this.Limit = 0;
+            this.Limit = 99;
             this.failureSet = true;
         }
 
