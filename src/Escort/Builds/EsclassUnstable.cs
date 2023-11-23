@@ -355,24 +355,17 @@ namespace TheEscort
             // Checks a tile ahead to see if it's possible to move to that space
             if (upOnly)
             {
-                yCom = self.bodyChunks[1].pos.y + 20;
+                yCom = self.bodyChunks[0].pos.y + 20;
             }
             else
             {
-                xCom = self.bodyChunks[1].pos.x + xMov;
-                yCom = self.bodyChunks[1].pos.y + yMov;
+                xCom = self.bodyChunks[0].pos.x + xMov;
+                yCom = self.bodyChunks[0].pos.y + yMov;
             }
             
-            var tPos = self.room.GetTilePosition(new(xCom, yCom));
-            Room.Tile rt = self.room.GetTile(tPos);
+            Room.Tile rt = self.room.GetTile(new(xCom, yCom));
 
 
-            // Hit a wall?!
-            if (rt.Solid)
-            {
-                Ebug(self, "WALL!");
-                return true;
-            }
 
             // Allow Unstable to automatically grab onto the pole if they are holding up or down and they go towards the pole. Also stops all momentum so the slugcat doesn't go flying off the pole.
             if (self.input[0].y != 0 && rt.verticalBeam)
@@ -390,6 +383,12 @@ namespace TheEscort
                 return true;
             }
 
+            // Hit a wall?!
+            if (rt.Solid)
+            {
+                Ebug(self, "WALL!");
+                return true;
+            }
 
             // If no obstacle, move!
             if (frame == 1 && changeDir)  // destroy all momentum if direction had been changed
