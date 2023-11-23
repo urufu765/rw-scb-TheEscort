@@ -404,7 +404,7 @@ namespace TheEscort
             float velT = 10;
             if (self.bodyMode == Player.BodyModeIndex.ZeroG)
             {  // Reduce velocity speed
-                velT /= 6;
+                velT /= 3;
             }
             else  // Give levitation to cancel out gravity
             {
