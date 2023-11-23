@@ -37,6 +37,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev27** Probably a fix (it was!)
     * **dev28** Created meter for Escort so the player has a better idea when they're allowed to do crap
     * **dev29** Fix for being unable to upjump
+    * **dev30** a printing attempts to fix the jump, killed one of the huds for now, and one more frame of throw
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Find someone to test it out
     * *dev* Begin testing and implementing the changes

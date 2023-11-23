@@ -362,8 +362,11 @@ namespace TheEscort
                 xCom = self.bodyChunks[0].pos.x + xMov;
                 yCom = self.bodyChunks[0].pos.y + yMov;
             }
-            
-            Room.Tile rt = self.room.GetTile(new(xCom, yCom));
+
+            IntVector2 tPos = self.room.GetTilePosition(new(xCom, yCom));
+            Room.Tile rt = self.room.GetTile(tPos);
+            Room.Tile bt = self.room.GetTile(new(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y));
+            Ebug(self, "Wall previous? " + bt.Solid + bt.Terrain + ", And now? " + rt.Solid + rt.Terrain, ignoreRepetition: true);
 
 
 
@@ -440,7 +443,7 @@ namespace TheEscort
                         e.UnsMeleeWeapon.Pop();
                     }
                     e.UnsMeleeWeapon.Push(w);
-                    e.UnsMeleeGrab = 3;  // Do throw for 3 frames (may need to do 5 incase it doesn't travel far enough)
+                    e.UnsMeleeGrab = 4;  // Do throw for 4 frames (may need to do 5 incase it doesn't travel far enough)
                     e.UnsMeleeUsed = grasp;
                     return true;
                 }
