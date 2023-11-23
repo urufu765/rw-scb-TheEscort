@@ -347,26 +347,26 @@ namespace TheEscort
         public static bool Esclass_US_Dash2(Player self, in int frame, (int x, int y) dir, bool upOnly = false, bool changeDir = false)
         {
             // Calculate positions
-            float xCom = 0;
-            float yCom = 0;
+            float xCom = self.bodyChunks[0].pos.x;
+            float yCom = self.bodyChunks[0].pos.y;
             float xMov = 20 * dir.x;
             float yMov = 20 * dir.y;
 
             // Checks a tile ahead to see if it's possible to move to that space
             if (upOnly)
             {
-                yCom = self.bodyChunks[0].pos.y + 20;
+                yCom += 20;
             }
             else
             {
-                xCom = self.bodyChunks[0].pos.x + xMov;
-                yCom = self.bodyChunks[0].pos.y + yMov;
+                xCom += xMov;
+                yCom += yMov;
             }
 
             IntVector2 tPos = self.room.GetTilePosition(new(xCom, yCom));
             Room.Tile rt = self.room.GetTile(tPos);
-            Room.Tile bt = self.room.GetTile(new(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y));
-            Ebug(self, "Wall previous? " + bt.Solid + bt.Terrain + ", And now? " + rt.Solid + rt.Terrain, ignoreRepetition: true);
+            // Room.Tile bt = self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y));
+            // Ebug(self, "Wall previous? " + bt.Solid + bt.Terrain + ", And now? " + rt.Solid + rt.Terrain, ignoreRepetition: true);
 
 
 

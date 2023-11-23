@@ -755,7 +755,7 @@ public static class ETrackrr
         {
             this.e = escort;
             this.p = player;
-            unstableColor = new Color(0.52f, 0.59f, 0.41f);
+            unstableColor = new Color(0.72f, 0.59f, 0.45f);
             this.trackerColor = unstableColor;
             this.effectColor = Color.Lerp(unstableColor, Color.white, 0.6f);
         }
@@ -765,14 +765,14 @@ public static class ETrackrr
             if (e.UnsBlinkCD > 0)
             {
                 trackerColor = Color.Lerp(unstableColor, Color.black, 0.35f);
-                Limit = 0;
+                Limit = 120;
                 Max = p.Malnourished? 120 : 80;
-                Value = Max - Mathf.Lerp(PreValue, e.UnsBlinkCD, timeStacker);
+                Value = Mathf.Lerp(PreValue, Max - e.UnsBlinkCD, timeStacker);
             }
             else if (e.UnsBlinkWindow > 0)
             {
                 trackerColor = unstableColor;
-                Limit = 0;
+                Limit = 40;
                 Max = 40;
                 Value = Mathf.Lerp(PreValue, e.UnsBlinkWindow, timeStacker);
             }
