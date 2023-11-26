@@ -1149,8 +1149,10 @@ namespace TheEscort
 
             if (e.Unstable)
             {
-                Esclass_US_Jump(self, ref e);
-                return;
+                if (Esclass_US_Jump(self, ref e))
+                {
+                    return;
+                }
             }
             orig(self);
             //Ebug(self, "Jump Triggered!");

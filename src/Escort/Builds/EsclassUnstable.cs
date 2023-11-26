@@ -197,13 +197,28 @@ namespace TheEscort
         /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair. Only meant to be used as the first blink
         /// It has come to my attention that this jump should replace the player jump since this is essentially how the player basically makes a jump.
         /// </summary>
-        private void Esclass_US_Jump(Player self, ref Escort e)
+        private bool Esclass_US_Jump(Player self, ref Escort e)
         {
+            // If in zero G, let the midjump handle it
             if (self.bodyMode == Player.BodyModeIndex.ZeroG)
             {
                 Esclass_US_MidJump(self, e);
-                return;
+                return true;
             }
+
+            // Allow the player to slide lol by calling orig
+            if (self.animation == Player.AnimationIndex.DownOnFours && self.bodyChunks[1].ContactPoint.y < 0 && self.input[0].downDiagonal == self.flipDirection)
+            {
+                return false;
+            }
+
+            // Flipping out of a roll or slide jump
+            if (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Roll)
+            {
+                self.animation = Player.AnimationIndex.Flip;
+            }
+
+            // If dash is available
             if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
                 // May need to reevaluate
@@ -220,13 +235,19 @@ namespace TheEscort
                 }
                 e.UnsBlinkFrame++;  // Alt implementation
                 //Esclass_US_Dash(self, true);
+
+
+                if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
+                {
+                    e.UnsBlinkCD = self.Malnourished ? 120 : 80;
+                    e.UnsBlinkCount = 0;
+                    e.UnsBlinking = false;
+                }
             }
-            if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
-            {
-                e.UnsBlinkCD = self.Malnourished ? 120 : 80;
-                e.UnsBlinkCount = 0;
-                e.UnsBlinking = false;
-            }
+
+            // Otherwise, do a miniature hop
+            
+            return true;
         }
 
 
@@ -257,12 +278,14 @@ namespace TheEscort
                 }
                 e.UnsBlinkFrame++;  // Alt implementation
                 //Esclass_US_Dash(self, false, e.UnsBlinkDifDir);
-            }
-            if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
-            {
-                e.UnsBlinkCD = self.Malnourished ? 120 : 80;
-                e.UnsBlinkCount = 0;
-                e.UnsBlinking = false;
+
+
+                if (!Esclass_US_CanBlinkYes(e.UnsBlinkCount))
+                {
+                    e.UnsBlinkCD = self.Malnourished ? 120 : 80;
+                    e.UnsBlinkCount = 0;
+                    e.UnsBlinking = false;
+                }
             }
         }
 

@@ -42,9 +42,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev32** Hud fixes, velocity adjustments, and gave Escort antigrav a little as well as increasing melee frames to 5
     * **dev33** A little bit of small adjustments to make antigrav still fun and exciting and the levitation less powerful.
     * **dev33a** Just corrected the readme is all
+    * **dev34** Gave Unstable the slide back
+    * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default, )
+    * *dev* Give Unstable a funny little hop
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
-    * *dev* Find someone to test it out
-    * *dev* Begin testing and implementing the changes
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
