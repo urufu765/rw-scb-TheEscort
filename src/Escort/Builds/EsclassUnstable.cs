@@ -486,7 +486,7 @@ namespace TheEscort
                     e.UnsMeleeWeapon.Push(w);
                     e.UnsMeleeGrab = 5;  // Do throw for 5 frames
                     e.UnsMeleeUsed = grasp;
-                    return true;
+                    return false;
                 }
                 else  // pathetic toss (20%)
                 {
