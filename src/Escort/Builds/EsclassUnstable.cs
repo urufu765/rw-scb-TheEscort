@@ -246,6 +246,12 @@ namespace TheEscort
             }
 
             // Otherwise, do a miniature hop
+            else if (e.UnsBlinkCD > 0)
+            {
+                self.bodyChunks[0].vel.y = 2f;
+                self.bodyChunks[1].vel.y = 1f;
+                self.jumpBoost = 9f;
+            }
             
             return true;
         }

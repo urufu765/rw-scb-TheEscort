@@ -43,8 +43,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev33** A little bit of small adjustments to make antigrav still fun and exciting and the levitation less powerful.
     * **dev33a** Just corrected the readme is all
     * **dev34** Gave Unstable the slide back
+    * **dev35** Give Unstable a funny little hop
     * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default, )
-    * *dev* Give Unstable a funny little hop
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
