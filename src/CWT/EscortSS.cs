@@ -41,7 +41,7 @@ namespace TheEscort
             this.SpeCharge = 0;
             this.SpeGain = -1f;
             this.SpeOldSpeed = useOld;
-            this.SpeMaxGear = 4;
+            this.SpeMaxGear = maxGear;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)

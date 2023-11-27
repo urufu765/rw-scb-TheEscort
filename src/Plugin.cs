@@ -786,6 +786,7 @@ namespace TheEscort
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
+                        e.SpeMaxGear = config.cfgSpeedsterGears.Value;
                         if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                         {
                             Ebug(self, "Get Speedster save!");
