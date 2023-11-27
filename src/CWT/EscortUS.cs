@@ -27,7 +27,7 @@ namespace TheEscort
         public void EscortUS()
         {
             Unstable = false;
-            UnstableColor = new Color(0.38f, 0.47f, 0.188f);
+            UnstableColor = new Color(0.176f, 0.42f, 0.176f);
             UnsTripTime = 0;
             UnsBlinking = false;
             UnsBlinkCount = 0;
