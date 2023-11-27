@@ -933,15 +933,23 @@ namespace TheEscort
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl)
             {
-                if (!e.Gilded && hypedMode)
+                if (e.Unstable)
                 {
-                    self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
-                    self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
+                        self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
                 }
                 else
                 {
-                    self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
-                    self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                    if (!e.Gilded && hypedMode)
+                    {
+                        self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                    }
+                    else
+                    {
+                        self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                    }
                 }
             }
 

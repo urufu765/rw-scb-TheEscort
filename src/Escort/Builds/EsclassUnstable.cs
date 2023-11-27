@@ -91,7 +91,7 @@ namespace TheEscort
             // Trippin' time!
             try
             {
-                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.9f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.99f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
                     Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                     self.standing = false;

@@ -46,7 +46,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev35** Give Unstable a funny little hop
     * **dev36** Potentially fixed an issue where the melee didn't work simply because I forgot to call orig
     * **dev37** Changed water dash behaviour
-    * *dev* Unstable's crawl speed has been reduced to punish the act of tripping... and also reduced the chance to trip to 1%
+    * **dev38** Unstable's crawl speed has been reduced to punish the act of tripping... and also reduced the chance to trip to 1%
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* gradually increase the number of sparks with every gear for Speedster
