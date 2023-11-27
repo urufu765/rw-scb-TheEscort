@@ -235,7 +235,7 @@ namespace TheEscort
                     }
 
                     // Add charge storage
-                    if (e.SpeBuildup > 239 && e.SpeCharge < 4)
+                    if (e.SpeBuildup > 239 && e.SpeCharge < e.SpeMaxGear)
                     {
                         Ebug(self, "Charge! " + e.SpeCharge + " => " + (e.SpeCharge + 1));
                         if (self.room != null)
@@ -320,8 +320,15 @@ namespace TheEscort
                 }
                 else
                 {
-                    initReq += e.SpeGear;
-                    rollCount += e.SpeGear;
+                    int toAdd = e.SpeGear switch
+                    {
+                        1 => 1,
+                        2 => 2,
+                        3 => 3,
+                        _ => 4
+                    };
+                    initReq += toAdd;
+                    rollCount += toAdd;
                 }
                 if (self.initSlideCounter < initReq)
                 {

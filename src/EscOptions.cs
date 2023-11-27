@@ -101,6 +101,7 @@ namespace TheEscort
         public Configurable<bool> cfgDeflecterSharedPool;
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
+        public Configurable<int> cfgSpeedsterGears;
         private OpLabel sctTestBuildText;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
@@ -230,6 +231,8 @@ namespace TheEscort
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
+            this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
+
             
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
@@ -960,6 +963,11 @@ namespace TheEscort
                 new OpCheckBox(this.cfgOldEscapist, new Vector2(xo + (xp * 0), yo - (yp * 9))){
                     colorEdge = tempColor,
                     description = Swapper(Translate("escoptions_oldescape_desc")) + SetDefault(cfgOldEscapist.defaultValue),
+                },
+
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Speedster Gear Limit")),
+                new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100, 2){
+                    description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
                 },
 
                 secretText

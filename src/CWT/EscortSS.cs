@@ -22,8 +22,9 @@ namespace TheEscort
         public float SpeGain;
         public bool SpeOldSpeed;
         public int SpeRollCounter;
+        public int SpeMaxGear;
 
-        public void EscortSS(bool useOld = false)
+        public void EscortSS(bool useOld = false, int maxGear = 4)
         {
             this.Speedster = false;
             this.SpeSpeedin = 0;
@@ -40,6 +41,7 @@ namespace TheEscort
             this.SpeCharge = 0;
             this.SpeGain = -1f;
             this.SpeOldSpeed = useOld;
+            this.SpeMaxGear = 4;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)

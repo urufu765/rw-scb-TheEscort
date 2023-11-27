@@ -615,7 +615,7 @@ namespace TheEscort
                 hypeSprite = "escort_hud_speedster";
                 if (!SpeOldSpeed)
                 {
-                    for (int i = 1; i <= 4; i++)
+                    for (int i = 1; i <= this.SpeMaxGear; i++)
                     {
                         floatTrackers.Add(new ETrackrr.SpeedsterTraction(n, i, this, i));
                     }

@@ -47,10 +47,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev36** Potentially fixed an issue where the melee didn't work simply because I forgot to call orig
     * **dev37** Changed water dash behaviour
     * **dev38** Unstable's crawl speed has been reduced to punish the act of tripping... and also reduced the chance to trip to 1%
+    * **dev39** Allow Speedster's max gears to be modified by option.
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
-    * *dev* gradually increase the number of sparks with every gear for Speedster
-    * *dev* Allow Speedster's max gears to be modified by option
     * *dev* Railgunner recoil remake
     * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default or auto, or if custom colors are disabled)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
