@@ -63,13 +63,13 @@ namespace TheEscort
             //
 
             // For alternate version of blink
-            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < 10)
+            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < (self.bodyMode == Player.BodyModeIndex.Swimming? 7 : 10))
             {
                 e.UnsBlinkFrame++;
             }
-            else if (e.UnsBlinkFrame >= 10)
+            else if (e.UnsBlinkFrame >= (self.bodyMode == Player.BodyModeIndex.Swimming? 7 : 10))
             {
-                e.UnsBlinkFrame = 0;  // Redundancy never hurts
+                e.UnsBlinkFrame = 0;
             }
 
             // Cooldown for melee attacks
@@ -118,7 +118,7 @@ namespace TheEscort
                     if (Esclass_US_Dash2(self, in e.UnsBlinkFrame, e.UnsBlinkDir, e.UnsBlinkDir == (0, 1) || e.UnsBlinkNoDir, e.UnsBlinkDifDir))
                     {
                         e.UnsBlinkNoDir = false;
-                        e.UnsBlinkFrame = 0;  // Redundancy never hurts
+                        e.UnsBlinkFrame = 0;
                     }
                 }
             }
@@ -431,21 +431,24 @@ namespace TheEscort
             }
 
             float velT = 10;
+            bool isSwimming = self.bodyMode == Player.BodyModeIndex.Swimming;
             if (self.bodyMode == Player.BodyModeIndex.ZeroG)
             {  // Reduce velocity speed
                 velT /= 3;
             }
-            else  // Give levitation to cancel out gravity
+            else if (!isSwimming)  // Give levitation to cancel out gravity
             {
                 self.bodyChunks[0].vel.y += 1.4f;
                 self.bodyChunks[1].vel.y += 1.4f;
             }
+
+
             if (upOnly)
             {
                 self.bodyChunks[0].pos.y += 20;
                 self.bodyChunks[1].pos.y += 20;
                 // Though I could get away with increasing the velocity every frame, having it increase only at the end seemed funner
-                if (frame == 9)
+                if (frame == (isSwimming? 6 : 9))
                 {
                     self.bodyChunks[0].vel.y += velT + 1f;
                     self.bodyChunks[1].vel.y += velT;
@@ -457,7 +460,7 @@ namespace TheEscort
                 self.bodyChunks[1].pos.x += xMov;
                 self.bodyChunks[0].pos.y += yMov;
                 self.bodyChunks[1].pos.y += yMov;
-                if (frame == 9)
+                if (frame == (isSwimming? 6 : 9))
                 {
                     self.bodyChunks[0].vel.x += velT * dir.x;
                     self.bodyChunks[1].vel.x += velT * dir.x;
