@@ -9,6 +9,7 @@ namespace TheEscort
 {
     public partial class Escort
     {
+        public Color GildedColor;
         public bool GildFloatState;
         public int GildFloatFloat;
         public int GildMoonJump;
@@ -46,6 +47,7 @@ namespace TheEscort
         public void EscortGD(Player self)
         {
             Gilded = false;
+            GildedColor = new Color(0.122f, 0.176f, 0.28f);
             GildFloatState = false;
             GildFloatFloat = 0;
             GildMoonJump = 0;

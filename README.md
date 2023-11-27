@@ -49,6 +49,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev38** Unstable's crawl speed has been reduced to punish the act of tripping... and also reduced the chance to trip to 1%
     * **dev39** Allow Speedster's max gears to be modified by option.
     * **dev40** Forgot to let the option change the max gears...
+    * **dev41** Each build's colors are defined now.
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake

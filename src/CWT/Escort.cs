@@ -101,6 +101,7 @@ namespace TheEscort
 
         // Build stuff
         public bool Brawler;
+        public Color BrawlerColor;
         public bool BrawWall;
         public bool BrawShankMode;
         public bool BrawShank;
@@ -115,6 +116,7 @@ namespace TheEscort
         public string BrawLastWeapon;
         public int BrawSetCooldown;
         public bool Deflector;
+        public Color DeflectorColor;
         public int DeflAmpTimer;
         public bool DeflTrampoline;
         public int DeflSFXcd;
@@ -158,6 +160,7 @@ namespace TheEscort
             }
         }
         public bool Escapist;
+        public Color EscapistColor;
         public int EscDangerExtend;
         public Creature.Grasp EscDangerGrasp;
         public int EscUnGraspTime;
@@ -165,6 +168,7 @@ namespace TheEscort
         public int EscUnGraspCD;
         public bool NewEscapist;
         public bool Railgunner;
+        public Color RailgunnerColor;
         public int RailGaussed;
         public Creature RailThrower;
         public bool RailDoubleSpear;
@@ -248,6 +252,7 @@ namespace TheEscort
 
             // Build specific
             this.Brawler = false;
+            this.BrawlerColor = new Color(0.447f, 0.235f, 0.53f);
             this.BrawShankMode = false;
             this.BrawPunch = false;
             this.BrawWall = false;
@@ -262,6 +267,7 @@ namespace TheEscort
             this.BrawSetCooldown = 20;
 
             this.Deflector = false;
+            this.DeflectorColor = new Color(0.23f, 0.24f, 0.573f);
             this.DeflAmpTimer = 0;
             this.DeflTrampoline = false;
             this.DeflSFXcd = 0;
@@ -271,6 +277,7 @@ namespace TheEscort
             this.DeflPerma = 0f;
 
             this.Escapist = false;
+            this.EscapistColor = new Color(0.11f, 0.467f, 0.506f);
             this.EscDangerExtend = 0;
             this.EscDangerGrasp = null;
             this.EscUnGraspTime = 0;
@@ -278,6 +285,7 @@ namespace TheEscort
             this.EscUnGraspCD = 0;
 
             this.Railgunner = false;
+            this.RailgunnerColor = new Color(0.525f, 0.8f, 0.8f);
             this.RailGaussed = 0;
             this.RailThrower = player;
             this.RailDoubleSpear = false;

@@ -8,6 +8,7 @@ namespace TheEscort
     public partial class Escort
     {
         public bool Speedster;
+        public Color SpeedsterColor;
         public int SpeSpeedin;
         public bool SpeDashNCrash;
         public Queue<SpeedTrail> SpeTrail;
@@ -27,6 +28,7 @@ namespace TheEscort
         public void EscortSS(bool useOld = false, int maxGear = 4)
         {
             this.Speedster = false;
+            this.SpeedsterColor = new Color(0.03f, 0.57f, 0.59f);
             this.SpeSpeedin = 0;
             this.SpeExtraSpe = 0;
             this.SpeDashNCrash = false;

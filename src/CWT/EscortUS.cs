@@ -8,6 +8,7 @@ namespace TheEscort
     public partial class Escort
     {
         public bool Unstable;  // Are thoust an Unstable?!
+        public Color UnstableColor;  // Unstable body color
         public int UnsTripTime;  // Fucker trips all the time lol
         public bool UnsBlinking;  // Is in a blinking state? No, not the eye blink, the jump blink!
         public int UnsBlinkCount;  // How many dashshhhshshsseess done
@@ -25,6 +26,8 @@ namespace TheEscort
 
         public void EscortUS()
         {
+            Unstable = false;
+            UnstableColor = new Color(0.38f, 0.47f, 0.188f);
             UnsTripTime = 0;
             UnsBlinking = false;
             UnsBlinkCount = 0;
