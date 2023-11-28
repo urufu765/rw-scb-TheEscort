@@ -19,6 +19,7 @@ namespace TheEscort
 
         public void Esclass_US_Tick(Player self, ref Escort e)
         {
+            bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
             // Constant tripping clock
             if (e.UnsTripTime < 40)
             {
@@ -27,6 +28,11 @@ namespace TheEscort
             else
             {
                 e.UnsTripTime = 0;
+            }
+
+            if (e.UnsTripping > 0)
+            {
+                e.UnsTripping--;
             }
 
             // May need revisiting
@@ -63,11 +69,11 @@ namespace TheEscort
             //
 
             // For alternate version of blink
-            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < (self.bodyMode == Player.BodyModeIndex.Swimming? 7 : 10))
+            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < (shortDash? 7 : 10))
             {
                 e.UnsBlinkFrame++;
             }
-            else if (e.UnsBlinkFrame >= (self.bodyMode == Player.BodyModeIndex.Swimming? 7 : 10))
+            else if (e.UnsBlinkFrame >= (shortDash? 7 : 10))
             {
                 e.UnsBlinkFrame = 0;
             }
@@ -88,10 +94,12 @@ namespace TheEscort
 
         private void Esclass_US_Update(Player self, ref Escort e)
         {
+            bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
+
             // Trippin' time!
             try
             {
-                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.99f && self.bodyMode != Player.BodyModeIndex.ZeroG && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.99f && !shortDash && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
                     Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                     self.standing = false;
@@ -99,10 +107,15 @@ namespace TheEscort
                     self.bodyChunks[1].vel.x -= self.rollDirection * 5f;
                     self.bodyChunks[0].vel.y -= 3f;
                     self.Stun(20);
+                    e.UnsTripping = 120;
                     if (UnityEngine.Random.value > 0.7f)
                     {
                         self.LoseAllGrasps();
                     }
+                }
+                if (e.UnsTripping > 0 && self.bodyMode == Player.BodyModeIndex.Crawl && self.animation == Player.AnimationIndex.None && self.bodyChunks[0].ContactPoint.y == -1 && self.room is not null)
+                {
+                    self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
                 }
             }
             catch (Exception err)
@@ -199,8 +212,10 @@ namespace TheEscort
         /// </summary>
         private bool Esclass_US_Jump(Player self, ref Escort e)
         {
+            bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
+
             // If in zero G, let the midjump handle it
-            if (self.bodyMode == Player.BodyModeIndex.ZeroG)
+            if (shortDash)
             {
                 Esclass_US_MidJump(self, e);
                 return true;
@@ -431,12 +446,8 @@ namespace TheEscort
             }
 
             float velT = 10;
-            bool isSwimming = self.bodyMode == Player.BodyModeIndex.Swimming;
-            if (self.bodyMode == Player.BodyModeIndex.ZeroG)
-            {  // Reduce velocity speed
-                velT /= 3;
-            }
-            else if (!isSwimming)  // Give levitation to cancel out gravity
+            bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
+            if (!shortDash)
             {
                 self.bodyChunks[0].vel.y += 1.4f;
                 self.bodyChunks[1].vel.y += 1.4f;
@@ -448,7 +459,7 @@ namespace TheEscort
                 self.bodyChunks[0].pos.y += 20;
                 self.bodyChunks[1].pos.y += 20;
                 // Though I could get away with increasing the velocity every frame, having it increase only at the end seemed funner
-                if (frame == (isSwimming? 6 : 9))
+                if (frame == (shortDash? 6 : 9))
                 {
                     self.bodyChunks[0].vel.y += velT + 1f;
                     self.bodyChunks[1].vel.y += velT;
@@ -460,7 +471,7 @@ namespace TheEscort
                 self.bodyChunks[1].pos.x += xMov;
                 self.bodyChunks[0].pos.y += yMov;
                 self.bodyChunks[1].pos.y += yMov;
-                if (frame == (isSwimming? 6 : 9))
+                if (frame == (shortDash? 6 : 9))
                 {
                     self.bodyChunks[0].vel.x += velT * dir.x;
                     self.bodyChunks[1].vel.x += velT * dir.x;

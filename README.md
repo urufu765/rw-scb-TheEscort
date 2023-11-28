@@ -6,8 +6,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
-* ### 0.3 - Ending I
-  * **(0.3.1)** Common skills remake
+* ### 0.4 - Gameplay Polishing 
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
     * **dev02** Creating a new file to fit all the code into
     * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
@@ -51,11 +50,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev40** Forgot to let the option change the max gears...
     * **dev41** Each build's colors are defined now.
     * **dev42** Per request, tweaked Unstable's color
+    * **dev43** Changed the major version to a whole new version, fixed the zeroG experience, and added a (temporary) sound effect for tripping
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
     * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default or auto, or if custom colors are disabled)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
+* ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop

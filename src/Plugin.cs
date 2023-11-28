@@ -17,7 +17,7 @@ using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.1")]
+    [BepInPlugin(MOD_ID, "[Alpha] The Escort", "0.4")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;

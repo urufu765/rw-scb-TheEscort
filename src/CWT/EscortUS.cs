@@ -10,6 +10,7 @@ namespace TheEscort
         public bool Unstable;  // Are thoust an Unstable?!
         public Color UnstableColor;  // Unstable body color
         public int UnsTripTime;  // Fucker trips all the time lol
+        public int UnsTripping;  // Window for the thud soundfx to happen when you trip
         public bool UnsBlinking;  // Is in a blinking state? No, not the eye blink, the jump blink!
         public int UnsBlinkCount;  // How many dashshhhshshsseess done
         public int UnsBlinkWindow;  // Moment of opportunity to chain-blink
