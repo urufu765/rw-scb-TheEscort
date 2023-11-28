@@ -58,6 +58,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default or auto, or if custom colors are disabled)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
+    * *dev* Make Speedster actually go faster if higher gear
+    * *dev* Make the active time for the ability start to fall off at higher numbers
+    * *dev* Increase wallplant tolerance per gear
+    * *dev* Reduce the speedster ability time if losing a gear
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
