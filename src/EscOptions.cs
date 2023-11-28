@@ -966,7 +966,7 @@ namespace TheEscort
                 },
 
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Speedster Gear Limit")),
-                new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100, 2){
+                new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100){
                     description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
                 },
 

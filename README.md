@@ -51,6 +51,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev41** Each build's colors are defined now.
     * **dev42** Per request, tweaked Unstable's color
     * **dev43** Changed the major version to a whole new version, fixed the zeroG experience, and added a (temporary) sound effect for tripping
+    * **dev44** Fixed the options for speedster gears
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
