@@ -99,7 +99,7 @@ namespace TheEscort
             // Trippin' time!
             try
             {
-                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value > 0.99f && !shortDash && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
+                if (self.input[0].x != 0 && e.UnsTripTime == 0 && UnityEngine.Random.value >= 0.95f && !shortDash && self.standing && self.bodyChunks[1].ContactPoint.y == -1)
                 {
                     Ebug(self, "Unstable fucking tripped! Laugh at 'em!");
                     self.standing = false;
@@ -116,6 +116,7 @@ namespace TheEscort
                 if (e.UnsTripping > 0 && self.bodyMode == Player.BodyModeIndex.Crawl && self.animation == Player.AnimationIndex.None && self.bodyChunks[0].ContactPoint.y == -1 && self.room is not null)
                 {
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
+                    e.UnsTripping = 0;
                 }
             }
             catch (Exception err)
