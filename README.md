@@ -53,6 +53,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev43** Changed the major version to a whole new version, fixed the zeroG experience, and added a (temporary) sound effect for tripping
     * **dev44** Fixed the options for speedster gears
     * **dev45** Fixed sound effect going crazy probably when tripping and increased tripping chance to 5%
+    * **dev46** Make the active time for the ability start to fall off at higher numbers
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
@@ -60,7 +61,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
     * *dev* Make Speedster actually go faster if higher gear
-    * *dev* Make the active time for the ability start to fall off at higher numbers
     * *dev* Increase wallplant tolerance per gear
     * *dev* Reduce the speedster ability time if losing a gear
 * ### 0.3 - Ending I

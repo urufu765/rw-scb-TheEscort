@@ -405,7 +405,8 @@ namespace TheEscort
                     e.SpeDashNCrash = true;
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
-                    e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
+                    e.SpeSpeedin = 200 + (int)(1000 * Math.Log(e.SpeGear));
+                    //e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                     e.SpeExtraSpe = e.SpeSpeedin;
                     if (self.room != null)
                     {
