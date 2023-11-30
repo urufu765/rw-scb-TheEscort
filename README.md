@@ -54,13 +54,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev44** Fixed the options for speedster gears
     * **dev45** Fixed sound effect going crazy probably when tripping and increased tripping chance to 5%
     * **dev46** Make the active time for the ability start to fall off at higher numbers
+    * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default or auto, or if custom colors are disabled)
+    * *dev* Make Speedster actually go faster if higher gear
     * *dev* Changed Deflector's spawn location
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
-    * *dev* Give each build a different body color (perhaps by using player graphics to color in each body part if the color mode is default or auto, or if custom colors are disabled)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
-    * *dev* Make Speedster actually go faster if higher gear
     * *dev* Increase wallplant tolerance per gear
     * *dev* Reduce the speedster ability time if losing a gear
 * ### 0.3 - Ending I
