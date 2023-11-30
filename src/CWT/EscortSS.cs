@@ -24,6 +24,7 @@ namespace TheEscort
         public bool SpeOldSpeed;
         public int SpeRollCounter;
         public int SpeMaxGear;
+        public int SpeNitros;
 
         public void EscortSS(bool useOld = false, int maxGear = 4)
         {
