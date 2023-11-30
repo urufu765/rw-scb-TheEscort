@@ -127,6 +127,25 @@ namespace TheEscort
                     {
                         //==Ebug(self.player, "Arenasession or Singleplayer", 2);
 
+                        // Unique color for each build
+                        if (rCam.room.game.IsStorySession && !e.isDefault)
+                        {
+                            Color c2 = Color.white;
+                            if (e.Brawler) c2 = e.BrawlerColor;
+                            if (e.Deflector) c2 = e.DeflectorColor;
+                            if (e.Escapist) c2 = e.EscapistColor;
+                            if (e.NewEscapist) c2 = e.NewEscapistColor;
+                            if (e.Railgunner) c2 = e.RailgunnerColor;
+                            if (e.Speedster) c2 = e.SpeedsterColor;
+                            if (e.Gilded) c2 = e.GildedColor;
+                            if (e.Unstable) c2 = e.UnstableColor;
+                            if (self.player is ShadowPlayer) c2 = e.NEsShadowColor;
+                            for (int i = 0; i < 9; i++)
+                            {
+                                s.sprites[i].color = c2;
+                            }
+                        }
+
                         if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors)
                         {
                             switch (self.player.playerState.playerNumber)

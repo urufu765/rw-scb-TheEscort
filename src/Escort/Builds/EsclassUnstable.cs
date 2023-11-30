@@ -222,6 +222,14 @@ namespace TheEscort
                 return true;
             }
 
+            // Allow player to get off deer antlers (Needs more details)
+            if (self.animation == Player.AnimationIndex.AntlerClimb)
+            {
+                self.animation = Player.AnimationIndex.Flip;
+                self.playerInAntlers.playerDisconnected = true;
+                self.playerInAntlers = null;
+            }
+
             // Allow the player to slide lol by calling orig
             if (self.animation == Player.AnimationIndex.DownOnFours && self.bodyChunks[1].ContactPoint.y < 0 && self.input[0].downDiagonal == self.flipDirection)
             {
