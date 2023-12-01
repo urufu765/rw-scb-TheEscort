@@ -32,9 +32,9 @@ namespace TheEscort
                 {
                     e.SpeNitros--;
                 }
-                else if (self.input[0].x == 0 && e.SpeNitros < e.SpeGear)
+                else if (self.input[0].x == 0 && e.SpeNitros < e.SpeGear * 2)
                 {
-                    e.SpeNitros++;
+                    e.SpeNitros += 2;
                 }
             }
             else
@@ -417,8 +417,8 @@ namespace TheEscort
                     e.SpeDashNCrash = true;
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
-                    e.SpeSpeedin = 200 + (int)(1000 * Math.Log(e.SpeGear));
-                    e.SpeNitros = e.SpeGear;
+                    e.SpeSpeedin = 200 + 80 * e.SpeGear;  // Made the math simple
+                    e.SpeNitros = e.SpeGear * 2;
                     //e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                     e.SpeExtraSpe = e.SpeSpeedin;
                     if (self.room != null)

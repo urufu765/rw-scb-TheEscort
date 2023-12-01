@@ -56,6 +56,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev46** Make the active time for the ability start to fall off at higher numbers
     * **dev47** Make Speedster actually go faster if higher gear and increased wallplant tolerance per gear
     * **dev48** Unstable is allowed to get off Raindeers, gave each build a different body color when no custom colors are selected, changed Deflector's spawn location
+    * **dev49** Redid calculation for Speedster ability duration and doubled the nitros duration and boost (but not the recharge! Still takes the same time)
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
