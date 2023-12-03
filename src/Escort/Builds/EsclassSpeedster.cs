@@ -314,6 +314,7 @@ namespace TheEscort
             {
                 n += 0.45f * e.SpeGear;
             }
+            /*  # I'll come back to this
             if (self.animation == Player.AnimationIndex.BellySlide)
             {
                 int initReq = 2;
@@ -361,6 +362,7 @@ namespace TheEscort
             {
                 e.SpeRollCounter = 0;
             }
+            */
 
             if (e.SpeDashNCrash)
             {
