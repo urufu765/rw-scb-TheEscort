@@ -1892,7 +1892,8 @@ namespace TheEscort
                 e.iFrames = 6;
                 if (e.Deflector)
                 {
-                    e.iFrames = 8;
+                    e.iFrames = 9;
+                    stunBonus = 0;
                 }
                 e.parrySlideLean = 0;
                 if (e.Railgunner && e.RailIReady)
