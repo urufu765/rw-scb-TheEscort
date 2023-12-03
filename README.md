@@ -57,11 +57,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev47** Make Speedster actually go faster if higher gear and increased wallplant tolerance per gear
     * **dev48** Unstable is allowed to get off Raindeers, gave each build a different body color when no custom colors are selected, changed Deflector's spawn location
     * **dev49** Redid calculation for Speedster ability duration and doubled the nitros duration and boost (but not the recharge! Still takes the same time)
+    * **dev50** Reduce the speedster ability time if losing a gear && changed Deflector's spawn again
     * *dev* Deflector's parry ignores stuns
     * *dev* Railgunner recoil remake
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
-    * *dev* Reduce the speedster ability time if losing a gear
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch

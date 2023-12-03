@@ -1671,7 +1671,7 @@ namespace TheEscort
                     0 => "CC_SUMP02",  // Default
                     -1 => "SU_A02",  // Brawler
                     //-2 => "SI_C03",  // Deflector
-                    -2 => "HI_B02",  // Deflector NEW
+                    -2 => "HI_A14",  // Deflector NEW
                     -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
