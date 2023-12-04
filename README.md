@@ -61,10 +61,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev51** Fix speedster's slide (by disabling dynamic slide)
     * **dev52** Deflector no longer loses empower if they use a joke rifle (now damage applies to ALL BULLETS until the empowered period ends) + Deflector's parry ignores stuns
     * **dev52a** Forgot a semicolon
+    * **dev53** Railgunner recoil remake
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
-    * *dev* Railgunner recoil remake
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
+    * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?

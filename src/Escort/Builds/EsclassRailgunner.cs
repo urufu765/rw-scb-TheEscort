@@ -28,6 +28,7 @@ namespace TheEscort
             {
                 e.RailWeaping--;
             }
+
             if (e.RailGaussed > 0)
             {
                 e.RailGaussed--;
@@ -37,6 +38,7 @@ namespace TheEscort
                 e.RailIReady = false;
                 e.RailBombJump = false;
             }
+
             if (e.RailgunCD > 0)
             {
                 if (self.bodyMode != Player.BodyModeIndex.Stunned)
@@ -47,6 +49,11 @@ namespace TheEscort
             else
             {
                 e.RailgunUse = 0;
+            }
+
+            if (e.RailRecoilLag > 0)  // Recoil lag
+            {
+                e.RailRecoilLag--;
             }
         }
 
@@ -79,6 +86,13 @@ namespace TheEscort
                 }
 
             }
+
+            // Do recoil
+            if (e.RailRecoilLag == 0)
+            {
+                e.RailRecoilLag = -1;
+                Esclass_RG_Recoil(self, e.RailLastThrowDir);
+            }
         }
 
 
@@ -94,7 +108,7 @@ namespace TheEscort
             }
             try
             {
-                thrust = 5f;
+                thrust = 2f;  // Inverted the negatives so recoil isn't achieved here
                 spear.spearDamageBonus = Mathf.Max(spear.spearDamageBonus, 1.1f);
                 if (e.RailDoubleSpear)
                 {
@@ -369,13 +383,17 @@ namespace TheEscort
             self.standing = false;
             Vector2 p = new();
             Vector2 v = new();
-            if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon)
+            Weapon w = null;  // So that the thrown direction can be achieved
+            if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon weapon)
             {
                 p = self.grasps[grasp].grabbed.firstChunk.pos;
                 v = self.grasps[grasp].grabbed.firstChunk.vel;
+                w = weapon;
             }
             //Weapon w = self.grasps[grasp].grabbed as Weapon;
             orig(self, grasp, eu);
+            e.RailLastThrowDir = w.throwDir;  // Save last throw direction
+            e.RailRecoilLag = 4;  // Get ready to recoil
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
             //self.grasps[1].grabbed.firstChunk.vel = v;
             orig(self, 1 - grasp, eu);
@@ -565,6 +583,49 @@ namespace TheEscort
 
             self?.room?.AddObject(new CreatureSpasmer(self, true, st));
             self.exhausted = true;
+        }
+
+        /// <summary>
+        /// Applies recoil on the player
+        /// </summary>
+        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f)
+        {
+            float recoilForce = -force;  // Inverts direction
+
+            // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
+            if (self.bodyMode != Player.BodyModeIndex.ZeroG)
+            {
+                if (throwDir.y > 0)  // Reduce downwards recoil
+                {
+                    force *= 0.4f;
+                }
+                else if (throwDir.y < 0)  // Increase upwards recoil
+                {
+                    force *= 2.5f;
+                }
+            }
+
+            // Reduce recoil if proned/standing with the power of friction
+            if (self.bodyMode == Player.BodyModeIndex.Crawl)
+            {
+                force *= 0.3f;
+            }
+            else if (self.bodyMode == Player.BodyModeIndex.Stand)
+            {
+                force *= 0.7f;
+            }
+
+            // Malnutrition bonus
+            if (self.Malnourished)
+            {
+                force *= 2f;
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                self.bodyChunks[i].x += throwDir.x * recoilForce;
+                self.bodyChunks[i].y += throwDir.y * recoilForce;
+            }
         }
     }
 }

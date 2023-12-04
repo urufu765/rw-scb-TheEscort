@@ -183,6 +183,8 @@ namespace TheEscort
         public int RailgunLimit;
         public bool RailIReady;
         public bool RailBombJump;
+        public int RailRecoilLag;
+        public IntVector2 RailLastThrowDir;
         public bool Gilded;
 
         public Escort(Player player)
@@ -300,6 +302,8 @@ namespace TheEscort
             this.RailgunLimit = 10;
             this.RailIReady = false;
             this.RailBombJump = false;
+            this.RailRecoilLag = -1;
+            this.RailLastThrowDir = new(0, 0);
 
             EscortSS();
             EscortGD(player);
