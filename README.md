@@ -6,7 +6,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
-* ### 0.4 - Gameplay Polishing 
+* ### 0.4 - Polished Gameplay Update
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
     * **dev02** Creating a new file to fit all the code into
     * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
@@ -68,6 +68,20 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
+    * *dev* Give speedster slightly increased passive movement speed as charges build up
+    * *dev* New Lidard DunkTM!
+    * *dev* Add Brawler explosive punch
+    * *dev* Barbarian Escort!
+    * *dev* Railgunner screenpeek
+    * *dev* Finish Unstable
+    * *dev* Default Escort's underwater breath does bubbleweed effect
+    * *dev* Railgunner bomb jumps are more controllable and doesn't stun
+    * *dev* Railgunner gets stunned longer (and spasms more) the less karma they have
+    * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
+    * *dev* Lock Brawler's explosive punch behind an achievement
+    * *dev* Make Escapist's description and color change when old is active
+    * *dev* Reduce brawler's chunko mode cooldown
+    * *dev* Unlock lizard reputation so Escort can be friends
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
