@@ -623,8 +623,8 @@ namespace TheEscort
 
             for (int i = 0; i < 2; i++)
             {
-                self.bodyChunks[i].x += throwDir.x * recoilForce;
-                self.bodyChunks[i].y += throwDir.y * recoilForce;
+                self.bodyChunks[i].vel.x += throwDir.x * recoilForce;
+                self.bodyChunks[i].vel.y += throwDir.y * recoilForce;
             }
         }
     }

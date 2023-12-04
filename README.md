@@ -62,6 +62,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev52** Deflector no longer loses empower if they use a joke rifle (now damage applies to ALL BULLETS until the empowered period ends) + Deflector's parry ignores stuns
     * **dev52a** Forgot a semicolon
     * **dev53** Railgunner recoil remake
+    * **dev53a** Minor mistake lol
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
