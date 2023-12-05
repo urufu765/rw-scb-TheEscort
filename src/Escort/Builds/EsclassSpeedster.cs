@@ -286,6 +286,7 @@ namespace TheEscort
         private void Esclass_SS_UpdateBodyMode(Player self, ref Escort e)
         {
             float n = 1f;
+            float p = 0f;  // Passive speed
             if (e.SpeOldSpeed)
             {
                 n = e.SpeSecretSpeed ? 2.5f : 1f;
@@ -293,12 +294,18 @@ namespace TheEscort
             else
             {
                 n += 0.6f * e.SpeGear;
+                p += 0.08f * e.SpeCharge;
             }
 
             if (e.SpeDashNCrash)
             {
                 self.dynamicRunSpeed[0] += 3f * n;
                 self.dynamicRunSpeed[1] += 3f * n;
+            }
+            else
+            {
+                self.dynamicRunSpeed[0] += p;
+                self.dynamicRunSpeed[1] += p;
             }
         }
 

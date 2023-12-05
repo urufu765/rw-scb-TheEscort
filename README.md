@@ -64,11 +64,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev53** Railgunner recoil remake
     * **dev53a** Minor mistake lol
     * **dev54** Reduced escort swim speed (because frankly it was ridiculous)
+    * **dev55** Give speedster slightly increased passive movement speed as charges build up
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Add hidden builds by making them selectable but when ctoring just default to default
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
-    * *dev* Give speedster slightly increased passive movement speed as charges build up
     * *dev* New Lidard DunkTM!
     * *dev* Add Brawler explosive punch
     * *dev* Barbarian Escort!
