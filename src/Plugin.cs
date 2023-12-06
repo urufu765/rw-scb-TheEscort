@@ -1085,7 +1085,9 @@ namespace TheEscort
         }
 
 
-
+        /// <summary>
+        /// For when Esclass updates need to happen outside of Player update
+        /// </summary>
         private void Escort_AbsoluteTick(On.RainWorldGame.orig_Update orig, RainWorldGame self)
         {
             orig(self);
@@ -1510,25 +1512,34 @@ namespace TheEscort
         /// <returns>false if player is not escort, true if in parry condition</returns>
         public bool Eshelp_ParryCondition(Player self)
         {
+            // If not escort, why bother?
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 return false;
             }
+
+            // Deflector extra parry check
             if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
             {
                 Ebug(self, "Parryteched condition!", 2);
                 return true;
             }
+
+            // New Escapist hidden parry tech check
             if (e.NewEscapist && e.NEsAbility > 0 && (self.animation == Player.AnimationIndex.Flip))
             {
                 Ebug(self, "New Escapist trickz parry condition!", 2);
                 return true;
             }
+
+            // Regular parry check
             else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
             {
                 Ebug(self, "Regular parry condition!", 2);
                 return true;
             }
+
+            // Not in parry condition
             else
             {
                 Ebug(self, "Not in parry condition", 2);
@@ -1537,29 +1548,39 @@ namespace TheEscort
             }
         }
 
-        // Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
+        /// <summary>
+        /// Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
+        /// </summary>
         public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie)
         {
+            // Escort check
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 Ebug(self, "Saving throw failed because Scug is not Escort!", 0);
                 return false;
             }
+
+            // Null check
             if (self is null || offender is null || ouchie is null)
             {
                 Ebug(self, "Saving throw failed due to null values!", 0);
                 return false;
             }
+
+            // Checks whether the attacker is a creature
             if (offender.owner is not Creature)
             {
                 Ebug(self, "Saving throw failed due to the offender not being a creature!", 2);
                 return false;
             }
+
+            // Checks whether easier mode is on
             if (e.easyKick)
             {
                 Ebug(self, "Saving throw don't work on easier dropkicks!", 2);
                 return false;
             }
+
             // Deflector isn't allowed a saving throw because they don't need it ;)
             if (!e.Deflector)
             {
@@ -1571,6 +1592,8 @@ namespace TheEscort
                     return true;
                 }
             }
+
+            // Fuck you, get rekt
             else
             {
                 Ebug(self, "Saving throw failed: Deflector Build Moment.", 2);
@@ -1578,7 +1601,7 @@ namespace TheEscort
             return false;
         }
 
-
+        // TODO: Remove this
         private void Backpack_ILRealize(ILContext il)
         {
             var cursor = new ILCursor(il);
@@ -1604,6 +1627,9 @@ namespace TheEscort
             );
         }
 
+        /// <summary>
+        /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack
+        /// </summary>
         private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
         {
             orig(self);
@@ -1626,12 +1652,17 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Was once planned to be used for adding backpacks as an actual creatures... before Uru got real lazy and couldn't be bothered
+        /// </summary>
         private void Custom_Stuff(On.StaticWorld.orig_InitCustomTemplates orig)
         {
             orig();
         }
 
-
+        /// <summary>
+        /// Changes spawn location... WARNING: Also overrides expedition spawns, so therefore unused.
+        /// </summary>
         private void EscortChangingRoom(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
         {
             orig(self, manager);
@@ -1653,6 +1684,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Changes the spawn location of Escort. Compatible with Expedition random spawns
+        /// </summary>
         private void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
             orig(self);
             Ebug("Changing room 2!");
@@ -1684,7 +1718,9 @@ namespace TheEscort
             }
         }
 
-
+        /// <summary>
+        /// Returns whether the character should be playable or not. It hides the Socks
+        /// </summary>
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
         {
             ins.L().Set();
