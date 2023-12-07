@@ -770,6 +770,7 @@ namespace TheEscort
                         {
                             goto default;
                         }
+                        break;
                     case -8:  // Unstable test build
                         // IF locked, don't let player play as Unstable
                         if (self?.room?.game is null)
@@ -792,6 +793,7 @@ namespace TheEscort
                         e.Barbarian = true;
                         Ebug(self, "Barbarian (WIP) Build selected!", 2);
                         self.slugcatStats.bodyWeightFac += 0.95f;
+                        break;
                     case -6:  // Gilded build
                         e.Gilded = true;
                         if (config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
