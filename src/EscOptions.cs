@@ -610,7 +610,7 @@ namespace TheEscort
                     color = bGilded * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Barbarian] {?????}", true){
-                    color = Color.green;
+                    color = Color.green
                 },
                 sctTestBuildText,
             };

@@ -67,6 +67,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev55** Give speedster slightly increased passive movement speed as charges build up
     * **dev55a** Some comments
     * **dev56** Add hidden builds by making them selectable but when ctoring just default to default and made lizards actually befriendable and achievements!
+    * **dev56a** Made a small mistake + more achievements
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged

@@ -94,5 +94,6 @@ namespace TheEscort
         public bool achieveEscort_Fuckin = false;  // Fall into a deathpit after a slidestun 50 times
         public bool achieveEscort_Bad_Parent = false;  // Let Socks die 10 times in a single campaign
         public bool achieveEscort_Wawa_Mothafuka = false;  // Taunt for more than 8 seconds while engaged in combat
+        public bool achieveEscommunity_Spearfishin = false;  // Kill a leviathan in Escort campaign
     }
 }
