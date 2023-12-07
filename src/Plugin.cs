@@ -761,7 +761,25 @@ namespace TheEscort
                         self.slugcatStats.visualStealthInSneakMode = 1;
                         self.spearOnBack = new Player.SpearOnBack(self);
                         break;
-                    case -7:  // Unstable test build
+                    case -9:  // Power test build
+                        if (self?.room?.game is null)
+                        {
+                            Ebug(self, "NULL GAME!", 1);
+                        }
+                        else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().achieveEscort_Bare_Fists)
+                        {
+                            goto default;
+                        }
+                    case -8:  // Unstable test build
+                        // IF locked, don't let player play as Unstable
+                        if (self?.room?.game is null)
+                        {
+                            Ebug(self, "NULL GAME!", 1);
+                        }
+                        else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort)
+                        {
+                            goto default;
+                        }
                         e.Unstable = true;
                         Ebug(self, "Unstable (WIP) Build selected!", 2);
                         self.slugcatStats.runspeedFac += 0.45f;
@@ -770,6 +788,10 @@ namespace TheEscort
                         //self.slugcatStats.bodyWeightFac -= 0.15f;
                         self.slugcatStats.lungsFac += 0.5f;
                         break;
+                    case -7:
+                        e.Barbarian = true;
+                        Ebug(self, "Barbarian (WIP) Build selected!", 2);
+                        self.slugcatStats.bodyWeightFac += 0.95f;
                     case -6:  // Gilded build
                         e.Gilded = true;
                         if (config.cfgSectretBuild.Value) e.acidSwim = 0.2f;

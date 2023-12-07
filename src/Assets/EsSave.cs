@@ -82,5 +82,17 @@ namespace TheEscort
     /// </summary>
     public record EscortSaveDataMiscProgression
     {
+        // Implemented below
+        public bool beaten_Escort = false;  // Beat Escort campaign
+
+        // Not Implemented below
+        public bool achieveEscort_Bare_Fists = false;  // Beat Escort campaign without ever picking up a weapon
+        public bool achieveEscort_All_Known = false;  // Beat Escort true ending OR complete wanderer passage in Escort campaign
+        public bool achieveEscort_Peter_Pan = false;  // Bring at least 5 creatures to the void pool and achieve the ascension ending
+        public bool achieveEscort_Bloodthristy = false;  // Survive 20 cycles of just meat diet
+        public bool achieveEscort_Forager = false;  // Survive 20 cycles of just fruit diet
+        public bool achieveEscort_Fuckin = false;  // Fall into a deathpit after a slidestun 50 times
+        public bool achieveEscort_Bad_Parent = false;  // Let Socks die 10 times in a single campaign
+        public bool achieveEscort_Wawa_Mothafuka = false;  // Taunt for more than 8 seconds while engaged in combat
     }
 }

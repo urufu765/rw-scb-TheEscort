@@ -151,7 +151,7 @@ namespace TheEscort
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
-        public int buildDiv = -7;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
+        public int buildDiv = -8;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.3";
         private readonly Configurable<string> cfgVersion;
@@ -334,7 +334,7 @@ namespace TheEscort
             };
             this.secretText.OnValueChanged += InputTheSecret;
 
-            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Unstable] {?????}", true){
+            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("Test") + "[Unstable] {?????}", true){
                 color = bTesting * 0.7f
             };
             // This is meaningless since the option isn't actually hidden
@@ -608,6 +608,9 @@ namespace TheEscort
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
+                },
+                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Barbarian] {?????}", true){
+                    color = Color.green;
                 },
                 sctTestBuildText,
             };
