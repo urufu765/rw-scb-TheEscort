@@ -265,7 +265,8 @@ namespace TheEscort
                 new ListItem("railgunner", Translate("Railgunner"), -4),
                 new ListItem("speedster", Translate("Speedster"), -5),
                 new ListItem("gilded", Translate("Gilded"), -6),
-                new ListItem("unstable", Translate("Unstable"), -7)
+                new ListItem("barbarian", Translate("Barbarian"), -7),
+                new ListItem("unstable", Translate("Unstable"), -8)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
@@ -609,7 +610,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Test") + "[Barbarian] {?????}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Coming Soon...") + "[Barbarian] {?????}", true){
                     color = Color.green
                 },
                 sctTestBuildText,

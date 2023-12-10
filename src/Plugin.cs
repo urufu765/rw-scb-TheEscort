@@ -816,7 +816,7 @@ namespace TheEscort
                             Ebug(self, "Get Speedster save!");
                             if (speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging))
                             {
-                                e.SpeCharge = charging;
+                                e.SpeCharge = Math.Min(charging, e.SpeMaxGear);
                             }
                             //Ebug(self, "Misc: " + JsonConvert.SerializeObject(speedsterSession.saveState.miscWorldSaveData.Esave()));
                         }

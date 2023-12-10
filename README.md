@@ -69,6 +69,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev56** Add hidden builds by making them selectable but when ctoring just default to default and made lizards actually befriendable and achievements!
     * **dev56a** Made a small mistake + more achievements
     * **dev56b** Bugfix whoops
+    * **dev57** Got started on Barbarian and capped how much charge is stored in speedster's perma storage when loading in so they don't potentially start with overcharge.
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
