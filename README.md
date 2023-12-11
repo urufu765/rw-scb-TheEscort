@@ -72,6 +72,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev57** Got started on Barbarian and capped how much charge is stored in speedster's perma storage when loading in so they don't potentially start with overcharge.
     * **dev58** Default Escort's underwater breath does bubbleweed effect
     * **dev59** Reduce brawler's chunko mode cooldown & code fixes
+    * **dev60** Bubbleweed Escort fixes (MOAR)
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged

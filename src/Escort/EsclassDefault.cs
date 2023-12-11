@@ -1035,7 +1035,7 @@ namespace TheEscort
                         bubble.age = 600 - UnityEngine.Random.Range(20, UnityEngine.Random.Range(30, 80));
                     }
                     // Assumes your PC is able to handle a creature sweep
-                    if ((RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && self.room?.abstractRoom?.creatuers is not null)
+                    if ((RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && self.room?.abstractRoom?.creatures is not null)
                     {
                         for (int i = 0; i < self.room.abstractRoom.creatures.Count; i++)
                         {
@@ -1051,12 +1051,12 @@ namespace TheEscort
                                 }
                                 else if (cc is Leech cl && !cl.dead && Custom.DistLess(self.bodyChunks[0].pos, cl.mainBodyChunk.pos, 70f))
                                 {
-                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cl.submersion;
+                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cc.submersion;
                                     if (UnityEngine.Random.value < 0.007f + chance)
                                     {
                                         cl.Stun(16);
                                     }
-                                    if (cl.Consious ** cl.grasps[0] == null)
+                                    if (cl.Consious && cl.grasps[0] == null)
                                     {
                                         cl.mainBodyChunk.vel += Custom.DirVec(self.bodyChunks[0].pos, cl.mainBodyChunk.pos) * chance * UnityEngine.Random.value * 12f;
                                     }
