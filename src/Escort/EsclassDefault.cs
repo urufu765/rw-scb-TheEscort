@@ -1051,7 +1051,7 @@ namespace TheEscort
                                 }
                                 else if (cc is Leech cl && !cl.dead && Custom.DistLess(self.bodyChunks[0].pos, cl.mainBodyChunk.pos, 70f))
                                 {
-                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cc.submersion;
+                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cl.mainBodyChunk.submersion;
                                     if (UnityEngine.Random.value < 0.007f + chance)
                                     {
                                         cl.Stun(16);
