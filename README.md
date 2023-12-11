@@ -70,6 +70,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev56a** Made a small mistake + more achievements
     * **dev56b** Bugfix whoops
     * **dev57** Got started on Barbarian and capped how much charge is stored in speedster's perma storage when loading in so they don't potentially start with overcharge.
+    * **dev58** Default Escort's underwater breath does bubbleweed effect
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
@@ -78,7 +79,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Barbarian Escort!
     * *dev* Railgunner screenpeek
     * *dev* Finish Unstable
-    * *dev* Default Escort's underwater breath does bubbleweed effect
     * *dev* Railgunner bomb jumps are more controllable and doesn't stun
     * *dev* Railgunner gets stunned longer (and spasms more) the less karma they have
     * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode

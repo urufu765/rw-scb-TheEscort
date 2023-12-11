@@ -1024,6 +1024,64 @@ namespace TheEscort
                         Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5], (float)Math.Pow(e.viscoDance, theGut[9])));
                     self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(e.viscoDance, theGut[12]));
                 }
+
+                // Bubbleweed Escort
+                if (e.isDefault)
+                {
+                    if (self.room != null)  // VFX
+                    {
+                        Bubble bubble = new(self.bodyChunks[0].pos + Custom.RNV() * Random.value * 4f, Custom.RNV() * Mathf.Lerp(6f, 16f, Random.value) * Mathf.InverseLerp(0f, 0.45f, self.airInLungs), false, false);
+                        self.room.AddObject(bubble);
+                        bubble.age = 600 - Random.Range(20, Random.Range(30, 80));
+                    }
+                    // Assumes your PC is able to handle a creature sweep
+                    if ((RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && self.room?.abstractRoom?.creatuers is not null)
+                    {
+                        for (int i = 0; i < self.room.abstractRoom.creatures.Count; i++)
+                        {
+                            if (self.room.abstractRoom.creatures[i].realizedCreature is Creature cc && cc != self)
+                            {
+                                if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
+                                {
+                                    cp.airInLungs = 1f;
+                                }
+                                else if (cc is AirBreatherCreature abc && Custom.DistLess(self.bodyChunks[0].pos, abc.mainBodyChunk.pos, 40f))
+                                {
+                                    abc.lungs = Mathf.Min(1f, abc.lungs + 0.04761905f);
+                                }
+                                else if (cc is Leech cl && !cl.dead && Custom.DistLess(self.bodyChunks[0].pos, cl.mainBodyChunk.pos, 70f))
+                                {
+                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cl.submersion;
+                                    if (Random.value < 0.007f + chance)
+                                    {
+                                        cl.Stun(16);
+                                    }
+                                    if (cl.Consious ** cl.grasps[0] == null)
+                                    {
+                                        cl.mainBodyChunk.vel += Custom.DirVec(self.bodyChunks[0].pos, cl.mainBodyChunk.pos) * chance * Random.value * 12f;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else  // Only provide bubbles to creatures you're holding onto because you got a potato pc
+                    {
+                        for (int j = 0; j < self.grasps.Length; j++)
+                        {
+                            if (self.grasps[j]?.grabbed is Creature c && !c.dead)
+                            {
+                                if (c is Player ccp)
+                                {
+                                    ccp.airInLungs = 1f;
+                                }
+                                else if (c is AirBreatherCreature cabc)
+                                {
+                                    cabc.lungs = Mathf.Min(1f, cabc.lungs + 0.04761905f);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
