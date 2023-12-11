@@ -71,6 +71,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev56b** Bugfix whoops
     * **dev57** Got started on Barbarian and capped how much charge is stored in speedster's perma storage when loading in so they don't potentially start with overcharge.
     * **dev58** Default Escort's underwater breath does bubbleweed effect
+    * **dev59** Reduce brawler's chunko mode cooldown & code fixes
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
@@ -84,7 +85,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
     * *dev* Lock Brawler's explosive punch behind an achievement
     * *dev* Make Escapist's description and color change when old is active
-    * *dev* Reduce brawler's chunko mode cooldown
     * *dev* Unlock lizard reputation so Escort can be friends
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch

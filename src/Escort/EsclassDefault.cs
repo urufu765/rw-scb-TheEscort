@@ -1030,9 +1030,9 @@ namespace TheEscort
                 {
                     if (self.room != null)  // VFX
                     {
-                        Bubble bubble = new(self.bodyChunks[0].pos + Custom.RNV() * Random.value * 4f, Custom.RNV() * Mathf.Lerp(6f, 16f, Random.value) * Mathf.InverseLerp(0f, 0.45f, self.airInLungs), false, false);
+                        Bubble bubble = new(self.bodyChunks[0].pos + Custom.RNV() * UnityEngine.Random.value * 4f, Custom.RNV() * Mathf.Lerp(6f, 16f, UnityEngine.Random.value) * Mathf.InverseLerp(0f, 0.45f, self.airInLungs), false, false);
                         self.room.AddObject(bubble);
-                        bubble.age = 600 - Random.Range(20, Random.Range(30, 80));
+                        bubble.age = 600 - UnityEngine.Random.Range(20, UnityEngine.Random.Range(30, 80));
                     }
                     // Assumes your PC is able to handle a creature sweep
                     if ((RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && self.room?.abstractRoom?.creatuers is not null)
@@ -1052,13 +1052,13 @@ namespace TheEscort
                                 else if (cc is Leech cl && !cl.dead && Custom.DistLess(self.bodyChunks[0].pos, cl.mainBodyChunk.pos, 70f))
                                 {
                                     float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cl.submersion;
-                                    if (Random.value < 0.007f + chance)
+                                    if (UnityEngine.Random.value < 0.007f + chance)
                                     {
                                         cl.Stun(16);
                                     }
                                     if (cl.Consious ** cl.grasps[0] == null)
                                     {
-                                        cl.mainBodyChunk.vel += Custom.DirVec(self.bodyChunks[0].pos, cl.mainBodyChunk.pos) * chance * Random.value * 12f;
+                                        cl.mainBodyChunk.vel += Custom.DirVec(self.bodyChunks[0].pos, cl.mainBodyChunk.pos) * chance * UnityEngine.Random.value * 12f;
                                     }
                                 }
                             }
