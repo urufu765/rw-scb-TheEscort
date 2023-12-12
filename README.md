@@ -75,6 +75,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev60** Bubbleweed Escort fixes (MOAR)
     * **dev61** Complete fix
     * **dev62** Railgunner gets stunned longer (and spasms more) the less karma they have
+    * **dev62a** Backlogs cleanup and more todo list
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
@@ -88,6 +89,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Lock Brawler's explosive punch behind an achievement
     * *dev* Make Escapist's description and color change when old is active
     * *dev* Unlock lizard reputation so Escort can be friends
+    * *dev* Add Chocosocks in honor of fanart by Shizarival
+
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
   * **(0.3.0)** The End...?
