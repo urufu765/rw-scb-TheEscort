@@ -425,7 +425,12 @@ namespace TheEscort
             if (self.Malnourished)
             {
                 e.RailgunUse++;
-                self.Stun(10 * e.RailgunUse);
+                int stunValue = 10 * e.RailgunUse;
+                if (self.room?.game?.session is StoryGameSession sgs)
+                {
+                    stunValue *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+                }
+                self.Stun(stunValue);
             }
             e.RailGaussed = 60;
             int addition = 0;
@@ -539,7 +544,13 @@ namespace TheEscort
                 {
                     room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
                     //self.stun += self.Malnourished ? 320 : 160;
-                    self.Stun(self.Malnourished ? 320 : 160);
+                    int stunDur = self.Malnourished ? 320 : 160;
+                    if (self.room?.game?.session is StoryGameSession sgs)
+                    {
+                        stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+                    }
+
+                    self.Stun(stunDur);
                     self.SetMalnourished(true);
                     e.RailgunUse = e.RailgunLimit - 3;
                 }

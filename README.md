@@ -74,6 +74,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev59** Reduce brawler's chunko mode cooldown & code fixes
     * **dev60** Bubbleweed Escort fixes (MOAR)
     * **dev61** Complete fix
+    * **dev62** Railgunner gets stunned longer (and spasms more) the less karma they have
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
@@ -83,7 +84,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Railgunner screenpeek
     * *dev* Finish Unstable
     * *dev* Railgunner bomb jumps are more controllable and doesn't stun
-    * *dev* Railgunner gets stunned longer (and spasms more) the less karma they have
     * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
     * *dev* Lock Brawler's explosive punch behind an achievement
     * *dev* Make Escapist's description and color change when old is active
