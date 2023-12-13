@@ -76,6 +76,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev61** Complete fix
     * **dev62** Railgunner gets stunned longer (and spasms more) the less karma they have
     * **dev62a** Backlogs cleanup and more todo list
+    * **dev62b** Backlogs cleanup finished
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
@@ -90,6 +91,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Make Escapist's description and color change when old is active
     * *dev* Unlock lizard reputation so Escort can be friends
     * *dev* Add Chocosocks in honor of fanart by Shizarival
+    * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a low chance of lineage
+    * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
 
 * ### 0.3 - Ending I
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
