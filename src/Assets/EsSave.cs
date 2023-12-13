@@ -82,6 +82,7 @@ namespace TheEscort
     /// </summary>
     public record EscortSaveDataMiscProgression
     {
+        /*ACHIEVEMENTS (POTENTIAL SPOILERS!!)*/
         // Implemented below
         public bool beaten_Escort = false;  // Beat Escort campaign
 
@@ -98,5 +99,45 @@ namespace TheEscort
         public bool achieveEscort_Perfectionist = false;  // Beat Escort campaign without ever missing a spear throw (wallspears count as a miss)
 
         public bool achieveEscommunity_Spearfishin = false;  // Kill a leviathan in Escort campaign
+
+        // Future achievements for much later dates
+        // Brawler and the Great Tea Party
+        public bool beaten_BrawlerEscort = false;  // Beat Escort campaign
+        public bool achieveBrawler_Pipebomb = false;  // Die in the intro
+        public bool achieveBrawler_Not_A_Parrot = false;  // Don't do everything the narrator says and get the Tea Ending
+        public bool achieveBrawler_No_Table_Manners = false;  // Be a disappointment 30 times
+        public bool achieveBrawler_Londoner = false;  // Supershank 50 times
+        public bool achieveBrawler_The_Spanish = false;  // Get the defiance Ending
+        public bool achieveBrawler_Outta_Time = false;  // Get Out of Time Ending
+        public bool achieveBrawler_Tea_Time = false;  // Get Tea Ending
+
+        // Deflector: Super Rainworld Saturation(consult book of stuff)
+        public bool beaten_DeflectorEscort = false;  // Beat Deflector campaign
+        public bool achieveDeflector_Youre_Win = false;  // Complete a run of Deflector campaign by going through all the main stages
+        public bool achieveDeflector_Your_Special = false;  // Complete a run of Deflector campaign by completing at least one bonus stage
+        public bool achieveDeflector_The_Ignition = false;  // Beat stage 1
+        
+        // Escapist:
+        public bool beaten_EscapistEscort = false;  // Beat Escapist campaign
+        public bool achieveEscapist_Peek_Into_Reality = false;  // Break out of the delusion, if only for a mere moment
+        public bool achieveEscapist_Mission_Complete = false;  // Achieve the main ending
+        public bool achieveEscapist_Undetectable = false;  // Beat Escapist campaign without being discovered once
+        public bool achieveEscapist_Guns_Blazin = false;  // Beat Escapist campaign by being detected at least once in every act (or for the majority of the campaign)
+
+        // Railgunner:
+        public bool beaten_RailgunnerEscort = false;  // Beat Railgunner campaign
+        public bool achieveRailgunner_Bittersweet = false;  // Achieve the main ending
+
+        // Speedster:
+        public bool beaten_SpeedsterEscort = false;  // Beat Speedster campaign
+        public bool achieveSpeedster_The_Ultimate_Prize = false;  // Achieve the main ending
+
+        // Gilded:
+        public bool beaten_GildedEscort = false;  // Beat Gilded campaign
+        public bool achieveGilded_Where_We_Are = false;  // Achieve the main ending
+
+        // Barbarian:
+        public bool beaten_BarbarianEscort = false;  // Beat Barbarian campaign
+        public bool achieveBarbarian_The_End = false;  // Achieve the main ending
     }
 }
