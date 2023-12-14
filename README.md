@@ -78,12 +78,18 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev62a** Backlogs cleanup and more todo list
     * **dev62b** Backlogs cleanup finished
     * **dev62c** Taking in suggestions/more achievements (even future ones)
+    * **dev62d** Readme updated with new todo
+    * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
     * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
     * *dev* New Lidard DunkTM!
     * *dev* Add Brawler explosive punch
-    * *dev* Barbarian Escort!
+    * *dev* Barbarian creature shield
+    * *dev* Barbarian shield bash (slide with creature)
+    * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
+    * *dev* Barbarian faster slide
+    * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
     * *dev* Railgunner screenpeek
     * *dev* Finish Unstable
     * *dev* Railgunner bomb jumps are more controllable and doesn't stun
