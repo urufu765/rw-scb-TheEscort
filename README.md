@@ -79,6 +79,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev62b** Backlogs cleanup finished
     * **dev62c** Taking in suggestions/more achievements (even future ones)
     * **dev62d** Readme updated with new todo
+    * **dev62e** Readme todo updated
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
@@ -92,12 +93,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
     * *dev* Railgunner screenpeek
     * *dev* Finish Unstable
-    * *dev* Railgunner bomb jumps are more controllable and doesn't stun
+    * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
     * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
     * *dev* Lock Brawler's explosive punch behind an achievement
     * *dev* Make Escapist's description and color change when old is active
-    * *dev* Unlock lizard reputation so Escort can be friends
+    * *dev* ??? Unlock lizard reputation so Escort can be friends
     * *dev* Add Chocosocks in honor of fanart by Shizarival
+    * *dev* New way options are processed
     * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
     * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
 
