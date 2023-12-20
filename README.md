@@ -80,6 +80,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev62c** Taking in suggestions/more achievements (even future ones)
     * **dev62d** Readme updated with new todo
     * **dev62e** Readme todo updated
+    * **dev62f** Achievements updated
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
