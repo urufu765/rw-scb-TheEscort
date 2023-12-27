@@ -21,6 +21,9 @@ namespace TheEscort
         public static readonly PlayerFeature<float> railgunLillyVelFac = PlayerFloat("theescort/railgunner/lilly_vel_fac");
         public static readonly PlayerFeature<float> railgunBombVelFac = PlayerFloat("theescort/railgunner/bomb_vel_fac");
         public static readonly PlayerFeature<float[]> railgunRockThrust = PlayerFloats("theescort/railgunner/rock_thrust");
+        public static readonly PlayerFeature<float> railgunRecoil = PlayerFloat("theescort/railgunner/recoil_fac");
+        public static readonly PlayerFeature<float[]> railgunRecoilMod = PlayerFloats("theescort/railgunner/recoil_mod");
+        public static readonly PlayerFeature<int> railgunRecoilDelay = PlayerInt("theescort/railgunner/recoil_delay");
 
         public void Esclass_RG_Tick(Player self, ref Escort e)
         {
@@ -87,11 +90,19 @@ namespace TheEscort
 
             }
 
+            if (
+                !railgunRecoil.TryGet(self, out float rRecoil) ||
+                !railgunRecoilMod.TryGet(self, out float[] rRecoilMod)
+            )
+            {
+                return;
+            }
             // Do recoil
             if (e.RailRecoilLag == 0)
             {
                 e.RailRecoilLag = -1;
-                Esclass_RG_Recoil(self, e.RailLastThrowDir);
+                // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
+                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod);
             }
         }
 
@@ -375,6 +386,11 @@ namespace TheEscort
 
         private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
+            if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
+            {
+                return false;
+            }
+
             if (!(e.RailDoubleSpear || e.RailDoubleRock || e.RailDoubleBomb || e.RailDoubleLilly))
             {
                 return false;
@@ -393,7 +409,7 @@ namespace TheEscort
             //Weapon w = self.grasps[grasp].grabbed as Weapon;
             orig(self, grasp, eu);
             e.RailLastThrowDir = w.throwDir;  // Save last throw direction
-            e.RailRecoilLag = 4;  // Get ready to recoil
+            e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
             //self.grasps[1].grabbed.firstChunk.vel = v;
             orig(self, 1 - grasp, eu);
@@ -456,7 +472,7 @@ namespace TheEscort
             }
             else
             {
-                e.RailgunCD += (self.Malnourished ? 100 : 80) * addition;
+                e.RailgunCD += (self.Malnourished ? 60 : 80) * addition;
             }
             if (e.RailgunCD > 800)
             {
@@ -599,43 +615,41 @@ namespace TheEscort
         /// <summary>
         /// Applies recoil on the player
         /// </summary>
-        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f)
+        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default)
         {
-            float recoilForce = -force;  // Inverts direction
-
             // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
             if (self.bodyMode != Player.BodyModeIndex.ZeroG)
             {
                 if (throwDir.y > 0)  // Reduce downwards recoil
                 {
-                    force *= 0.4f;
+                    force *= recoilMod[0];
                 }
                 else if (throwDir.y < 0)  // Increase upwards recoil
                 {
-                    force *= 2.5f;
+                    force *= recoilMod[1];
                 }
             }
 
             // Reduce recoil if proned/standing with the power of friction
             if (self.bodyMode == Player.BodyModeIndex.Crawl)
             {
-                force *= 0.3f;
+                force *= recoilMod[2];
             }
             else if (self.bodyMode == Player.BodyModeIndex.Stand)
             {
-                force *= 0.7f;
+                force *= recoilMod[3];
             }
 
             // Malnutrition bonus
             if (self.Malnourished)
             {
-                force *= 2f;
+                force *= recoilMod[4];
             }
 
             for (int i = 0; i < 2; i++)
             {
-                self.bodyChunks[i].vel.x += throwDir.x * recoilForce;
-                self.bodyChunks[i].vel.y += throwDir.y * recoilForce;
+                self.bodyChunks[i].vel.x += throwDir.x * -force;
+                self.bodyChunks[i].vel.y += throwDir.y * -force;
             }
         }
     }

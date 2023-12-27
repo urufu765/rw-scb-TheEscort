@@ -106,6 +106,9 @@
 		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3],
 		"theescort/railgunner/lilly_vel_fac": 1.8, 
 		"theescort/railgunner/bomb_vel_fac": 3,
+		"theescort/railgunner/recoil_delay": 3,
+		"theescort/railgunner/recoil_fac": 50,
+		"theescort/railgunner/recoil_mod": [0.7, 1, 0.6, 0.9, 1.5],
 
 		"theescort/speedster/custom_shader": "Basic",
 		"theescort/speedster/pole_rise": [0.8, 0.65],

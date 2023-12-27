@@ -294,7 +294,7 @@ namespace TheEscort
             else
             {
                 n += 0.6f * e.SpeGear;
-                p += 0.08f * e.SpeCharge;
+                p += 0.15f * e.SpeCharge;
             }
 
             if (e.SpeDashNCrash)

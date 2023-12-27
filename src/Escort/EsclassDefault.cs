@@ -1035,7 +1035,8 @@ namespace TheEscort
                         bubble.age = 600 - UnityEngine.Random.Range(20, UnityEngine.Random.Range(30, 80));
                     }
                     // Assumes your PC is able to handle a creature sweep
-                    if ((RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && self.room?.abstractRoom?.creatures is not null)
+                    // Quality check that's been removed: (RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && 
+                    if (self.room?.abstractRoom?.creatures is not null)
                     {
                         for (int i = 0; i < self.room.abstractRoom.creatures.Count; i++)
                         {
@@ -1064,23 +1065,23 @@ namespace TheEscort
                             }
                         }
                     }
-                    else  // Only provide bubbles to creatures you're holding onto because you got a potato pc
-                    {
-                        for (int j = 0; j < self.grasps.Length; j++)
-                        {
-                            if (self.grasps[j]?.grabbed is Creature c && !c.dead)
-                            {
-                                if (c is Player ccp)
-                                {
-                                    ccp.airInLungs = 1f;
-                                }
-                                else if (c is AirBreatherCreature cabc)
-                                {
-                                    cabc.lungs = Mathf.Min(1f, cabc.lungs + 0.04761905f);
-                                }
-                            }
-                        }
-                    }
+                    // else  // Only provide bubbles to creatures you're holding onto because you got a potato pc
+                    // {
+                    //     for (int j = 0; j < self.grasps.Length; j++)
+                    //     {
+                    //         if (self.grasps[j]?.grabbed is Creature c && !c.dead)
+                    //         {
+                    //             if (c is Player ccp)
+                    //             {
+                    //                 ccp.airInLungs = 1f;
+                    //             }
+                    //             else if (c is AirBreatherCreature cabc)
+                    //             {
+                    //                 cabc.lungs = Mathf.Min(1f, cabc.lungs + 0.04761905f);
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
             }
 
