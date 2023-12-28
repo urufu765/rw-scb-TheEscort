@@ -231,7 +231,7 @@ namespace TheEscort
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
-            this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 69));
+            this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
 
             
             this.cfgSecret.OnChange += InputSecret;

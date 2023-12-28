@@ -106,11 +106,15 @@ namespace TheEscort
                     self.bodyChunks[0].vel.x += self.rollDirection * 7f;
                     self.bodyChunks[1].vel.x -= self.rollDirection * 5f;
                     self.bodyChunks[0].vel.y -= 3f;
-                    self.Stun(20);
                     e.UnsTripping = 120;
                     if (UnityEngine.Random.value > 0.7f)
                     {
+                        self.Stun(40);
                         self.LoseAllGrasps();
+                    }
+                    else
+                    {
+                        self.Stun(30);
                     }
                 }
                 if (e.UnsTripping > 0 && self.bodyMode == Player.BodyModeIndex.Crawl && self.animation == Player.AnimationIndex.None && self.bodyChunks[0].ContactPoint.y == -1 && self.room is not null)
@@ -273,7 +277,7 @@ namespace TheEscort
             else if (e.UnsBlinkCD > 0)
             {
                 self.bodyChunks[0].vel.y = 2f;
-                self.bodyChunks[1].vel.y = 1f;
+                self.bodyChunks[1].vel.y = 1.5f;
                 self.jumpBoost = 9f;
             }
             
@@ -507,7 +511,7 @@ namespace TheEscort
                         e.UnsMeleeWeapon.Pop();
                     }
                     e.UnsMeleeWeapon.Push(w);
-                    e.UnsMeleeGrab = 5;  // Do throw for 5 frames
+                    e.UnsMeleeGrab = 4;  // Do throw for 4 frames
                     e.UnsMeleeUsed = grasp;
                     return false;
                 }

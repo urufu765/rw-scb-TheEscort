@@ -777,10 +777,12 @@ namespace TheEscort
                         {
                             Ebug(self, "NULL GAME!", 1);
                         }
+                        /*
                         else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort)
                         {
                             goto default;
                         }
+                        */
                         e.Unstable = true;
                         Ebug(self, "Unstable (WIP) Build selected!", 2);
                         self.slugcatStats.runspeedFac += 0.45f;

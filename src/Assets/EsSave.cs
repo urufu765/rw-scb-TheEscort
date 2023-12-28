@@ -84,7 +84,7 @@ namespace TheEscort
     {
         /*ACHIEVEMENTS (POTENTIAL SPOILERS!!)*/
         // Implemented below
-        public bool beaten_Escort = false;  // Beat Escort campaign
+        public bool beaten_Escort = false;  // Beat Escort campaign (set to false on release)
 
 
         // Not Implemented below
@@ -104,6 +104,7 @@ namespace TheEscort
 
         public bool achieveEscommunity_Spearfishin = false;  // Kill a leviathan in Escort campaign
         public bool achieveEscommunity_Space_Elevator = false;  // Elevator off a creature so high Escort falls to their death
+        public bool achieveEscommunity_Skills_Skills_Skills = false;  // Don't ever grab onto a pole, maneuver using pole tech instead
 
         // Future achievements for much later dates
         // Brawler and the Great Tea Party

@@ -82,6 +82,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev62e** Readme todo updated
     * **dev62f** Achievements updated
     * **dev63** Railgunner recoil fix && bubbleweed escort fix and speedster passive speed and max gears buffed
+    * **dev64** Speedster max gears nerfed back to 42, removed unstable achievement requirement for playtesting purposes, reduced Unstable's range and buffed Unstable's minihop, increased tripped stun duration from 20f to 1s
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
