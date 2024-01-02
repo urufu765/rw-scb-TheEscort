@@ -85,6 +85,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev64** Speedster max gears nerfed back to 42, removed unstable achievement requirement for playtesting purposes, reduced Unstable's range and buffed Unstable's minihop, increased tripped stun duration from 20f to 1s
     * **dev64a** hud sprite additions (unimplemented)
     * **dev64b** Todo updated
+    * **dev64c** Backlogs updated
     * *dev* Unstable can hop off poles even with the tiny hop
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range

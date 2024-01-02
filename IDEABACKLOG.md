@@ -25,6 +25,7 @@
 * Changed how settings are applied in game (you shouldn't notice any changes)
 * Brawler also no longer stuns creatures when grabbing onto them.
 * VFX for punches are different from shanks
+* Silly buttons {(single press)TB808 cowbell, YIPPEE, Hey, ComeOn!, Yip-(while held)hug, All I Want For Christmas Is You cover} (5k special)
 ### Thinking about it
 * Swim speed is properly affected by their movement speed.  Dropkick is now affected by player weight (Hey rotund world!)
 * Kickflips are done with slide pounces but not on roll pounces
@@ -35,6 +36,7 @@
 * Might remove Brawler shank for zeroG (or at least lessen it)
 * Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
 * Add in all the tutorials
+* Investigate line of sight type shadow, tint visual radius of creatures
 ### Trash
 * Brawler can no longer dualwield any weapon.
 * Railgunner gets double the amount of slowstun
