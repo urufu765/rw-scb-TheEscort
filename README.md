@@ -84,6 +84,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev63** Railgunner recoil fix && bubbleweed escort fix and speedster passive speed and max gears buffed
     * **dev64** Speedster max gears nerfed back to 42, removed unstable achievement requirement for playtesting purposes, reduced Unstable's range and buffed Unstable's minihop, increased tripped stun duration from 20f to 1s
     * **dev64a** hud sprite additions (unimplemented)
+    * **dev64b** Todo updated
+    * *dev* Unstable can hop off poles even with the tiny hop
+    * *dev* Unlock Unstable build for alpha testing lol
+    * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
+    * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+    * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
+    * *dev* Railgunners' dual spear goes through creatures
     * *dev* make Barbarian's color nicer
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
