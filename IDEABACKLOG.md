@@ -37,6 +37,7 @@
 * Change how sprites are loaded (have only one spritesheet), create a template, and create multiple versions just to get started. (And also make the head sprite resize dynamically such as shrinking and moving when going left vs right vs standing etc.)
 * Add in all the tutorials
 * Investigate line of sight type shadow, tint visual radius of creatures
+* Switch logger from Debug.Log to Logger
 ### Trash
 * Brawler can no longer dualwield any weapon.
 * Railgunner gets double the amount of slowstun

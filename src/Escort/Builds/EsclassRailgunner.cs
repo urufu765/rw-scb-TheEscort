@@ -652,5 +652,88 @@ namespace TheEscort
                 self.bodyChunks[i].vel.y += throwDir.y * -force;
             }
         }
+
+        /// <summary>
+        /// Finds a valid creature when Railgunner is dualwielding to point the crosshair at it (and also point at it)
+        /// </summary>
+        public static Creature Esclass_RG_Spo_t_er(Player self)
+        {
+            float minDist = 2000;
+            Creature target = null;
+
+            try
+            {
+                foreach (UpdatableAndDeletable thing in self.room.updateList)
+                {
+                    // TODO: Find a way to know the room's side edge coordinates, and also allow vertical targetting later down the line
+                    if (
+                        thing is Creature creature && creature != self && !(
+                            creature is Player &&
+                            ModManager.CoopAvailable &&
+                            !Custom.rainWorld.options.friendlyFire
+                        ) &&
+                        !creature.dead &&
+                        Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
+                        Esclass_NE_BodyChecker(
+                            creature, 
+                            self.bodyChunks[0].pos, 
+                            self.bodyChunks[1].pos, 
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            out int bodyChunk) &&
+                        Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
+                    )
+                    {
+                        minDist = Custom.Dist(self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos);
+                        target = Creature;
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "FECK something happened with spotting a creature");
+            }
+
+            return target;
+        }
+
+        /// <summary>
+        /// Checks if there's any solid terrain between Railgunner and the target
+        /// </summary>
+        public static bool Esclass_RG_UninterruptedSight(Room room, Vector2 railsPos, Vector2 creturPos, bool vertical = false)
+        {
+            int tileNum = 0;  // Number of tiles between the two points
+            bool lefty = (railsPos.x - creturPos.x) > 0;  // May need to reevaluate once my brain isn't eepy
+            bool downy = (railsPos.y - creturPos.y) > 0;
+            if (vertical)
+            {
+                tileNum = (int)(Mathf.Abs(railsPos.y - creturPos.y) / 20);
+            }
+            else
+            {
+                tileNum = (int)(Mathf.Abs(railsPos.x - creturPos.x) / 20);
+            }
+
+            for (int i = 0; i <= tileNum; i++)
+            {
+                Vector2 position = (lefty || downy)? creturPos : railsPos;
+                if (vertical)
+                {
+                    position.y += i * 20;
+                }
+                else
+                {
+                    position.x += i * 20;
+                }
+
+                // If there's an obstacle 
+                if (room.GetTile(room.GetTilePosition(position)).Solid)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
