@@ -276,12 +276,59 @@ namespace TheEscort
             // Otherwise, do a miniature hop
             else if (e.UnsBlinkCD > 0)
             {
-                self.bodyChunks[0].vel.y = 2f;
-                self.bodyChunks[1].vel.y = 1.5f;
-                self.jumpBoost = 9f;
+                Esclass_US_MiniHop(self);
             }
             
             return true;
+        }
+
+
+        /// <summary>
+        /// Makes Unstable do a miniature hop that does barely anything... to be expanded upon so it's fully featured like a normal hop
+        /// </summary>
+        private void Esclass_US_MiniHop(Player self)
+        {
+            if (self.animation == Player.AnimationIndex.ClimbOnBeam)
+            {
+                self.jumpBoost = 0f;
+                if (self.input[0].x != 0)
+                {
+                    self.animation = Player.AnimationIndex.None;
+                    self.bodyChunks[0].vel.y = 2f;
+                    self.bodyChunks[1].vel.y = 1.5f;
+                    self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
+                    self.bodyChunks[1].vel.x = 0.5f * (float)self.flipDirection;
+                    return;
+                    self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.95f, 1f);
+                }
+                if (self.input[0].y <= 0)
+                {
+                    self.animation = Player.AnimationIndex.None;
+                    if (self.input[0].y > -1)
+                    {
+                        self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
+                    }
+                    self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.25f, 1f);
+                    return;
+                }
+                if (self.slowMovementStun < 1 && self.slideUpPole < 1)
+                {
+                    self.Blink(7);
+                    self.bodyChunks[0].pos.y += 1.25f;
+                    self.bodyChunks[1].pos.y += 1.25f;
+                    self.bodyChunks[0].vel.y += 1f;
+                    self.bodyChunks[1].vel.y += 1f;
+                    self.slideUpPole = 17;
+                    self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.75f, 1f);
+                    return;
+                }
+            }
+            self.bodyChunks[0].vel.y = 2f;
+            self.bodyChunks[1].vel.y = 1.5f;
+            self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
+            self.bodyChunks[1].vel.x = -1.5f * (float)self.flipDirection;
+            self.jumpBoost = 9f;
+            self.room.PlaySound(SoundID.Slugcat_Normal_Jump, self.mainBodyChunk, false, 0.85f, 1f);
         }
 
 

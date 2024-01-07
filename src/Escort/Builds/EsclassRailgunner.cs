@@ -685,7 +685,7 @@ namespace TheEscort
                     )
                     {
                         minDist = Custom.Dist(self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos);
-                        target = Creature;
+                        target = creature;
                     }
                 }
             }

@@ -87,7 +87,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev64b** Todo updated
     * **dev64c** Backlogs updated
     * **dev65** Railgunner target detector
-    * *dev* Unstable can hop off poles even with the tiny hop
+    * **dev66** Unstable can hop off poles even with the tiny hop, and fixed Railgunner target detector
+    * *dev* default Escorts receive significantly reduced bubbleweed effect from other default Escorts
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
     * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
