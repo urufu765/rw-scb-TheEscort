@@ -1044,7 +1044,15 @@ namespace TheEscort
                             {
                                 if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
                                 {
-                                    cp.airInLungs = 1f;
+                                    // Nerf to default escort so two guardian escorts don't infinitely sustain each other
+                                    if (Eshelp_IsMe(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
+                                    {
+                                        cp.airInLungs = Mathf.Min(1f, cp.airInLungs + 0.01f);
+                                    }
+                                    else
+                                    {
+                                        cp.airInLungs = 1f;
+                                    }
                                 }
                                 else if (cc is AirBreatherCreature abc && Custom.DistLess(self.bodyChunks[0].pos, abc.mainBodyChunk.pos, 40f))
                                 {
