@@ -175,6 +175,13 @@ namespace TheEscort
         public bool RailDoubleRock;
         public bool RailDoubleLilly;
         public bool RailDoubleBomb;
+        public bool RailDoubled
+        {
+            get
+            {
+                return RailDoubleBomb || RailDoubleSpear || RailDoubleLilly || RailDoubleRock;
+            }
+        }
         public bool RailFirstWeaped;
         public Vector2 RailFirstWeaper;
         public int RailWeaping;
@@ -185,6 +192,8 @@ namespace TheEscort
         public bool RailBombJump;
         public int RailRecoilLag;
         public IntVector2 RailLastThrowDir;
+        public int RailTargetClock;
+        public BodyChunk RailTargetAcquired;
         public bool Gilded;
 
         public Escort(Player player)

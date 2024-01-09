@@ -388,6 +388,7 @@ namespace TheEscort
                         s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
+                if (e.Railgunner) Esclass_RG_DrawHands(self, s, rCam, t, camP, ref e);
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 //e.Escat_Draw_Ring_Trackers(t);

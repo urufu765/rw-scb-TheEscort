@@ -58,6 +58,16 @@ namespace TheEscort
             {
                 e.RailRecoilLag--;
             }
+
+            // 1 second clock
+            if (e.RailTargetClock > 0)
+            {
+                e.RailTargetClock--;
+            }
+            else
+            {
+                e.RailTargetClock = 39;
+            }
         }
 
         private void Esclass_RG_Update(Player self, ref Escort e)
@@ -104,6 +114,14 @@ namespace TheEscort
                 // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
                 Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod);
             }
+
+
+            // Creature check every 1 second
+            if (e.RailTargetClock == 0)
+            {
+                e.RailTargetAcquired = Esclass_RG_Spo_t_er(self);
+            }
+
         }
 
 
@@ -654,6 +672,50 @@ namespace TheEscort
         }
 
         /// <summary>
+        /// Finds a valid bodychunk when Railgunner is dualwielding to point the crosshair at it (and also point at it)
+        /// </summary>
+        public static BodyChunk Esclass_RG_Spo_t_er(Player self)
+        {
+            float minDist = 2000;
+            BodyChunk target = null;
+
+            try
+            {
+                foreach (UpdatableAndDeletable thing in self.room.updateList)
+                {
+                    // TODO: Find a way to know the room's side edge coordinates, and also allow vertical targetting later down the line
+                    if (
+                        thing is Creature creature && creature != self && !(
+                            creature is Player &&
+                            ModManager.CoopAvailable &&
+                            !Custom.rainWorld.options.friendlyFire
+                        ) &&
+                        !creature.dead &&
+                        Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
+                        Esclass_NE_BodyChecker(
+                            creature, 
+                            self.bodyChunks[0].pos, 
+                            self.bodyChunks[1].pos, 
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            out int bodyChunk) &&
+                        Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
+                    )
+                    {
+                        minDist = Custom.Dist(self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos);
+                        target = creature.bodyChunks[bodyChunk];
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "FECK something happened with spotting a creature");
+            }
+
+            return target;
+        }
+
+        /// <summary>
         /// Finds a valid creature when Railgunner is dualwielding to point the crosshair at it (and also point at it)
         /// </summary>
         public static Creature Esclass_RG_Spo_t_er(Player self)
@@ -734,6 +796,23 @@ namespace TheEscort
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// Makes Railgunner point to whoever dares to enter her line of sight
+        /// </summary>
+        public static void Esclass_RG_DrawHands(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
+        {
+            // Points the spears at the target when target acquired
+            if (e.RailTargetAcquired is not null && e.RailDoubled)
+            {
+                for (int i = 0; i < self.hands.Length; i++)
+                {
+                    self.hands[i].reachingForObject = true;
+                    self.hands[i].absoluteHuntPos = e.RailTargetAcquired.pos;
+                }
+            }
         }
     }
 }
