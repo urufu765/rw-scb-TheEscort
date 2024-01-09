@@ -119,7 +119,7 @@ namespace TheEscort
             // Creature check every 1 second
             if (e.RailTargetClock == 0)
             {
-                e.RailTargetAcquired = Esclass_RG_Spo_t_er(self);
+                e.RailTargetAcquired = Esclass_RG_Spotter(self);
             }
 
         }
@@ -674,7 +674,7 @@ namespace TheEscort
         /// <summary>
         /// Finds a valid bodychunk when Railgunner is dualwielding to point the crosshair at it (and also point at it)
         /// </summary>
-        public static BodyChunk Esclass_RG_Spo_t_er(Player self)
+        public static BodyChunk Esclass_RG_Spotter(Player self)
         {
             float minDist = 2000;
             BodyChunk target = null;
