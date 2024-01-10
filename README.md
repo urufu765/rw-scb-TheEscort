@@ -90,12 +90,12 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev66** Unstable can hop off poles even with the tiny hop, and fixed Railgunner target detector
     * **dev67** default Escorts receive significantly reduced bubbleweed effect from other default Escorts
     * **dev68** Railgunner points to the target with spears
+    * **dev69** Revivify QoL: Gilded's power restarts when revived so they don't insta-die from power overload & labeled Gilded's vars && Gilded init cleanup
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
     * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
     * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
     * *dev* Railgunners' dual spear goes through creatures
-    * *dev* Revivify QoL: Gilded's power restarts when revived so they don't insta-die from power overload
     * *dev* make Barbarian's color nicer
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
