@@ -335,7 +335,7 @@ namespace TheEscort
             };
             this.secretText.OnValueChanged += InputTheSecret;
 
-            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("Test") + "[Unstable] {?????}", true){
+            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
                 color = bTesting * 0.7f
             };
             // This is meaningless since the option isn't actually hidden
@@ -610,7 +610,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Coming Soon...") + "[Barbarian] {?????}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("UNAVAILABLE") + "[Barbarian] {?????}", true){
                     color = Color.green
                 },
                 sctTestBuildText,

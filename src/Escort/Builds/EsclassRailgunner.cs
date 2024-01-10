@@ -125,6 +125,16 @@ namespace TheEscort
         }
 
 
+        /// <summary>
+        /// For now just gives Railgunner passive movement speed boost upon charge buildup
+        /// </summary>
+        private void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
+        {
+            self.dynamicRunSpeed[0] += e.RailgunUse * 0.3f;
+            self.dynamicRunSpeed[1] += e.RailgunUse * 0.3f;
+        }
+
+
         private void Esclass_RG_ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust)
         {
             if (
@@ -326,7 +336,7 @@ namespace TheEscort
                         orig(self, inbetweenPos, deflectDir, bounceSpeed);
                         return;
                     }
-                    if (e.Railgunner && (e.RailDoubleRock || e.RailDoubleSpear || e.RailDoubleLilly || e.RailDoubleBomb || (e.RailGaussed > 0 && self.thrownBy == e.RailThrower)))
+                    if (e.Railgunner && (e.RailDoubled || (e.RailGaussed > 0 && self.thrownBy == e.RailThrower)))
                     {
                         Ebug(p, "NO DEFLECTING");
                         return;

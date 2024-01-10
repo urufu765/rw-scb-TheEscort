@@ -359,7 +359,7 @@ public static class ETrackrr
                 yesTrans = true;
             }
 
-            e.overrideSprite = e.RailDoubleBomb || e.RailDoubleLilly || e.RailDoubleRock || e.RailDoubleSpear;
+            e.overrideSprite = e.RailDoubled;
             spriteNumber = -1;
             if(e.RailDoubleBomb) spriteNumber = 0;
             if(e.RailDoubleLilly) spriteNumber = 1;

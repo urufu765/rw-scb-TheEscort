@@ -167,33 +167,33 @@ namespace TheEscort
         public int EscUnGraspLimit;
         public int EscUnGraspCD;
         public bool NewEscapist;
-        public bool Railgunner;
-        public Color RailgunnerColor;
-        public int RailGaussed;
-        public Creature RailThrower;
-        public bool RailDoubleSpear;
-        public bool RailDoubleRock;
-        public bool RailDoubleLilly;
-        public bool RailDoubleBomb;
-        public bool RailDoubled
+        public bool Railgunner;  // The Railgunner Escort!
+        public Color RailgunnerColor;  // Bodycolor of Railgunner
+        public int RailGaussed;  // Set above 0 if Railgunner uses dualweapons to allow effects to happen frames after the shot is done
+        public Creature RailThrower;  // Used to check if two thrown weapons both belong to Railgunner (TODO probably make this readonly if it doesn't break anything)
+        public bool RailDoubleSpear;  // Railgunner dualwields spears!
+        public bool RailDoubleRock;  // Railgunner dualwields rocks!
+        public bool RailDoubleLilly;  // Railgunner dualwields spears!
+        public bool RailDoubleBomb;  // Railgunner dualwields spears!
+        public bool RailDoubled  // Simple combined check to check if Railgunner is dualwielding anything
         {
             get
             {
                 return RailDoubleBomb || RailDoubleSpear || RailDoubleLilly || RailDoubleRock;
             }
         }
-        public bool RailFirstWeaped;
-        public Vector2 RailFirstWeaper;
-        public int RailWeaping;
-        public int RailgunCD;
-        public int RailgunUse;
-        public int RailgunLimit;
-        public bool RailIReady;
-        public bool RailBombJump;
-        public int RailRecoilLag;
-        public IntVector2 RailLastThrowDir;
-        public int RailTargetClock;
-        public BodyChunk RailTargetAcquired;
+        public bool RailFirstWeaped;  // Indicates whether weapon is the first shot out of the two
+        public Vector2 RailFirstWeaper;  // Stores the first weapon's dir/vel to apply to the other so they go in the same direction
+        public int RailWeaping;  // A leniency variable to make sure weapons are fired at least 4 frames after the last time Railgunner had two weapons... dunno what this actually does
+        public int RailgunCD;  // Cooldown of railgunner overcharge before it's reset to 0
+        public int RailgunUse;  // Overcharge value
+        public int RailgunLimit;  // Limit to overcharge (may implement option to change limit)
+        public bool RailIReady;  // Indicates Railgunner threw a bomb a particular way and needs to IFrame it to survive
+        public bool RailBombJump;  // Self explanatory, double bomb + backflip + downthrow
+        public int RailRecoilLag;  // Frames until recoil hits
+        public IntVector2 RailLastThrowDir;  // Last throw direction when railgunned so recoil goes the correct direction even after player switches direction in the middle
+        public int RailTargetClock;  // Checks every 40 frame or so
+        public BodyChunk RailTargetAcquired;  // Bodychunk that Railgunner will point to
         public bool Gilded;
 
         public Escort(Player player)

@@ -91,6 +91,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev67** default Escorts receive significantly reduced bubbleweed effect from other default Escorts
     * **dev68** Railgunner points to the target with spears
     * **dev69** Revivify QoL: Gilded's power restarts when revived so they don't insta-die from power overload & labeled Gilded's vars && Gilded init cleanup
+    * **dev70** Railgunner's movement speed increases the more overcharge she has & variable labeling for Railgunner
+    * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
     * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
@@ -100,7 +102,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Separate the build selection stuff into a method with an extended list for a method
     * *dev* Fix Deflector deflecting bees (and add the option to have it back)
     * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
-    * *dev* Railgunner's movement speed increases the more overcharge she has, and has a higher probability of exploding out of grasps if overcharged
     * *dev* New Lidard DunkTM!
     * *dev* Add Brawler explosive punch
     * *dev* Barbarian creature shield

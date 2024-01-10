@@ -1093,6 +1093,7 @@ namespace TheEscort
                 }
             }
 
+            if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
 
