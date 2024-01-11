@@ -100,21 +100,21 @@ namespace TheEscort
         public int PupCampaignID;
 
         // Build stuff
-        public bool Brawler;
-        public Color BrawlerColor;
-        public bool BrawWall;
-        public bool BrawShankMode;
-        public bool BrawShank;
-        public bool BrawPunch;
-        public bool BrawShankSpearTumbler;
-        public Vector2 BrawShankDir;
-        public Stack<Weapon> BrawMeleeWeapon;
-        public int BrawThrowUsed;
-        public int BrawThrowGrab;
-        public int BrawRevertWall;
-        public Stack<Spear> BrawWallSpear;
-        public string BrawLastWeapon;
-        public int BrawSetCooldown;
+        public bool Brawler;  // IS IT REALLY FUCKING BRAWLER?!
+        public Color BrawlerColor;  // Brawler body color
+        public bool BrawWall;  // Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's shoved into a wall
+        public bool BrawShankMode;  // Supershanking state
+        public bool BrawShank;  // Regular shanking state
+        public bool BrawPunch;  // Punching state
+        public bool BrawShankSpearTumbler;  // Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's used as a shiv
+        public Vector2 BrawShankDir;  // Direction of the supershank (towards shank creature)
+        public Stack<Weapon> BrawMeleeWeapon;  // Stores the reference to the weapon that's used for melee attacks so it can be affected beyond the first frame
+        public int BrawThrowUsed;  // Melee weapon use grasp index (-1 when not using melee)
+        public int BrawThrowGrab;  // Delay before Brawler retrieves the melee weapon (higher = longer distance throw)
+        public int BrawRevertWall;  // Delay before the spear is stuck in wall and no longer tampered with by Brawler
+        public Stack<Spear> BrawWallSpear;  // Stores the reference to the spear that will be thrown into a wall
+        public string BrawLastWeapon;  // Melee weapon Brawler is holding (Used primarily for HUD tracking)
+        public int BrawSetCooldown;  // stores the value of slowMovementStun (Used primarily for HUD tracking)
         public bool Deflector;
         public Color DeflectorColor;
         public int DeflAmpTimer;
