@@ -100,30 +100,130 @@ namespace TheEscort
         public int PupCampaignID;
 
         // Build stuff
-        public bool Brawler;  // IS IT REALLY FUCKING BRAWLER?!
-        public Color BrawlerColor;  // Brawler body color
-        public bool BrawWall;  // Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's shoved into a wall
-        public bool BrawShankMode;  // Supershanking state
-        public bool BrawShank;  // Regular shanking state
-        public bool BrawPunch;  // Punching state
-        public bool BrawShankSpearTumbler;  // Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's used as a shiv
-        public Vector2 BrawShankDir;  // Direction of the supershank (towards shank creature)
-        public Stack<Weapon> BrawMeleeWeapon;  // Stores the reference to the weapon that's used for melee attacks so it can be affected beyond the first frame
-        public int BrawThrowUsed;  // Melee weapon use grasp index (-1 when not using melee)
-        public int BrawThrowGrab;  // Delay before Brawler retrieves the melee weapon (higher = longer distance throw)
-        public int BrawRevertWall;  // Delay before the spear is stuck in wall and no longer tampered with by Brawler
-        public Stack<Spear> BrawWallSpear;  // Stores the reference to the spear that will be thrown into a wall
-        public string BrawLastWeapon;  // Melee weapon Brawler is holding (Used primarily for HUD tracking)
-        public int BrawSetCooldown;  // stores the value of slowMovementStun (Used primarily for HUD tracking)
+
+        /// <summary>
+        /// IS IT REALLY FUCKING BRAWLER?!
+        /// </summary>
+        public bool Brawler;
+
+        /// <summary>
+        /// Brawler body color when color mode is not custom
+        /// </summary>
+        public Color BrawlerColor;
+
+        /// <summary>
+        /// Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's shoved into a wall
+        /// </summary>
+        public bool BrawWall;
+
+        /// <summary>
+        /// Supershanking state
+        /// </summary>
+        public bool BrawShankMode;
+
+        /// <summary>
+        /// Regular shanking state
+        /// </summary>
+        public bool BrawShank;
+
+        /// <summary>
+        /// Punching state
+        /// </summary>
+        public bool BrawPunch;
+
+        /// <summary>
+        /// Stores the original "doNotTumbleAtLowSpeed" state of a spear before it's used as a shiv
+        /// </summary>
+        public bool BrawShankSpearTumbler;
+
+        /// <summary>
+        /// Direction of the supershank (towards shank creature)
+        /// </summary>
+        public Vector2 BrawShankDir;
+
+        /// <summary>
+        /// Stores the reference to the weapon that's used for melee attacks so it can be affected beyond the first frame
+        /// </summary>
+        public Stack<Weapon> BrawMeleeWeapon;
+
+        /// <summary>
+        /// Melee weapon use grasp index (-1 when not using melee)
+        /// </summary>
+        public int BrawThrowUsed;
+
+        /// <summary>
+        /// Delay before Brawler retrieves the melee weapon (higher = longer distance throw)
+        /// </summary>
+        public int BrawThrowGrab;
+
+        /// <summary>
+        /// Delay before the spear is stuck in wall and no longer tampered with by Brawler
+        /// </summary>
+        public int BrawRevertWall;
+
+        /// <summary>
+        /// Stores the reference to the spear that will be thrown into a wall
+        /// </summary>
+        public Stack<Spear> BrawWallSpear;
+
+        /// <summary>
+        /// Melee weapon Brawler is holding (Used primarily for HUD tracking)
+        /// </summary>
+        public string BrawLastWeapon;
+
+        /// <summary>
+        /// stores the value of slowMovementStun (Used primarily for HUD tracking)
+        /// </summary>
+        public int BrawSetCooldown;
+
+        /// <summary>
+        /// IS IT FUCKING DEFLECTOR?!
+        /// </summary>
         public bool Deflector;
+
+        /// <summary>
+        /// Deflector color when scug color is not custom
+        /// </summary>
         public Color DeflectorColor;
+
+        /// <summary>
+        /// Deflector empowered timer
+        /// </summary>
         public int DeflAmpTimer;
+
+        /// <summary>
+        /// Deflector easy parry (backflip onto creature)
+        /// </summary>
         public bool DeflTrampoline;
+
+        /// <summary>
+        /// Deflector parry sfx cooldown (so it doesn't make the sound like 10 times per parry)
+        /// </summary>
         public int DeflSFXcd;
+
+        /// <summary>
+        /// Super extended belly slide accumulator
+        /// </summary>
         public int DeflSlideCom;
+
+        /// <summary>
+        /// Gives a micro boost when slide-pouncing
+        /// </summary>
         public bool DeflSlideKick;
+
+        /// <summary>
+        /// Level of empowerment
+        /// </summary>
         public int DeflPowah;
+
+        /// <summary>
+        /// Deflector permanent damage multiplier (per player)
+        /// </summary>
         private float _deflperma;
+
+        /// <summary>
+        /// Gets either the per player perma damage multiplier, or the shared pool
+        /// </summary>
         public float DeflPerma
         {
             get
@@ -146,7 +246,11 @@ namespace TheEscort
                 }
             }
         }
-        public float DeflDamageMult 
+
+        /// <summary>
+        /// Empowered damage based on level
+        /// </summary>
+        public float DeflDamageMult
         { 
             get 
             {
@@ -159,43 +263,166 @@ namespace TheEscort
                 };
             }
         }
+
+        /// <summary>
+        /// IS IT A BORING ASS NUGGET?!
+        /// </summary>
         public bool Escapist;
+
+        /// <summary>
+        /// The bodycolor of Escapist when colors are not custom
+        /// </summary>
         public Color EscapistColor;
+
+        /// <summary>
+        /// Extends self.dangerGraspTime so the player has much more time to grab a weapon and free themselves while they're being carried away
+        /// </summary>
         public int EscDangerExtend;
+
+        /// <summary>
+        /// Special grasp store that stores the creature that is grabbing onto Escapist, so when they press the emergency eject ability button, they pop out of whatever they're being grabbed by... even includes your friends and famil- no not the last one.
+        /// </summary>
         public Creature.Grasp EscDangerGrasp;
+
+        /// <summary>
+        /// How long the player has to hold the special eject ability button for before they can pop out of any grasp
+        /// </summary>
         public int EscUnGraspTime;
+
+        /// <summary>
+        /// The max time the player has to hold the special eject ability button for. Is used to slowly reset the EscUnGraspTime timer until it reaches this max.
+        /// </summary>
         public int EscUnGraspLimit;
+
+        /// <summary>
+        /// Cooldown for this boring ability.
+        /// </summary>
         public int EscUnGraspCD;
+
+        /// <summary>
+        /// REVAMP REVAMP REVAMP REVAMP ESCAPIST!
+        /// </summary>
         public bool NewEscapist;
-        public bool Railgunner;  // The Railgunner Escort!
-        public Color RailgunnerColor;  // Bodycolor of Railgunner
-        public int RailGaussed;  // Set above 0 if Railgunner uses dualweapons to allow effects to happen frames after the shot is done
-        public Creature RailThrower;  // Used to check if two thrown weapons both belong to Railgunner (TODO probably make this readonly if it doesn't break anything)
-        public bool RailDoubleSpear;  // Railgunner dualwields spears!
-        public bool RailDoubleRock;  // Railgunner dualwields rocks!
-        public bool RailDoubleLilly;  // Railgunner dualwields spears!
-        public bool RailDoubleBomb;  // Railgunner dualwields spears!
-        public bool RailDoubled  // Simple combined check to check if Railgunner is dualwielding anything
+
+        /// <summary>
+        /// The Railgunner Escort!
+        /// </summary>
+        public bool Railgunner;
+
+        /// <summary>
+        /// Bodycolor of Railgunner when slugcat color is not custom
+        /// </summary>
+        public Color RailgunnerColor;
+
+        /// <summary>
+        /// Set above 0 if Railgunner uses dualweapons to allow effects to happen frames after the shot is done
+        /// </summary>
+        public int RailGaussed;
+
+        /// <summary>
+        /// Used to check if two thrown weapons both belong to Railgunner
+        /// </summary>
+        public Creature RailThrower;  // (TODO probably make this readonly if it doesn't break anything)
+
+        /// <summary>
+        /// Railgunner dualwields spears!
+        /// </summary>
+        public bool RailDoubleSpear;
+
+        /// <summary>
+        /// Railgunner dualwields rocks!
+        /// </summary>
+        public bool RailDoubleRock;
+
+        /// <summary>
+        /// Railgunner dualwields spears!
+        /// </summary>
+        public bool RailDoubleLilly;
+
+        /// <summary>
+        /// Railgunner dualwields spears!
+        /// </summary>
+        public bool RailDoubleBomb;
+
+        /// <summary>
+        /// Simple combined check to check if Railgunner is dualwielding anything
+        /// </summary>
+        public bool RailDoubled
         {
             get
             {
                 return RailDoubleBomb || RailDoubleSpear || RailDoubleLilly || RailDoubleRock;
             }
         }
-        public bool RailFirstWeaped;  // Indicates whether weapon is the first shot out of the two
-        public Vector2 RailFirstWeaper;  // Stores the first weapon's dir/vel to apply to the other so they go in the same direction
-        public int RailWeaping;  // A leniency variable to make sure weapons are fired at least 4 frames after the last time Railgunner had two weapons... dunno what this actually does
-        public int RailgunCD;  // Cooldown of railgunner overcharge before it's reset to 0
-        public int RailgunUse;  // Overcharge value
-        public int RailgunLimit;  // Limit to overcharge (may implement option to change limit)
-        public bool RailIReady;  // Indicates Railgunner threw a bomb a particular way and needs to IFrame it to survive
-        public bool RailBombJump;  // Self explanatory, double bomb + backflip + downthrow
-        public int RailRecoilLag;  // Frames until recoil hits
-        public IntVector2 RailLastThrowDir;  // Last throw direction when railgunned so recoil goes the correct direction even after player switches direction in the middle
-        public int RailTargetClock;  // Checks every 40 frame or so
-        public BodyChunk RailTargetAcquired;  // Bodychunk that Railgunner will point to
+
+        /// <summary>
+        /// Indicates whether weapon is the first shot out of the two
+        /// </summary>
+        public bool RailFirstWeaped;
+
+        /// <summary>
+        /// Stores the first weapon's dir/vel to apply to the other so they go in the same direction
+        /// </summary>
+        public Vector2 RailFirstWeaper;
+
+        /// <summary>
+        /// A leniency variable to make sure weapons are fired at least 4 frames after the last time Railgunner had two weapons... dunno what this actually does in a practical sense
+        /// </summary>
+        public int RailWeaping;
+
+        /// <summary>
+        /// Cooldown of railgunner overcharge before it's reset to 0
+        /// </summary>
+        public int RailgunCD;
+
+        /// <summary>
+        /// Overcharge value
+        /// </summary>
+        public int RailgunUse;
+
+        /// <summary>
+        /// Limit to overcharge (may implement option to change limit)
+        /// </summary>
+        public int RailgunLimit;
+
+        /// <summary>
+        /// Indicates Railgunner threw a bomb a particular way and needs to IFrame it to survive
+        /// </summary>
+        public bool RailIReady;
+
+        /// <summary>
+        /// Self explanatory, double bomb + backflip + downthrow
+        /// </summary>
+        public bool RailBombJump;
+
+        /// <summary>
+        /// Frames until recoil hits
+        /// </summary>
+        public int RailRecoilLag;
+
+        /// <summary>
+        /// Last throw direction when railgunned so recoil goes the correct direction even after player switches direction in the middle
+        /// </summary>
+        public IntVector2 RailLastThrowDir;
+
+        /// <summary>
+        /// A clock to tell the game when to check for targets
+        /// </summary>
+        public int RailTargetClock;
+
+        /// <summary>
+        /// Bodychunk that Railgunner will point to
+        /// </summary>
+        public BodyChunk RailTargetAcquired;
+
+        /// <summary>
+        /// IS THIS THE GOLDEN ICECREAM?!
+        /// </summary>
         public bool Gilded;
 
+        /// <summary>
+        /// Creates an Escort CWT object, storing all the custom variables needed to get this modcat to work! Modify wisely.
+        /// </summary>
         public Escort(Player player)
         {
             /*
