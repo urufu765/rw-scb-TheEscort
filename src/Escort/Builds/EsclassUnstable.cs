@@ -298,8 +298,8 @@ namespace TheEscort
                     self.bodyChunks[1].vel.y = 1.5f;
                     self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
                     self.bodyChunks[1].vel.x = 0.5f * (float)self.flipDirection;
-                    return;
                     self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.95f, 1f);
+                    return;
                 }
                 if (self.input[0].y <= 0)
                 {

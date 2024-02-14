@@ -94,6 +94,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev70** Railgunner's movement speed increases the more overcharge she has & variable labeling for Railgunner
     * **dev70a** Brawler variable labeling
     * **dev70b** Deflector & Old Escapist variable labeling
+    * **dev71** Fixed some errors and changed Escort's arena icon
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range

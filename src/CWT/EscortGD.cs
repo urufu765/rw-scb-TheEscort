@@ -13,7 +13,7 @@ namespace TheEscort
         public bool GildFloatState;  // Whether Gilded is levitating
         //public int GildFloatFloat;  OLD OUTDATED VARIABLE
         public int GildMoonJump;  // Gilded additional air time when jumping
-        public const int GildMoonJumpMax = 20;  // Limit to for how many frames Gilded is allowed to moonjump (may allow change later)
+        public int GildMoonJumpMax = 20;  // Limit to for how many frames Gilded is allowed to moonjump (may allow change later)
         public bool GildCrush;  // Stomp in action
         public int GildCrushTime;  // Delay before stomp happens
         public bool GildCrushReady;  // Whether Gilded can stomp (stops them from stomping midair)
