@@ -95,6 +95,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev70a** Brawler variable labeling
     * **dev70b** Deflector & Old Escapist variable labeling
     * **dev71** Fixed some errors and changed Escort's arena icon
+    * **dev72** Fixed new arena icon sizes
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
