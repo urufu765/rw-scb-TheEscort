@@ -1193,7 +1193,7 @@ namespace TheEscort
             try
             {
                 if (Eshelp_IsMe(slugcat)) return orig(slugcat);
-                return config.cfgBuild[0].Value switch{
+                IntVector2 foodReq = config.cfgBuild[0].Value switch{
                     -7 => new(14, UnityEngine.Random.Range(1, 14)),
                     -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
@@ -1203,7 +1203,11 @@ namespace TheEscort
                     -1 => new(14, 12),  // Brawler
                     _  => new(14, 9)  // Default and unspecified.
                 };
-
+                if (config.cfgEasy[0].Value && foodReq.y > 3) 
+                {
+                    foodReq.y -= 3;
+                }
+                return foodReq;
             } 
             catch (NullReferenceException nre)
             {
