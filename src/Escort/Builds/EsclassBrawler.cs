@@ -76,7 +76,7 @@ namespace TheEscort
                 }
                 if (e.isChunko)
                 {
-                    self.slowMovementStun += (int)(10 * self.TotalMass / e.originalMass) - 10;
+                    self.slowMovementStun = (int)(self.slowMovementStun * (self.TotalMass / e.originalMass));
                 }
                 e.BrawSetCooldown = self.slowMovementStun;
                 e.BrawThrowGrab = -1;

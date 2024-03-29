@@ -17,7 +17,6 @@ namespace TheEscort
 
         /// <summary>
         /// Only used for wall longpounce.
-        /// 0.3.1: And now for Unstable's jump
         /// </summary>
         private void Escort_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
         {
@@ -34,12 +33,11 @@ namespace TheEscort
                 Ebug(self, err);
                 return;
             }
-            if (!eCon.TryGetValue(self, out Escort e))
+            if (!Esconfig_WallJumps(self))
             {
                 return;
             }
-            if (e.Unstable) Esclass_US_MovementUpdate(self, ref e);
-            if (!Esconfig_WallJumps(self))
+            if (!eCon.TryGetValue(self, out Escort e))
             {
                 return;
             }
@@ -119,7 +117,7 @@ namespace TheEscort
         /// <summary>
         /// Immitates a wall jump but not really
         /// </summary>
-        public static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
+        private static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
             self.bodyChunks[0].vel.y = boostUp;
             self.bodyChunks[1].vel.y = boostUp - 1f;
             self.bodyChunks[0].pos.y += yankUp;

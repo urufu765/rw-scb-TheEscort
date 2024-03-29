@@ -530,27 +530,24 @@ public static class EscortHUD
                 scale = 2.9f + 0.4f * tracked.trackerNumber,
                 shader = hud.rainWorld.Shaders["HoldButtonCircle"]
             };
-            if (tracked.trackerNumber <= 4)
+            chargeSprite = new FSprite($"escort_hud_spegb{tracked.trackerNumber}")
             {
-                chargeSprite = new FSprite($"escort_hud_spegb{tracked.trackerNumber}")
-                {
-                    x = pos.x,
-                    y = pos.y,
-                    alpha = 0,
-                    scale = 1,
-                };
-                gearSprite = new FSprite($"escort_hud_spega{tracked.trackerNumber}")
-                {
-                    x = pos.x,
-                    y = pos.y,
-                    alpha = 0,
-                    scale = 1,
-                    color = tracked.trackerColor
-                };
-                hud.fContainers[1].AddChild(chargeSprite);
-                hud.fContainers[1].AddChild(gearSprite);
-            }
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1,
+            };
+            gearSprite = new FSprite($"escort_hud_spega{tracked.trackerNumber}")
+            {
+                x = pos.x,
+                y = pos.y,
+                alpha = 0,
+                scale = 1,
+                color = tracked.trackerColor
+            };
             gradientColor = (tracked.trackerNumber - 1) * 0.25f;
+            hud.fContainers[1].AddChild(chargeSprite);
+            hud.fContainers[1].AddChild(gearSprite);
             hud.fContainers[1].AddChild(progressBacking);
             hud.fContainers[1].AddChild(progressSprite);
         }
@@ -558,21 +555,17 @@ public static class EscortHUD
         public override void Draw(float timeStacker)
         {
             base.Draw(timeStacker);
-            progressBacking.x = progressSprite.x = DrawPos(timeStacker).x;
-            progressBacking.y = progressSprite.y = DrawPos(timeStacker).y;
-            if (tracked.trackerNumber <= 4)
-            {
-                chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
-                chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
-                chargeSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
-                chargeSprite.color = tracked.Limit == 0? tracked.trackerColor : Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
-                gearSprite.alpha = tracked.spriteNumber >= tracked.trackerNumber? 1 : 0;
-                gearSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, gradientColor);
-            }
+            progressBacking.x = progressSprite.x = chargeSprite.x = gearSprite.x = DrawPos(timeStacker).x;
+            progressBacking.y = progressSprite.y = chargeSprite.y = gearSprite.y = DrawPos(timeStacker).y;
             progressBacking.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
             progressBacking.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
             progressSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, Mathf.Min(tracked.Value, tracked.Limit));
             progressSprite.color = tracked.trackerColor;
+
+            chargeSprite.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            chargeSprite.color = tracked.Limit == 0? tracked.trackerColor : Color.Lerp(tracked.trackerColor, tracked.effectColor, Mathf.InverseLerp(-1, 1, Mathf.Sin(Mathf.PI * pulseColor)));
+            gearSprite.alpha = tracked.spriteNumber >= tracked.trackerNumber? 1 : 0;
+            gearSprite.color = Color.Lerp(tracked.trackerColor, tracked.effectColor, gradientColor);
         }
 
 

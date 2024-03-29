@@ -10,8 +10,6 @@ namespace TheEscort;
 
 public partial class Escort
 {
-    public Color NewEscapistColor;
-    public Color NEsShadowColor;
     public IntVector2 NEsLastInput;
     public int NEsSetCooldown;
     public int NEsCooldown;
@@ -31,8 +29,6 @@ public partial class Escort
     public void EscortNE()
     {
         this.NewEscapist = false;
-        this.NewEscapistColor = new Color(0.28f, 0.675f, 0.686f);
-        this.NEsShadowColor = new Color(0.1f, 0.157f, 0.165f);
         this.NEsLastInput = new IntVector2(0, 0);
         this.NEsSetCooldown = 0;
         this.NEsCooldown = 0;

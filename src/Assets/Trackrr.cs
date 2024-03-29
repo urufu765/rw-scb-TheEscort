@@ -359,7 +359,7 @@ public static class ETrackrr
                 yesTrans = true;
             }
 
-            e.overrideSprite = e.RailDoubled;
+            e.overrideSprite = e.RailDoubleBomb || e.RailDoubleLilly || e.RailDoubleRock || e.RailDoubleSpear;
             spriteNumber = -1;
             if(e.RailDoubleBomb) spriteNumber = 0;
             if(e.RailDoubleLilly) spriteNumber = 1;
@@ -746,87 +746,4 @@ public static class ETrackrr
         }
     }
 
-    public class UnstableTraction : Trackrr<float>
-    {
-        private readonly Escort e;
-        private readonly Player p;
-        private Color unstableColor;
-        public UnstableTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "unstable")
-        {
-            this.e = escort;
-            this.p = player;
-            unstableColor = new Color(0.72f, 0.59f, 0.45f);
-            this.trackerColor = unstableColor;
-            this.effectColor = Color.Lerp(unstableColor, Color.white, 0.6f);
-        }
-
-        public override void DrawTracker(float timeStacker)
-        {
-            if (e.UnsBlinkCD > 0)
-            {
-                trackerColor = Color.Lerp(unstableColor, Color.black, 0.35f);
-                Limit = 120;
-                Max = p.Malnourished? 120 : 80;
-                Value = Mathf.Lerp(PreValue, Max - e.UnsBlinkCD, timeStacker);
-            }
-            else if (e.UnsBlinkWindow > 0)
-            {
-                trackerColor = unstableColor;
-                Limit = 40;
-                Max = 40;
-                Value = Mathf.Lerp(PreValue, e.UnsBlinkWindow, timeStacker);
-            }
-            else
-            {
-                trackerColor = unstableColor;
-                Limit = 0;
-                Max = 1;
-                Value = 1;
-            }
-        }
-    }
-
-    public class UnstableFrameTraction : Trackrr<float>
-    {
-        private readonly Escort e;
-        private int failureTick;
-        private bool failureSet;
-        public UnstableFrameTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "unstableFrame")
-        {
-            this.e = escort;
-            this.Limit = 99;
-            this.failureSet = true;
-        }
-
-        public override void DrawTracker(float timeStacker)
-        {
-            if (e.UnsBlinking)
-            {
-                failureSet = false;
-                Max = 10;
-                Value = Mathf.Lerp(PreValue, 10 - e.UnsBlinkFrame, timeStacker);
-                trackerColor = Color.white;
-            }
-            else
-            {
-                if (!failureSet)
-                {
-                    failureSet = true;
-                    failureTick = 20;
-                }
-                Max = 20;
-                Value = Mathf.Lerp(PreValue, failureTick, timeStacker);
-                trackerColor = Color.Lerp(Color.black, Color.red, Value / 20);
-            }
-        }
-
-        public override void UpdateTracker()
-        {
-            base.UpdateTracker();
-            if (failureTick > 0)
-            {
-                failureTick--;
-            }
-        }
-    }
 }

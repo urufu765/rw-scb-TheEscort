@@ -702,7 +702,7 @@ partial class Plugin : BaseUnityPlugin
                         {
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
-                            //e.DeflPowah = 0;
+                            e.DeflPowah = 0;
                             Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}", 3, true);
                         }
 

@@ -354,14 +354,13 @@ namespace TheEscort
                 }
                 // Specific check
                 if (
-                    theSlugcat.value == "EscortMe" ||
-                    theSlugcat.value == "EscortBriish" ||
+                    theSlugcat.value == "EscortMe" ||  // "The Escort"
+                    theSlugcat.value == "EscortBriish" ||  // "The Great Tea Party"
                     theSlugcat.value == "EscortGamer" ||
                     theSlugcat.value == "EscortHax" ||
                     theSlugcat.value == "EscortRizzgayer" ||
-                    theSlugcat.value == "EscortCheese" ||
-                    theSlugcat.value == "EscortDrip"  ||
-                    theSlugcat.value == "EscortBodyarmor"
+                    theSlugcat.value == "EscortCheese" ||  // "Escort and the Quest for The Ultimate Cheese"
+                    theSlugcat.value == "EscortDrip"  // "The Escort Journey"
                     )
                 {
                     return !nullCheck; // it IS an Escort!

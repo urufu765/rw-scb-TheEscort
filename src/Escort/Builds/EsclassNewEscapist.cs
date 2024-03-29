@@ -427,30 +427,13 @@ namespace TheEscort
             }
         }
 
-        /// <summary>
-        /// Checks if any bodypart of a creature is inside the designated rectangle
-        /// </summary>
-        public static bool Esclass_NE_BodyChecker(Creature creature, Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
-        {
-            bool insideQuad = false;
-            for (int i = 0; i < creature.bodyChunks.Length && !insideQuad; i++)
-            {
-                insideQuad = Custom.BetweenLines(creature.bodyChunks[i].pos, a1, a2, b1, b2);
-            }
-            return insideQuad;
-        }
 
-        /// <summary>
-        /// Checks whether any part of the creature is in the square, and also returns what bodychunk index made it in. Outputs -1 if no bodyparts could be found
-        /// </summary>
-        public static bool Esclass_NE_BodyChecker(Creature creature, Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, out int chunkIndex)
+        private static bool Esclass_NE_BodyChecker(Creature creature, Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
         {
             bool insideQuad = false;
-            chunkIndex = -1;
             for (int i = 0; i < creature.bodyChunks.Length && !insideQuad; i++)
             {
                 insideQuad = Custom.BetweenLines(creature.bodyChunks[i].pos, a1, a2, b1, b2);
-                chunkIndex = i;
             }
             return insideQuad;
         }

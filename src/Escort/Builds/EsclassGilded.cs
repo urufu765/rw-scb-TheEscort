@@ -129,12 +129,6 @@ namespace TheEscort
                 !gilded_jet.TryGet(self, out float jetSize)
                 ) return;
 
-            // Reset values if flagged
-            if (!self.dead && e.GildNeedsToReset)
-            {
-                e.Escat_GD_reset_vars(true);
-            }
-
             // Die by overpower
             if (e.GildPower > e.GildPowerMax - 800 && !self.dead)
             {
@@ -157,7 +151,6 @@ namespace TheEscort
                     }
                 }
                 e.GildLockRecharge = true;
-                e.GildNeedsToReset = true;
             }
 
             // Check empty hand

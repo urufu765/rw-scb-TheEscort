@@ -19,9 +19,7 @@ namespace TheEscort
             { -3, "Escapist" }, 
             { -4, "Railgunner" }, 
             { -5, "Speedster" }, 
-            { -6, "Gilded" },
-            { -7, "Barbarian" },
-            { -8, "Unstable" }
+            { -6, "Gilded" } 
         };
         public static UIelementWrapper[] hackyWrapper;
         public static UIelementWrapper[] fairlyIllegalWrapper;
@@ -127,25 +125,6 @@ namespace TheEscort
                     else
                     {
                         //==Ebug(self.player, "Arenasession or Singleplayer", 2);
-
-                        // Unique color for each build
-                        if (rCam.room.game.IsStorySession && !e.isDefault)
-                        {
-                            Color c2 = Color.white;
-                            if (e.Brawler) c2 = e.BrawlerColor;
-                            if (e.Deflector) c2 = e.DeflectorColor;
-                            if (e.Escapist) c2 = e.EscapistColor;
-                            if (e.NewEscapist) c2 = e.NewEscapistColor;
-                            if (e.Railgunner) c2 = e.RailgunnerColor;
-                            if (e.Speedster) c2 = e.SpeedsterColor;
-                            if (e.Gilded) c2 = e.GildedColor;
-                            if (e.Unstable) c2 = e.UnstableColor;
-                            if (self.player is ShadowPlayer) c2 = e.NEsShadowColor;
-                            for (int i = 0; i < 9; i++)
-                            {
-                                s.sprites[i].color = c2;
-                            }
-                        }
 
                         if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors)
                         {
@@ -388,7 +367,6 @@ namespace TheEscort
                         s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
-                if (e.Railgunner) Esclass_RG_DrawHands(self, s, rCam, t, camP, ref e);
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 //e.Escat_Draw_Ring_Trackers(t);
