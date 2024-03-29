@@ -12,6 +12,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev02** Fixed syntax issues
     * **dev03** Fix didn't work
     * **dev04** This one should
+    * **dev05** Changed Escort icons
+
+  * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
 
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
