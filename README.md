@@ -15,6 +15,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** Changed Escort icons
     * **dev06** Reorganizing devlogs and implemented many of the changes from 0.4.0 alpha build (and disabled Unstable from ever appearing)
     * **dev07** Fixed the versions, changed the difficulty a little bit, fixed Socks dupe glitch from Escapist cloning
+    * **dev07a** Cutscene labeling a tiny bit
     * General Changes
       * Each build has different default colors
       * Escort now has a different arena icon (no more soul-staring Escort)

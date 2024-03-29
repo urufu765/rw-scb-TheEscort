@@ -547,16 +547,50 @@ public class EscortRoomScript
 
     }
 
+
+    /// <summary>
+    /// A script for performing a custom ending at the void sea.
+    /// </summary>
     private class EscortEndingA : UpdatableAndDeletable
     {
+        /// <summary>
+        /// Controller of the selected player
+        /// </summary>
         StartController startController;
+
+        /// <summary>
+        /// Cutscene timer (for each stage/phase)
+        /// </summary>
         int cutsceneTimer;
+
+        /// <summary>
+        /// Phase of the cutscene
+        /// </summary>
         Phase phase;
+
+        /// <summary>
+        /// Creatures detected other than Escort at the current scene
+        /// </summary>
         List<AbstractCreature> creatures;
+
+        /// <summary>
+        /// Stages of the cutscene completion check
+        /// </summary>
         bool initDone, movePlayerDone, creatureMoveDone, fadeDone, endDone, missionComplete;
+
+        /// <summary>
+        /// Void melting effect effect initial value
+        /// </summary>
         float voidMeltInit;
+
+        /// <summary>
+        /// Screen fadeout module
+        /// </summary>
         MoreSlugcats.FadeOut fadeOut;
 
+        /// <summary>
+        /// Finds the damn 1st player and keeps the reference handy
+        /// </summary>
         public Player Playr
         {
             get
