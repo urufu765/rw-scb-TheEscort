@@ -1,5 +1,0 @@
-Template: GW_SettingsTemplate_Inside
-Palette: 11
-PlacedObjects: BrokenShelterWaterLevel><496.6258><351.5945><, 
-AmbientSounds: SPOT><AM_IND-Utility02.ogg><760.8157><456.3276><0.4347826><1><399.8157><344.3276><-207.3553><-73.35535><0><0.328261, 
-FadePalette: 35, 0.326087
