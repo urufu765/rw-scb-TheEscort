@@ -96,6 +96,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev70b** Deflector & Old Escapist variable labeling
     * **dev71** Fixed some errors and changed Escort's arena icon
     * **dev72** Fixed new arena icon sizes
+  * **0.4.0.1** All of the above has been implemented
+    * **dev01** Labeled a part of New Escapist
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
@@ -124,6 +126,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* New way options are processed
     * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
     * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
+    * *dev* Default changes the color of the shortcut pipes TOO
 
 * ### 0.3 - Ending I
   * **(0.3.1)** Big Update Fix
@@ -131,6 +134,36 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev02** Fixed syntax issues
     * **dev03** Fix didn't work
     * **dev04** This one should
+    * **dev05** Changed Escort icons
+    * **dev06** Reorganizing devlogs and implemented many of the changes from 0.4.0 alpha build (and disabled Unstable from ever appearing)
+    * **dev07** Fixed the versions, changed the difficulty a little bit, fixed Socks dupe glitch from Escapist cloning
+    * General Changes
+      * Each build has different default colors
+      * Escort now has a different arena icon (no more soul-staring Escort)
+    * Default Changes
+      * Reduced swim speed to something more manageable
+      * Being near Default now gives bubbleweed effect (great for coop and slugpups!)
+    * Brawler Changes
+      * Rotund Brawler gains less cooldown per CHONK
+    * Deflector Changes
+      * No longer loses empower when using a joke rifle, all bullets are now empowered as long as the time lasts
+      * Parry now ignores stuns
+    * Escapist Changes
+      * None lol.
+    * Railgunner Changes
+      * Recoil mechanic overhaul
+      * Stuns and spasms are longer the less karma she has
+      * Movement speed is now affected by overcharge (more overcharge = more speed)
+    * Speedster Changes
+      * Allowed Speedster's max gears to be modified (up to 42) with an option
+      * Total ability active time increments less per higher numbers
+      * Acceleration is faster at higher gears
+      * Wallplant tolerance is higher per higher gear
+      * Losing a gear reduces their ability time
+      * Slide is fixed (to default)
+      * Now gains passive speed the higher charge they build up
+    * Gilded Changes
+      * Revivify QoL: Power meter *resets* when revived so they don't insta-die
 
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
 

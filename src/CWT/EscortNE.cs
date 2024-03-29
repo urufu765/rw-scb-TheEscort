@@ -10,23 +10,95 @@ namespace TheEscort;
 
 public partial class Escort
 {
+    /// <summary>
+    /// Color of New Escapist
+    /// </summary>
     public Color NewEscapistColor;
+
+    /// <summary>
+    /// Color of shadow clone
+    /// </summary>
     public Color NEsShadowColor;
+    
+    /// <summary>
+    /// Last directional input made by the player (X, Y)
+    /// </summary>
     public IntVector2 NEsLastInput;
+    
+    /// <summary>
+    /// Cooldown that will be set next frame
+    /// </summary>
     public int NEsSetCooldown;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsCooldown;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public List<Creature> NEsVulnerable;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsClearVulnerable;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsAbility;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public AbstractCreature NEsAbstractShadowPlayer;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public ShadowPlayer NEsShadowPlayer;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public const int NEsAbilityTime = 320;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public bool NEsResetCooldown;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public bool NEsShelterCloseTime;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsLastCooldown;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public Queue<BodyDouble> NEsShadow;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsAddToTrailCD;
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public int NEsDangerGraspExtend;
+    
+    /// <summary>
+    /// Variable that determins if Socks has been spawned or not (may need revision)
+    /// </summary>
+    public bool NEsSocks;
 
     public void EscortNE()
     {
@@ -43,6 +115,7 @@ public partial class Escort
         this.NEsShelterCloseTime = false;
         this.NEsShadow = new();
         this.NEsDangerGraspExtend = 0;
+        this.NEsSocks = false;
     }
 
 
