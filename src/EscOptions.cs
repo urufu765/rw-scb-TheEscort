@@ -102,7 +102,7 @@ namespace TheEscort
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
         public Configurable<int> cfgSpeedsterGears;
-        private OpLabel sctTestBuildText;
+        //private OpLabel sctTestBuildText;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -151,14 +151,14 @@ namespace TheEscort
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
-        public int buildDiv = -8;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
+        public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.3";
+        private static readonly string VERSION = "0.3.1";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "The End Part 1<LINE>- Added slugpup to Escort's Default campaign<LINE>- option to allow other builds to access the slugpup<LINE>- A proper ending has been implemented(Ascension)<LINE>- Sleepscreen changes depending on whether you have the special slup or not<LINE>- This will be the final update for some time...");
+                "- Fixed for Rainworld 1.9.15<LINE>-Made many changes to each build that you should check in the changelogs over at the steam page!");
             }
         }
 
@@ -256,7 +256,7 @@ namespace TheEscort
             this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
             this.buildDraggerHelper = config.Bind("escort_builddragger_helper_ignore_this", 0, new ConfigAcceptableRange<int>(1, PlayerCount));
-            this.buildItems = new()
+            /*this.buildItems = new()
             {
                 new ListItem("default", Translate("Default"), 0),
                 new ListItem("brawler", Translate("Brawler"), -1),
@@ -267,6 +267,16 @@ namespace TheEscort
                 new ListItem("gilded", Translate("Gilded"), -6),
                 new ListItem("barbarian", Translate("Barbarian"), -7),
                 new ListItem("unstable", Translate("Unstable"), -8)
+            };*/
+            this.buildItems = new()
+            {
+                new ListItem("default", Translate("Default"), 0),
+                new ListItem("brawler", Translate("Brawler"), -1),
+                new ListItem("deflector", Translate("Deflector"), -2),
+                new ListItem("escapist", Translate("Escapist"), -3),
+                new ListItem("railgunner", Translate("Railgunner"), -4),
+                new ListItem("speedster", Translate("Speedster"), -5),
+                new ListItem("gilded", Translate("Gilded"), -6)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
@@ -335,9 +345,9 @@ namespace TheEscort
             };
             this.secretText.OnValueChanged += InputTheSecret;
 
-            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
-                color = bTesting * 0.7f
-            };
+            //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
+            //    color = bTesting * 0.7f
+            //};
             // This is meaningless since the option isn't actually hidden
             // if (this.sctTestBuild.Value)
             // {
@@ -610,10 +620,11 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
+                /*
                 new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("UNAVAILABLE") + "[Barbarian] {?????}", true){
                     color = Color.green
-                },
-                sctTestBuildText,
+                },*/
+                //sctTestBuildText,
             };
             const string buildTextPad = "  ";
             this.buildText = new UIelement[]{

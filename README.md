@@ -132,6 +132,34 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev03** Fix didn't work
     * **dev04** This one should
     * **dev05** Changed Escort icons
+    * **dev06** Reorganizing devlogs and implemented many of the changes from 0.4.0 alpha build (and disabled Unstable from ever appearing)
+    * General Changes
+      * Each build has different default colors
+      * Escort now has a different arena icon (no more soul-staring Escort)
+    * Default Changes
+      * Reduced swim speed to something more manageable
+      * Being near Default now gives bubbleweed effect (great for coop and slugpups!)
+    * Brawler Changes
+      * Rotund Brawler gains less cooldown per CHONK
+    * Deflector Changes
+      * No longer loses empower when using a joke rifle, all bullets are now empowered as long as the time lasts
+      * Parry now ignores stuns
+    * Escapist Changes
+      * None lol.
+    * Railgunner Changes
+      * Recoil mechanic overhaul
+      * Stuns and spasms are longer the less karma she has
+      * Movement speed is now affected by overcharge (more overcharge = more speed)
+    * Speedster Changes
+      * Allowed Speedster's max gears to be modified (up to 42) with an option
+      * Total ability active time increments less per higher numbers
+      * Acceleration is faster at higher gears
+      * Wallplant tolerance is higher per higher gear
+      * Losing a gear reduces their ability time
+      * Slide is fixed (to default)
+      * Now gains passive speed the higher charge they build up
+    * Gilded Changes
+      * Revivify QoL: Power meter *resets* when revived so they don't insta-die
 
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
 
