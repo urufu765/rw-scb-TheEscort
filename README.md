@@ -127,6 +127,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
     * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
     * *dev* Default changes the color of the shortcut pipes TOO
+    * *dev* Have food pips get affected by player number too
+    * *dev* Separate food bar reduction to easier mode
+    * *dev* Change New Escapist's color so it isn't as similar to Railgunner
 
 * ### 0.3 - Ending I
   * **(0.3.1)** Big Update Fix
