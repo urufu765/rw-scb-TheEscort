@@ -18,6 +18,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * General Changes
       * Each build has different default colors
       * Escort now has a different arena icon (no more soul-staring Escort)
+      * Easier mode reduces food requirement by 3 pips
     * Default Changes
       * Reduced swim speed to something more manageable
       * Being near Default now gives bubbleweed effect (great for coop and slugpups!)
