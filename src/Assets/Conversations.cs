@@ -2,7 +2,6 @@ using SlugBase.Features;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.Mathematics;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using static TheEscort.Plugin;

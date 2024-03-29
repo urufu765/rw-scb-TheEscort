@@ -10,6 +10,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.3.1)** Big Update Fix
     * **dev01** Updated libraries
     * **dev02** Fixed syntax issues
+    * **dev03** Fix didn't work
+    * **dev04** This one should
 
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
