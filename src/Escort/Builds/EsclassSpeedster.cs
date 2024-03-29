@@ -28,6 +28,18 @@ namespace TheEscort
             if (e.SpeSpeedin > 0 && !e.SpeOldSpeed)
             {
                 e.SpeSpeedin--;
+                if (self.input[0].x != 0 && e.SpeNitros > 0)
+                {
+                    e.SpeNitros--;
+                }
+                else if (self.input[0].x == 0 && e.SpeNitros < e.SpeGear * 2)
+                {
+                    e.SpeNitros += 2;
+                }
+            }
+            else
+            {
+                e.SpeNitros = 0;
             }
         }
 
@@ -161,6 +173,7 @@ namespace TheEscort
                     if (e.SpeDashNCrash && e.SpeGear > 0)
                     {
                         e.SpeGear--;
+                        e.SpeSpeedin = Math.Min(0, e.SpeSpeedin - 80);
                     }
                 }
                 if (self.Stunned)
@@ -235,7 +248,7 @@ namespace TheEscort
                     }
 
                     // Add charge storage
-                    if (e.SpeBuildup > 239 && e.SpeCharge < 4)
+                    if (e.SpeBuildup > 239 && e.SpeCharge < e.SpeMaxGear)
                     {
                         Ebug(self, "Charge! " + e.SpeCharge + " => " + (e.SpeCharge + 1));
                         if (self.room != null)
@@ -273,6 +286,7 @@ namespace TheEscort
         private void Esclass_SS_UpdateBodyMode(Player self, ref Escort e)
         {
             float n = 1f;
+            float p = 0f;  // Passive speed
             if (e.SpeOldSpeed)
             {
                 n = e.SpeSecretSpeed ? 2.5f : 1f;
@@ -280,12 +294,18 @@ namespace TheEscort
             else
             {
                 n += 0.6f * e.SpeGear;
+                p += 0.15f * e.SpeCharge;
             }
 
             if (e.SpeDashNCrash)
             {
                 self.dynamicRunSpeed[0] += 3f * n;
                 self.dynamicRunSpeed[1] += 3f * n;
+            }
+            else
+            {
+                self.dynamicRunSpeed[0] += p;
+                self.dynamicRunSpeed[1] += p;
             }
         }
 
@@ -301,6 +321,7 @@ namespace TheEscort
             {
                 n += 0.45f * e.SpeGear;
             }
+            /*  # I'll come back to this
             if (self.animation == Player.AnimationIndex.BellySlide)
             {
                 int initReq = 2;
@@ -320,8 +341,15 @@ namespace TheEscort
                 }
                 else
                 {
-                    initReq += e.SpeGear;
-                    rollCount += e.SpeGear;
+                    int toAdd = e.SpeGear switch
+                    {
+                        1 => 1,
+                        2 => 2,
+                        3 => 3,
+                        _ => 4
+                    };
+                    initReq += toAdd;
+                    rollCount += toAdd;
                 }
                 if (self.initSlideCounter < initReq)
                 {
@@ -341,6 +369,7 @@ namespace TheEscort
             {
                 e.SpeRollCounter = 0;
             }
+            */
 
             if (e.SpeDashNCrash)
             {
@@ -398,7 +427,9 @@ namespace TheEscort
                     e.SpeDashNCrash = true;
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
-                    e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
+                    e.SpeSpeedin = 200 + 80 * e.SpeGear;  // Made the math simple
+                    e.SpeNitros = e.SpeGear * 2;
+                    //e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                     e.SpeExtraSpe = e.SpeSpeedin;
                     if (self.room != null)
                     {
@@ -411,6 +442,17 @@ namespace TheEscort
                 }
             }
         }
+
+        private void Esclass_SS_MovementUpdate(Player self, ref Escort e)
+        {
+            // Nitros boost
+            if (!e.SpeOldSpeed && e.SpeDashNCrash && e.SpeNitros > 0)
+            {
+                self.bodyChunks[0].vel.x += (float)(self.input[0].x * e.SpeNitros);
+                self.bodyChunks[1].vel.x += (float)(self.input[0].x * e.SpeNitros);
+            }
+        }
+
 
         private void Esclass_SS_Jump(Player self, ref Escort e)
         {
@@ -574,7 +616,16 @@ namespace TheEscort
             }
             if (!self.dead && e.SpeDashNCrash)
             {
-                if (firstContact && speed > (e.SpeSecretSpeed ? 15f : 14f) && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip && self.animation != Player.AnimationIndex.BellySlide)
+                float limit = 14f;
+                if (e.SpeOldSpeed && e.SpeSecretSpeed)
+                {
+                    limit = 16f;
+                }
+                else
+                {
+                    limit += 1.5f * e.SpeGear;
+                }
+                if (firstContact && speed > limit && direction.x != 0 && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.animation != Player.AnimationIndex.Flip && self.animation != Player.AnimationIndex.BellySlide)
                 {
                     self.room?.PlaySound(e.SpeSecretSpeed ? SoundID.Slugcat_Terrain_Impact_Hard : SoundID.Slugcat_Terrain_Impact_Medium, e.SFXChunk);
                     e.SpeBonk = 5;

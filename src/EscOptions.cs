@@ -100,6 +100,9 @@ namespace TheEscort
         public Configurable<bool> cfgNoMoreFlips;
         public Configurable<bool> cfgDeflecterSharedPool;
         public Configurable<bool> cfgAllBuildsGetPup;
+        public Configurable<bool> sctTestBuild;
+        public Configurable<int> cfgSpeedsterGears;
+        private OpLabel sctTestBuildText;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -147,8 +150,8 @@ namespace TheEscort
         private readonly float ypadding = 40f;
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
-        public readonly int buildDivFix = -5;
-        public int buildDiv = -6;
+        public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
+        public int buildDiv = -8;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.3";
         private readonly Configurable<string> cfgVersion;
@@ -227,6 +230,9 @@ namespace TheEscort
             this.cfgEscLaunchV = this.config.Bind<float>("cfg_Escort_Launch_Vertical", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgEscLaunchSH = this.config.Bind<float>("cfg_Escort_Launch_Spear", 3f, new ConfigAcceptableRange<float>(0.01f, 50f));
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
+            this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
+            this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
+
             
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
@@ -259,6 +265,8 @@ namespace TheEscort
                 new ListItem("railgunner", Translate("Railgunner"), -4),
                 new ListItem("speedster", Translate("Speedster"), -5),
                 new ListItem("gilded", Translate("Gilded"), -6),
+                new ListItem("barbarian", Translate("Barbarian"), -7),
+                new ListItem("unstable", Translate("Unstable"), -8)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
@@ -310,6 +318,7 @@ namespace TheEscort
             Color bSpeedster = new Color(0.76f, 0.78f, 0f);
             Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
             Color bUltKill = new Color(0.7f, 0.2f, 0.2f);
+            Color bTesting = new Color(0.9f, 0.0f, 0.9f);
             this.buildColors = new Color[]{
                 bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
@@ -325,6 +334,20 @@ namespace TheEscort
                 maxLength = 5
             };
             this.secretText.OnValueChanged += InputTheSecret;
+
+            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
+                color = bTesting * 0.7f
+            };
+            // This is meaningless since the option isn't actually hidden
+            // if (this.sctTestBuild.Value)
+            // {
+            //     this.sctTestBuildText.Show();
+            // }
+            // else
+            // {
+            //     this.sctTestBuildText.Hide();
+            // }
+
             /*
             this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
                 description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
@@ -587,6 +610,10 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
+                new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("UNAVAILABLE") + "[Barbarian] {?????}", true){
+                    color = Color.green
+                },
+                sctTestBuildText,
             };
             const string buildTextPad = "  ";
             this.buildText = new UIelement[]{
@@ -605,10 +632,16 @@ namespace TheEscort
                     color = bDeflector
                 },
 
-                // Force out of grasps, though don't expect to be fighting much...
-                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc")){
+                // -insert new escapist's descriptor
+                new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_new_desc")){
                     color = bEscapist
                 },
+
+                // Force out of grasps, though don't expect to be fighting much...
+                // insert code for the old escapist in place of the new escapist in case the old escapist option is checked. Also have a separate thing where the color of the thing changes depending on the option selected.
+                //new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc")){
+                //    color = bEscapist
+                //},
 
                 // With the aid of <REPLACE>, dual-wield weapons of the same type for extreme results
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 2.1f), buildTextPad + Translate("railgunner_desc")){
@@ -936,6 +969,11 @@ namespace TheEscort
                     description = Swapper(Translate("escoptions_oldescape_desc")) + SetDefault(cfgOldEscapist.defaultValue),
                 },
 
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Speedster Gear Limit")),
+                new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100){
+                    description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
+                },
+
                 secretText
             };
             this.accessibleSet = new UIelement[]{
@@ -1157,7 +1195,7 @@ namespace TheEscort
         private void ResultsBaby(string value = "")
         {
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-            int nu2 = 1500; int nu3 = 87769; int nu4 = 602;
+            int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
@@ -1226,12 +1264,24 @@ namespace TheEscort
                 Plugin.ins.L().NewYears(this.cfgSectretMagic.Value);
                 Ebug("Set secret 4");
             }
+            else if (value == nu5.ToString())
+            {
+                if (!this.sctTestBuild.Value)
+                {
+                    this.sctTestBuild.Value = true;
+                    ConfigConnector.CreateDialogBoxMultibutton(
+                        "Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!", insult, doThing
+                    );
+                }
+                Ebug("Set secret build testing mode");
+            }
             else
             {
                 this.cfgSectret.Value = false;
                 this.cfgSectretBuild.Value = false;
                 this.cfgSectretGod.Value = false;
                 this.cfgSectretMagic.Value = false;
+                this.sctTestBuild.Value = false;
                 Plugin.ins.L().Holiday();
                 try
                 {

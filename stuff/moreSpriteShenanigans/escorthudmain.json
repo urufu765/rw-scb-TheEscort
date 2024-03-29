@@ -1,0 +1,68 @@
+{"frames": {
+
+"escort_hud_brawler.png":
+{
+	"frame": {"x":2,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_default.png":
+{
+	"frame": {"x":34,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_deflector.png":
+{
+	"frame": {"x":66,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_escapist.png":
+{
+	"frame": {"x":98,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_parry.png":
+{
+	"frame": {"x":130,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_railgunner.png":
+{
+	"frame": {"x":162,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"escort_hud_speedster.png":
+{
+	"frame": {"x":194,"y":2,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "escorthudmain.png",
+	"format": "RGBA8888",
+	"size": {"w":228,"h":36},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3d94207a4d3e10e6d3caa71ad443298a:c6e9c1d4ae387cafc027de351532b3d4:d626f5337384747f603ce672d8b54546$"
+}
+}

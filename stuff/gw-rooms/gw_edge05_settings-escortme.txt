@@ -1,0 +1,14 @@
+Template: GW_SettingsTemplate_Inside
+DangerType: Rain
+WaveSpeed: 0.5130922
+WaveLength: 0.9934539
+WaveAmplitude: 0.0009918559
+SecondWaveLength: 0.1666667
+SecondWaveAmplitude: 0
+WaterReflectionAlpha: 0
+Palette: 35
+EffectColorA: 12
+EffectColorB: 12
+Effects: Darkness-0.6739131-20-20, 
+PlacedObjects: LanternOnStick><695.0989><1107.369><-12~-114, LanternOnStick><633.1255><1157.344><39~-154, DangleFruit><369.9297><1194.088><446~-460~2~3, DangleFruit><393.6963><1146.807><412~-312~2~3, CustomDecal><152.5664><923.9207><6~339~231~337~245~-15~-403~-67~0.5326087~1~0~ScavMark Stonehead3~0.173913~0~0.173913~0~0.173913~0~0.173913~0, CustomDecal><88.65912><1050.822><-14~350~786~329~771~-32~-391~-41~0.5652174~1~0~ScavMark HI_A27~0.2826087~0.1086956~0.2826087~0.1086956~0.2826087~0.1086956~0.2826087~0.1086956, CustomDecal><614.2091><966.1958><-33~341~253~381~260~-38~-129~-356~0.5869565~1~0~ScavMark Stonehead2~0.25~0.4021739~0.25~0.4021739~0.25~0.4021739~0.25~0.4021739, 
+FadePalette: 10, 0.2173913, 0.5

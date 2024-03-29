@@ -17,7 +17,7 @@ using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.0.1")]
+    [BepInPlugin(MOD_ID, "[Alpha] The Escort", "0.4")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -752,14 +752,49 @@ namespace TheEscort
                     // Stylist build (Do combos that build up to a super move)
                     // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
                     // Stealth build (hold still or crouch to enter stealthed mode)
-                    case -8:  // Testing build
+                    case -99:  // Testing build
                         e.EsTest = true;
                         break;
-                    case -7:  // New Escapist build (Testing, obsolete)
+                    case -98:  // New Escapist build (Testing, obsolete)
                         e.NewEscapist = true;
                         Ebug(self, "New Escapist Build selected!", 2);
                         self.slugcatStats.visualStealthInSneakMode = 1;
                         self.spearOnBack = new Player.SpearOnBack(self);
+                        break;
+                    case -9:  // Power test build
+                        if (self?.room?.game is null)
+                        {
+                            Ebug(self, "NULL GAME!", 1);
+                        }
+                        else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().achieveEscort_Bare_Fists)
+                        {
+                            goto default;
+                        }
+                        break;
+                    case -8:  // Unstable test build
+                        // IF locked, don't let player play as Unstable
+                        if (self?.room?.game is null)
+                        {
+                            Ebug(self, "NULL GAME!", 1);
+                        }
+                        /*
+                        else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort)
+                        {
+                            goto default;
+                        }
+                        */
+                        e.Unstable = true;
+                        Ebug(self, "Unstable (WIP) Build selected!", 2);
+                        self.slugcatStats.runspeedFac += 0.45f;
+                        self.slugcatStats.poleClimbSpeedFac += 0.4f;
+                        self.slugcatStats.corridorClimbSpeedFac += 0.55f;
+                        //self.slugcatStats.bodyWeightFac -= 0.15f;
+                        self.slugcatStats.lungsFac += 0.5f;
+                        break;
+                    case -7:
+                        e.Barbarian = true;
+                        Ebug(self, "Barbarian (WIP) Build selected!", 2);
+                        self.slugcatStats.bodyWeightFac += 0.95f;
                         break;
                     case -6:  // Gilded build
                         e.Gilded = true;
@@ -777,12 +812,13 @@ namespace TheEscort
                     case -5:  // Speedstar build
                         e.Speedster = true;
                         e.SpeOldSpeed = config.cfgOldSpeedster.Value;
+                        e.SpeMaxGear = config.cfgSpeedsterGears.Value;
                         if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                         {
                             Ebug(self, "Get Speedster save!");
                             if (speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging))
                             {
-                                e.SpeCharge = charging;
+                                e.SpeCharge = Math.Min(charging, e.SpeMaxGear);
                             }
                             //Ebug(self, "Misc: " + JsonConvert.SerializeObject(speedsterSession.saveState.miscWorldSaveData.Esave()));
                         }
@@ -1075,7 +1111,9 @@ namespace TheEscort
         }
 
 
-
+        /// <summary>
+        /// For when Esclass updates need to happen outside of Player update
+        /// </summary>
         private void Escort_AbsoluteTick(On.RainWorldGame.orig_Update orig, RainWorldGame self)
         {
             orig(self);
@@ -1156,6 +1194,7 @@ namespace TheEscort
             {
                 if (Eshelp_IsMe(slugcat)) return orig(slugcat);
                 return config.cfgBuild[0].Value switch{
+                    -7 => new(14, UnityEngine.Random.Range(1, 14)),
                     -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                     -5 => new(14, 10),  // Speedster
                     -4 => new(14, 7),  // Railgunner
@@ -1499,25 +1538,34 @@ namespace TheEscort
         /// <returns>false if player is not escort, true if in parry condition</returns>
         public bool Eshelp_ParryCondition(Player self)
         {
+            // If not escort, why bother?
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 return false;
             }
+
+            // Deflector extra parry check
             if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
             {
                 Ebug(self, "Parryteched condition!", 2);
                 return true;
             }
+
+            // New Escapist hidden parry tech check
             if (e.NewEscapist && e.NEsAbility > 0 && (self.animation == Player.AnimationIndex.Flip))
             {
                 Ebug(self, "New Escapist trickz parry condition!", 2);
                 return true;
             }
+
+            // Regular parry check
             else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
             {
                 Ebug(self, "Regular parry condition!", 2);
                 return true;
             }
+
+            // Not in parry condition
             else
             {
                 Ebug(self, "Not in parry condition", 2);
@@ -1526,29 +1574,39 @@ namespace TheEscort
             }
         }
 
-        // Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
+        /// <summary>
+        /// Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
+        /// </summary>
         public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie)
         {
+            // Escort check
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 Ebug(self, "Saving throw failed because Scug is not Escort!", 0);
                 return false;
             }
+
+            // Null check
             if (self is null || offender is null || ouchie is null)
             {
                 Ebug(self, "Saving throw failed due to null values!", 0);
                 return false;
             }
+
+            // Checks whether the attacker is a creature
             if (offender.owner is not Creature)
             {
                 Ebug(self, "Saving throw failed due to the offender not being a creature!", 2);
                 return false;
             }
+
+            // Checks whether easier mode is on
             if (e.easyKick)
             {
                 Ebug(self, "Saving throw don't work on easier dropkicks!", 2);
                 return false;
             }
+
             // Deflector isn't allowed a saving throw because they don't need it ;)
             if (!e.Deflector)
             {
@@ -1560,6 +1618,8 @@ namespace TheEscort
                     return true;
                 }
             }
+
+            // Fuck you, get rekt
             else
             {
                 Ebug(self, "Saving throw failed: Deflector Build Moment.", 2);
@@ -1567,7 +1627,7 @@ namespace TheEscort
             return false;
         }
 
-
+        // TODO: Remove this
         private void Backpack_ILRealize(ILContext il)
         {
             var cursor = new ILCursor(il);
@@ -1593,6 +1653,9 @@ namespace TheEscort
             );
         }
 
+        /// <summary>
+        /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack
+        /// </summary>
         private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
         {
             orig(self);
@@ -1615,12 +1678,17 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Was once planned to be used for adding backpacks as an actual creatures... before Uru got real lazy and couldn't be bothered
+        /// </summary>
         private void Custom_Stuff(On.StaticWorld.orig_InitCustomTemplates orig)
         {
             orig();
         }
 
-
+        /// <summary>
+        /// Changes spawn location... WARNING: Also overrides expedition spawns, so therefore unused.
+        /// </summary>
         private void EscortChangingRoom(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
         {
             orig(self, manager);
@@ -1642,6 +1710,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Changes the spawn location of Escort. Compatible with Expedition random spawns
+        /// </summary>
         private void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
             orig(self);
             Ebug("Changing room 2!");
@@ -1659,11 +1730,13 @@ namespace TheEscort
                 self.denPosition = config.cfgBuild[0].Value switch {
                     0 => "CC_SUMP02",  // Default
                     -1 => "SU_A02",  // Brawler
-                    -2 => "SI_C03",  // Deflector
+                    //-2 => "SI_C03",  // Deflector
+                    -2 => "HI_A14",  // Deflector NEW
                     -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
                     -4 => "GW_C02_PAST",  // Railgunner
                     -5 => "LF_E03",  // Speedster
                     -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
+                    -7 => "SS_A18",  // Unstable
                     _ => "SB_C09"  // Unspecified
                 };
                 Ebug("It's time OwO");
@@ -1671,7 +1744,9 @@ namespace TheEscort
             }
         }
 
-
+        /// <summary>
+        /// Returns whether the character should be playable or not. It hides the Socks
+        /// </summary>
         private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
         {
             ins.L().Set();
