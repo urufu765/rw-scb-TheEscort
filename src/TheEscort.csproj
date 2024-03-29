@@ -55,6 +55,9 @@
     <Reference Include="..\lib\UnityEngine.InputLegacyModule.dll">
       <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="..\lib\Unity.Mathematics.dll">
+      <HintPath>..\lib\Unity.Mathematics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Target Name="GenerateMod" AfterTargets="PostBuildEvent">
     <ItemGroup>

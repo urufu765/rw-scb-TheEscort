@@ -126,7 +126,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
 
 * ### 0.3 - Ending I
+  * **(0.3.1)** Big Update Fix
+    * **dev01** Updated libraries
+    * **dev02** Fixed syntax issues
+    * **dev03** Fix didn't work
+    * **dev04** This one should
+
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
+
   * **(0.3.0)** The End...?
     * **dev01** It's time to develop
     * **dev02** Slugpup spawns on expedition on cycle 0, otherwise try spawn with cutscene
