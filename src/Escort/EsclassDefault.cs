@@ -750,12 +750,16 @@ namespace TheEscort
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault)
+                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks))
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
                         e.cheatedSpawnPup = true;
+                        if (e.NewEscapist)
+                        {
+                            e.NEsSocks = true;
+                        }
                     }
 
                     // Socks (impostor) check

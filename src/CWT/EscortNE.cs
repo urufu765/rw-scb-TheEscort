@@ -27,6 +27,7 @@ public partial class Escort
     public Queue<BodyDouble> NEsShadow;
     public int NEsAddToTrailCD;
     public int NEsDangerGraspExtend;
+    public bool NEsSocks;
 
     public void EscortNE()
     {
@@ -43,6 +44,7 @@ public partial class Escort
         this.NEsShelterCloseTime = false;
         this.NEsShadow = new();
         this.NEsDangerGraspExtend = 0;
+        this.NEsSocks = false;
     }
 
 
