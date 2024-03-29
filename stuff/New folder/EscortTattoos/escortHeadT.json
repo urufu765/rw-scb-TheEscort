@@ -1,0 +1,20 @@
+{"frames": {
+
+"escortHeadT.png":
+{
+	"frame": {"x":2,"y":2,"w":16,"h":18},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":18},
+	"sourceSize": {"w":16,"h":18}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "escortHeadT.png",
+	"format": "RGBA8888",
+	"size": {"w":20,"h":22},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e8d61c9df86e1ff54c2926304339380a:70f1486bbfb12ae871deb55e192a488b:6d33de310567901ceeae90e9b70d7130$"
+}
+}

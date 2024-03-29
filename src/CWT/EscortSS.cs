@@ -8,6 +8,7 @@ namespace TheEscort
     public partial class Escort
     {
         public bool Speedster;
+        public Color SpeedsterColor;
         public int SpeSpeedin;
         public bool SpeDashNCrash;
         public Queue<SpeedTrail> SpeTrail;
@@ -22,10 +23,13 @@ namespace TheEscort
         public float SpeGain;
         public bool SpeOldSpeed;
         public int SpeRollCounter;
+        public int SpeMaxGear;
+        public int SpeNitros;
 
-        public void EscortSS(bool useOld = false)
+        public void EscortSS(bool useOld = false, int maxGear = 4)
         {
             this.Speedster = false;
+            this.SpeedsterColor = new Color(0.03f, 0.57f, 0.59f);
             this.SpeSpeedin = 0;
             this.SpeExtraSpe = 0;
             this.SpeDashNCrash = false;
@@ -40,6 +44,7 @@ namespace TheEscort
             this.SpeCharge = 0;
             this.SpeGain = -1f;
             this.SpeOldSpeed = useOld;
+            this.SpeMaxGear = maxGear;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)

@@ -737,6 +737,8 @@ public class EscortRoomScript
                 {
                     room.game.GoToRedsGameOver();
                     RainWorldGame.BeatGameMode(room.game, true);
+                    // Later, hook into BeatGameMode for a more authentic experience
+                    room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort = true;
                     missionComplete = true;
                 }
             }

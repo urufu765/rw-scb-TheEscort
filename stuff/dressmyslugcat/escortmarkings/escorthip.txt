@@ -1,0 +1,20 @@
+{"frames": {
+
+"escortHipT.png":
+{
+	"frame": {"x":2,"y":2,"w":18,"h":23},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":18,"h":23},
+	"sourceSize": {"w":18,"h":23}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "escorthip.png",
+	"format": "RGBA8888",
+	"size": {"w":22,"h":27},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:88f9d1e323b3586d3bbed4253261ffb6:35601c551320282185306453bd048b14:aad1dfe704942f193b5066ab69cc267e$"
+}
+}

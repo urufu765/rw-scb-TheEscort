@@ -64,6 +64,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
+            if (e.Unstable) Esclass_US_Tick(self, ref e);
 
             // Dropkick damage cooldown
             if (e.DropKickCD > 0)
@@ -265,6 +266,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);
+            if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
 
@@ -931,15 +933,23 @@ namespace TheEscort
             // Implement bettercrawl
             if (self.bodyMode == Player.BodyModeIndex.Crawl)
             {
-                if (!e.Gilded && hypedMode)
+                if (e.Unstable)
                 {
-                    self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
-                    self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
+                        self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
                 }
                 else
                 {
-                    self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
-                    self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                    if (!e.Gilded && hypedMode)
+                    {
+                        self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
+                    }
+                    else
+                    {
+                        self.dynamicRunSpeed[0] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                        self.dynamicRunSpeed[1] = crawlSpeed[2] * self.slugcatStats.runspeedFac / movementSlow;
+                    }
                 }
             }
 
@@ -1001,21 +1011,89 @@ namespace TheEscort
 
                 if (self.animation == Player.AnimationIndex.DeepSwim)
                 {
-                    if (e.isDefault) self.waterFriction = 0.98f;
+                    if (e.isDefault) self.waterFriction = 0.965f;
                     self.mainBodyChunk.vel *= new Vector2(
                         Mathf.Lerp(1f, theGut[0], (float)Math.Pow(e.viscoDance, theGut[6])),
                         Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2], (float)Math.Pow(e.viscoDance, theGut[7])));
                 }
                 else if (self.animation == Player.AnimationIndex.SurfaceSwim)
                 {                    
-                    if (e.isDefault) self.waterFriction = Mathf.Lerp(0.98f, 1f, Mathf.InverseLerp(0, 5, self.waterJumpDelay));
+                    if (e.isDefault) self.waterFriction = Mathf.Lerp(0.97f, 0.99f, Mathf.InverseLerp(0, 5, self.waterJumpDelay));
                     self.mainBodyChunk.vel *= new Vector2(
                         Mathf.Lerp(1f, theGut[3], (float)Math.Pow(e.viscoDance, theGut[8])),
                         Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[4] : theGut[5], (float)Math.Pow(e.viscoDance, theGut[9])));
                     self.dynamicRunSpeed[0] += Mathf.Lerp(theGut[10], theGut[11], (float)Math.Pow(e.viscoDance, theGut[12]));
                 }
+
+                // Bubbleweed Escort
+                if (e.isDefault)
+                {
+                    if (self.room != null)  // VFX
+                    {
+                        Bubble bubble = new(self.bodyChunks[0].pos + Custom.RNV() * UnityEngine.Random.value * 4f, Custom.RNV() * Mathf.Lerp(6f, 16f, UnityEngine.Random.value) * Mathf.InverseLerp(0f, 0.45f, self.airInLungs), false, false);
+                        self.room.AddObject(bubble);
+                        bubble.age = 600 - UnityEngine.Random.Range(20, UnityEngine.Random.Range(30, 80));
+                    }
+                    // Assumes your PC is able to handle a creature sweep
+                    // Quality check that's been removed: (RWCustom.Custom.rainWorld.options.quality == Options.Quality.HIGH || RWCustom.Custom.rainWorld.options.quality == Options.Quality.MEDIUM) && 
+                    if (self.room?.abstractRoom?.creatures is not null)
+                    {
+                        for (int i = 0; i < self.room.abstractRoom.creatures.Count; i++)
+                        {
+                            if (self.room.abstractRoom.creatures[i].realizedCreature is Creature cc && cc != self)
+                            {
+                                if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
+                                {
+                                    // Nerf to default escort so two guardian escorts don't infinitely sustain each other
+                                    if (Eshelp_IsMe(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
+                                    {
+                                        cp.airInLungs = Mathf.Min(1f, cp.airInLungs + 0.01f);
+                                    }
+                                    else
+                                    {
+                                        cp.airInLungs = 1f;
+                                    }
+                                }
+                                else if (cc is AirBreatherCreature abc && Custom.DistLess(self.bodyChunks[0].pos, abc.mainBodyChunk.pos, 40f))
+                                {
+                                    abc.lungs = Mathf.Min(1f, abc.lungs + 0.04761905f);
+                                }
+                                else if (cc is Leech cl && !cl.dead && Custom.DistLess(self.bodyChunks[0].pos, cl.mainBodyChunk.pos, 70f))
+                                {
+                                    float chance = Mathf.InverseLerp(70f, 40f, Vector2.Distance(self.bodyChunks[0].pos, cl.mainBodyChunk.pos)) * cl.mainBodyChunk.submersion;
+                                    if (UnityEngine.Random.value < 0.007f + chance)
+                                    {
+                                        cl.Stun(16);
+                                    }
+                                    if (cl.Consious && cl.grasps[0] == null)
+                                    {
+                                        cl.mainBodyChunk.vel += Custom.DirVec(self.bodyChunks[0].pos, cl.mainBodyChunk.pos) * chance * UnityEngine.Random.value * 12f;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // else  // Only provide bubbles to creatures you're holding onto because you got a potato pc
+                    // {
+                    //     for (int j = 0; j < self.grasps.Length; j++)
+                    //     {
+                    //         if (self.grasps[j]?.grabbed is Creature c && !c.dead)
+                    //         {
+                    //             if (c is Player ccp)
+                    //             {
+                    //                 ccp.airInLungs = 1f;
+                    //             }
+                    //             else if (c is AirBreatherCreature cabc)
+                    //             {
+                    //                 cabc.lungs = Mathf.Min(1f, cabc.lungs + 0.04761905f);
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                }
             }
 
+            if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
 
@@ -1124,26 +1202,38 @@ namespace TheEscort
         /// </remarks>
         private void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
-            orig(self);
+            // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             try
             {
                 if (Eshelp_IsMe(self.slugcatStats.name))
                 {
+                    orig(self);
                     return;
                 }
             }
             catch (Exception err)
             {
                 Ebug(self, err);
+                orig(self);
                 return;
             }
             if (!eCon.TryGetValue(self, out Escort e))
             {
+                orig(self);
                 return;
             }
 
+            if (e.Unstable)
+            {
+                if (Esclass_US_Jump(self, ref e))
+                {
+                    return;
+                }
+            }
+            orig(self);
             //Ebug(self, "Jump Triggered!");
             // Decreases aerobiclevel gained from jumping
+            // TODO: May need to adjust it so it doesn't take away the aerobic level totally lol
             if (self.aerobicLevel > 0.1f)
             {
                 self.aerobicLevel -= 0.1f;
@@ -1390,6 +1480,7 @@ namespace TheEscort
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Unstable && Esclass_US_ThrowObject(orig, self, grasp, eu, ref e)) return;
             }
             catch (Exception err)
             {
@@ -1869,7 +1960,8 @@ namespace TheEscort
                 e.iFrames = 6;
                 if (e.Deflector)
                 {
-                    e.iFrames = 8;
+                    e.iFrames = 9;
+                    stunBonus = 0;
                 }
                 e.parrySlideLean = 0;
                 if (e.Railgunner && e.RailIReady)

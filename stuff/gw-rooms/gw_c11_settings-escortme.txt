@@ -1,0 +1,12 @@
+Template: GW_SettingsTemplate_Inside
+DangerType: FloodAndRain
+Clouds: 0.423913
+Grime: 0.2934783
+Palette: 11
+EffectColorA: 12
+EffectColorB: 12
+Effects: Darkness-0.1521739-498-222, FastFloodDrain-0.1956522-20-20, 
+PlacedObjects: ScavengerOutpost><1392.135><148.5862><15~252~-360~365~0.2608012~81~24, CustomDecal><998.3082><-36.55687><-6~97~662~89~668~0~840~-248~0~0.1630435~0~Scav Wedges2~1~0~1~0~0~1~0~1, CustomDecal><978.2142><140.4468><-40~-191~1015~-86~935~169~-712~-216~0.3043478~0.3478261~0~zGWMarks - A01~1~0.3586957~1~0.2065217~0~0~0.06521739~0, CustomDecal><2419.833><321.5681><0~205~663~364~768~212~-301~2~0.3043478~0.3586957~0~zGWMarks - C06~1~0~1~0~0~0.1847826~0~0.6630435, CustomDecal><686.9218><33.81595><-42~701~1157~679~1070~-76~150~126.8711~0~0.6630435~0~RustB3~0.4456522~1~1~1~0~1~0.4456522~1, LanternOnStick><1024.801><230.8681><-65~-193, LanternOnStick><1190.179><241.6828><15~-208, LanternOnStick><1516.881><254.9107><-58~-226, ScavengerTreasury><1338.419><48.89296><5~150, 
+AmbientSounds: OMNI><AM_ENV-LightWind.ogg><836.3834><647.1625><0.3043478><0.9217392, OMNI><SO_WAT-LilDrips.ogg><663.4489><647.729><0.1847826><1, 
+FadePalette: 35, 0.75, 0.75, 0.75
+WetTerrain: OFF

@@ -21,6 +21,9 @@ namespace TheEscort
         public static readonly PlayerFeature<float> railgunLillyVelFac = PlayerFloat("theescort/railgunner/lilly_vel_fac");
         public static readonly PlayerFeature<float> railgunBombVelFac = PlayerFloat("theescort/railgunner/bomb_vel_fac");
         public static readonly PlayerFeature<float[]> railgunRockThrust = PlayerFloats("theescort/railgunner/rock_thrust");
+        public static readonly PlayerFeature<float> railgunRecoil = PlayerFloat("theescort/railgunner/recoil_fac");
+        public static readonly PlayerFeature<float[]> railgunRecoilMod = PlayerFloats("theescort/railgunner/recoil_mod");
+        public static readonly PlayerFeature<int> railgunRecoilDelay = PlayerInt("theescort/railgunner/recoil_delay");
 
         public void Esclass_RG_Tick(Player self, ref Escort e)
         {
@@ -28,6 +31,7 @@ namespace TheEscort
             {
                 e.RailWeaping--;
             }
+
             if (e.RailGaussed > 0)
             {
                 e.RailGaussed--;
@@ -37,6 +41,7 @@ namespace TheEscort
                 e.RailIReady = false;
                 e.RailBombJump = false;
             }
+
             if (e.RailgunCD > 0)
             {
                 if (self.bodyMode != Player.BodyModeIndex.Stunned)
@@ -47,6 +52,21 @@ namespace TheEscort
             else
             {
                 e.RailgunUse = 0;
+            }
+
+            if (e.RailRecoilLag > 0)  // Recoil lag
+            {
+                e.RailRecoilLag--;
+            }
+
+            // 1 second clock
+            if (e.RailTargetClock > 0)
+            {
+                e.RailTargetClock--;
+            }
+            else
+            {
+                e.RailTargetClock = 39;
             }
         }
 
@@ -79,6 +99,39 @@ namespace TheEscort
                 }
 
             }
+
+            if (
+                !railgunRecoil.TryGet(self, out float rRecoil) ||
+                !railgunRecoilMod.TryGet(self, out float[] rRecoilMod)
+            )
+            {
+                return;
+            }
+            // Do recoil
+            if (e.RailRecoilLag == 0)
+            {
+                e.RailRecoilLag = -1;
+                // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
+                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod);
+            }
+
+
+            // Creature check every 1 second
+            if (e.RailTargetClock == 0)
+            {
+                e.RailTargetAcquired = Esclass_RG_Spotter(self);
+            }
+
+        }
+
+
+        /// <summary>
+        /// For now just gives Railgunner passive movement speed boost upon charge buildup
+        /// </summary>
+        private void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
+        {
+            self.dynamicRunSpeed[0] += e.RailgunUse * 0.3f;
+            self.dynamicRunSpeed[1] += e.RailgunUse * 0.3f;
         }
 
 
@@ -94,7 +147,7 @@ namespace TheEscort
             }
             try
             {
-                thrust = 5f;
+                thrust = 2f;  // Inverted the negatives so recoil isn't achieved here
                 spear.spearDamageBonus = Mathf.Max(spear.spearDamageBonus, 1.1f);
                 if (e.RailDoubleSpear)
                 {
@@ -283,7 +336,7 @@ namespace TheEscort
                         orig(self, inbetweenPos, deflectDir, bounceSpeed);
                         return;
                     }
-                    if (e.Railgunner && (e.RailDoubleRock || e.RailDoubleSpear || e.RailDoubleLilly || e.RailDoubleBomb || (e.RailGaussed > 0 && self.thrownBy == e.RailThrower)))
+                    if (e.Railgunner && (e.RailDoubled || (e.RailGaussed > 0 && self.thrownBy == e.RailThrower)))
                     {
                         Ebug(p, "NO DEFLECTING");
                         return;
@@ -361,6 +414,11 @@ namespace TheEscort
 
         private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
+            if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
+            {
+                return false;
+            }
+
             if (!(e.RailDoubleSpear || e.RailDoubleRock || e.RailDoubleBomb || e.RailDoubleLilly))
             {
                 return false;
@@ -369,13 +427,17 @@ namespace TheEscort
             self.standing = false;
             Vector2 p = new();
             Vector2 v = new();
-            if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon)
+            Weapon w = null;  // So that the thrown direction can be achieved
+            if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon weapon)
             {
                 p = self.grasps[grasp].grabbed.firstChunk.pos;
                 v = self.grasps[grasp].grabbed.firstChunk.vel;
+                w = weapon;
             }
             //Weapon w = self.grasps[grasp].grabbed as Weapon;
             orig(self, grasp, eu);
+            e.RailLastThrowDir = w.throwDir;  // Save last throw direction
+            e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
             //self.grasps[1].grabbed.firstChunk.vel = v;
             orig(self, 1 - grasp, eu);
@@ -407,7 +469,12 @@ namespace TheEscort
             if (self.Malnourished)
             {
                 e.RailgunUse++;
-                self.Stun(10 * e.RailgunUse);
+                int stunValue = 10 * e.RailgunUse;
+                if (self.room?.game?.session is StoryGameSession sgs)
+                {
+                    stunValue *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+                }
+                self.Stun(stunValue);
             }
             e.RailGaussed = 60;
             int addition = 0;
@@ -433,7 +500,7 @@ namespace TheEscort
             }
             else
             {
-                e.RailgunCD += (self.Malnourished ? 100 : 80) * addition;
+                e.RailgunCD += (self.Malnourished ? 60 : 80) * addition;
             }
             if (e.RailgunCD > 800)
             {
@@ -521,7 +588,13 @@ namespace TheEscort
                 {
                     room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
                     //self.stun += self.Malnourished ? 320 : 160;
-                    self.Stun(self.Malnourished ? 320 : 160);
+                    int stunDur = self.Malnourished ? 320 : 160;
+                    if (self.room?.game?.session is StoryGameSession sgs)
+                    {
+                        stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+                    }
+
+                    self.Stun(stunDur);
                     self.SetMalnourished(true);
                     e.RailgunUse = e.RailgunLimit - 3;
                 }
@@ -565,6 +638,191 @@ namespace TheEscort
 
             self?.room?.AddObject(new CreatureSpasmer(self, true, st));
             self.exhausted = true;
+        }
+
+        /// <summary>
+        /// Applies recoil on the player
+        /// </summary>
+        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default)
+        {
+            // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
+            if (self.bodyMode != Player.BodyModeIndex.ZeroG)
+            {
+                if (throwDir.y > 0)  // Reduce downwards recoil
+                {
+                    force *= recoilMod[0];
+                }
+                else if (throwDir.y < 0)  // Increase upwards recoil
+                {
+                    force *= recoilMod[1];
+                }
+            }
+
+            // Reduce recoil if proned/standing with the power of friction
+            if (self.bodyMode == Player.BodyModeIndex.Crawl)
+            {
+                force *= recoilMod[2];
+            }
+            else if (self.bodyMode == Player.BodyModeIndex.Stand)
+            {
+                force *= recoilMod[3];
+            }
+
+            // Malnutrition bonus
+            if (self.Malnourished)
+            {
+                force *= recoilMod[4];
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                self.bodyChunks[i].vel.x += throwDir.x * -force;
+                self.bodyChunks[i].vel.y += throwDir.y * -force;
+            }
+        }
+
+        /// <summary>
+        /// Finds a valid bodychunk when Railgunner is dualwielding to point the crosshair at it (and also point at it)
+        /// </summary>
+        public static BodyChunk Esclass_RG_Spotter(Player self)
+        {
+            float minDist = 2000;
+            BodyChunk target = null;
+
+            try
+            {
+                foreach (UpdatableAndDeletable thing in self.room.updateList)
+                {
+                    // TODO: Find a way to know the room's side edge coordinates, and also allow vertical targetting later down the line
+                    if (
+                        thing is Creature creature && creature != self && !(
+                            creature is Player &&
+                            ModManager.CoopAvailable &&
+                            !Custom.rainWorld.options.friendlyFire
+                        ) &&
+                        !creature.dead &&
+                        Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
+                        Esclass_NE_BodyChecker(
+                            creature, 
+                            self.bodyChunks[0].pos, 
+                            self.bodyChunks[1].pos, 
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            out int bodyChunk) &&
+                        Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
+                    )
+                    {
+                        minDist = Custom.Dist(self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos);
+                        target = creature.bodyChunks[bodyChunk];
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "FECK something happened with spotting a creature");
+            }
+
+            return target;
+        }
+
+        /// <summary>
+        /// Finds a valid creature when Railgunner is dualwielding to point the crosshair at it (and also point at it)
+        /// </summary>
+        public static Creature Esclass_RG_Spo_t_er(Player self)
+        {
+            float minDist = 2000;
+            Creature target = null;
+
+            try
+            {
+                foreach (UpdatableAndDeletable thing in self.room.updateList)
+                {
+                    // TODO: Find a way to know the room's side edge coordinates, and also allow vertical targetting later down the line
+                    if (
+                        thing is Creature creature && creature != self && !(
+                            creature is Player &&
+                            ModManager.CoopAvailable &&
+                            !Custom.rainWorld.options.friendlyFire
+                        ) &&
+                        !creature.dead &&
+                        Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
+                        Esclass_NE_BodyChecker(
+                            creature, 
+                            self.bodyChunks[0].pos, 
+                            self.bodyChunks[1].pos, 
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            out int bodyChunk) &&
+                        Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
+                    )
+                    {
+                        minDist = Custom.Dist(self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos);
+                        target = creature;
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "FECK something happened with spotting a creature");
+            }
+
+            return target;
+        }
+
+        /// <summary>
+        /// Checks if there's any solid terrain between Railgunner and the target
+        /// </summary>
+        public static bool Esclass_RG_UninterruptedSight(Room room, Vector2 railsPos, Vector2 creturPos, bool vertical = false)
+        {
+            int tileNum = 0;  // Number of tiles between the two points
+            bool lefty = (railsPos.x - creturPos.x) > 0;  // May need to reevaluate once my brain isn't eepy
+            bool downy = (railsPos.y - creturPos.y) > 0;
+            if (vertical)
+            {
+                tileNum = (int)(Mathf.Abs(railsPos.y - creturPos.y) / 20);
+            }
+            else
+            {
+                tileNum = (int)(Mathf.Abs(railsPos.x - creturPos.x) / 20);
+            }
+
+            for (int i = 0; i <= tileNum; i++)
+            {
+                Vector2 position = (lefty || downy)? creturPos : railsPos;
+                if (vertical)
+                {
+                    position.y += i * 20;
+                }
+                else
+                {
+                    position.x += i * 20;
+                }
+
+                // If there's an obstacle 
+                if (room.GetTile(room.GetTilePosition(position)).Solid)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Makes Railgunner point to whoever dares to enter her line of sight
+        /// </summary>
+        public static void Esclass_RG_DrawHands(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
+        {
+            // Points the spears at the target when target acquired
+            if (e.RailTargetAcquired is not null && e.RailDoubled)
+            {
+                for (int i = 0; i < self.hands.Length; i++)
+                {
+                    self.hands[i].reachingForObject = true;
+                    self.hands[i].absoluteHuntPos = e.RailTargetAcquired.pos;
+                }
+            }
         }
     }
 }
