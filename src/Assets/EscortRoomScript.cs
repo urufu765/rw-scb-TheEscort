@@ -17,6 +17,9 @@ public class EscortRoomScript
         On.RoomSpecificScript.AddRoomSpecificScript += Escort_Add_Room_Scripts;
     }
 
+    /// <summary>
+    /// Adds scripts to specified rooms and/or at certain conditions, allowing ingame cutscenes to play out
+    /// </summary>
     private static void Escort_Add_Room_Scripts(On.RoomSpecificScript.orig_AddRoomSpecificScript orig, Room room)
     {
         orig(room);
@@ -36,7 +39,7 @@ public class EscortRoomScript
                 Ebug("Start Escort cutscene!");
                 room.AddObject(new DefaultWatchesAPupFall(room));
             }
-            if (name is "SB_L01")
+            if (name is "SB_L01")  // Void sea room in Depths
             {
                 Ebug("Ending 1 zone!");
                 room.AddObject(new EscortEndingA(room));
@@ -44,6 +47,9 @@ public class EscortRoomScript
         }
     }
 
+    /// <summary>
+    /// Tells player how to do a super wall flip, for each build in their respectful region too!
+    /// </summary>
     private class TellPlayerToDoASickFlip : UpdatableAndDeletable
     {
         private int waitForSpawn = 120;
@@ -92,7 +98,9 @@ public class EscortRoomScript
         }
     }
 
-
+    /// <summary>
+    /// Intro cutscene (cut content) that was supposed to be Escort swimming up to see the pup fall from the sky, but the jump up two platforms sequence didn't work everytime and it looked bad so...
+    /// </summary>
     private class DefaultEscortSwimsOutOfTheG : UpdatableAndDeletable
     {
         int cutsceneTimer;
@@ -394,7 +402,9 @@ public class EscortRoomScript
         }
     }
 
-
+    /// <summary>
+    /// Intro cutscene used in 0.3.0, where upon reaching the top of the two platforms, the player controls are locked and the slugpup drops from the sky. A new version where a lizard biting a slugpup will be made
+    /// </summary>
     private class DefaultWatchesAPupFall : UpdatableAndDeletable
     {
         StartController startController;
@@ -605,6 +615,9 @@ public class EscortRoomScript
         }
 
 
+        /// <summary>
+        /// For checking which phase the cutscene is at
+        /// </summary>
         public class Phase : ExtEnum<Phase>
         {
             public Phase(string value, bool register = false) : base(value, register)
@@ -619,6 +632,9 @@ public class EscortRoomScript
         }
 
 
+        /// <summary>
+        /// The auto-controlled controller that will take over Player's controls while the cutscene plays
+        /// </summary>
         public class StartController : Player.PlayerController
         {
             private readonly EscortEndingA owner;
@@ -635,6 +651,9 @@ public class EscortRoomScript
         }
 
 
+        /// <summary>
+        /// Initialization of cutscene object
+        /// </summary>
         public EscortEndingA(Room room)
         {
             this.room = room;
@@ -644,6 +663,9 @@ public class EscortRoomScript
         }
 
 
+        /// <summary>
+        /// Where all the magic happens!
+        /// </summary>
         public override void Update(bool eu)
         {
             base.Update(eu);
@@ -778,6 +800,9 @@ public class EscortRoomScript
             }
         }
 
+        /// <summary>
+        /// Moves player to a certain position by returning the right direction press value
+        /// </summary>
         public int GetXInput()
         {
             if (phase == Phase.MovePlayer)
@@ -789,6 +814,10 @@ public class EscortRoomScript
             }
             return 0;
         }
+
+        /// <summary>
+        /// Simulates pressing the up direction on certain conditions
+        /// </summary>
         public int GetYInput()
         {
             if (phase == Phase.CreatureMove || phase == Phase.Fade)
