@@ -669,23 +669,33 @@ public class EscortRoomScript
         public override void Update(bool eu)
         {
             base.Update(eu);
+
+            // Initialization phase
             if (this.phase == Phase.Init)
             {
+                // Section that only runs once
                 if (!initDone)
                 {
                     Ebug("Cutscene init!", 2);
                     initDone = true;
                 }
+                
+                // If player is in room
                 if (this.Playr is not null && Playr.room == room)
                 {
+                    // Wait for player to cross the certain threshhold
+                    // If player crosses this line, replace controller to gain control of the player
                     if (Playr.mainBodyChunk.pos.x > 1000)
                     {
+                        // Find player
                         if (this.room?.game?.cameras[0] is not null)
                         {
                             this.room.game.cameras[0].followAbstractCreature = this.Playr.abstractCreature;
                         }
-                        this.startController = new StartController(this);
-                        this.Playr.controller = this.startController;
+                        this.startController = new StartController(this);  // Create controller
+                        this.Playr.controller = this.startController;  // Attach controller to the player
+
+                        // Make player let go of everything
                         for (int i = 0; i < Playr.grasps.Length; i++)
                         {
                             if (Playr.grasps[i]?.grabbed is not null)
@@ -693,11 +703,13 @@ public class EscortRoomScript
                                 this.Playr.ReleaseGrasp(i);
                             }
                         }
-                        this.phase = Phase.MovePlayer;
+                        this.phase = Phase.MovePlayer;  // Next phase
                         return;
                     }
                 }
             }
+
+            // Move player phase
             if (this.phase == Phase.MovePlayer)
             {
                 cutsceneTimer++;
