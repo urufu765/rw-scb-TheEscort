@@ -7,6 +7,43 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.4 - Polished Gameplay Update
+  * **0.4.0.1** All of the 0.4.0 development versions has been implemented
+    * **dev01** Labeled a part of New Escapist
+    * **dev02** Layed out the foundation for Barbarian
+    * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
+    * *dev* Unlock Unstable build for alpha testing lol
+    * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
+    * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+    * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
+    * *dev* Railgunners' dual spear goes through creatures
+    * *dev* make Barbarian's color nicer
+    * *dev* Separate the build selection stuff into a method with an extended list for a method
+    * *dev* Fix Deflector deflecting bees (and add the option to have it back)
+    * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
+    * *dev* New Lidard DunkTM!
+    * *dev* Add Brawler explosive punch
+    * *dev* Barbarian creature shield
+    * *dev* Barbarian shield bash (slide with creature)
+    * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
+    * *dev* Barbarian faster slide
+    * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
+    * *dev* Railgunner screenpeek
+    * *dev* Finish Unstable
+    * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
+    * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
+    * *dev* Lock Brawler's explosive punch behind an achievement
+    * *dev* Make Escapist's description and color change when old is active
+    * *dev* ??? Unlock lizard reputation so Escort can be friends
+    * *dev* Add Chocosocks in honor of fanart by Shizarival
+    * *dev* New way options are processed
+    * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
+    * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
+    * *dev* Default changes the color of the shortcut pipes TOO
+    * *dev* Have food pips get affected by player number too
+    * *dev* Separate food bar reduction to easier mode
+    * *dev* Change New Escapist's color so it isn't as similar to Railgunner
+
+  * **0.4.0** Unstable update
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
     * **dev02** Creating a new file to fit all the code into
     * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
@@ -96,40 +133,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev70b** Deflector & Old Escapist variable labeling
     * **dev71** Fixed some errors and changed Escort's arena icon
     * **dev72** Fixed new arena icon sizes
-  * **0.4.0.1** All of the above has been implemented
-    * **dev01** Labeled a part of New Escapist
-    * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
-    * *dev* Unlock Unstable build for alpha testing lol
-    * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
-    * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
-    * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
-    * *dev* Railgunners' dual spear goes through creatures
-    * *dev* make Barbarian's color nicer
-    * *dev* Separate the build selection stuff into a method with an extended list for a method
-    * *dev* Fix Deflector deflecting bees (and add the option to have it back)
-    * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
-    * *dev* New Lidard DunkTM!
-    * *dev* Add Brawler explosive punch
-    * *dev* Barbarian creature shield
-    * *dev* Barbarian shield bash (slide with creature)
-    * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
-    * *dev* Barbarian faster slide
-    * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
-    * *dev* Railgunner screenpeek
-    * *dev* Finish Unstable
-    * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
-    * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
-    * *dev* Lock Brawler's explosive punch behind an achievement
-    * *dev* Make Escapist's description and color change when old is active
-    * *dev* ??? Unlock lizard reputation so Escort can be friends
-    * *dev* Add Chocosocks in honor of fanart by Shizarival
-    * *dev* New way options are processed
-    * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
-    * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
-    * *dev* Default changes the color of the shortcut pipes TOO
-    * *dev* Have food pips get affected by player number too
-    * *dev* Separate food bar reduction to easier mode
-    * *dev* Change New Escapist's color so it isn't as similar to Railgunner
 
 * ### 0.3 - Ending I
   * **(0.3.1)** Big Update Fix
