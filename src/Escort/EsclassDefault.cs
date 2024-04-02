@@ -64,6 +64,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
+            if (e.Barbarian) Esclass_BB_Tick(self, ref e);
             if (e.Unstable) Esclass_US_Tick(self, ref e);
 
             // Dropkick damage cooldown
@@ -266,6 +267,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);
+            if (e.Barbarian) Esclass_BB_Update(self, ref e);
             if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
