@@ -51,7 +51,7 @@ namespace TheEscort
         {
             BarbarianColor = new(1f, 0, 0);  // Fukin red for now
             BarCretin = false;
-            BarWhichCretin = new int[player.grasps.Length];
+            BarWhichCretin = new bool[player.grasps.Length];
             BarFkingCretin = false;
             BarWiggle = 0;
             BarShieldDelay = 0;
