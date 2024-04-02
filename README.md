@@ -10,6 +10,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **0.4.0.1** All of the 0.4.0 development versions has been implemented
     * **dev01** Labeled a part of New Escapist
     * **dev02** Layed out the foundation for Barbarian
+    * **dev03** Changed how plugins are rendered, added legacy plugin permanently for now, more progress on Barbarian
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
