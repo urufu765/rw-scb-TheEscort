@@ -18,9 +18,19 @@ namespace TheEscort
         public Color BarbarianColor;
 
         /// <summary>
+        /// True or false whether creature is being held
+        /// </summary>
+        public bool BarCretin;
+
+        /// <summary>
         /// Contains true/false whether player is holding a creature in each grasp
         /// </summary>
-        public bool[] BarCretin;
+        public bool[] BarWhichCretin;
+
+        /// <summary>
+        /// True or false whether that held creature is a PLAYER
+        /// </summary>
+        public bool BarFkingCretin;
 
         /// <summary>
         /// How many times a different player (presumably in arena mode) tries to wiggle out of Barbarian's grasp
@@ -40,9 +50,11 @@ namespace TheEscort
         public void EscortBB(Player player)
         {
             BarbarianColor = new(1f, 0, 0);  // Fukin red for now
-            BarCretin = new int[player.grasps.Length];
+            BarCretin = false;
+            BarWhichCretin = new int[player.grasps.Length];
+            BarFkingCretin = false;
             BarWiggle = 0;
-            BarShieldDelay = -1;
+            BarShieldDelay = 0;
             BarShieldState = 0;
         }
     }
