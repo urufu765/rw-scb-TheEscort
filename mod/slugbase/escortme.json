@@ -117,6 +117,8 @@
 		"theescort/gilded/levitation": 1.40,
 		"theescort/gilded/jetplane": 1,
 		"theescort/gilded/pipradius": 12,
-		"theescort/gilded/pipposition": [0, 0]
+		"theescort/gilded/pipposition": [0, 0],
+
+		"theescort/barbarian/nooverlug": false
 		}
 }

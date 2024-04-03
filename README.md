@@ -11,6 +11,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev01** Labeled a part of New Escapist
     * **dev02** Layed out the foundation for Barbarian
     * **dev03** Changed how plugins are rendered, added legacy plugin permanently for now, more progress on Barbarian
+    * **dev04** Making more progress on Barbarian, including adding a blacklist of creatures Barbarian cannot barbar.
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
@@ -412,7 +413,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
   * **(0.1.9)** Revivify patches!... sorta kinda. Also fixed potential crashes... Also split the tabs and added a new feature called: Builds! And also also, made parryslides a bit more consistent (so stunslides don't make parryslides not work and it works much better on lizards)... and also you can parry jellyfishes properly now.
 
-  * **(0.1.8.0)** aPrIl FoOlS!
+  * **(0.1.8.0)** aPrIl FoOlS! (Made Escort a slugpup and added new sfx that only play on session/cycle starts)
 
   * **(0.1.8)** Escort headbutt. This will be the last feature added before preparation of the code cleanup. Oh one last thing, switched trampoline to requiring you to flip instead of just jumping on stuff to prevent accidental activations (and more physics accurate since it'll seem like they're pushing themselves off a creature.) Another change is that you can trampoline on dead lizards now! HUZZAH! (Elevator behaviour is unchanged.)
 

@@ -20,17 +20,22 @@ namespace TheEscort
         /// <summary>
         /// True or false whether creature is being held
         /// </summary>
-        public bool BarCretin;
+        public bool BarHasCretin;
 
         /// <summary>
-        /// Contains true/false whether player is holding a creature in each grasp
+        /// Which hand is the cretin in?
         /// </summary>
-        public bool[] BarWhichCretin;
+        public int BarWhichCretin;
 
         /// <summary>
-        /// True or false whether that held creature is a PLAYER
+        /// True or false whether that held creature is a PLAYER (a simple check). Might make this a property if need be but for now, for performance purposes, this will have to do
         /// </summary>
         public bool BarFkingCretin;
+
+        /// <summary>
+        /// Reference to the Cretin!
+        /// </summary>
+        public Creature BarCretin;
 
         /// <summary>
         /// How many times a different player (presumably in arena mode) tries to wiggle out of Barbarian's grasp
@@ -43,6 +48,11 @@ namespace TheEscort
         public int BarShieldDelay;
 
         /// <summary>
+        /// Delay before delay kicks in due to stun application (needs to hook into Creature.Stun())
+        /// </summary>
+        public int BarShieldStunDelay;
+
+        /// <summary>
         /// -1 if shielding left side, 1 if shielding right side, 0 if not shielding
         /// </summary>
         public int BarShieldState;
@@ -50,11 +60,13 @@ namespace TheEscort
         public void EscortBB(Player player)
         {
             BarbarianColor = new(1f, 0, 0);  // Fukin red for now
-            BarCretin = false;
-            BarWhichCretin = new bool[player.grasps.Length];
+            BarHasCretin = false;
+            BarWhichCretin = -1;
             BarFkingCretin = false;
+            BarCretin = null;
             BarWiggle = 0;
             BarShieldDelay = 0;
+            BarShieldStunDelay = 0;
             BarShieldState = 0;
         }
     }
