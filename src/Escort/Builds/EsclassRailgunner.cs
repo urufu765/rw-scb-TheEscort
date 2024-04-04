@@ -60,14 +60,14 @@ namespace TheEscort
             }
 
             // 1 second clock
-            if (e.RailTargetClock > 0)
-            {
-                e.RailTargetClock--;
-            }
-            else
-            {
-                e.RailTargetClock = 39;
-            }
+            // if (e.RailTargetClock > 0)
+            // {
+            //     e.RailTargetClock--;
+            // }
+            // else
+            // {
+            //     e.RailTargetClock = 39;
+            // }
         }
 
         private void Esclass_RG_Update(Player self, ref Escort e)
@@ -164,15 +164,15 @@ namespace TheEscort
                         //e.BarbDoubleSpear = false;
                         if (self.bodyMode == Player.BodyModeIndex.Crawl)
                         {
-                            thrust *= (rSpearThr[0] + (self.Malnourished ? 1f : 0f));
+                            thrust *= (rSpearThr[0] + (e.RailFrail ? 1f : 0f));
                         }
                         else if (self.bodyMode == Player.BodyModeIndex.Stand)
                         {
-                            thrust *= (rSpearThr[1] + (self.Malnourished ? 3.25f : 0f));
+                            thrust *= (rSpearThr[1] + (e.RailFrail ? 3.25f : 0f));
                         }
                         else
                         {
-                            thrust *= (rSpearThr[2] + (self.Malnourished ? 5f : 0f));
+                            thrust *= (rSpearThr[2] + (e.RailFrail ? 5f : 0f));
                         }
                     }
                     spear.spearDamageBonus *= Mathf.Lerp(rSpearDmg[0], rSpearDmg[1], Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse));
@@ -466,7 +466,7 @@ namespace TheEscort
                 // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
                 // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
             }
-            if (self.Malnourished)
+            if (e.RailFrail)
             {
                 e.RailgunUse++;
                 int stunValue = 10 * e.RailgunUse;
@@ -500,7 +500,7 @@ namespace TheEscort
             }
             else
             {
-                e.RailgunCD += (self.Malnourished ? 60 : 80) * addition;
+                e.RailgunCD += (e.RailFrail ? 60 : 80) * addition;
             }
             if (e.RailgunCD > 800)
             {
@@ -554,7 +554,7 @@ namespace TheEscort
             bool secondChance = false;
             if (e.RailgunUse >= e.RailgunLimit)
             {
-                if (UnityEngine.Random.value > (self.Malnourished ? 0.75f : 0.25f))
+                if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
                 {
                     secondChance = true;
                 }
@@ -587,15 +587,16 @@ namespace TheEscort
                 else
                 {
                     room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
-                    //self.stun += self.Malnourished ? 320 : 160;
-                    int stunDur = self.Malnourished ? 320 : 160;
+                    //self.stun += e.RailFrail ? 320 : 160;
+                    int stunDur = e.RailFrail ? 320 : 160;
                     if (self.room?.game?.session is StoryGameSession sgs)
                     {
                         stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
                     }
 
                     self.Stun(stunDur);
-                    self.SetMalnourished(true);
+                    //self.SetMalnourished(true);
+                    Esclass_RG_SetGlassMode(true, e);
                     e.RailgunUse = e.RailgunLimit - 3;
                 }
                 return true;
@@ -669,7 +670,7 @@ namespace TheEscort
             }
 
             // Malnutrition bonus
-            if (self.Malnourished)
+            if (e.RailFrail)
             {
                 force *= recoilMod[4];
             }
@@ -823,6 +824,15 @@ namespace TheEscort
                     self.hands[i].absoluteHuntPos = e.RailTargetAcquired.pos;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Immitates malnourished state entering stuff TODO!
+        /// </summary>
+        public static void Esclass_RG_SetGlassMode(bool fragility, ref Escort e)
+        {
+            e.RailFrail = fragility;
         }
     }
 }

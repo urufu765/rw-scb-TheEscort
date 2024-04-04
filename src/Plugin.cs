@@ -838,6 +838,7 @@ namespace TheEscort
                     case -4:  // Railgunner build
                         e.Railgunner = true;
                         e.acidSwim = 0.3f;
+                        e.RailFrail = self.Malnourished;
                         self.slugcatStats.lungsFac += 0.7f;
                         self.slugcatStats.throwingSkill = 2;
                         self.slugcatStats.loudnessFac += 2f;

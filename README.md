@@ -12,6 +12,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev02** Layed out the foundation for Barbarian
     * **dev03** Changed how plugins are rendered, added legacy plugin permanently for now, more progress on Barbarian
     * **dev04** Making more progress on Barbarian, including adding a blacklist of creatures Barbarian cannot barbar.
+    * **dev05** Railgunner no longer uses Malnourished when 'sploded, instead using a custom status. And disabled spotter code since it does nothing for now but potentially 
     * *dev* Railgunner has a higher probability of exploding out of grasps if overcharged
     * *dev* Unlock Unstable build for alpha testing lol
     * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
