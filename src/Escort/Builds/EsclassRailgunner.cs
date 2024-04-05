@@ -122,6 +122,22 @@ namespace TheEscort
                 e.RailTargetAcquired = Esclass_RG_Spotter(self);
             }
 
+
+            // Auto-escape out of danger grasp if overcharged
+            if (self.dangerGraspTime == 29 && UnityEngine.Random.value <= (e.RailgunUse / e.RailgunLimit))
+            {
+                self.dangerGrasp.grabber.LoseAllGrasps();
+                self.cantBeGrabbedCounter = 40;
+                if (!e.RailFrail)
+                {
+                    Esclass_RG_SetGlassMode(true, ref e);
+                    Esclass_RG_InnerSplosion(self);
+                }
+                else
+                {
+                    Esclass_RG_InnerSplosion(self, UnityEngine.Random.value < 0.75f);
+                }
+            }
         }
 
 
@@ -549,27 +565,17 @@ namespace TheEscort
         }
 
 
-        public bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+        /// <summary>
+        /// Makes Railgunner go BOOM
+        /// </summary>
+        public static void Esclass_RG_InnerSplosion(Player self, bool lethal=false)
         {
-            bool secondChance = false;
-            if (e.RailgunUse >= e.RailgunLimit)
+            try
             {
-                if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
-                {
-                    secondChance = true;
-                }
                 Color c = new(0.5f, 0.85f, 0.78f);
                 Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
+                Room room = self.room;
                 room.AddObject(new SootMark(room, v, 120f, bigSprite: true));
-                if (!secondChance)
-                {
-                    room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
-                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
-                }
-                else
-                {
-                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
-                }
                 room.AddObject(new Explosion.ExplosionLight(v, 210f, 0.7f, 7, c));
                 room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
                 for (int i = 0; i < 20; i++)
@@ -579,14 +585,35 @@ namespace TheEscort
                     room.AddObject(new Explosion.FlashingSmoke(v + v2 * 40f * UnityEngine.Random.value, v2 * Mathf.Lerp(4f, 20f, Mathf.Pow(UnityEngine.Random.value, 2f)), 1f + 0.05f * UnityEngine.Random.value, Color.white, c, UnityEngine.Random.Range(3, 11)));
                 }
                 room.ScreenMovement(v, default, 1.5f);
-                if (!secondChance)
+
+
+                if (lethal)
                 {
-                    room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.93f, 0.28f);
+                    room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
+                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
+                    room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.93f, 0.28f);
                     self.Die();
                 }
                 else
                 {
-                    room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
+                    room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.86f, 0.4f);
+                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(self, err, "Explosioning FAILED UH OH");
+            }
+        }
+
+
+        public bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+        {
+            if (e.RailgunUse >= e.RailgunLimit)
+            {
+                if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
+                {
+                    Esclass_RG_InnerSplosion(self)
                     //self.stun += e.RailFrail ? 320 : 160;
                     int stunDur = e.RailFrail ? 320 : 160;
                     if (self.room?.game?.session is StoryGameSession sgs)
@@ -598,6 +625,10 @@ namespace TheEscort
                     //self.SetMalnourished(true);
                     Esclass_RG_SetGlassMode(true, e);
                     e.RailgunUse = e.RailgunLimit - 3;
+                }
+                else
+                {
+                    Esclass_RG_InnerSplosion(self, true);
                 }
                 return true;
             }
