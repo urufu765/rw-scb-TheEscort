@@ -12,14 +12,25 @@
 * Redo Escapist (so it ain't for some "Tories" (what does this even mean, Balagaga?!))
 ### Will do
 * Escort can throw better in water.
-* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. 
 * Lizards grabbing player will no longer cause flight (player lets go of lizard when grabbed by that lizard). 
 * Give speedster more VFX for how charged they are, and fix the VFX for getting the charge when going up or down (to make it look less awkward)
 * Remove reverb from shank noise
 * Add spiking
 * Redo dropkick and slidestun code as a method
-* Convert lizard dunking into a separate thing instead of relying on dropkick to do the thing
 * Escort stats screen where it shows the number of ascended creatures
+* Separate the build selection stuff into a method with an extended list for a method
+* Shatter Saint like a piece of glass when dropkicked in arena mode
+* Make Escapist's description and color change when old is active
+* Change New Escapist's color so it isn't as similar to Railgunner
+* Default changes the color of the shortcut pipes TOO
+* Separate food bar reduction to easier mode
+* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
+* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
+* New way options are processed
+* Add Chocosocks in honor of fanart by Shizarival
+* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
+* Have food pips get affected by player number too
+
 ### Might do
 * Default can spike and punt and also get rebound(?)
 * Changed how settings are applied in game (you shouldn't notice any changes)

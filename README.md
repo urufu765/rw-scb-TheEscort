@@ -14,11 +14,25 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev04** Making more progress on Barbarian, including adding a blacklist of creatures Barbarian cannot barbar.
     * **dev05** Railgunner no longer uses Malnourished when 'sploded, instead using a custom status. And disabled spotter code since it does nothing for now but potentially 
     * **dev06** Railgunner explodes out of grasps if overcharged (and made explosion a separate method)
-    * __Railgunner sightseer__
-      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
-      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
-      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
-      * *dev* Railgunner screenpeek
+    * **dev06b** Organization of TODOs
+    * __GENERAL TODO__
+      * *dev* New Lidard Dunk™!
+    * __Default TODO__
+      * *dev* Give 'em ol' Brawler's buffed rock hit
+    * __Brawler TODO__
+      * *dev* Add Brawler explosive punch
+      * *dev* Lock Brawler's explosive punch behind an achievement
+      * *dev* Nerf Brawler's dropkick and slidestun and rock hit
+    * __Deflector TODO__
+      * *dev* Fix Deflector deflecting bees (and add the option to have it back)
+    * __Escapist TODO__
+    * __Railgunner TODO__
+      * *dev* Railgunners' dual spear goes through creatures
+      * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
+      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. 
+    * __Speedster TODO__
+      * *dev* Reverse the punishment for getting stunned from losing all ability to losing a gear
+    * __Gilded TODO__
     * __Barbarian shit__
       * *dev* make Barbarian's color nicer
       * *dev* Barbarian creature shield
@@ -26,25 +40,16 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
       * *dev* Barbarian faster slide
       * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
-    * *dev* Railgunners' dual spear goes through creatures
-    * *dev* Separate the build selection stuff into a method with an extended list for a method
-    * *dev* Fix Deflector deflecting bees (and add the option to have it back)
-    * *dev* Translate in the stuff (Speartech) and have placeholders for each different speartech moves
-    * *dev* New Lidard DunkTM!
-    * *dev* Add Brawler explosive punch
-    * *dev* Finish Unstable
-    * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
-    * *dev* Shatter Saint like a piece of glass when dropkicked in arena mode
-    * *dev* Lock Brawler's explosive punch behind an achievement
-    * *dev* Make Escapist's description and color change when old is active
-    * *dev* Add Chocosocks in honor of fanart by Shizarival
-    * *dev* New way options are processed
-    * *dev* Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
-    * *dev* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
-    * *dev* Default changes the color of the shortcut pipes TOO
-    * *dev* Have food pips get affected by player number too
-    * *dev* Separate food bar reduction to easier mode
-    * *dev* Change New Escapist's color so it isn't as similar to Railgunner
+    * __Unstable shit__
+      * *dev* Unstable minihop allows hopping off of poles
+      * *dev* Homing kick if dashing down towards the closest target
+      * *dev* More dashes, the stronger the kick
+      * *dev* Sliding button input does a slide-dash
+    * __Railgunner sightseer (do at home)__
+      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
+      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
+      * *dev* Railgunner screenpeek
 
   * **0.4.0** Unstable update
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
