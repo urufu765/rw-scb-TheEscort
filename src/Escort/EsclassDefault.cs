@@ -49,6 +49,7 @@ namespace TheEscort
 
         private int filenum;
 
+#region Common
         private void Esclass_Tick(Player self)
         {
             if (!eCon.TryGetValue(self, out Escort e))
@@ -806,9 +807,10 @@ namespace TheEscort
             // Update tracker
             //e.Escat_Update_Ring_Trackers();
         }
+#endregion
 
 
-
+#region Movement stuff
         // Implement Movementtech
         private void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self)
         {
@@ -1102,6 +1104,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
+#endregion
 
         /// <summary>
         /// Implements code that makes Escort drop something live if it grabs them. TODO.
@@ -1586,9 +1589,9 @@ namespace TheEscort
                     {
                         biteMult -= 0.35f;
                     }
-                    if (e.Railgunner)
+                    if (e.Deflector)
                     {
-                        biteMult = self.Malnourished? 10000f : 0.75f;
+                        biteMult = self.Malnourished? 0f : 0.75f;
                     }
                     if (e.Escapist)
                     {
