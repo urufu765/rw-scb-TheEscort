@@ -25,12 +25,10 @@
 * Default changes the color of the shortcut pipes TOO
 * Separate food bar reduction to easier mode
 * Prelineage creatures along Spearmaster default path (consult Vestige database). Frequently farmed paths have a no creature spawn with a 50% chance of lineage/respawn
-* Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM
 * New way options are processed
 * Add Chocosocks in honor of fanart by Shizarival
 * Translate in the stuff (Speartech) and have placeholders for each different speartech moves
 * Have food pips get affected by player number too
-
 ### Might do
 * Default can spike and punt and also get rebound(?)
 * Changed how settings are applied in game (you shouldn't notice any changes)

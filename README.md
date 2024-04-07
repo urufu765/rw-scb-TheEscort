@@ -16,6 +16,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev06** Railgunner explodes out of grasps if overcharged (and made explosion a separate method)
     * **dev06b** Organization of TODOs
     * **dev07** Railgunner's bite lethality reduced, Deflector's bite lethality increased, added more code region blocks
+    * **dev08** Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM (setup)
     * __GENERAL TODO__
       * *dev* New Lidard Dunk™!
     * __Default TODO__

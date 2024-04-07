@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using static TheEscort.SMSMod;
 using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
@@ -1997,11 +1998,16 @@ namespace TheEscort
                 ins.L().SetF("Is not shelter");
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 int j = 0;
+                float chance = 0.2f;
+                if (self.world?.region is not null && self.abstractRoom is not null)
+                {
+                    chance = SMSM(self.world.region.name, self.abstractRoom.name);
+                }
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++)
                 {
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
                     {
-                        if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric)
+                        if (UnityEngine.Random.value < chance && !spear.explosive && !spear.electric)
                         {
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                             {
