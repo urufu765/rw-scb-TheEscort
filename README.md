@@ -17,6 +17,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev06b** Organization of TODOs
     * **dev07** Railgunner's bite lethality reduced, Deflector's bite lethality increased, added more code region blocks
     * **dev08** Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM (setup)
+    * **dev08a** Forgot a semicolon
     * __GENERAL TODO__
       * *dev* New Lidard Dunk™!
     * __Default TODO__

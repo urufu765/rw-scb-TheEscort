@@ -613,7 +613,7 @@ namespace TheEscort
             {
                 if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
                 {
-                    Esclass_RG_InnerSplosion(self)
+                    Esclass_RG_InnerSplosion(self);
                     //self.stun += e.RailFrail ? 320 : 160;
                     int stunDur = e.RailFrail ? 320 : 160;
                     if (self.room?.game?.session is StoryGameSession sgs)
