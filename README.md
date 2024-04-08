@@ -18,6 +18,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev07** Railgunner's bite lethality reduced, Deflector's bite lethality increased, added more code region blocks
     * **dev08** Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM (setup)
     * **dev08a** Forgot a semicolon
+    * **dev08b** Fixed things so it compiles
     * __GENERAL TODO__
       * *dev* New Lidard Dunk™!
     * __Default TODO__
@@ -33,6 +34,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Railgunners' dual spear goes through creatures
       * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
       * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. 
+      * *dev* Misfire [0.05% ~ 0.5%], causes Railgunner to not shoot properly and just (non-fatally) explode
+      * *dev* More charge = faster projectile
+      * *dev* Glass cannon mode makes things ricochet a whole lot more
     * __Speedster TODO__
       * *dev* Reverse the punishment for getting stunned from losing all ability to losing a gear
     * __Gilded TODO__

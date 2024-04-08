@@ -15,7 +15,7 @@ namespace TheEscort
         // public static readonly PlayerFeature<> barbarian = Player("theescort/barbarian/");
         // public static readonly PlayerFeature<float> barbarian = PlayerFloat("theescort/barbarian/");
         // public static readonly PlayerFeature<float[]> barbarian = PlayerFloats("theescort/barbarian/");
-        public static readonly PlayerFeature<bool> barbarianDisallowOversizedLuggage = Player("theescort/barbarian/nooverlug");
+        public static readonly PlayerFeature<bool> barbarianDisallowOversizedLuggage = PlayerBool("theescort/barbarian/nooverlug");
 
 
         public void Esclass_BB_Tick(Player self, ref Escort e)
@@ -65,8 +65,8 @@ namespace TheEscort
             e.BarShieldState = 0;
             if (e.BarShieldDelay >= 20)
             {
-                if (e.BarWhichCretin[0]) e.BarShieldState = -1;
-                else if (e.BarWhichCretin[1]) e.BarShieldState = 1;
+                if (e.BarWhichCretin == 0) e.BarShieldState = -1;
+                else if (e.BarWhichCretin == 1) e.BarShieldState = 1;
             }
 
             // Shield stun delay. Get stun value from creature (may just need to use cretin.stun.... if it doesn't get affected by pacifying hold)
@@ -88,7 +88,7 @@ namespace TheEscort
         public static bool Esclass_BB_CretinNotOnBlacklist(Creature cretin, Player self = null)
         {
             // General case
-            if (cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or JellyFish or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug)
+            if (cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug)
             {
                 return false;
             }
