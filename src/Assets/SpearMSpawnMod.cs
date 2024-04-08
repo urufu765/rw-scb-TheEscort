@@ -43,7 +43,7 @@ public static class SMSMod
         return room_name switch
         {
             "SU_" => 0f,
-            _ => 0.25f
+            _ => 0.15f
         };
     }
 
@@ -55,7 +55,7 @@ public static class SMSMod
         return room_name switch
         {
             "HI_" => 0f,
-            _ => 0f
+            _ => 0.15f
         };
     }
 
@@ -67,7 +67,7 @@ public static class SMSMod
         return room_name switch
         {
             "DS_" => 0f,
-            _ => 0.4f
+            _ => 0.03f
         };
     }
 
@@ -79,7 +79,7 @@ public static class SMSMod
         return room_name switch
         {
             "CC_" => 0f,
-            _ => 0f
+            _ => 0.25f
         };
     }
 
@@ -91,7 +91,7 @@ public static class SMSMod
         return room_name switch
         {
             "GW_" => 0f,
-            _ => 0f
+            _ => 0.01f
         };
     }
 
@@ -103,7 +103,7 @@ public static class SMSMod
         return room_name switch
         {
             "SH_" => 0f,
-            _ => 0f
+            _ => 0.15f
         };
     }
 
@@ -115,7 +115,7 @@ public static class SMSMod
         return room_name switch
         {
             "SI_" => 0f,
-            _ => 0f
+            _ => 0.2f
         };
     }
 
@@ -127,7 +127,7 @@ public static class SMSMod
         return room_name switch
         {
             "LF_" => 0f,
-            _ => 0f
+            _ => 0.03f
         };
     }
 
@@ -139,7 +139,7 @@ public static class SMSMod
         return room_name switch
         {
             "UW_" => 0f,
-            _ => 0f
+            _ => 0.5f
         };
     }
 
@@ -151,7 +151,7 @@ public static class SMSMod
         return room_name switch
         {
             "SS_" => 0f,
-            _ => 0f
+            _ => 0.15f
         };
     }
 
@@ -163,7 +163,7 @@ public static class SMSMod
         return room_name switch
         {
             "SB_" => 0f,
-            _ => 0f
+            _ => 0.01f
         };
     }
 #endregion
@@ -177,7 +177,7 @@ public static class SMSMod
         return room_name switch
         {
             "LM_" => 0f,
-            _ => 0f
+            _ => 0.5f
         };
     }
 
@@ -189,7 +189,7 @@ public static class SMSMod
         return room_name switch
         {
             "DM_" => 0f,
-            _ => 0f
+            _ => 0.4f
         };
     }
 
@@ -201,7 +201,7 @@ public static class SMSMod
         return room_name switch
         {
             "VS_" => 0f,
-            _ => 0f
+            _ => 0.03f
         };
     }
 #endregion

@@ -20,8 +20,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08a** Forgot a semicolon
     * **dev08b** Fixed things so it compiles
     * **dev08c** actually fixed things so it compiles
+    * **dev09** Railgunner malnoutrition/arenamode automatically causes glass cannon mode, regional spear placement calculated.
     * __GENERAL TODO__
-      * *dev* New Lidard Dunk™!
+      * *dev* New Lidarz Dunk™!
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
     * __Brawler TODO__
