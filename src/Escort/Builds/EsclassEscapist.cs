@@ -42,7 +42,7 @@ namespace TheEscort
 
             if (e.EscUnGraspTime > 0 && !self.dead && e.EscUnGraspCD == 0)
             {
-                Player.InputPackage iP = RWInput.PlayerInput(self.playerState.playerNumber, self.room.game.rainWorld);
+                Player.InputPackage iP = RWInput.PlayerInput(self.playerState.playerNumber);
                 if (iP.thrw)
                 {
                     e.EscUnGraspTime--;

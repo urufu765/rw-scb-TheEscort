@@ -125,7 +125,7 @@ namespace TheEscort
         /// </summary>
         public static bool Esclass_BB_CretinNotOnBlacklistSingleExpressionA(Creature cretin, Player self = null)
         {
-            return !(cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or JellyFish or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug || (cretin is Centipede c && c.Small) || (cretin is Player && (cretin.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || pal.room?.game?.session is not ArenaGameSession && ModManager.CoopAvailable) && !RWCustom.Custom.rainWorld.options.friendlyFire) || (cretin is BigEel or Centipede or Deer or MirosBird or Vulture && self is not null && barbarianDisallowOversizedLuggage.TryGet(self, out bool noOversized) && noOversized));
+            return !(cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug || (cretin is Centipede c && c.Small) || (cretin is Player pal && (cretin.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || pal.room?.game?.session is not ArenaGameSession && ModManager.CoopAvailable) && !RWCustom.Custom.rainWorld.options.friendlyFire) || (cretin is BigEel or Centipede or Deer or MirosBird or Vulture && self is not null && barbarianDisallowOversizedLuggage.TryGet(self, out bool noOversized) && noOversized));
         }
 
         /// <summary>
@@ -134,13 +134,13 @@ namespace TheEscort
         public static bool Esclass_BB_CretinNotOnBlacklistSingleExpressionB(Creature cretin, Player self = null)
         {
             return !(
-                cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or JellyFish or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug || 
+                cretin is TubeWorm or JetFish or Fly or Cicada or Overseer or PoleMimic or TentaclePlant or Leech or DaddyLongLegs or TempleGuard or Hazer or SmallNeedleWorm or Spider or MoreSlugcats.Inspector or MoreSlugcats.BigJellyFish or MoreSlugcats.Yeek or MoreSlugcats.StowawayBug || 
                 (
                     cretin is Centipede c && 
                     c.Small
                 ) || 
                 (
-                    cretin is Player && 
+                    cretin is Player pal && 
                     (
                         cretin.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || 
                         pal.room?.game?.session is not ArenaGameSession && 

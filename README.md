@@ -19,6 +19,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08** Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM (setup)
     * **dev08a** Forgot a semicolon
     * **dev08b** Fixed things so it compiles
+    * **dev08c** actually fixed things so it compiles
     * __GENERAL TODO__
       * *dev* New Lidard Dunk™!
     * __Default TODO__

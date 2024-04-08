@@ -112,7 +112,7 @@ namespace TheEscort
             {
                 e.RailRecoilLag = -1;
                 // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
-                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod);
+                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod, e.RailFrail);
             }
 
 
@@ -623,7 +623,7 @@ namespace TheEscort
 
                     self.Stun(stunDur);
                     //self.SetMalnourished(true);
-                    Esclass_RG_SetGlassMode(true, e);
+                    Esclass_RG_SetGlassMode(true, ref e);
                     e.RailgunUse = e.RailgunLimit - 3;
                 }
                 else
@@ -675,7 +675,7 @@ namespace TheEscort
         /// <summary>
         /// Applies recoil on the player
         /// </summary>
-        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default)
+        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default, bool glassCannonBonus = false)
         {
             // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
             if (self.bodyMode != Player.BodyModeIndex.ZeroG)
@@ -701,7 +701,7 @@ namespace TheEscort
             }
 
             // Malnutrition bonus
-            if (e.RailFrail)
+            if (glassCannonBonus)
             {
                 force *= recoilMod[4];
             }
