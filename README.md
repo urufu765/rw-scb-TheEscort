@@ -21,6 +21,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev08b** Fixed things so it compiles
     * **dev08c** actually fixed things so it compiles
     * **dev09** Railgunner malnoutrition/arenamode automatically causes glass cannon mode, regional spear placement calculated.
+    * **dev10** Misfire [0% ~ 0.2%], causes Railgunner to not shoot properly and just (non-fatally) explode
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
@@ -35,8 +36,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * __Railgunner TODO__
       * *dev* Railgunners' dual spear goes through creatures
       * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
-      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly. 
-      * *dev* Misfire [0.05% ~ 0.5%], causes Railgunner to not shoot properly and just (non-fatally) explode
+      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
       * *dev* More charge = faster projectile
       * *dev* Glass cannon mode makes things ricochet a whole lot more
     * __Speedster TODO__

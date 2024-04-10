@@ -427,7 +427,9 @@ namespace TheEscort
             */
         }
 
-
+        /// <summary>
+        /// Method that allows Railgunner to throw two objects at once.
+        /// </summary>
         private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
@@ -450,13 +452,30 @@ namespace TheEscort
                 v = self.grasps[grasp].grabbed.firstChunk.vel;
                 w = weapon;
             }
-            //Weapon w = self.grasps[grasp].grabbed as Weapon;
-            orig(self, grasp, eu);
-            e.RailLastThrowDir = w.throwDir;  // Save last throw direction
+
+            // Misfire!
+            if (UnityEngine.Random.value < (e.RailFrail? 0.02f : 0.005f) * e.RailgunUse)
+            {
+                self.TossObject(grasp, eu);
+                self.TossObject(1 - grasp, eu);
+                Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
+                Esclass_GD_ReplicateThrowBodyPhysics(self, 1 - grasp);
+                self.ReleaseGrasp(grasp);
+                self.ReleaseGrasp(1 - grasp);
+                self.dontGrabStuff = 15;
+                Esclass_RG_InnerSplosion(self)
+                self.Stun(120);
+            }
+            else // normal
+            {
+                //Weapon w = self.grasps[grasp].grabbed as Weapon;
+                orig(self, grasp, eu);
+                e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
+                self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
+                //self.grasps[1].grabbed.firstChunk.vel = v;
+                orig(self, 1 - grasp, eu);
+            }
             e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
-            self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
-            //self.grasps[1].grabbed.firstChunk.vel = v;
-            orig(self, 1 - grasp, eu);
 
             if (self.room != null)
             {
