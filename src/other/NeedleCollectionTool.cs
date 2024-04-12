@@ -53,25 +53,23 @@ static class NeedleLogger
                 {
                     things.Enqueue(new());
                 }
-                Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)> thing = things.Peek();
 
-                if (!thing.ContainsKey(nr.roomName))
+                if (!things.Peek().ContainsKey(nr.roomName))
                 {
-                    thing.Add(nr.roomName, (nr.regionName, 0, 0, 0));
+                    things.Peek().Add(nr.roomName, (nr.regionName, 0, 0, 0));
                 }
-                if (nr.isCreate) thing[nr.roomName].nCreate++;
-                if (nr.isDrop) thing[nr.roomName].nDrop++;
-                if (nr.isThrow) thing[nr.roomName].nThrow++;
+
+                if (nr.isCreate) things.Peek()[nr.roomName].Value.nCreate++;
+                if (nr.isDrop) things.Peek()[nr.roomName].Value.nDrop++;
+                if (nr.isThrow) things.Peek()[nr.roomName].Value.nThrow++;
             }
 
             string prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
             while (things.Count > 0)
             {
-                Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)> thing = things.Dequeue();
-
-                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in thing)
+                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in things.Dequeue())
                 {
-                    prtTxt += $"{cycleNo},{successfulCycle},{v.value.region},{v.key},{v.value.nCreate},{v.value.nDrop},{v.value.nThrow}\r\n";
+                    prtTxt += $"{cycleNo},{successfulCycle},{v.Value.region},{v.Key},{v.Value.nCreate},{v.Value.nDrop},{v.Value.nThrow}\r\n";
                 }
             }
             using (StreamWriter sw = File.CreateText(filePath))
