@@ -22,15 +22,15 @@ static class NeedleLogger
         public NeedleMe(int cycleNum)
         {
             cycleNo = cycleNum;
-            nCreate = nDrop = nThrow = 0;
+            //nCreate = nDrop = nThrow = 0;
         } 
 
         public void Capture(in Player player, bool isCreate = false, bool isDrop = false, bool isThrow = false)
         {
             try
             {
-                if (needsRenewal) throw;
-                RecordOfNeedles.Add(new(cycleNo, player.world.region.name, player.abstractRoom.name, isCreate, isDrop, isThrow));
+                if (needsRenewal) throw Exception;
+                RecordOfNeedles.Add(new(cycleNo, player.room.world.region.name, player.room.abstractRoom.name, isCreate, isDrop, isThrow));
             }
             catch (Exception err)
             {
@@ -53,20 +53,23 @@ static class NeedleLogger
                 {
                     things.Enqueue(new());
                 }
-                if (!things.Peek().ContainsKey(nr.roomName))
-                {
-                    things.Peek().Add(nr.roomName, (nr.regionName, 0, 0, 0));
-                }
+                Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)> thing = things.Peek();
 
-                if (nr.isCreate) things.Peek()[nr.roomName].nCreate++;
-                if (nr.isDrop) things.Peek()[nr.roomName].nDrop++;
-                if (nr.isThrow) things.Peek()[nr.roomName].nThrow++;
+                if (!things.ContainsKey(nr.roomName))
+                {
+                    things.Add(nr.roomName, (nr.regionName, 0, 0, 0));
+                }
+                if (nr.isCreate) things[nr.roomName].nCreate++;
+                if (nr.isDrop) things[nr.roomName].nDrop++;
+                if (nr.isThrow) things[nr.roomName].nThrow++;
             }
 
-            prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
+            string prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
             while (things.Count > 0)
             {
-                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in things.Dequeue())
+                Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)> thing = things.Dequeue();
+
+                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in thing)
                 {
                     prtTxt += $"{cycleNo},{successfulCycle},{v.value.region},{v.key},{v.value.nCreate},{v.value.nDrop},{v.value.nThrow}\r\n";
                 }
