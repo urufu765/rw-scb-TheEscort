@@ -11,6 +11,23 @@ namespace SpearmasterNeedleDataCollectionTool;
 static class NeedleLogger
 {
     /// <summary>
+    /// let me have this. please. (Replacement for a Tuple since it's a goddamn readonly)
+    /// </summary>
+    public class Muple
+    {
+        public readonly string region;
+        public int nCreate, nDrop, nThrow;
+
+        public Muple(string region, int nCreate = 0, int nDrop = 0, int nThrow = 0)
+        {
+            this.region = region;
+            this.nCreate = nCreate;
+            this.nDrop = nDrop;
+            this.nThrow = nThrow;
+        }
+    }
+
+    /// <summary>
     /// Stores data on the creation/drop/throw of spearmaster needles during the campaign to allow more accurate needle spawn chance.
     /// </summary>
     public class NeedleMe
@@ -44,7 +61,7 @@ static class NeedleLogger
             string fileName = "deathpits_needs_some_info_" + cycleNo.ToString("000") + ".csv";
             string filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo\\" + fileName);
             string lastRegion = "";
-            Queue<Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)>> things = new();
+            Queue<Dictionary<string, Muple>> things = new();
 
             // Analyse the results
             foreach (NeedleRecord nr in RecordOfNeedles)
@@ -56,18 +73,18 @@ static class NeedleLogger
 
                 if (!things.Peek().ContainsKey(nr.roomName))
                 {
-                    things.Peek().Add(nr.roomName, (nr.regionName, 0, 0, 0));
+                    things.Peek().Add(nr.roomName, new(nr.regionName, 0, 0, 0));
                 }
 
-                if (nr.isCreate) things.Peek()[nr.roomName].Value.nCreate++;
-                if (nr.isDrop) things.Peek()[nr.roomName].Value.nDrop++;
-                if (nr.isThrow) things.Peek()[nr.roomName].Value.nThrow++;
+                if (nr.isCreate) things.Peek()[nr.roomName].nCreate++;
+                if (nr.isDrop) things.Peek()[nr.roomName].nDrop++;
+                if (nr.isThrow) things.Peek()[nr.roomName].nThrow++;
             }
 
             string prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
             while (things.Count > 0)
             {
-                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in things.Dequeue())
+                foreach(KeyValuePair<string, Muple> v in things.Dequeue())
                 {
                     prtTxt += $"{cycleNo},{successfulCycle},{v.Value.region},{v.Key},{v.Value.nCreate},{v.Value.nDrop},{v.Value.nThrow}\r\n";
                 }
