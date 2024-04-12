@@ -29,7 +29,7 @@ static class NeedleLogger
         {
             try
             {
-                if (needsRenewal) throw Exception;
+                if (needsRenewal) throw new Exception("->NEEDLOG>>>LOGGER NEEDS RENEWAL");
                 RecordOfNeedles.Add(new(cycleNo, player.room.world.region.name, player.room.abstractRoom.name, isCreate, isDrop, isThrow));
             }
             catch (Exception err)
@@ -55,13 +55,13 @@ static class NeedleLogger
                 }
                 Dictionary<string, (string region, int nCreate, int nDrop, int nThrow)> thing = things.Peek();
 
-                if (!things.ContainsKey(nr.roomName))
+                if (!thing.ContainsKey(nr.roomName))
                 {
-                    things.Add(nr.roomName, (nr.regionName, 0, 0, 0));
+                    thing.Add(nr.roomName, (nr.regionName, 0, 0, 0));
                 }
-                if (nr.isCreate) things[nr.roomName].nCreate++;
-                if (nr.isDrop) things[nr.roomName].nDrop++;
-                if (nr.isThrow) things[nr.roomName].nThrow++;
+                if (nr.isCreate) thing[nr.roomName].nCreate++;
+                if (nr.isDrop) thing[nr.roomName].nDrop++;
+                if (nr.isThrow) thing[nr.roomName].nThrow++;
             }
 
             string prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
