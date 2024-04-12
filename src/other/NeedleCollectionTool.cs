@@ -66,7 +66,7 @@ static class NeedleLogger
             prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
             while (things.Count > 0)
             {
-                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow) v in things.Dequeue())
+                foreach(KeyValuePair<string, (string region, int nCreate, int nDrop, int nThrow)> v in things.Dequeue())
                 {
                     prtTxt += $"{cycleNo},{successfulCycle},{v.value.region},{v.key},{v.value.nCreate},{v.value.nDrop},{v.value.nThrow}\r\n";
                 }

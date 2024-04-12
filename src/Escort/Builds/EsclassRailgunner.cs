@@ -463,7 +463,7 @@ namespace TheEscort
                 self.ReleaseGrasp(grasp);
                 self.ReleaseGrasp(1 - grasp);
                 self.dontGrabStuff = 15;
-                Esclass_RG_InnerSplosion(self)
+                Esclass_RG_InnerSplosion(self);
                 self.Stun(120);
             }
             else // normal
