@@ -36,10 +36,12 @@ static class NeedleLogger
         private int cycleNo;
         private bool needsRenewal;
 
+        /// <summary>
+        /// constructor for needle data collector. Stop thinking what you are thinking in your dirty mind.
+        /// </summary>
         public NeedleMe(int cycleNum)
         {
             cycleNo = cycleNum;
-            //nCreate = nDrop = nThrow = 0;
         } 
 
         public void Capture(in Player player, bool isCreate = false, bool isDrop = false, bool isThrow = false)
