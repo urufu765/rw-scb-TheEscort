@@ -18,7 +18,7 @@ public class SpearmasterSpearObserver
 {
     public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
 
-    public static ConditionalWeakTable<Plugin, NeedleMe> nL = new();
+    private static ConditionalWeakTable<Plugin, NeedleMe> nL = new();
 
     public static void Attach()
     {
