@@ -14,7 +14,7 @@ using static TheEscort.Plugin;
 using static SpearmasterNeedleDataCollectionTool.NeedleLogger;
 
 namespace SpearmasterNeedleDataCollectionTool;
-static class SpearmasterSpearObserver
+public class SpearmasterSpearObserver
 {
     public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
 
