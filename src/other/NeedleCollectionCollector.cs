@@ -15,13 +15,13 @@ using static TheEscort.Plugin;
 using static SpearmasterNeedleDataCollectionTool.NeedleLogger;
 
 namespace SpearmasterNeedleDataCollectionTool;
-public class SpearmasterSpearObserver
+public static class SpearmasterSpearObserver
 {
     public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
 
     private static ConditionalWeakTable<Plugin, NeedleMe> nL = new();
 
-    public void Attach()
+    public static void Attach()
     {
         On.Player.ctor += SMSO_AttachToSpear;
         On.SaveState.SessionEnded += SMSO_PrintValues;
@@ -30,12 +30,12 @@ public class SpearmasterSpearObserver
         On.Player.ReleaseGrasp += SMSO_DropThrowSpear;
     }
 
-    private void SMSO_AttachToSpear(On.Player.orig_ctor orig, Player self, AbstractCreature ac, World world)
+    private static void SMSO_AttachToSpear(On.Player.orig_ctor orig, Player self, AbstractCreature ac, World world)
     {
         orig(self, ac, world);
         try
         {
-            if (LogSpears.TryGet(world.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStats.Name.Spear && world?.game?.session is StoryGameSession s)
+            if (LogSpears.TryGet(world.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && world?.game?.session is StoryGameSession s)
             {
                 nL.Add(ins, new NeedleMe(s.saveState.cycleNumber));
             }
@@ -46,7 +46,7 @@ public class SpearmasterSpearObserver
         }
     }
 
-    private void SMSO_PrintValues(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+    private static void SMSO_PrintValues(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
     {
         try
         {
@@ -62,7 +62,7 @@ public class SpearmasterSpearObserver
         orig(self, game, survived, newMalnourished);
     }
 
-    private void SMSO_MakeSpear(On.Spear.orig_Spear_makeNeedle orig, Spear self, int type, bool active)
+    private static void SMSO_MakeSpear(On.Spear.orig_Spear_makeNeedle orig, Spear self, int type, bool active)
     {
         orig(self, type, active);
         try
@@ -78,7 +78,7 @@ public class SpearmasterSpearObserver
         }
     }
 
-    private void SMSO_GetSpear(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+    private static void SMSO_GetSpear(On.Player.orig_GrabUpdate orig, Player self, bool eu)
     {
         try
         {
@@ -94,7 +94,7 @@ public class SpearmasterSpearObserver
         orig(self, eu);
     }
 
-    private void SMSO_DropThrowSpear(On.Player.orig_ReleaseGrasp orig, Player self, int grasp)
+    private static void SMSO_DropThrowSpear(On.Player.orig_ReleaseGrasp orig, Player self, int grasp)
     {
         try
         {
