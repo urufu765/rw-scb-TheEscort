@@ -13,12 +13,12 @@ static class NeedleLogger
     /// <summary>
     /// let me have this. please. (Replacement for a Tuple since it's a goddamn readonly)
     /// </summary>
-    public class Muple
+    public class NeedleCounter
     {
         public readonly string region;
         public int nCreate, nDrop, nThrow;
 
-        public Muple(string region, int nCreate = 0, int nDrop = 0, int nThrow = 0)
+        public NeedleCounter(string region, int nCreate = 0, int nDrop = 0, int nThrow = 0)
         {
             this.region = region;
             this.nCreate = nCreate;
@@ -63,7 +63,7 @@ static class NeedleLogger
             string fileName = "deathpits_needs_some_info_" + cycleNo.ToString("000") + ".csv";
             string filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo\\" + fileName);
             string lastRegion = "";
-            Queue<Dictionary<string, Muple>> things = new();
+            Queue<Dictionary<string, NeedleCounter>> things = new();
 
             // Analyse the results
             foreach (NeedleRecord nr in RecordOfNeedles)
@@ -86,7 +86,7 @@ static class NeedleLogger
             string prtTxt = "Cycle,Success,Region,Room,Creations,Drops,Throws\r\n";
             while (things.Count > 0)
             {
-                foreach(KeyValuePair<string, Muple> v in things.Dequeue())
+                foreach(KeyValuePair<string, NeedleCounter> v in things.Dequeue())
                 {
                     prtTxt += $"{cycleNo},{successfulCycle},{v.Value.region},{v.Key},{v.Value.nCreate},{v.Value.nDrop},{v.Value.nThrow}\r\n";
                 }

@@ -23,6 +23,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev09** Railgunner malnoutrition/arenamode automatically causes glass cannon mode, regional spear placement calculated.
     * **dev10** Misfire [0% ~ 0.2%], causes Railgunner to not shoot properly and just (non-fatally) 
     * **dev11** Work on spearmaster data collector database, will work on the datacollector bit tomorrow
+    * **dev12** Logger created
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

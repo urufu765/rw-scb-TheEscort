@@ -15,6 +15,7 @@ using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using static TheEscort.SMSMod;
 using static UrufuCutsceneTool.CsInLogger;
+//using static SpearmasterNeedleDataCollectionTool.SpearmasterSpearObserver;
 
 namespace TheEscort
 {
@@ -283,6 +284,7 @@ namespace TheEscort
             Escort_Conversation.Attach();
             EscortRoomScript.Attach();
             EscortHUD.Attach();
+            SpearmasterNeedleDataCollectionTool.SpearmasterSpearObserver.Attach();
             On.TubeWorm.GrabbedByPlayer += GrappleBackpack.BackpackGrabbedByPlayer;
             On.TubeWorm.GrabbedByPlayer += LauncherBackpack.BackpackGrabbedByPlayer;
 
