@@ -8,6 +8,7 @@ using UnityEngine;
 using MoreSlugcats;
 using RWCustom;
 using TheEscort;
+using BepInEx;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using static TheEscort.Plugin;
@@ -20,7 +21,7 @@ public class SpearmasterSpearObserver
 
     private static ConditionalWeakTable<Plugin, NeedleMe> nL = new();
 
-    public static void Attach()
+    public void Attach()
     {
         On.Player.ctor += SMSO_AttachToSpear;
         On.SaveState.SessionEnded += SMSO_PrintValues;
@@ -66,7 +67,7 @@ public class SpearmasterSpearObserver
         orig(self, type, active);
         try
         {
-            if (active && self.grabbedBy[0] != null && self.grabbedBy[0].grabber is Player p && p.SlugCatClass == MoreSlugcatsEnums.SlugcatStats.Name.Spear && nL.TryGetValue(ins, out NeedleMe n))
+            if (active && self.grabbedBy[0] != null && self.grabbedBy[0].grabber is Player p && p.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && nL.TryGetValue(ins, out NeedleMe n))
             {
                 n.Capture(in p, isCreate: true);
             }
@@ -81,7 +82,7 @@ public class SpearmasterSpearObserver
     {
         try
         {
-            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStats.Name.Spear && nL.TryGetValue(ins, out NeedleMe n))
+            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && nL.TryGetValue(ins, out NeedleMe n))
             {
 
             }
@@ -97,7 +98,7 @@ public class SpearmasterSpearObserver
     {
         try
         {
-            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStats.Name.Spear && self.grasps[grasp] != null && self.grasps[grasp].grabbed is Spear s && nL.TryGetValue(ins, out NeedleMe n) && s.spearmasterNeedle)
+            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && self.grasps[grasp] != null && self.grasps[grasp].grabbed is Spear s && nL.TryGetValue(ins, out NeedleMe n) && s.spearmasterNeedle)
             {
                 if (s.mode == Weapon.Mode.Free)  // Dropped
                 {
