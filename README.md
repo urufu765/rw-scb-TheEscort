@@ -24,6 +24,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev10** Misfire [0% ~ 0.2%], causes Railgunner to not shoot properly and just (non-fatally) 
     * **dev11** Work on spearmaster data collector database, will work on the datacollector bit tomorrow
     * **dev12** Logger created
+    * **dev12e** Logger no longer uses slugbase feature to make sure it works
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

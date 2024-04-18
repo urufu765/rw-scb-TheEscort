@@ -18,16 +18,21 @@ namespace SpearmasterNeedleDataCollectionTool;
 public static class SpearmasterSpearObserver
 {
     public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
+    private const bool LogSpear = true;  // An ON OFF switch for logging spears (only available for alpha test! Will be disasterous(not really) if this gets to public release)
+    // Replace with compiler condition later
 
     private static ConditionalWeakTable<Plugin, NeedleMe> nL = new();
 
     public static void Attach()
     {
-        On.Player.ctor += SMSO_AttachToSpear;
-        On.SaveState.SessionEnded += SMSO_PrintValues;
-        //On.Player.GrabUpdate += SMSO_GetSpear;
-        On.Spear.Spear_makeNeedle += SMSO_MakeSpear;
-        On.Player.ReleaseGrasp += SMSO_DropThrowSpear;
+        if (LogSpear)
+        {
+            On.Player.ctor += SMSO_AttachToSpear;
+            On.SaveState.SessionEnded += SMSO_PrintValues;
+            //On.Player.GrabUpdate += SMSO_GetSpear;
+            On.Spear.Spear_makeNeedle += SMSO_MakeSpear;
+            On.Player.ReleaseGrasp += SMSO_DropThrowSpear;
+        }
     }
 
     private static void SMSO_AttachToSpear(On.Player.orig_ctor orig, Player self, AbstractCreature ac, World world)
@@ -35,7 +40,7 @@ public static class SpearmasterSpearObserver
         orig(self, ac, world);
         try
         {
-            if (LogSpears.TryGet(world.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && world?.game?.session is StoryGameSession s)
+            if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && world?.game?.session is StoryGameSession s)
             {
                 nL.Add(ins, new NeedleMe(s.saveState.cycleNumber));
             }
@@ -82,7 +87,7 @@ public static class SpearmasterSpearObserver
     {
         try
         {
-            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && nL.TryGetValue(ins, out NeedleMe n))
+            if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && nL.TryGetValue(ins, out NeedleMe n))
             {
 
             }
@@ -98,7 +103,7 @@ public static class SpearmasterSpearObserver
     {
         try
         {
-            if (LogSpears.TryGet(self.room.game, out bool l) && l && self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && self.grasps[grasp] != null && self.grasps[grasp].grabbed is Spear s && nL.TryGetValue(ins, out NeedleMe n) && s.spearmasterNeedle)
+            if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && self.grasps[grasp] != null && self.grasps[grasp].grabbed is Spear s && nL.TryGetValue(ins, out NeedleMe n) && s.spearmasterNeedle)
             {
                 if (s.mode == Weapon.Mode.Free)  // Dropped
                 {
