@@ -25,6 +25,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev11** Work on spearmaster data collector database, will work on the datacollector bit tomorrow
     * **dev12** Logger created
     * **dev12e** Logger no longer uses slugbase feature to make sure it works
+    * **dev13** Unstable minihop hop off poles fix attempt by making value a tiny bit higher
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
@@ -53,7 +54,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Barbarian faster slide
       * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
     * __Unstable shit__
-      * *dev* Unstable minihop allows hopping off of poles
       * *dev* Homing kick if dashing down towards the closest target
       * *dev* More dashes, the stronger the kick
       * *dev* Sliding button input does a slide-dash

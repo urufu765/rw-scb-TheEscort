@@ -294,16 +294,17 @@ namespace TheEscort
                 if (self.input[0].x != 0)
                 {
                     self.animation = Player.AnimationIndex.None;
-                    self.bodyChunks[0].vel.y = 2f;
-                    self.bodyChunks[1].vel.y = 1.5f;
-                    self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
-                    self.bodyChunks[1].vel.x = 0.5f * (float)self.flipDirection;
+                    self.bodyChunks[0].vel.y = 2.5f;
+                    self.bodyChunks[1].vel.y = 2f;
+                    self.bodyChunks[0].vel.x = 2f * (float)self.flipDirection;
+                    self.bodyChunks[1].vel.x = 1.5f * (float)self.flipDirection;
                     self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.95f, 1f);
                     return;
                 }
                 if (self.input[0].y <= 0)
                 {
                     self.animation = Player.AnimationIndex.None;
+                    self.bodyChunks[0].vel.y = 1f;
                     if (self.input[0].y > -1)
                     {
                         self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
