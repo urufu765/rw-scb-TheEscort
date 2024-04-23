@@ -26,6 +26,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev12** Logger created
     * **dev12e** Logger no longer uses slugbase feature to make sure it works
     * **dev13** Unstable minihop hop off poles fix attempt by making value a tiny bit higher
+    * **dev14** Reverse the punishment for getting stunned from losing all ability to losing a gear(fixed so that you don't lose all gears lol)
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
@@ -44,7 +45,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* More charge = faster projectile
       * *dev* Glass cannon mode makes things ricochet a whole lot more
     * __Speedster TODO__
-      * *dev* Reverse the punishment for getting stunned from losing all ability to losing a gear
     * __Gilded TODO__
     * __Barbarian shit__
       * *dev* make Barbarian's color nicer
