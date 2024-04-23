@@ -61,7 +61,7 @@ static class NeedleLogger
         public void Release(bool successfulCycle)
         {
             string fileName = "deathpits_needs_some_info_" + cycleNo.ToString("000") + ".csv";
-            string filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo\\" + fileName);
+            string filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo/" + fileName);
             string lastRegion = "";
             Queue<Dictionary<string, NeedleCounter>> things = new();
 
