@@ -27,6 +27,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev12e** Logger no longer uses slugbase feature to make sure it works
     * **dev13** Unstable minihop hop off poles fix attempt by making value a tiny bit higher
     * **dev14** Reverse the punishment for getting stunned from losing all ability to losing a gear(fixed so that you don't lose all gears lol)
+    * **dev14a** Fixed the output issue my god
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

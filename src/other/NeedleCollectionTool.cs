@@ -61,7 +61,7 @@ static class NeedleLogger
         public void Release(bool successfulCycle)
         {
             string fileName = "deathpits_needs_some_info_" + cycleNo.ToString("000") + ".csv";
-            string filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo/" + fileName);
+            string filePath = AssetManager.ResolveDirectory("DeathpitsDataCollectingCo");
             string lastRegion = "";
             Queue<Dictionary<string, NeedleCounter>> things = new();
 
@@ -91,6 +91,11 @@ static class NeedleLogger
                     prtTxt += $"{cycleNo},{successfulCycle},{v.Value.region},{v.Key},{v.Value.nCreate},{v.Value.nDrop},{v.Value.nThrow}\r\n";
                 }
             }
+            // Create folder (if doesn't exist)
+            Directory.CreateDirectory(filePath);            
+
+            // Create file
+            filePath = AssetManager.ResolveFilePath("DeathpitsDataCollectingCo/" + fileName);
             using (StreamWriter sw = File.CreateText(filePath))
             {
                 sw.Write(prtTxt);

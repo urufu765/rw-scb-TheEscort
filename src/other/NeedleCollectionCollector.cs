@@ -17,7 +17,7 @@ using static SpearmasterNeedleDataCollectionTool.NeedleLogger;
 namespace SpearmasterNeedleDataCollectionTool;
 public static class SpearmasterSpearObserver
 {
-    public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
+    //public static readonly GameFeature<bool> LogSpears = GameBool("theescort/spearlogger");
     private const bool LogSpear = true;  // An ON OFF switch for logging spears (only available for alpha test! Will be disasterous(not really) if this gets to public release)
     // Replace with compiler condition later
 
@@ -42,7 +42,16 @@ public static class SpearmasterSpearObserver
         {
             if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && world?.game?.session is StoryGameSession s)
             {
-                nL.Add(ins, new NeedleMe(s.saveState.cycleNumber));
+                if (nL.TryGetValue(ins, out NeedleMe n))
+                {
+                    // If logger exists and just needs renewal
+                    n.Renew(s.saveState.cycleNumber);
+                }
+                else
+                {
+                    // If logger does not exist
+                    nL.Add(ins, new NeedleMe(s.saveState.cycleNumber));
+                }
             }
         }
         catch (Exception err)
