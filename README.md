@@ -28,12 +28,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev13** Unstable minihop hop off poles fix attempt by making value a tiny bit higher
     * **dev14** Reverse the punishment for getting stunned from losing all ability to losing a gear(fixed so that you don't lose all gears lol)
     * **dev14a** Fixed the output issue my god
+    * **dev15** Added Brawler explosive punch
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
     * __Brawler TODO__
-      * *dev* Add Brawler explosive punch
+      * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
       * *dev* Lock Brawler's explosive punch behind an achievement
       * *dev* Nerf Brawler's dropkick and slidestun and rock hit
     * __Deflector TODO__

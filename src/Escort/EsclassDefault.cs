@@ -1675,6 +1675,14 @@ namespace TheEscort
                 }
                 stunBonus = 0;
             }
+            if (e.Brawler && e.BrawExPunch && e.BrawMeleeWeapon.Count > 0)
+            {
+                if (e.iFrames == 0)
+                {
+                    e.ParrySuccess = true;
+                }
+                stunBonus = 0;
+            }
             if (!ins.L().Vegetable)
             {
                 e.ParrySuccess = true;

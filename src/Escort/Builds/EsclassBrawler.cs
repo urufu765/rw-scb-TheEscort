@@ -62,6 +62,13 @@ namespace TheEscort
                     self.slowMovementStun += 25;
                     e.BrawPunch = false;
                 }
+                else if (e.BrawMeleeWeapon.Peek() is ScavengerBomb sb)
+                {
+                    self.slowMovementStun += 40;
+                    e.BrawExPunch = false;
+                    sb.ignited = false;
+                    sb.burn = 0f;
+                }
                 if (e.BrawMeleeWeapon.Peek() is Spear)
                 {
                     e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
@@ -273,7 +280,7 @@ namespace TheEscort
             else if (
                 self.grasps[grasp]?.grabbed is Rock
             ) return "punch";
-            else if (false &&
+            else if (
                 self.grasps[grasp]?.grabbed is ScavengerBomb
             ) return "powerpunch";
             return "";
@@ -395,6 +402,34 @@ namespace TheEscort
                     e.BrawThrowGrab = 4;
                     e.BrawThrowUsed = j;
                     e.BrawLastWeapon = "punch";
+                    orig(self, j, eu);
+                    return true;
+                }
+                // Explosive punch
+                else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is ScavengerBomb sb)
+                {
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Weapon)
+                    {
+                        continue;
+                    }
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Creature)
+                    {
+                        break;
+                    }
+                    self.aerobicLevel = Mathf.Max(0, self.aerobicLevel - 0.07f);
+                    if (self.slowMovementStun > 0)
+                    {
+                        Ebug(self, "Too tired to explopunch!");
+                        self.Blink(15);
+                        Eshelp_Player_Shaker(self, 1f);
+                        return true;
+                    }
+                    Ebug(self, "EXPLOPUNCH!");
+                    e.BrawExPunch = true;
+                    e.BrawMeleeWeapon.Push(sb);
+                    e.BrawThrowGrab = 4;
+                    e.BrawThrowUsed = j;
+                    e.BrawLastWeapon = "powerpunch";
                     orig(self, j, eu);
                     return true;
                 }

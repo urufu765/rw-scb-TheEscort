@@ -177,6 +177,11 @@ namespace TheEscort
         public int BrawSetCooldown;
 
         /// <summary>
+        /// Explosive punch state
+        /// </summary>
+        public bool BrawExPunch;
+
+        /// <summary>
         /// IS IT FUCKING DEFLECTOR?!
         /// </summary>
         public bool Deflector;

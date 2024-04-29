@@ -380,7 +380,8 @@ public static class EscortHUD
             {
                 brawlSprites[i] = new FSprite(i switch
                 {
-                    3 => "escort_hud_brawpowerpunch",  // Not implemented yet
+                    //3 => "escort_hud_brawpowerpunch",  // Not implemented yet
+                    3 => "escort_hud_brawpunch",
                     2 => "escort_hud_brawpunch",
                     1 => "escort_hud_brawshank",
                     _ => "escort_hud_brawsupershank"
