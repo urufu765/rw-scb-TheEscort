@@ -126,7 +126,7 @@ namespace TheEscort
             }
             catch (Exception err)
             {
-                Ebug(err, "Something went wrong when applying effect for melee weapon!")
+                Ebug(err, "Something went wrong when applying effect for melee weapon!");
             }
 
             if (e.BrawMeleeWeapon.Count == 0)
