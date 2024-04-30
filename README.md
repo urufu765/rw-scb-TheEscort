@@ -29,6 +29,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev14** Reverse the punishment for getting stunned from losing all ability to losing a gear(fixed so that you don't lose all gears lol)
     * **dev14a** Fixed the output issue my god
     * **dev15** Added Brawler explosive punch
+    * **dev16** Narrowed down potential crashes as well as not making the thing explode in water
+    * *dev17* Added conical detection method
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
