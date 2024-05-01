@@ -30,6 +30,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev14a** Fixed the output issue my god
     * **dev15** Added Brawler explosive punch
     * **dev16** Narrowed down potential crashes as well as not making the thing explode in water
+    * **dev16b** Made logs happen every time
     * *dev17* Added conical detection method
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
@@ -37,6 +38,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Give 'em ol' Brawler's buffed rock hit
     * __Brawler TODO__
       * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
+      * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
       * *dev* Lock Brawler's explosive punch behind an achievement
       * *dev* Nerf Brawler's dropkick and slidestun and rock hit
     * __Deflector TODO__

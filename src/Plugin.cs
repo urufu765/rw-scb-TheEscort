@@ -1061,8 +1061,7 @@ namespace TheEscort
                 Esconfig_Build(self);
                 e.Escat_Add_Ring_Trackers(self);
                 e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;
-                //logImportance = config.cfgLogImportance.Value;  // Real
-                logImportance = 4;  // ALPHA
+                //logImportance = config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
                 try
                 {
                     Ebug(self, "Setting silly sounds", 2);
