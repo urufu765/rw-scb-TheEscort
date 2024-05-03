@@ -241,16 +241,16 @@ namespace TheEscort
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
             this.hudShowOptions = new()
             {
-                new ListItem("hide", Translate("Hide"), 0),
+                new ListItem(Translate("hide"), Translate("Hide"), 0),
                 //new ListItem("map", Translate("Show With Map"), 1),
                 //new ListItem("relevant", Translate("Show When Relevant"), 2),
-                new ListItem("always", Translate("Always Show"), 3)
+                new ListItem(Translate("always"), Translate("Always Show"), 3)
             };
             this.hudLocaOptions = new()
             {
-                new ListItem("botleft", Translate("Bottom Left"), 0),
-                new ListItem("botmid", Translate("Bottom Middle"), 1),
-                new ListItem("leftstack", Translate("Left Stacked"), 2)
+                new ListItem(Translate("botleft"), Translate("Bottom Left"), 0),
+                new ListItem(Translate("botmid"), Translate("Bottom Middle"), 1),
+                new ListItem(Translate("leftstack"), Translate("Left Stacked"), 2)
             };
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
@@ -695,15 +695,15 @@ namespace TheEscort
                 {
                     description = j switch
                     {
-                        0 => "[P1] ",
-                        1 => "[P2] ",
-                        2 => "[P3] ",
-                        _ => "[P4] "
+                        0 => Translate("[P1] "),
+                        1 => Translate("[P2] "),
+                        2 => Translate("[P3] "),
+                        _ => Translate("[P4] ")
                     } + Swapper(Translate("escoptions_buildeasy_desc"), j switch {
-                        0 => "Player 1",
-                        1 => "Player 2",
-                        2 => "Player 3",
-                        _ => "Player 4"
+                        0 => Translate("Player 1"),
+                        1 => Translate("Player 2"),
+                        2 => Translate("Player 3"),
+                        _ => Translate("Player 4")
                     }),
                     colorEdge = easyColor,
                     colorFill = j switch
@@ -757,15 +757,15 @@ namespace TheEscort
                 {
                     description = j switch
                     {
-                        0 => "[P1] ",
-                        1 => "[P2] ",
-                        2 => "[P3] ",
-                        _ => "[P4] "
+                        0 => Translate("[P1] "),
+                        1 => Translate("[P2] "),
+                        2 => Translate("[P3] "),
+                        _ => Translate("[P4] ")
                     } + Swapper(Translate("escoptions_build_desc"), j switch {
-                        0 => "Player 1",
-                        1 => "Player 2",
-                        2 => "Player 3",
-                        _ => "Player 4"
+                        0 => Translate("Player 1"),
+                        1 => Translate("Player 2"),
+                        2 => Translate("Player 3"),
+                        _ => Translate("Player 4")
                     }),
                 };
                 (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
@@ -899,7 +899,7 @@ namespace TheEscort
                 // this.buildEasy[2],
                 // this.buildEasy[3],
 
-                new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), "(1)   (2)   (3)   (4) <-PLAYER #"){
+                new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), Translate("(1)   (2)   (3)   (4) <-PLAYER #")){
                     color = new Color(0.5f, 0.5f, 0.5f)
                 },
 
@@ -1254,7 +1254,7 @@ namespace TheEscort
                     this.cfgSectretGod.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Translate(
-                            "escoptions_sectret_invincible"
+                            Translate("escoptions_sectret_invincible")
                         ), insult, doThing
                     );
                 }
@@ -1268,7 +1268,7 @@ namespace TheEscort
                     this.cfgSectretMagic.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Translate(
-                            "escoptions_sectret_magic"
+                            Translate("escoptions_sectret_magic")
                         ), insult, doThing
                     );
                 }
@@ -1281,7 +1281,7 @@ namespace TheEscort
                 {
                     this.sctTestBuild.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
-                        "Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!", insult, doThing
+                        Translate("Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!"), insult, doThing
                     );
                 }
                 Ebug("Set secret build testing mode");

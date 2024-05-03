@@ -1,0 +1,229 @@
+0GILDED UPDATE|ACTUALIZACIÓN DEL ESTILO DORADO
+[Beta]| [Beta]
+Default|Predeterminado
+Vanilla|Vanilla
+Main|Principal
+Options|Opciones
+escoptions_options|Estas opciones cambian las habilidades principales y la jugabilidad del Escolta.<LINE>Puedes encontrar el modo fácil y los estilos en ESTILOS, y travesuras adicionales en CHUCHERÍAS. (Glosario técnico: «true» significa activado y «false» desactivado.)
+escoptions_meanlizards_text|Lagartos (más) agresivos
+escoptions_meanlizards_desc|Los lagartos aparecerán con la agresión al tope al jugar con el Escolta (y se dirigirán a él al verlo)... puede que esto no suceda en sesiones cooperativas.
+escoptions_vengefullizards_text|Lagartos vengativos
+escoptions_vengefullizards_desc|Los lagartos, tras matar demasiados de ellos, puede que empiecen a perseguir al Escolta.
+escoptions_carry_text|Multiplicador de la potencia de levantamiento
+escoptions_carry_desc|Determina cuán pesado (x veces el peso del Escolta) puede llevar el Escolta un objeto antes de ser cargado.
+escoptions_dropkick_text|Multiplicador del empuje de la patada voladora
+escoptions_dropkick_desc|Cuánto empuje ocasiona la patada voladora del Escolta. Ten en cuenta que solo afecta a criaturas que no sean resilientes a los empujes.
+escoptions_hype_text|Entusiasmo de combate
+escoptions_hypecheckbox_desc|Activa/Desactiva la mecánica de entusiasmo de combate del Escolta.
+escoptions_hypeslider_desc|Determina qué tan permisivos son los requisitos del entusiasmo de combate.
+escoptions_hypeselect_a|0=Siempre activo
+escoptions_hypeselect_b|1=Cansancio del 50%
+escoptions_hypeselect_c|2=Cansancio del 66%
+escoptions_hypeselect_d|3=Cansancio del 75%
+escoptions_hypeselect_e|4=Cansancio del 80%
+escoptions_hypeselect_f|5=Cansancio del 87%
+escoptions_hypeselect_g|6=Cansancio del 92%
+hype_tutorial|Cuanto más entusiasmado estés, ¡más poderoso te volverás!
+escoptions_longwall_text|Salto largo de pared
+escoptions_longwall_desc|Permite al Escolta lanzarse (mantener saltar), pero sobre muros también. Afectará cómo se perciben los saltos de pared. Recomendado: desactivado.
+escoptions_flippounce_text|Lanzarse con volteretas
+escoptions_flippounce_desc|Hace que el Escolta haga una voltereta al lanzarse y un Salto de Súper Voltereta de Pared™ al mantener una diagonal contra la pared y pulsar saltar.
+flippounce_tutorial|¡Mantén brevemente una dirección diagonal contra la pared y luego pulsa saltar para hacer una súper voltereta de pared!
+escoptions_lizgrab_text|Agarrar lagartos aturdidos
+escoptions_lizgrab_desc|Permite al Escolta agarrar lagartos aturdidos y causar violencia en ellos.
+lizgrab_tutorial|¡Aturde a un lagarto para agarrarlo, luego salta y pulsa el botón de lanzar para patearlo!
+escoptions_superspear_text|Súper lanzas
+escoptions_superspear_desc|Técnica de movimiento adicional al arrojar lanzas para facilitar los combos.
+escoptions_pupsforeveryone_text|Cría del Escolta desbloqueada
+escoptions_pupsforeveryone_desc|Permite que los demás estilos del Escolta tengan la cría de gatobabosa. ADVERTENCIA: Puede provocar errores.
+Builds|Estilos
+escoptions_builds|Estos cambiarán valores ocultos de ciertas maneras para cambiar el estilo de juego<LINE>del Escolta. ¡Prueba cada estilo para ver cuál te gusta más!
+(1)   (2)   (3)   (4) <-PLAYER #|(1)   (2)   (3)   (4) <-JUGADOR #
+escoptions_buildeasy_text|Modo fácil
+[P1] |[J1] 
+[P2] |[J2] 
+[P3] |[J3] 
+[P4] |[J4] 
+escoptions_buildeasy_desc|Activa la habilidad de hacer una patada voladora pulsando Saltar + Agarrar en el aire para el <REPLACE>.
+Player 1|Jugador 1
+Player 2|Jugador 2
+Player 3|Jugador 3
+Player 4|Jugador 4
+escoptions_build_desc|Selecciona el estilo para el <REPLACE>.
+default_desc|El básico, con algunos trucos bajo la manga para no quedarse atrás.
+default_tut_a|El <DEFAULT> nada con mayor facilidad, teniendo más tiempo de respiración y mejores habilidades nadando.
+default_tut_b|¡También es mejor haciendo saltos de postes que los demás Escoltas!
+Brawler|Luchador
+brawler_desc|Cambia a un estilo de lucha cuerpo a cuerpo con puñetazos y cuchilladas.
+brawler_shanktut_a|El <BRAWLER> puede acuchillar criaturas cuando empuña una lanza.
+brawler_shanktut_b|Ataca a corta distancia o causa daño agarrando a la criatura y acuchillándola.
+brawler_shanktut_c|¡Para arrojar una lanza, arrójala mientras te deslizas!
+brawler_punchtut|Las rocas pueden ser usadas para golpear depredadores.
+brawler_ms_expunchtut|¡Las bombas permiten al <BRAWLER> lanzar un golpe explosivo!
+Deflector|Desviador
+deflector_desc|Arriésgate bloqueando ataques al deslizar, rodar o hacer una voltereta para sobrevivir.
+deflector_tut_a|El <DEFLECTOR>, por defecto, causa la mitad de daño. 
+deflector_tut_b|Puede simplemente atacar el doble de rápido para compensar la pérdida de poder...
+deflector_tut_c|O bloquear los ataques rodando, deslizándose o haciendo volteretas para volverse empoderado!
+deflector_tut_d|Al estar empoderado, hace el triple de daño, pero solo se aplica a un ataque y desaparece si no se usa.
+deflector_tut_e|¡Pero no pasa nada, solo vence al depredador!
+deflector_ms_tut|¡Bloquea proyectiles para devolver el arma de vuelta al remitente!
+Escapist|Escapista
+escapist_desc|Escapa a la fuerza de las presas, incluso con las manos vacías (mantén lanzar).
+escapist_tut_a|¡Agarra algo y lánzala al depredador antes de que el texto «Fin del juego» aparezca!
+escapist_tut_b|O, si no hay nada cerca, mantén lanzar para salir con coacción de la presa.
+escapist_tut_c|Ten cuidado, eso te dejará en un estado vulnerable.
+escapist_new_desc|Escapa de cualquier situación con estilo y destreza. Deja en ridículo a los depredadores.
+escapist_new_tut_a|Pulsa brevemente el mapa para teletransportarte a donde el <ESCAPIST> estuvo hace dos segundos.
+escapist_new_tut_b|Cualquier criatura atrapada entre tu antigua posición y la nueva se vuelve vulnerable. Esto reiniciará su tiempo de espera por la mitad.
+escapist_new_tut_c|¡Ataca para sacar provecho de la situación y reinicia el tiempo de espera de la habilidad aún más!
+Railgunner|Artillero
+railgunner_desc|Empuña dos armas del mismo tipo para mejorar tus ataques.
+railgunner_tut_a|El <RAILGUNNER> casi no se beneficia del entusiasmo de combate, pero sí de la sobrecarga.
+railgunner_tut_b|Sostén dos armas del mismo tipo para lanzarlas al mismo tiempo, aumentando el poder de ataque y la sobrecarga.
+railgunner_tut_c|¡Ten en cuenta que un exceso de sobrecarga explosionará al <RAILGUNNER>!
+railgunner_tut_d|Trata de escuchar el pinchazo, este indica que la sobrecarga está a punto de estallar, y espera a que se enfríe.
+ralgunner_ms_tut|Mantén agarrar con dos rocas para fabricar una bomba, dos lanzas para una lanza explosiva.
+railgunner_tut_spear|Doble lanza: velocidad y daño enormemente aumentados.
+railgunner_tut_rock|Doble roca: velocidad y empuje enormemente aumentados.
+railgunner_tut_lily|Doble zanaloto: velocidad aumentada y trayectoria mejorada.
+railgunner_tut_bomb|Doble bomba: velocidad aumentada y autoinmunidad a su lanzamiento para permitir, literalmente, saltos explosivos.
+railgunner_ms_tut_cracker|Doble petardo: velocidad aumentada y explosión potente al final.
+railgunner_ms_tut_singularity|Doble bomba de singularidad: se salta el rebote y detona al impacto.
+Speedster|Velocista
+speedster_desc|Muévete para cargar velocidad y luego deslízate para liberarla.
+speedster_tut_a|¡Siempre estés en movimiento para cargar la mejora y deslízate para usarlo e ir más rápido!
+speedster_tut_b|Ten cuidado, ¡colisionar con cualquier cosa puede aturdirte si vas demasiado rápido!
+speedster_old_tut_a|Muévete para acumular velocidad. ¡Cruza un cierto umbral para obtener una mejora!
+speedster_old_tut_b|¡Sigue moviéndote a la velocidad mejorada para alcanzar una mejora todavía más rápida!
+speedster_ms_tut_a|¡Deslízate para pasar debajo de una criatura sin aturdirte!
+speedster_ms_tut_b|¡Deslízate indefinidamente cuando llegues a la velocidad tres en adelante!
+speedster_ms_old_tut_b|¡Deslízate indefinidamente cuando llegues a la mejora extra!
+Gilded|Dorado
+gilded_desc|Trae favores de<REPLACE>, utiliza los poderes prestados.
+gilded_sub_a|l vacío
+gilded_sub_b| un lugar misterioso
+gilded_tut_a|Salta para llegar a lugares de gran altura. ¡Las súper volteretas de pared saltan muy alto!
+gilded_tut_b|¡Pulsa lanzar con las manos vacías y en el aire para dar un pisotón! Se anula el daño por caída.
+gilded_tut_c|El <GILDED> no puede arrojar rocas o lanzas para defenderse. ¡Primero utiliza el poder para transformar los objetos!
+gilded_tut_rock|¡Mantén lanzar con una roca o bomba en la mano para transformarla en una bomba incendiaria!
+gilded_tut_spear|¡Mantén lanzar con una lanza para transformarla en una lanza de fuego!
+gilded_tut_fullpower_a|Mantén lanzar con una bomba incendiaria o lanza de fuego para transformarla en una bomba de singularidad.
+gilded_tut_fullpower_b|La duración de la levitación ahora es ilimitada.
+gilded_tut_guardian|¡El <GILDED> solo tiene que matar al guardián una vez para pasar!
+Gimmicks|Chucherías
+escoptions_gimmicks|Estas chucherías opcionales añadirán características que puede que alteren significativamente (y de maneras divertidas) la experiencia de juego del Escolta.
+escoptions_sillysfx_text|Sonidos tontos
+escoptions_sillysfx_desc|Reemplaza algunos efectos de sonido que, por un lado, arruinarán la inmersión, pero por el otro... jeje, ruiditos.
+escoptions_noflipsfx_text|Desactivar «sick flip»
+escoptions_noflipsfx_desc|Desactiva el tonto efecto de sonido «sick flip» en el caso de que se vuelva molesto.
+escoptions_elevator_text|Elevador
+escoptions_elevator_desc|Permite al Escolta alcanzar las estrellas cada vez que rampe de una criatura viviente.
+escoptions_propdk_text|Animación adecuada de patada voladora
+escoptions_propdk_desc|Hace que el Escolta gire su cuerpo en el aire para hacer que las «patadas voladores» sean patadas voladoras de verdad.
+escoptions_deflslide_text|Deslizamiento superextendido del <DEFLECTOR>
+escoptions_deflslide_desc|Hace que los deslizamientos del <DEFLECTOR> duren por más tiempo.
+escoptions_poletech_text|Técnica de poste
+escoptions_poletech_desc|Porque alguien lo pidió. No como el <REPLACE>, sino algo parecido ;). Siempre activado para el Escolta <DEFAULT>.
+escoptions_oldspeed_text|Mecánicas antiguas del <SPEEDSTER>
+escoptions_oldspeed_desc|Revierte las mecánicas del Escolta <SPEEDSTER> a las de antes de la renovación.
+Hmm? What's this?|¿Eh? ¿Qué es esto?
+Accessibility|Accesibilidad
+escoptions_accessibility|Cambia la manera en que se muestran algunos efectos visuales para entender mejor<LINE>lo que está pasando.
+escoptions_hypeindicator_text|Indicador más claro del entusiasmo de combate
+escoptions_hypeindicator_desc|Añade un efecto visual que muestra más claramente si el Escolta tiene entusiasmo de combate o no.
+escoptions_deflaltvfx_text|Efecto visual diferente del <DEFLECTOR> empoderado
+escoptions_deflaltvfx_desc|Cambia el efecto visual del Escolta <DEFLECTOR> empoderado, de chispas a un círculo pulsante.
+escoptions_devlog_text|Registros de desarrollador
+escoptions_devlog_desc|Controla qué se permite enviar a los registros. -1 desactiva todos los registros de desarrollador del Escolta.
+escoptions_hudshow_text|Visibilidad del HUD del Escolta
+escoptions_hudshow_desc|Cambia cómo y cuándo se muestra el HUD.
+Hide|Ocultar
+Show With Map|Mostrar con el mapa
+Show When Relevant|Mostrar cuando sea relevante
+Always Show|Mostrar siempre
+escoptions_hudloc_text|Colocación del HUD del Escolta
+escoptions_hudloc_desc|Cambia dónde se sitúa el HUD (solo aplica al HUD predeterminado).
+Bottom Left|Inferior izquierda
+Bottom Middle|Inferior medio
+Left Stacked|Apilado a la izquerda
+escoptions_hudtype_text|Estilo del HUD del Escolta
+escoptions_hudtype_desc|Cambia cómo se ve el HUD.
+Rings|Anillos
+Bars|Barras
+escoptions_insult_a|No eres mi mamá.
+escoptions_insult_b|Vete al ca#$*%o.
+escoptions_insult_c|Bobo.
+escoptions_insult_d|No me importa.
+escoptions_insult_e|Que te calles.
+escoptions_sectret_spuphaiku|     ...de contención...     <LINE> ...la cría se fugó... <LINE>  ...cuidado afuera...   
+escoptions_sectret_gilded|Se suponía que este código desbloquearía el estilo <GILDED> anticipidamente como un avance,<LINE>pero ya que el estilo se lanzó públicamente, no sirve más para este propósito...<LINE><LINE>¡Ahora envía al <GILDED> a <REPLACE>!<LINE>¡Disfrútalo!
+escoptions_sectret_subgild|un lugar especial
+escoptions_sectret_invincible|Invencible... pero no realmente. Solo no recibirás daño xd.
+... what now?|... ¿ahora qué?
+OUT!|¡FUERA!
+Has Suns decided to insult me with yet another messenger?|¿Acaso Soles decidió insultarme con otro mensajero más?
+... a rat.|... una rata.
+... a vermin.|... una alimaña.
+... a thing.|... un bicho.
+... nothing interesting.|... nada interesante.
+... a disease.|... una vileza.
+... a failure.|... un malogro.
+... a mouse.|... un ratón.
+Just my luck.|Vaya suerte la mía.
+I don't have time to deal with this right now.|No tengo tiempo para lidiar con esto ahora mismo.
+Get out.|Sal.
+Get out of my chamber.|Sal de mi cámara.
+Fucking.|Maldita sea.
+Hello little beast. It is nice to see you again.|Hola, pequeña bestia. Es un placer verte de nuevo.
+Thank you for visiting me. I would not mind some company, but you cannot stay here. I do not want you to be caught in the collapse of my structure.|Gracias por visitarme. No me molesta tener compañía, pero no puedes quedarte aquí.<LINE>No quiero que te quedes atrapado en el colapso de mi estructura.
+It is nice to see you again, but I'm afraid I have nothing for you.|Es un placer verte de nuevo, pero me temo que no tengo nada para ti.
+Yes, help yourself. They are not edible.|Sí, sírvete. No son comestibles.
+I'm so sorry little creature! I never meant to hurt you!|¡Lo siento mucho, pequeña criatura! ¡Nunca quise hacerte daño!
+My structure is on the verge of collapsing. This is all I can offer...|Mi estructura está al borde del colapso. Esto es todo lo que puedo ofrecer...
+Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.|¿No es raro? La última criatura que entró a mi cámara también tuvo adaptaciones extremas.
+Though yours seem vastly different... What are you?|Pero las tuyas son abrumadoramente diferentes... ¿Qué eres?
+I could look up the records of your body's blueprints, but it would be dangerous for you to stay here for the process.|Podría buscar los registros de los planos de tu cuerpo, pero sería peligroso que te quedaras aquí durante el proceso.
+My n...|Mi v...
+My neighb... b b b|Mi vec... ci ci ci
+My neighbor, Five Pebbles, has not stopped his output. If the messenger made it safely to the communications array, the local group would know.|Mi vecino, Cinco Guijarros, no ha detenido su producción.<LINE>Si el mensajero llegaba sano y salvo a las antenas de comunicación, el grupo local lo sabría.
+Were you sent by the local group?|¿Fuiste enviado por el grupo local?
+Who sent you?|¿Quién te envió?
+I should not keep you here any longer.|No debería mantenerte más aquí.
+I cannot offer you hospitality either, poor thing. Run along now, before my structure collapses.|Tampoco puedo ofrecerte hospitalidad, criaturita. Ve corriendo antes de que mi estructura colapse.
+My neighbor, Five Pebbles, has not stopped his output. I do not know if the messenger made it to him, or if he has chosen to ignore the message.|Mi vecino, Cinco Guijarros, no ha detenido su producción.<LINE>No sé si el mensajero llegó hasta él o si ha optado por ignorar el mensaje.
+There is not much I can do, and I urge you to move on, before my structure fails.|No hay mucho que pueda hacer e insto a que sigas adelante antes de que mi estructura falle.
+I would not mind some company, however I urge you to move along. I do not want you to be caught in the collapse of my structure.|No me molesta tener compañía, pero te insto a que sigas adelante.<LINE>No quiero que te quedes atrapado en el colapso de mi estructura.
+HUD B UPDATE|ACTUALIZACIÓN DEL HUD B
+escoptions_deflshared_text|Permadaño compartido del <DEFLECTOR>
+escoptions_deflshared_desc|Comparte el multiplicador de permadaño del <DEFLECTOR> para que cualquiera pueda obtener una baja y beneficiarse.
+escoptions_moreplayerbuilds_text|vvv Configura los estilos para más de 4 jugadores vvv
+NEW ESCAPIST UPDATE|ACTUALIZACIÓN DEL ESTILO ESCAPISTA RENOVADO
+escoptions_custombinds_text|Botón personalizado del Escolta
+Allow|Permite
+Set|Establece
+Reset|Reinicia
+escoptions_custombinds_desc|<REPLACE> el botón personalizado del J
+Reset Keybind|Reiniciar botón
+escoptions_oldescape_text|Mecánicas antiguas del <ESCAPIST>
+escoptions_oldescape_desc|Vuelve al <ESCAPIST> original, que simplemente puede escaparse de presas.
+escoptions_sectret_magic|No te quejes cuando tu wallclip salga mal.
+ENDING ONE UPDATE|ACTUALIZACIÓN DEL FINAL UNO
+At the cost of a karma flower, the slugpup respawns!|A costa de una flor de karma, ¡la cría reaparece!
+Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!|¡Se consumirá una flor de karma al traer una al refugio mientras ya está reforzado!
+Speedster Gear Limit|Límite de velocidad del Velocista
+Sets the gear limit for the Speedster build. Handle with care!|Establece el límite de velocidad para el estilo Velocista. ¡Cámbialo con cuidado!
+hide|oculto
+always|siempre
+botleft|inferior izq.
+botmid|inferior med.
+leftstack|apilado izq.
+Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!|¡Felicitaciones! ¡Tienes el código de acceso (que definitivamente lo obtuviste del desarrollador) y ahora puedes probar la última versión a estrenarse!
+THE CHILD|EL NIÑO
+The Child|El niño
+THE ESCORT|EL ESCOLTA
+The Escort|El escolta
+Escort|Escolta
+A guardian from a faraway land, entrusted to bring a special creature through the thick and thin.|Un guardián de una tierra lejana, al que se le confió la tarea<LINE>de llevar a una criatura especial contra viento y marea.
+urufudoggo.theescort-name|[Beta] El Escolta
+urufudoggo.theescort-description|Un mod que agrega al Escolta y a su cría de gatobabosa más especial.<LINE><LINE>Este implementa actualmente al Escolta y algunas de sus habilidades y técnicas de movimiento.<LINE>DEBERÍA ser completamente compatible para jugar en otras campañas y en el modo Arena.<LINE><LINE>¡Cualquier tipo de feedback es ALTAMENTE valorado!
