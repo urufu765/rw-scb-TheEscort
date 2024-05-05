@@ -221,6 +221,7 @@ leftstack|apilado izq.
 Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!|¡Felicitaciones! ¡Tienes el código de acceso (que definitivamente lo obtuviste del desarrollador) y ahora puedes probar la última versión a estrenarse!
 THE CHILD|EL NIÑO
 The Child|El niño
+you shouldn't be seeing this >:( <LINE>... although there may be a secret to unlocking this campaign earlier than intended...<LINE>Shh! Keep quiet!|no deberías estar viendo esto >:( <LINE>... aunque puede que haya un secreto para desbloquear esta campaña antes de lo previsto...<LINE>¡Shh! ¡Calladito!
 THE ESCORT|EL ESCOLTA
 The Escort|El escolta
 Escort|Escolta
