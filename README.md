@@ -31,6 +31,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev15** Added Brawler explosive punch
     * **dev16** Narrowed down potential crashes as well as not making the thing explode in water
     * **dev16b** Made logs happen every time
+    * **dev17** Removed Railgunner's chest sprite to make it more close to their design
     * *dev17* Added conical detection method
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
