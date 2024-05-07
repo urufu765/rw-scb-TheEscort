@@ -28,7 +28,7 @@ escoptions_longwall_text|Salto largo de pared
 escoptions_longwall_desc|Permite al Escolta lanzarse (mantener saltar), pero sobre muros también. Afectará cómo se perciben los saltos de pared. Recomendado: desactivado.
 escoptions_flippounce_text|Lanzarse con volteretas
 escoptions_flippounce_desc|Hace que el Escolta haga una voltereta al lanzarse y un Salto de Súper Voltereta de Pared™ al mantener una diagonal contra la pared y pulsar saltar.
-flippounce_tutorial|¡Mantén brevemente una dirección diagonal contra la pared y luego pulsa saltar para hacer una súper voltereta de pared!
+flippounce_tutorial|Mantén brevemente una dirección diagonal contra la pared y luego pulsa saltar para hacer una ¡súper voltereta de pared!
 escoptions_lizgrab_text|Agarrar lagartos aturdidos
 escoptions_lizgrab_desc|Permite al Escolta agarrar lagartos aturdidos y causar violencia en ellos.
 lizgrab_tutorial|¡Aturde a un lagarto para agarrarlo, luego salta y pulsa el botón de lanzar para patearlo!
@@ -52,7 +52,7 @@ Player 4|Jugador 4
 escoptions_build_desc|Selecciona el estilo para el <REPLACE>.
 default_desc|El básico, con algunos trucos bajo la manga para no quedarse atrás.
 default_tut_a|El <DEFAULT> nada con mayor facilidad, teniendo más tiempo de respiración y mejores habilidades nadando.
-default_tut_b|¡También es mejor haciendo saltos de postes que los demás Escoltas!
+default_tut_b|¡También hace mejores técnicas de poste que los demás Escoltas!
 Brawler|Luchador
 brawler_desc|Cambia a un estilo de lucha cuerpo a cuerpo con puñetazos y cuchilladas.
 brawler_shanktut_a|El <BRAWLER> puede acuchillar criaturas cuando empuña una lanza.
@@ -69,18 +69,18 @@ deflector_tut_d|Al estar empoderado, hace el triple de daño, pero solo se aplic
 deflector_tut_e|¡Pero no pasa nada, solo vence al depredador!
 deflector_ms_tut|¡Bloquea proyectiles para devolver el arma de vuelta al remitente!
 Escapist|Escapista
-escapist_desc|Escapa a la fuerza de las presas, incluso con las manos vacías (mantén lanzar).
+escapist_desc|Escapa a la fuerza de capturas, incluso con las manos vacías (mantén lanzar).
 escapist_tut_a|¡Agarra algo y lánzala al depredador antes de que el texto «Fin del juego» aparezca!
-escapist_tut_b|O, si no hay nada cerca, mantén lanzar para salir con coacción de la presa.
+escapist_tut_b|O, si no hay nada cerca, mantén lanzar para salir con coacción de la captura.
 escapist_tut_c|Ten cuidado, eso te dejará en un estado vulnerable.
 escapist_new_desc|Escapa de cualquier situación con estilo y destreza. Deja en ridículo a los depredadores.
 escapist_new_tut_a|Pulsa brevemente el mapa para teletransportarte a donde el <ESCAPIST> estuvo hace dos segundos.
-escapist_new_tut_b|Cualquier criatura atrapada entre tu antigua posición y la nueva se vuelve vulnerable. Esto reiniciará su tiempo de espera por la mitad.
+escapist_new_tut_b|Cualquier criatura atrapada entre tu antigua posición y la nueva se vuelve vulnerable. Esto reiniciará el tiempo de espera por la mitad.
 escapist_new_tut_c|¡Ataca para sacar provecho de la situación y reinicia el tiempo de espera de la habilidad aún más!
 Railgunner|Artillero
 railgunner_desc|Empuña dos armas del mismo tipo para mejorar tus ataques.
-railgunner_tut_a|El <RAILGUNNER> casi no se beneficia del entusiasmo de combate, pero sí de la sobrecarga.
-railgunner_tut_b|Sostén dos armas del mismo tipo para lanzarlas al mismo tiempo, aumentando el poder de ataque y la sobrecarga.
+railgunner_tut_a|El <RAILGUNNER> casi no se beneficia del entusiasmo de combate, pero sí del poder extra que da la sobrecarga.
+railgunner_tut_b|Sostén dos armas del mismo tipo para lanzarlas a la vez, aumentando así el poder de ataque y la sobrecarga.
 railgunner_tut_c|¡Ten en cuenta que un exceso de sobrecarga explosionará al <RAILGUNNER>!
 railgunner_tut_d|Trata de escuchar el pinchazo, este indica que la sobrecarga está a punto de estallar, y espera a que se enfríe.
 ralgunner_ms_tut|Mantén agarrar con dos rocas para fabricar una bomba, dos lanzas para una lanza explosiva.
@@ -92,7 +92,7 @@ railgunner_ms_tut_cracker|Doble petardo: velocidad aumentada y explosión potent
 railgunner_ms_tut_singularity|Doble bomba de singularidad: se salta el rebote y detona al impacto.
 Speedster|Velocista
 speedster_desc|Muévete para cargar velocidad y luego deslízate para liberarla.
-speedster_tut_a|¡Siempre estés en movimiento para cargar la mejora y deslízate para usarlo e ir más rápido!
+speedster_tut_a|¡Siempre estés en movimiento para cargar la mejora y deslízate para usarla e ir más rápido!
 speedster_tut_b|Ten cuidado, ¡colisionar con cualquier cosa puede aturdirte si vas demasiado rápido!
 speedster_old_tut_a|Muévete para acumular velocidad. ¡Cruza un cierto umbral para obtener una mejora!
 speedster_old_tut_b|¡Sigue moviéndote a la velocidad mejorada para alcanzar una mejora todavía más rápida!
@@ -103,7 +103,7 @@ Gilded|Dorado
 gilded_desc|Trae favores de<REPLACE>, utiliza los poderes prestados.
 gilded_sub_a|l vacío
 gilded_sub_b| un lugar misterioso
-gilded_tut_a|Salta para llegar a lugares de gran altura. ¡Las súper volteretas de pared saltan muy alto!
+gilded_tut_a|Salta para alcanzar lugares de gran altura. ¡Las súper volteretas de pared llegan muy alto!
 gilded_tut_b|¡Pulsa lanzar con las manos vacías y en el aire para dar un pisotón! Se anula el daño por caída.
 gilded_tut_c|El <GILDED> no puede arrojar rocas o lanzas para defenderse. ¡Primero utiliza el poder para transformar los objetos!
 gilded_tut_rock|¡Mantén lanzar con una roca o bomba en la mano para transformarla en una bomba incendiaria!
@@ -166,22 +166,22 @@ Has Suns decided to insult me with yet another messenger?|¿Acaso Soles decidió
 ... a rat.|... una rata.
 ... a vermin.|... una alimaña.
 ... a thing.|... un bicho.
-... nothing interesting.|... nada interesante.
-... a disease.|... una vileza.
-... a failure.|... un malogro.
+... nothing interesting.|... un donnadie.
+... a disease.|... una peste.
+... a failure.|... un chasco.
 ... a mouse.|... un ratón.
 Just my luck.|Vaya suerte la mía.
 I don't have time to deal with this right now.|No tengo tiempo para lidiar con esto ahora mismo.
 Get out.|Sal.
 Get out of my chamber.|Sal de mi cámara.
-Fucking.|Maldita sea.
+Fucking.|La puta madre.
 Hello little beast. It is nice to see you again.|Hola, pequeña bestia. Es un placer verte de nuevo.
 Thank you for visiting me. I would not mind some company, but you cannot stay here. I do not want you to be caught in the collapse of my structure.|Gracias por visitarme. No me molesta tener compañía, pero no puedes quedarte aquí.<LINE>No quiero que te quedes atrapado en el colapso de mi estructura.
 It is nice to see you again, but I'm afraid I have nothing for you.|Es un placer verte de nuevo, pero me temo que no tengo nada para ti.
 Yes, help yourself. They are not edible.|Sí, sírvete. No son comestibles.
 I'm so sorry little creature! I never meant to hurt you!|¡Lo siento mucho, pequeña criatura! ¡Nunca quise hacerte daño!
 My structure is on the verge of collapsing. This is all I can offer...|Mi estructura está al borde del colapso. Esto es todo lo que puedo ofrecer...
-Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.|¿No es raro? La última criatura que entró a mi cámara también tuvo adaptaciones extremas.
+Isn't it funny? The last creature to enter my chamber had extreme adaptations as well.|¿No te parece raro? La última criatura que entró a mi cámara también tuvo adaptaciones extremas.
 Though yours seem vastly different... What are you?|Pero las tuyas son abrumadoramente diferentes... ¿Qué eres?
 I could look up the records of your body's blueprints, but it would be dangerous for you to stay here for the process.|Podría buscar los registros de los planos de tu cuerpo, pero sería peligroso que te quedaras aquí durante el proceso.
 My n...|Mi v...
@@ -206,7 +206,7 @@ Reset|Reinicia
 escoptions_custombinds_desc|<REPLACE> el botón personalizado del J
 Reset Keybind|Reiniciar botón
 escoptions_oldescape_text|Mecánicas antiguas del <ESCAPIST>
-escoptions_oldescape_desc|Vuelve al <ESCAPIST> original, que simplemente puede escaparse de presas.
+escoptions_oldescape_desc|Vuelve al <ESCAPIST> original, que simplemente puede escaparse de capturas.
 escoptions_sectret_magic|No te quejes cuando tu wallclip salga mal.
 ENDING ONE UPDATE|ACTUALIZACIÓN DEL FINAL UNO
 At the cost of a karma flower, the slugpup respawns!|A costa de una flor de karma, ¡la cría reaparece!
