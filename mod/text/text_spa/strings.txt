@@ -70,7 +70,7 @@ deflector_tut_e|¡Pero no pasa nada, solo vence al depredador!
 deflector_ms_tut|¡Bloquea proyectiles para devolver el arma de vuelta al remitente!
 Escapist|Escapista
 escapist_desc|Escapa a la fuerza de capturas, incluso con las manos vacías (mantén lanzar).
-escapist_tut_a|¡Agarra algo y lánzala al depredador antes de que el texto «Fin del juego» aparezca!
+escapist_tut_a|¡Agarra algo y lánzalo al depredador antes de que el texto «Fin del juego» aparezca!
 escapist_tut_b|O, si no hay nada cerca, mantén lanzar para salir con coacción de la captura.
 escapist_tut_c|Ten cuidado, eso te dejará en un estado vulnerable.
 escapist_new_desc|Escapa de cualquier situación con estilo y destreza. Deja en ridículo a los depredadores.
