@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.3 - Ending I
+  * **(0.3.1.1)** TranslaciOn de EspaNol
+
   * **(0.3.1)** Big Update Fix
     * **dev01** Updated libraries
     * **dev02** Fixed syntax issues
@@ -45,8 +47,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * Now gains passive speed the higher charge they build up
     * Gilded Changes
       * Revivify QoL: Power meter *resets* when revived so they don't insta-die
-
-  * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
 
   * **(0.3.0.1) [Willowisp]** Myriad compatibility patch
 
