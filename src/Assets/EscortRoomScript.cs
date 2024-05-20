@@ -686,12 +686,13 @@ public class EscortRoomScript
                 cutsceneTimer++;
                 foreach(AbstractCreature ac in creatures)
                 {
-                    // if (ac.abstractAI?.RealAI is not null)
-                    // {
-                    //     ac.abstractAI.RealAI.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
-                    // }
+
+                    if (ac.abstractAI?.RealAI is not null)
+                    {
+                        ac.abstractAI.RealAI.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                    }
                     //ac.abstractAI?.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
-                    ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                    //ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
                 }
                 room.roomSettings.GetEffect(RoomSettings.RoomEffect.Type.VoidMelt).amount = Mathf.Lerp(voidMeltInit, 1, Mathf.InverseLerp(0, 400, cutsceneTimer));
                 if (this.phase == Phase.CreatureMove)
