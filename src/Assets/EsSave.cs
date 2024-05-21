@@ -7,7 +7,7 @@ using IL.Menu;
 namespace TheEscort
 {
     /// <summary>
-    /// A simple list that expands upon having an index greater than the size
+    /// A simple list that expands upon having an index greater than the size. Never used. Do not use.
     /// </summary>
     public class ExpandableList<T> : List<T>
     {

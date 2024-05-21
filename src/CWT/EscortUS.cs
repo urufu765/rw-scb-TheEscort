@@ -24,6 +24,11 @@ namespace TheEscort
         public int UnsMeleeGrab;  // Regrab timer for melee attacks
         public int UnsMeleeStun;  // Cooldown for preventing Unstable from trying to throw/toss/melee immediately
         public int UnsMeleeUsed;  // The grasp hand that is used for melee toss
+        public int UnsFuckYourSlide;  // Prevents Unstable from sliding if more than 0
+
+        // Constants for Unstable Rockit Kick values
+        public const float UnsRKDx = 0.25f;
+        public const int UnsRKSx = 15;
 
         public void EscortUS()
         {

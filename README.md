@@ -33,9 +33,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev16b** Made logs happen every time
     * **dev17** Removed Railgunner's chest sprite to make it more close to their design
     * **dev18** Potentially fixed the void ending
-    * *dev17* Added conical detection method
+    * **dev19** Got started on unstable homing kick
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
+      * *dev* Added conical detection method
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
     * __Brawler TODO__

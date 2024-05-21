@@ -90,6 +90,12 @@ namespace TheEscort
             {
                 e.UnsMeleeGrab--;
             }
+
+            // Slide prevention system(?)
+            if (e.UnsFuckYourSlide > 0)
+            {
+                e.UnsFuckYourSlide--;
+            }
         }
 
         private void Esclass_US_Update(Player self, ref Escort e)
