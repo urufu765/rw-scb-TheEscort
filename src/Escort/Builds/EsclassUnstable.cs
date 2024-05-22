@@ -609,10 +609,10 @@ namespace TheEscort
                     float closest = maxR;
                     foreach (UpdatableAndDeletable thing in self.room.updateList)
                     {
-                        if (thing is Creature c && c != self && Custom.Distless(c.firstChunk.pos, self.mainBodyChunk.pos, closest))
+                        if (thing is Creature cret && cret != self && Custom.DistLess(cret.firstChunk.pos, self.mainBodyChunk.pos, closest))
                         {
-                            closest = Custom.Dist(c.firstChunk.pos, self.mainBodyChunk.pos);
-                            targit = c;
+                            closest = Custom.Dist(cret.firstChunk.pos, self.mainBodyChunk.pos);
+                            targit = cret;
                             Ebug(self, "Found someone at " + closest, ignoreRepetition: true);
                         }
                     }
