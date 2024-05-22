@@ -34,6 +34,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev17** Removed Railgunner's chest sprite to make it more close to their design
     * **dev18** Potentially fixed the void ending
     * **dev19** Got started on unstable homing kick
+    * **dev20** Continue work on the homing kick
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Added conical detection method

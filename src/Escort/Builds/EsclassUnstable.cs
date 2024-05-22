@@ -202,6 +202,11 @@ namespace TheEscort
                 Ebug(self, "Midjump!", ignoreRepetition: true);
                 Esclass_US_MidJump(self, e);
             }
+            if (e.UnsBlinkCD == 0 && e.UnsBlinkWindow > 0 && self.input[0].thrw && !self.input[1].thrw)
+            {
+                Ebug(self, "HOMING MISSILE!", ignoreRepetition: true);
+                Esclass_US_RockitKick(self, e);
+            }
 
             // Might want to deal with walljumps too later on
         }
@@ -580,5 +585,49 @@ namespace TheEscort
             }
             return false;
         }
+
+        /// <summary>
+        /// Homes into the nearest creature or nearest in selected direction and does a KICK
+        /// </summary>
+        private void Esclass_US_RockitKick(Player self, Escort e)
+        {
+            bool directional = false;
+            float maxR = 100;
+            Creature targit = null;
+
+            if (self.input[0].x != 0 || self.input[0].y != 0)
+            {
+                directional = true;
+                maxR = 150;
+            }
+
+            // General creature finder
+            if (!directional)
+            {
+                try
+                {
+                    float closest = maxR;
+                    foreach (UpdatableAndDeletable thing in self.room.updateList)
+                    {
+                        if (thing is Creature c && c != self && Custom.Distless(c.firstChunk.pos, self.mainBodyChunk.pos, closest))
+                        {
+                            closest = Custom.Dist(c.firstChunk.pos, self.mainBodyChunk.pos);
+                            targit = c;
+                            Ebug(self, "Found someone at " + closest, ignoreRepetition: true);
+                        }
+                    }
+                }
+                catch (Exception err)
+                {
+                    Ebug(err, "Something happened whilst trying to home into a creature!");
+                }
+            }
+
+            // Home towards creature!
+            if (targit is not null)
+            {
+            }
+        }
+
     }
 }
