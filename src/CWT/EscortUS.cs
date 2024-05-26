@@ -25,6 +25,8 @@ namespace TheEscort
         public int UnsMeleeStun;  // Cooldown for preventing Unstable from trying to throw/toss/melee immediately
         public int UnsMeleeUsed;  // The grasp hand that is used for melee toss
         public int UnsFuckYourSlide;  // Prevents Unstable from sliding if more than 0
+        public Creature UnsRockitCret;  // The creature to home into
+        public int UnsRockitDur;  // Let homing last for 1.5 seconds before canceling
 
         // Constants for Unstable Rockit Kick values
         public const float UnsRKDx = 0.25f;

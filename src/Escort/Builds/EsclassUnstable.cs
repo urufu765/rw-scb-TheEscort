@@ -589,7 +589,7 @@ namespace TheEscort
         /// <summary>
         /// Homes into the nearest creature or nearest in selected direction and does a KICK
         /// </summary>
-        private void Esclass_US_RockitKick(Player self, Escort e)
+        private Creature Esclass_US_RockitKick(Player self, Escort e)
         {
             bool directional = false;
             float maxR = 100;
@@ -623,10 +623,11 @@ namespace TheEscort
                 }
             }
 
-            // Home towards creature!
-            if (targit is not null)
-            {
-            }
+            // // Home towards creature!
+            // if (targit is not null)
+            // {
+            // }
+            return targit;
         }
 
     }
