@@ -36,6 +36,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev19** Got started on unstable homing kick
     * **dev20** Continue work on the homing kick
     * **dev21** ^
+    * **dev22** ^
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Added conical detection method

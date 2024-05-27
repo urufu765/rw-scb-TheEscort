@@ -96,6 +96,23 @@ namespace TheEscort
             {
                 e.UnsFuckYourSlide--;
             }
+
+            // Cancels homing if homing takes too long
+            if (e.UnsRockitCret is not null)
+            {
+                if (e.UnsRockitDur > 0)
+                {
+                    e.UnsRockitDur--;
+                }
+                else
+                {
+                    e.UnsRockitCret = null;
+                }
+            }
+            else
+            {
+                e.UnsRockitDur = 0;
+            }
         }
 
         private void Esclass_US_Update(Player self, ref Escort e)
@@ -205,7 +222,7 @@ namespace TheEscort
             if (e.UnsBlinkCD == 0 && e.UnsBlinkWindow > 0 && self.input[0].thrw && !self.input[1].thrw)
             {
                 Ebug(self, "HOMING MISSILE!", ignoreRepetition: true);
-                Esclass_US_RockitKick(self, e);
+                e.UnsRockitCret = Esclass_US_RockitKick(self, e);
             }
 
             // Might want to deal with walljumps too later on
