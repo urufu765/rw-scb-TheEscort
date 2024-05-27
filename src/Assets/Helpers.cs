@@ -450,5 +450,24 @@ namespace TheEscort
 
             return text;
         }
+
+
+        /// <summary>
+        /// Checks if the thing's position is inside a cone area with Position as the origin(anglegirth acts as angle +- girth)
+        /// </summary>
+        public static bool ConeDetection(Vector2 thing, Vector2 position, float range, float angle, float angleGirth)
+        {
+            if (!RWCustom.Custom.DistLess(thing, position, range))
+            {
+                return false;
+            }
+
+            float a = RWCustom.Custom.AngleToDeg(position, thing);
+            if (a > angle - anglegirth && a < angle + anglegirth)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

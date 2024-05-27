@@ -37,9 +37,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev20** Continue work on the homing kick
     * **dev21** ^
     * **dev22** ^
+    * **dev23** Work on cone detection method
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
-      * *dev* Added conical detection method
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
     * __Brawler TODO__
