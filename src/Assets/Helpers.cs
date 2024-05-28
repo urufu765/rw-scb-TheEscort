@@ -462,7 +462,7 @@ namespace TheEscort
                 return false;
             }
 
-            float a = RWCustom.Custom.VectorToDeg(position, thing);
+            float a = RWCustom.Custom.VecToDeg(position, thing);
             if (a > angle - anglegirth && a < angle + anglegirth)
             {
                 return true;
@@ -477,7 +477,7 @@ namespace TheEscort
         public static float InputToDeg(Player.InputPackage input)
         {
             Vector2 dirInput = new(input.x, input.y);
-            return RWCustom.Custom.VectorToDeg(default, dirInput);
+            return RWCustom.Custom.VecToDeg(default, dirInput);
         }
     }
 }
