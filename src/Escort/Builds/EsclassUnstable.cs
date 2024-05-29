@@ -639,6 +639,26 @@ namespace TheEscort
                     Ebug(err, "Something happened whilst trying to home into a creature!");
                 }
             }
+            else
+            {
+                try
+                {
+                    float closist = maxR;
+                    foreach (UpdatableAndDeletable uad in self.room.updateList)
+                    {
+                        if (uad is Creature crit && crit != self && self.ConeDetection(crit, closist, InputToDeg(self.input[0]), 15))
+                        {
+                            closist = Custom.Dist(crit.firstChunk.pos, self.mainBodyChunk.pos);
+                            targit = crit;
+                            Ebug(self, "Found someone at " + closest + ", angle: " + Custom.VecToDeg(self.firstChunk.pos, crit.firstChunk.pos), ignoreRepetition: true);
+                        }
+                    }
+                }
+                catch (Exception err)
+                {
+                    Ebug(err, "Something happened whilst trying to home into a creature directionwise!");
+                }
+            }
 
             // // Home towards creature!
             // if (targit is not null)

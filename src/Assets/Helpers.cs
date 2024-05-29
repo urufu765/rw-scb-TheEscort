@@ -455,14 +455,14 @@ namespace TheEscort
         /// <summary>
         /// Checks if the thing's position is inside a cone area with Position as the origin(anglegirth acts as angle +- girth)
         /// </summary>
-        public static bool ConeDetection(Vector2 thing, Vector2 position, float range, float angle, float angleGirth)
+        public static bool ConeDetection(this Creature origin, Vector2 thing, float range, float angle, float angleGirth)
         {
-            if (!RWCustom.Custom.DistLess(thing, position, range))
+            if (!RWCustom.Custom.DistLess(thing, origin.firstChunk.pos, range))
             {
                 return false;
             }
 
-            float a = RWCustom.Custom.VecToDeg(position, thing);
+            float a = RWCustom.Custom.VecToDeg(origin.firstChunk.pos, thing);
             if (a > angle - anglegirth && a < angle + anglegirth)
             {
                 return true;
@@ -477,6 +477,11 @@ namespace TheEscort
         public static float InputToDeg(Player.InputPackage input)
         {
             Vector2 dirInput = new(input.x, input.y);
+
+            if (input.analogueDir.magnitude > 0.2f)
+            {
+                dirInput = input.analogueDir;
+            }
             return RWCustom.Custom.VecToDeg(default, dirInput);
         }
     }
