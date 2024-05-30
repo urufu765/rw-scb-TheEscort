@@ -650,7 +650,7 @@ namespace TheEscort
                         {
                             closist = Custom.Dist(crit.firstChunk.pos, self.mainBodyChunk.pos);
                             targit = crit;
-                            Ebug(self, "Found someone at " + closest + ", angle: " + Custom.VecToDeg(self.firstChunk.pos, crit.firstChunk.pos), ignoreRepetition: true);
+                            Ebug(self, "Found someone at " + closest + ", angle: " + Custom.VecToDeg(Custom.DirVec(self.firstChunk.pos, crit.firstChunk.pos)), ignoreRepetition: true);
                         }
                     }
                 }

@@ -40,6 +40,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev23** Work on cone detection method
     * **dev24** Helper to translate input to direction
     * **dev25** Implement cone detection + analog support
+    * **dev26** Fixed stuff
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

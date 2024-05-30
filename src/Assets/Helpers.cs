@@ -462,8 +462,8 @@ namespace TheEscort
                 return false;
             }
 
-            float a = RWCustom.Custom.VecToDeg(origin.firstChunk.pos, thing);
-            if (a > angle - anglegirth && a < angle + anglegirth)
+            float a = RWCustom.Custom.VecToDeg(RWCustom.Custom.DirVec(origin.firstChunk.pos, thing));
+            if (a > angle - angleGirth && a < angle + angleGirth)
             {
                 return true;
             }
@@ -477,12 +477,32 @@ namespace TheEscort
         public static float InputToDeg(Player.InputPackage input)
         {
             Vector2 dirInput = new(input.x, input.y);
+            if (dirInput == Vector2.zero)
+            {
+                throw new ZeroException("Input cannot be zero!");
+            }
 
             if (input.analogueDir.magnitude > 0.2f)
             {
                 dirInput = input.analogueDir;
             }
-            return RWCustom.Custom.VecToDeg(default, dirInput);
+            return RWCustom.Custom.VecToDeg(dirInput);
+        }
+    }
+
+    [Serializable]
+    public class ZeroException() : Exception
+    {
+        public ZeroException() : base()
+        {
+        }
+
+        public ZeroException(string message) : base(message)
+        {
+        }
+
+        public ZeroException(string message, Exception inner) : base(message, inner)
+        {
         }
     }
 }
