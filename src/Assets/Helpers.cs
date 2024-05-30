@@ -479,7 +479,7 @@ namespace TheEscort
             Vector2 dirInput = new(input.x, input.y);
             if (dirInput == Vector2.zero)
             {
-                throw new ZeroException("Input cannot be zero!");
+                throw new ZeroValException("Input cannot be zero!");
             }
 
             if (input.analogueDir.magnitude > 0.2f)
@@ -491,17 +491,17 @@ namespace TheEscort
     }
 
     [Serializable]
-    public class ZeroException() : Exception
+    public class ZeroValException : Exception
     {
-        public ZeroException() : base()
+        public ZeroValException() : base()
         {
         }
 
-        public ZeroException(string message) : base(message)
+        public ZeroValException(string message) : base(message)
         {
         }
 
-        public ZeroException(string message, Exception inner) : base(message, inner)
+        public ZeroValException(string message, Exception inner) : base(message, inner)
         {
         }
     }
