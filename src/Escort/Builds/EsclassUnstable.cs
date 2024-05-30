@@ -646,11 +646,11 @@ namespace TheEscort
                     float closist = maxR;
                     foreach (UpdatableAndDeletable uad in self.room.updateList)
                     {
-                        if (uad is Creature crit && crit != self && self.ConeDetection(crit, closist, InputToDeg(self.input[0]), 15))
+                        if (uad is Creature crit && crit != self && self.ConeDetection(crit.firstChunk.pos, closist, InputToDeg(self.input[0]), 15))
                         {
                             closist = Custom.Dist(crit.firstChunk.pos, self.mainBodyChunk.pos);
                             targit = crit;
-                            Ebug(self, "Found someone at " + closest + ", angle: " + Custom.VecToDeg(Custom.DirVec(self.firstChunk.pos, crit.firstChunk.pos)), ignoreRepetition: true);
+                            Ebug(self, "Found someone at " + closist + ", angle: " + Custom.VecToDeg(Custom.DirVec(self.firstChunk.pos, crit.firstChunk.pos)), ignoreRepetition: true);
                         }
                     }
                 }
