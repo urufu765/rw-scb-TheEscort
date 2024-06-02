@@ -623,8 +623,8 @@ namespace TheEscort
             {
                 try
                 {
-                    float closest = maxR;
-                    foreach (UpdatableAndDeletable thing in self.room.updateList)
+                    float closest = maxR;  // Set closest range to max range
+                    foreach (UpdatableAndDeletable thing in self.room.updateList)  // Check all entities in a room
                     {
                         if (thing is Creature cret && cret != self && Custom.DistLess(cret.firstChunk.pos, self.mainBodyChunk.pos, closest))
                         {
