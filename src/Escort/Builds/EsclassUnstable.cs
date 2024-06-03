@@ -208,6 +208,15 @@ namespace TheEscort
             {
                 Ebug(err, "Unstable melee failed!");
             }
+
+            try 
+            {
+                if (e.UnsRockitDur > 0 && e.UnsRockitCret is not null)
+                {
+                    Ebug(self, "Rockit! " + e.UnsRockitDur, ignoreRepetition: true);
+                    Esclass_US_HomeKick(self, e.UnsRockitCret);
+                }
+            }
         }
 
 
@@ -569,6 +578,15 @@ namespace TheEscort
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Homing rocket kick, for kicks ;)
+        /// </summary>
+        public static void Esclass_US_HomeKick(Player self, Creature targit)
+        {
+            // Find a way to move towards Creature dynamically
+            // ADVANCED: Make Unstable go around walls
         }
 
         private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
