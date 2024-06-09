@@ -42,6 +42,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev25** Implement cone detection + analog support
     * **dev26** Fixed stuff
     * **dev27** A bit more work on homing kick
+    * **dev28** Collision complete
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

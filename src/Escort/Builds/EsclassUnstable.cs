@@ -587,6 +587,7 @@ namespace TheEscort
         {
             // Find a way to move towards Creature dynamically
             // ADVANCED: Make Unstable go around walls
+            // Orient the player so it's feet first
         }
 
         private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
@@ -644,7 +645,7 @@ namespace TheEscort
                     float closest = maxR;  // Set closest range to max range
                     foreach (UpdatableAndDeletable thing in self.room.updateList)  // Check all entities in a room
                     {
-                        if (thing is Creature cret && cret != self && Custom.DistLess(cret.firstChunk.pos, self.mainBodyChunk.pos, closest))
+                        if (thing is Creature cret && cret != self && !cret.dead && Custom.DistLess(cret.firstChunk.pos, self.mainBodyChunk.pos, closest))
                         {
                             closest = Custom.Dist(cret.firstChunk.pos, self.mainBodyChunk.pos);
                             targit = cret;
@@ -683,6 +684,26 @@ namespace TheEscort
             // {
             // }
             return targit;
+        }
+
+        /// <summary>
+        /// Collision against a creature to apply the homing kick stuff
+        /// </summary>
+        private void Esclass_US_Collision(Player self, Creature creature, ref Escort e)
+        {
+            if (e.UnsRockitDur > 0 && creature == e.UnsRockitCret)
+            {
+                e.UnsRockitDur = 0;
+                creature.Violence(
+                    self.bodyChunks[1], 
+                    new Vector2(self.bodyChunks[1].vel.x * DKMultiplier, self.bodyChunks[1].vel.y * DKMultiplier),
+                    creature.mainBodyChunk, null,
+                    Creature.DamageType.Blunt,
+                    e.UnsRKDx * e.UnsBlinkCount,
+                    e.UnsRKSx * e.UnsBlinkCount
+                );
+                self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 1f, 1.5f);
+            }
         }
 
     }
