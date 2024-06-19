@@ -22,8 +22,19 @@ namespace TheEscort
     [BepInPlugin(MOD_ID, "[Alpha] The Escort", "0.4")]
     partial class Plugin : BaseUnityPlugin
     {
+        /// <summary>
+        /// Static instance of the plugin class to allow public access to things that require this class
+        /// </summary>
         public static Plugin ins;
+
+        /// <summary>
+        /// Configuration instance, to access all the user-set options
+        /// </summary>
         public EscOptions config;
+
+        /// <summary>
+        /// ???
+        /// </summary>
         public const string MOD_ID = "urufudoggo.theescort";
 
         /*
@@ -41,18 +52,37 @@ namespace TheEscort
         }*/
 
 #region Declare Features
+        /// <summary>
+        /// Allow json values to override internal values (Player instance)
+        /// </summary>
         public static readonly PlayerFeature<bool> pRTEdits = PlayerBool("playescort/realtime_edits");
+
+        /// <summary>
+        /// Allow json values to override internal values (Game instance)
+        /// </summary>
         public static readonly GameFeature<bool> gRTEdits = GameBool("gameescort/realtime_edits");
+
+        /// <summary>
+        /// Allows Escort to do the sick flip
+        /// </summary>
         public static readonly PlayerFeature<bool> BtrPounce = PlayerBool("theescort/better_pounce");
+
+        /// <summary>
+        /// Angry lizards
+        /// </summary>
         public static readonly GameFeature<bool> SupahMeanLizards = GameBool("theescort/mean_lizards");
         //public static readonly GameFeature<bool> SuperMeanGarbageWorms = GameBool("theescort/mean_garb_worms");
 
 
-
-        /* JSON VALUES
-        ["Stun Slide damage", "Stun Slide base stun duration", "Drop Kick base damage", "Drop Kick stun duration"]
-        */
+        /// <summary>
+        /// JSON VALUES,
+        /// ["Stun Slide damage", "Stun Slide base stun duration", "Drop Kick base damage", "Drop Kick stun duration"]
+        /// </summary>
         public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
+
+        /// <summary>
+        /// Slidestun forward thrust/momentum
+        /// </summary>
         public static readonly PlayerFeature<float[]> SlideLaunchMod = PlayerFloats("theescort/slide_launch_mod");
 
         public static readonly PlayerFeature<float> LiftHeavy = PlayerFloat("theescort/heavylifter");

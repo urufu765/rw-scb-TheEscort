@@ -43,6 +43,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev26** Fixed stuff
     * **dev27** A bit more work on homing kick
     * **dev28** Collision complete
+    * **dev28a** Commenting so it's kinda easier to follow
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
