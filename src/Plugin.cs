@@ -85,22 +85,62 @@ namespace TheEscort
         /// </summary>
         public static readonly PlayerFeature<float[]> SlideLaunchMod = PlayerFloats("theescort/slide_launch_mod");
 
+        /// <summary>
+        /// Heavy lift multiplier (0.6x default, 3x Escort)
+        /// </summary>
         public static readonly PlayerFeature<float> LiftHeavy = PlayerFloat("theescort/heavylifter");
+
+        
         public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
+
+        /// <summary>
+        /// Dropkick knockback multiplier. Controls how strong the dropkick knockback is to those who can experience knockback.
+        /// </summary>
         public static readonly PlayerFeature<float> DKM = PlayerFloat("theescort/dk_multiplier");
+
+        /// <summary>
+        /// Allow parry slide (parry by sliding on the ground)
+        /// </summary>
         public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
+        
         public static readonly PlayerFeature<int> Escomet = PlayerInt("theescort/headbutt");
+
+        /// <summary>
+        /// Allow Escort's elevator (ramping off creatures while pressing and holding jump launches Escort)
+        /// </summary>
         public static readonly PlayerFeature<bool> Elvator = PlayerBool("theescort/elevator");
+        
         public static readonly PlayerFeature<float> TrampOhLean = PlayerFloat("theescort/trampoline");
+
+        /// <summary>
+        /// Allow Escort's hype mechanic
+        /// </summary>
         public static readonly PlayerFeature<bool> HypeSys = PlayerBool("theescort/adrenaline_system");
+
+        /// <summary>
+        /// Controls the minimum required adrenaline to activate Battlehype
+        /// </summary>
         public static readonly PlayerFeature<float> HypeReq = PlayerFloat("theescort/stamina_req");
+
+        /// <summary>
+        /// Controls how many frames between outputs of a log that updates constantly
+        /// </summary>
         public static readonly PlayerFeature<int> CR = PlayerInt("theescort/reset_rate");
 
-        /* JSON VALUES
-        ["Hyped spear damage", "Base spear damage"]
-        */
+        /// <summary>
+        /// Controls Escort's spear damage
+        /// JSON VALUES: ["Hyped spear damage", "Base spear damage"]
+        /// </summary>
         public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
+
+        /// <summary>
+        /// Allow Escort being able to hold two spears
+        /// </summary>
         public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
+
+        /// <summary>
+        /// Allow silly sounds
+        /// </summary>
         public static readonly PlayerFeature<bool> soundAhoy = PlayerBool("theescort/sounds_ahoy");
 
         /* JSON VALUES
