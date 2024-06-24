@@ -143,10 +143,13 @@ namespace TheEscort
         /// </summary>
         public static readonly PlayerFeature<bool> soundAhoy = PlayerBool("theescort/sounds_ahoy");
 
-        /* JSON VALUES
-        [Soon]
-        */
+        /// <summary>
+        /// Helps adjust the gutter watter resistance on escort in a variety of on the fly
+        /// </summary>
         public static readonly PlayerFeature<float[]> NoMoreGutterWater = PlayerFloats("theescort/guuh_wuuh");
+        /// <summary>
+        /// Do not. Tries to adapt pouncing to walls... not much success here
+        /// </summary>
         public static readonly PlayerFeature<bool> LWallJump = PlayerBool("theescort/long_wall_jump");
 
         /* JSON VALUES
@@ -155,15 +158,28 @@ namespace TheEscort
         public static readonly PlayerFeature<float[]> WallJumpVal = PlayerFloats("theescort/wall_jump_val");
 
 
-        /* JSON VALUES
-        [Rotation val, X val, Y val]
-        */
+        /// <summary>
+        /// Head marking sprite scaling
+        /// JSON VALUES
+        /// [Rotation val, X val, Y val]
+        /// </summary> 
         public static readonly PlayerFeature<float[]> headDraw = PlayerFloats("theescort/headthing");
+        /// <summary>
+        /// Body marking sprite scaling
+        /// </summary>
         public static readonly PlayerFeature<float[]> bodyDraw = PlayerFloats("theescort/bodything");
-
+        /// <summary>
+        /// Replaces the grapple backpack.... idk why forgor
+        /// </summary>
         public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
 
+        /// <summary>
+        /// Registers the Escort sleep scene
+        /// </summary>
         public static readonly GameFeature<MenuScene.SceneID> AltSleepScene = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene");
+        /// <summary>
+        /// Registers the Escort with Socks sleep scene
+        /// </summary>
         public static readonly GameFeature<MenuScene.SceneID> AltSleepSceneDuo = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene_together");
         #endregion
 
@@ -171,7 +187,6 @@ namespace TheEscort
         public static readonly SlugcatStats.Name EscortMe = new("EscortMe");
         public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
         //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
-
 
         public static SoundID Escort_SFX_Death;
         public static SoundID Escort_SFX_Flip;
@@ -197,18 +212,57 @@ namespace TheEscort
         private readonly bool nonArena = false;  // Sets Escort's marking colors to the main color instead of Arena
         //public static readonly String EscName = "EscortMe";
 
-        // Escort instance stuff
+        // Escort instance 
+        
+        /// <summary>
+        /// Contains instances of the Escort class for each applicable players. ALL Escort loadouts use the same Escort class to control the loadout specific abilities.
+        /// </summary>
         public static ConditionalWeakTable<Player, Escort> eCon = new();
+        /// <summary>
+        /// Contains instances of the Socks class for each applicable players.
+        /// </summary>
         public static ConditionalWeakTable<Player, Socks> sCon = new();
         //public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon = new();
         //private Escort e;
+
+        /// <summary>
+        /// Global hype requirement setting (stores the setting from json or remix for use)
+        /// </summary>
         public float hypeRequirement;
+
+        /// <summary>
+        /// Semi-global dropkick knockback intensity setting (stores the setting from json or remix for use)
+        /// </summary>
         private float DKMultiplier;
+
+        /// <summary>
+        /// Mostly-global heavy carry intensity (stores the setting from json or remix for use)
+        /// </summary>
         float ratioed;
+
+        /// <summary>
+        /// Global setting for whether temple guard is friendly or not
+        /// </summary>
         public static bool templeGuardIsFriendly;
+
+        /// <summary>
+        /// Enables logging of player input and player position
+        /// </summary>
         public static readonly bool logForCutscene = false;
+
+        /// <summary>
+        /// Global variable that prompts the code to check if pup is existing
+        /// </summary>
         public static bool checkPupStatusAgain = false;
+
+        /// <summary>
+        /// Status check that checks if slugpup is allowed to exist in the campaign
+        /// </summary>
         public static bool pupAvailable;
+
+        /// <summary>
+        /// Status check that checks if slugpup is alive and existing
+        /// </summary> 
         public static bool pupIsAlive;
 
 
