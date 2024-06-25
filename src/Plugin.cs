@@ -267,18 +267,30 @@ namespace TheEscort
 
 
         // Patches
+        
+        /// <summary>
+        /// Revivify patch: 1.2.0
+        /// </summary>
         public static bool escPatch_revivify = false;
+        /// <summary>
+        /// Rotund World patch: 1.6
+        /// </summary>
         public static bool escPatch_rotundness = false;
+        /// <summary>
+        /// Dress My Slugcat patch: 1.4
+        /// </summary>
         public static bool escPatch_dms = false;
+        /// <summary>
+        /// Guardian patch: N/A
+        /// </summary>
         public static bool escPatch_guardian = false;
-        //private static bool escPatch_DMS = false;
         //private bool escPatch_emeraldTweaks = false;
 #endregion
 
 
-        // Debug Logger (Beautified!)
-
-        // Add hooks
+        /// <summary>
+        /// Here's where all the hooks go... oh god why are there so many hooks?! HOW IS MY CODE STILL FUNCTIONAL AND MOSTLY COMPATIBLE WITH OTHER MODS?!
+        /// </summary>
         public void OnEnable()
         {
             Debug.Log("-> Escort plugin INIT!");
@@ -430,6 +442,9 @@ namespace TheEscort
             //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
         }
 
+        /// <summary>
+        /// Forces temple guardians to ignore the creatures Escort brings to the piss pool if the flag is true
+        /// </summary>
         private float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
         {
             if (templeGuardIsFriendly)
@@ -439,6 +454,9 @@ namespace TheEscort
             return orig(self, crit);
         }
 
+        /// <summary>
+        /// Originally an attempt at trying to make the remix option not die, repurposed for IL hooks and to make sure they work correctly.
+        /// </summary>
         private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
         {
             orig(self);
@@ -463,6 +481,10 @@ namespace TheEscort
 
 
         // Verify that all hooked functions have been checked for Escort and send the amount of times the code has been passed with checks
+
+        /// <summary>
+        /// Export the log of function uses... TODO: REMOVE!
+        /// </summary>
         public void OnApplicationQuit()
         {
             try
@@ -484,6 +506,10 @@ namespace TheEscort
 
 
         // Load any resources, such as sprites or sounds
+
+        /// <summary>
+        /// Loads all the external assets for use
+        /// </summary>
         private void LoadResources(RainWorld rainWorld)
         {
             ins.L().Set();
@@ -522,6 +548,9 @@ namespace TheEscort
         }
 
 #region Mod Patches
+        /// <summary>
+        /// Checks if specific mods are enabled, simply flip the flag or apply patches when needed
+        /// </summary>
         private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
         {
             ins.L().Set();
@@ -575,6 +604,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Dress My Slugcat patch for applying custom sprites
+        /// </summary>
         private static void Espatch_DMS(int verMaj, int verMin)
         {
             try
@@ -611,7 +643,9 @@ namespace TheEscort
             }
         }
 
-        // Legacy
+        /// <summary>
+        /// Legacy Dress My Slugcat patch for versions that do not have compatibility with custom sprites
+        /// </summary>
         private static void Espatch_DMS()
         {
             try
@@ -645,11 +679,18 @@ namespace TheEscort
         /*
         Configurations!
         */
+
+        /// <summary>
+        /// Vengeful Lizards: After a certain number of lizard kills, spawns a group of lizards that will hunt you down
+        /// </summary>
         private bool Esconfig_Vengeful_Lizards()
         {
             return config.cfgVengefulLizards.Value;
         }
 
+        /// <summary>
+        /// Mean Lizards: Just tries to make the lizards more aggressive
+        /// </summary>
         private bool Esconfig_Mean_Lizards(World self)
         {
             if (!gRTEdits.TryGet(self.game, out bool RT) || !SupahMeanLizards.TryGet(self.game, out bool meanLizard))
@@ -666,6 +707,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// HeavyLift: Sets the (Escort) global max weight for one handed handling
+        /// </summary>
         private bool Esconfig_Heavylift(Player self)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !LiftHeavy.TryGet(self, out float power))
@@ -684,6 +728,9 @@ namespace TheEscort
             return true;
         }
 
+        /// <summary>
+        /// DropKick Multiplier: Knockback strength (for those who can experience knockback)
+        /// </summary>
         private bool Esconfig_DKMulti(Player self)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !DKM.TryGet(self, out float dk))
@@ -701,6 +748,9 @@ namespace TheEscort
             return true;
         }
 
+        /// <summary>
+        /// Elevator: Allows Escort to take flight by holding jump and coming in contact with another creature
+        /// </summary>
         private bool Esconfig_Elevator(Player self)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !Elvator.TryGet(self, out bool yeet))
@@ -717,6 +767,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Hypeable: Enables/disable battlehype mechanic
+        /// </summary>
         private bool Esconfig_Hypable(Player self)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !HypeSys.TryGet(self, out bool hm))
@@ -733,6 +786,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Hype requirement: Sets the minimum adrenaline needed before entering battlehype
+        /// </summary>
         public bool Esconfig_HypeReq(Player self, float require = 0.8f)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !HypeReq.TryGet(self, out float req))
@@ -761,6 +817,9 @@ namespace TheEscort
             return true;
         }
 
+        /// <summary>
+        /// SFX: Allows silly (usually unnecessary) sound effects to "enhance" the user experience
+        /// </summary>
         private bool Esconfig_SFX(Player self)
         {
             if (!pRTEdits.TryGet(self, out bool RT) || !soundAhoy.TryGet(self, out bool soundFX))
