@@ -15,7 +15,6 @@ using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using static TheEscort.SMSMod;
 using static UrufuCutsceneTool.CsInLogger;
-//using static SpearmasterNeedleDataCollectionTool.SpearmasterSpearObserver;
 
 
 /// <summary>
@@ -41,20 +40,6 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public const string MOD_ID = "urufudoggo.theescort";
 
-    /*
-    public Plugin()
-    {
-        Debug.Log("-> Escort Plugin Init!");
-        try
-        {
-            Plugin.ins = this;
-        }
-        catch (Exception e)
-        {
-            base.Logger.LogError(e);
-        }
-    }*/
-
 #region Declare Features
     /// <summary>
     /// Allow json values to override internal values (Player instance)
@@ -75,8 +60,6 @@ partial class Plugin : BaseUnityPlugin
     /// Angry lizards
     /// </summary>
     public static readonly GameFeature<bool> SupahMeanLizards = GameBool("theescort/mean_lizards");
-    //public static readonly GameFeature<bool> SuperMeanGarbageWorms = GameBool("theescort/mean_garb_worms");
-
 
     /// <summary>
     /// JSON VALUES,
@@ -94,7 +77,9 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static readonly PlayerFeature<float> LiftHeavy = PlayerFloat("theescort/heavylifter");
 
-    
+    /// <summary>
+    /// A bit of a wonk. Adds more adrenaline on TOP of the original adrenaline add to make achieving and maintaining battlehype easier
+    /// </summary>
     public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
 
     /// <summary>
