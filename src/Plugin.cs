@@ -36,7 +36,7 @@ partial class Plugin : BaseUnityPlugin
     public EscOptions config;
 
     /// <summary>
-    /// ???
+    /// Literally only used in the above section above the partial class identifier
     /// </summary>
     public const string MOD_ID = "urufudoggo.theescort";
 
@@ -92,6 +92,9 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
     
+    /// <summary>
+    /// Amount of frames after pressing jump in a corridor where contact with another creature would count as a headbutt
+    /// </summary>
     public static readonly PlayerFeature<int> Escomet = PlayerInt("theescort/headbutt");
 
     /// <summary>
@@ -177,29 +180,81 @@ partial class Plugin : BaseUnityPlugin
     public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
     //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
+    /// <summary>
+    /// Urufu calls you a failure.
+    /// </summary>
     public static SoundID Escort_SFX_Death;
+    /// <summary>
+    /// Urufu says "Sick Flip!"
+    /// </summary>
     public static SoundID Escort_SFX_Flip;
+    /// <summary>
+    /// Urufu says "Cool Flip!"
+    /// </summary>
     public static SoundID Escort_SFX_Flip2;
+    /// <summary>
+    /// Urufu says "Nice Flip!"
+    /// </summary>
     public static SoundID Escort_SFX_Flip3;
+    /// <summary>
+    /// ...around and around and around and around and around and around and around and around and around and around and around and around and around and around and around...
+    /// </summary>
     public static SoundID Escort_SFX_Roll;
+    /// <summary>
+    /// Uru says "Boop" in multiple pitches and inflections
+    /// </summary>
     public static SoundID Escort_SFX_Boop;
+    /// <summary>
+    /// That Deltarune explosion sfx edited to sound extremely cheap, juuust like Rails.
+    /// </summary>
     public static SoundID Escort_SFX_Railgunner_Death;
+    /// <summary>
+    /// Lizard, grab. Lizard, grab. Lizard, grab. Lizard, grab. Lizard,grab. Lizard, grab. Lizard, grab. Lizard, grab.
+    /// </summary>
     public static SoundID Escort_SFX_Lizard_Grab;
+    /// <summary>
+    /// A thump made by a kick drum
+    /// </summary>
     public static SoundID Escort_SFX_Impact;
+    /// <summary>
+    /// A high pitch bell hit
+    /// </summary>
     public static SoundID Escort_SFX_Parry;
+    /// <summary>
+    /// A metal knife rubbing against another knife
+    /// </summary>
     public static SoundID Escort_SFX_Brawler_Shank;
+    /// <summary>
+    /// A distorted clap
+    /// </summary>
     public static SoundID Escort_SFX_Pole_Bounce;
+    /// <summary>
+    /// Urufu calls you fat (Rotund World exclusive!)
+    /// </summary>
     public static SoundID Escort_SFX_Uhoh_Big;
+    /// <summary>
+    /// Urufu is being real sneaky
+    /// </summary>
     public static SoundID Esconfig_SFX_Sectret;
+    /// <summary>
+    /// Literal SILENCE
+    /// </summary>
     public static SoundID Escort_SFX_Placeholder;
+    /// <summary>
+    /// Bass pluck reversed (inspired by Bearhugger's incoming punch sfx from Punch-Out Wii)
+    /// </summary>
     public static SoundID Escort_SFX_Gild_Stomp;
-    //public static SoundID Escort_SFX_Spawn;
 
-    //public DynamicSoundLoop escortRollin;
+    //(Urufu announces your spawn for 2023 April Fools)
+    // public static SoundID Escort_SFX_Spawn;
+
 
     // Miscellanious things
+
+    /// <summary>
+    /// Sets Escort's marking colors to the main color instead of Arena
+    /// </summary>
     private readonly bool nonArena = false;  // Sets Escort's marking colors to the main color instead of Arena
-    //public static readonly String EscName = "EscortMe";
 
     // Escort instance 
     
@@ -212,7 +267,6 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static ConditionalWeakTable<Player, Socks> sCon = new();
     //public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon = new();
-    //private Escort e;
 
     /// <summary>
     /// Global hype requirement setting (stores the setting from json or remix for use)
