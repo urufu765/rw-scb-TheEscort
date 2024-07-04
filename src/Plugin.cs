@@ -349,19 +349,10 @@ partial class Plugin : BaseUnityPlugin
         On.RainWorld.OnModsInit += Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please;
         On.RainWorld.PostModsInit += Escort_PostInit;
 
-        //On.RainWorldGame.ctor += EscortChangingRoom;
-
         On.SaveState.setDenPosition += Escort_ChangingRoom;
         On.SaveState.SessionEnded += Escort_Reset_Values;
         
-        //On.SaveState.GetStoryDenPosition += 
-
-        //IL.AbstractCreature.Realize += Backpack_ILRealize;
-        //On.AbstractCreature.Realize += Backpack_Realize;
-        //On.StaticWorld.InitCustomTemplates += Custom_Stuff;
-
         On.Lizard.ctor += Escort_Lizard_ctor;
-        //On.LizardAI.GiftRecieved += Escort_Lizard_Denial;
 
         On.Room.Loaded += Escort_Hipbone_Replacement;
         On.RoomSettings.Load += Escort_Transplant;
@@ -372,7 +363,6 @@ partial class Plugin : BaseUnityPlugin
         On.PlayerGraphics.DrawSprites += Escort_DrawSprites;
         On.PlayerGraphics.Update += Escort_GFXUpdate;
         On.PlayerGraphics.DefaultSlugcatColor += Escort_Colorz;
-        //On.HUD.HudPart.Draw += Escort_HUD_Draw;
         On.RoomCamera.DrawUpdate += Escort_HUD_Draw;
 
         // Jolly UI
@@ -417,9 +407,6 @@ partial class Plugin : BaseUnityPlugin
         On.Player.Stun += Esclass_RG_Spasm;
         On.RainWorldGame.Update += Escort_AbsoluteTick;
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
-        //On.RoomCamera.DrawUpdate += Escort_AdditionalDraw;
-        //On.Player.GrabUpdate += Esclass_RG_GrabUpdate;
-
 
         // Socks stuff
         On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
@@ -439,7 +426,6 @@ partial class Plugin : BaseUnityPlugin
 
         On.FlareBomb.HitSomething += Escort_FlareHit;
 
-        //On.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
         On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
 
         On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
@@ -452,11 +438,6 @@ partial class Plugin : BaseUnityPlugin
         On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
         On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
         On.SlugcatStats.SlugcatFoodMeter += Escort_differentBuildsFoodz;
-        //On.SlugcatStats.getSlugcatTimelineOrder += Escort_Time;
-
-        //On.PlayerGraphics.PopulateJollyColorArray += ReJollyCoop.PopulateTheJollyMan;
-        //,
-        //{"name": "Glow", "story": "ffffff"}
 
         //On.Player.Update += Estest_1_Update;
         //On.Player.GrabUpdate += Estest_3_GrabUpdate;
@@ -468,7 +449,6 @@ partial class Plugin : BaseUnityPlugin
         On.TubeWorm.GrabbedByPlayer += LauncherBackpack.BackpackGrabbedByPlayer;
 
         On.TubeWorm.Update += Socks_Sticky_Immune;
-        //ReJollyCoop.Hooker();
 
         On.MoreSlugcats.HRGuardManager.Update += Esclass_GD_KillGuardianWithOneHit;
 
@@ -480,9 +460,6 @@ partial class Plugin : BaseUnityPlugin
         On.Menu.SleepAndDeathScreen.AddBkgIllustration += Escort_Add_Slugpup;
 
         On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
-
-
-        //On.SaveState.SessionEnded += StoreSaveDataOnFinish;
     }
 
     /// <summary>
@@ -492,9 +469,9 @@ partial class Plugin : BaseUnityPlugin
     {
         if (templeGuardIsFriendly)
         {
-            return 0f;
+            return 0f;  // Guardian ignores all creatures
         }
-        return orig(self, crit);
+        return orig(self, crit);  // Default behaviour
     }
 
     /// <summary>
@@ -602,12 +579,15 @@ partial class Plugin : BaseUnityPlugin
         // Look for mods...
         try
         {
+            // Revivify
             if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify"))
             {
                 ins.L().Set("Patch: Revivify");
                 Ebug("Found Revivify! Applying patch...", 1);
                 escPatch_revivify = true;
             }
+
+            // Dress my slugcat
             if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat"))
             {
                 ins.L().Set("Patch: DressMySlugcat");
@@ -616,6 +596,8 @@ partial class Plugin : BaseUnityPlugin
                 //escPatch_DMS = true;
                 Ebug("Found DMS Version: " + DMS_Mod.version, 1);
                 string[] dmsVer = DMS_Mod.version.Split('.');
+
+                // Newer than 1.3?
                 if (int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3)
                 {
                     Ebug("Applying patch!...", 1);
@@ -629,12 +611,16 @@ partial class Plugin : BaseUnityPlugin
                 escPatch_dms = true;
                 Ebug("Patched: " + escPatch_dms, 4);
             }
+
+            // Rotund world
             if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus"))
             {
                 ins.L().Set("Patch: Rotund World");
                 Ebug("Found Rotund World! Applying custom patch...", 1);
                 escPatch_rotundness = true;
             }
+
+            // Guardian (Used for uploading exception outputs)
             if (ModManager.ActiveMods.Exists(mod => mod.id == "vigaro.guardian"))
             {
                 Ebug("Found Guardian! Applying patch...", 1);
@@ -653,9 +639,8 @@ partial class Plugin : BaseUnityPlugin
     private static void Espatch_DMS(int verMaj, int verMin)
     {
         try
-        {// Dress My Slugcat Patch
-            //if (dms.version)
-
+        {
+            // DMS 1.3 has a bug that basically causes the game to lag out, thus if someone is using this version they should just NOT
             if (verMaj == 1 && verMin == 3)
             {
                 DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite
@@ -667,7 +652,7 @@ partial class Plugin : BaseUnityPlugin
                     Slugcats = new List<string> { "EscortMe" }
                 });
             }
-            else
+            else  // Anything above 1.3 is fair game (No incompatibilities reported as of yet)
             {
                 DressMySlugcat.SpriteDefinitions.AddSprite(new DressMySlugcat.SpriteDefinitions.AvailableSprite
                 {
@@ -681,7 +666,6 @@ partial class Plugin : BaseUnityPlugin
         }
         catch (Exception merr)
         {
-            //escPatch_DMS = false;
             Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
         }
     }
@@ -691,14 +675,12 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     private static void Espatch_DMS()
     {
+        // Versions below 1.3 do not support swapping custom sprites
         try
-        {// Dress My Slugcat Patch
-            //if (dms.version)
+        {
             Ebug("Using dud patch...", 1);
             DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite
             {
-                //Name = "UPDATEYOURDMS!",
-                //Description = "Update Your DMS",
                 Name = "MARKINGS",
                 Description = "Markings",
                 GallerySprite = "escortHipT",
@@ -708,12 +690,9 @@ partial class Plugin : BaseUnityPlugin
         }
         catch (Exception merr)
         {
-            //escPatch_DMS = false;
             Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
         }
     }
-
-    //Ebug(self, "Using dud patch... (update your DMS!)", 1);
 #endregion
 
 
@@ -945,16 +924,7 @@ partial class Plugin : BaseUnityPlugin
             {
                 return false;
             }
-            //int pal = 0;
-            //bool help = false;
-            /*
-            (int pal, bool help) = self.playerState.playerNumber switch {
-                0 => (config.cfgBuildP1.Value, config.cfgEasyP1.Value),
-                1 => (config.cfgBuildP2.Value, config.cfgEasyP2.Value),
-                2 => (config.cfgBuildP3.Value, config.cfgEasyP3.Value),
-                _ => (config.cfgBuildP4.Value, config.cfgEasyP4.Value)
-            };
-            */
+            // Get build ID from configuration
             int pal = config.cfgBuild[self.playerState.playerNumber].Value;
 
             // Story expansion skips
@@ -971,16 +941,10 @@ partial class Plugin : BaseUnityPlugin
                     _ => pal
                 };
             }
-            // Fix this by turning it off for expedition or add multiplier or somethingidk
+            // Fix this by turning it off for expedition or add multiplier or somethingidk (Future me here; HUH? GUH? WUH?)
 
-            //int maximumPips = self.slugcatStats.maxFood;
-            //int minimumPips = self.slugcatStats.foodToHibernate;
             switch (pal)
             {
-                // Unstable build (Longer you're in battlehype, the more the explosion does. Trigger explosion on a dropkick)
-                // Stylist build (Do combos that build up to a super move)
-                // Super build (Pressing throw while there's nothing in main hand will send a grapple tongue, which if it latches onto creature, pulls Escort to eavy creatures, and light creatures to Escort. Throwing while having a rock in main hand will do melee/parry, having bomb in main hand will melee/knockback. Sliding also is fast and feet first. While midair, pressing down+jump will stomp)
-                // Stealth build (hold still or crouch to enter stealthed mode)
                 case -99:  // Testing build
                     e.EsTest = true;
                     break;
@@ -1017,7 +981,6 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.runspeedFac += 0.45f;
                     self.slugcatStats.poleClimbSpeedFac += 0.4f;
                     self.slugcatStats.corridorClimbSpeedFac += 0.55f;
-                    //self.slugcatStats.bodyWeightFac -= 0.15f;
                     self.slugcatStats.lungsFac += 0.5f;
                     break;
                 case -7:
@@ -1034,8 +997,6 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.7f;
                     self.slugcatStats.bodyWeightFac -= 0.15f;
-                    //maximumPips -= 4;
-                    //minimumPips -= 3;
                     Ebug(self, "Gilded Build selected!", 2);
                     break;
                 case -5:  // Speedstar build
@@ -1053,15 +1014,9 @@ partial class Plugin : BaseUnityPlugin
                     }
                     self.slugcatStats.lungsFac += 0.3f;
                     self.slugcatStats.bodyWeightFac += 0.1f;
-                    //self.slugcatStats.corridorClimbSpeedFac += 1.0f;
                     self.slugcatStats.poleClimbSpeedFac += 0.6f;
                     self.slugcatStats.corridorClimbSpeedFac += 0.8f;
                     self.slugcatStats.runspeedFac += 0.35f;
-                    // Frictions do nothing lol
-                    self.airFriction -= 0.5f;
-                    self.waterFriction -= 0.5f;
-                    self.surfaceFriction -= 0.5f;
-                    //minimumPips += 1;
                     Ebug(self, "Speedstar Build selected!", 2);
                     break;
                 case -4:  // Railgunner build
@@ -1074,7 +1029,6 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.generalVisibilityBonus += 1f;
                     self.slugcatStats.visualStealthInSneakMode = 0f;
                     self.slugcatStats.bodyWeightFac += 0.3f;
-                    //minimumPips -= 2;
                     Ebug(self, "Railgunner Build selected!", 2);
                     break;
                 case -3:  // Escapist build
@@ -1097,7 +1051,6 @@ partial class Plugin : BaseUnityPlugin
                         self.spearOnBack = new Player.SpearOnBack(self);
                         Ebug(self, "New Escapist Build selected!", 2);
                     }
-                    //minimumPips -= 3;
                     break;
                 case -2:  // Deflector build
                     e.Deflector = true;
@@ -1122,7 +1075,6 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.lungsFac += 0.2f;
                     self.slugcatStats.bodyWeightFac += 0.12f;
                     self.slugcatStats.throwingSkill = 1;
-                    //minimumPips -= 1;
                     Ebug(self, "Deflector Build selected!", 2);
                     break;
                 case -1:  // Brawler build
@@ -1133,7 +1085,6 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                     self.slugcatStats.throwingSkill = 1;
-                    //minimumPips += 4;
                     Ebug(self, "Brawler Build selected!", 2);
                     break;
                 default:  // Default build
@@ -1142,11 +1093,15 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.lungsFac -= 0.2f;
                     break;
             }
+
+            // Determine if "Easier mode" is turned on by retrieving the setting
             e.easyMode = config.cfgEasy[self.playerState.playerNumber].Value;
             if (e.easyMode)
             {
                 Ebug(self, "Easy Mode active!");
             }
+
+            // Reduce underwater breath if malnourished
             self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
             self.buoyancy -= 0.05f;
             if (config.cfgDeflecterSharedPool.Value)
