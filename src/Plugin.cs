@@ -138,6 +138,8 @@ namespace TheEscort
         public static bool checkPupStatusAgain = false;
         public static bool pupAvailable;
         public static bool pupIsAlive;
+        public static List<int> natrualSpears = new();
+        public static List<int> remakeSpears = new();
 
 
         // Patches
@@ -1259,7 +1261,6 @@ namespace TheEscort
                 {
                     self.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, true);
                 }
-
             }
 
             orig(self, game, survived, newMalnourished);
@@ -1308,6 +1309,12 @@ namespace TheEscort
 
                 if (winCondition && self.room?.game?.session is StoryGameSession s)
                 {
+                    // Save naturally spawned needle spears
+                    if (self.room.game.StoryCharacter.value == "EscortMe")
+                    {
+                        Escort_SaveShelterSpears(self.room);
+                    }
+
                     Player focus = null;
                     foreach (AbstractCreature abstractCreature in self.room.game.Players)
                     {
@@ -1990,22 +1997,22 @@ namespace TheEscort
                 ins.L().SetF("Escort Check");
                 if (self.abstractRoom.shelter)
                 {
-                    Ebug("Spear swap ignores shelters!", 1);
-                    return;
+                    Ebug("Spear swap ignores shelters!... unless QoL unfixer!", 1);
                 }
-                ins.L().SetF("Is not shelter");
+                // ins.L().SetF("Is not shelter");
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
                 int j = 0;
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++)
                 {
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
                     {
-                        if (UnityEngine.Random.value > 0.8f && !spear.explosive && !spear.electric)
+                        if ((self.abstractRoom.shelter? remakeSpears.Contains(spear.ID) : UnityEngine.Random.value > 0.8f) && !spear.explosive && !spear.electric)
                         {
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                             {
                                 needle = true
                             };
+                            natrualSpears.Add(spear.ID);
                             j++;
                         }
                     }
@@ -2132,5 +2139,31 @@ namespace TheEscort
             return theOriginal;
         }
 
+
+        /// <summary>
+        /// Undoes the QoL fix of spearmaster spears disappearing from shelters by replacing them with regular spears before save.. assumes the game will save spear IDs
+        /// </summary>
+        private void Escort_SaveShelterSpears(Room room)
+        {
+            // Clear spears saved in (previous) shelter
+            remakeSpears.Clear();
+
+
+            // Find needle spears in shelter and replace it with regular spears
+            for (int i = 0; i < room.abstractRoom.entities.Count; i++)
+            {
+                if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
+                {
+                    remakeSpears.Add(spear.ID);
+                    room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
+                    spear.realizedObject?.Destroy();
+                    room.abstractRoom.entities[i].RealizeInRoom();
+                }
+            }
+
+
+            // Clear list of spears spawned by natural causes
+            natrualSpears.Clear();
+        }
     }
 }
