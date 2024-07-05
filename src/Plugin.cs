@@ -138,8 +138,8 @@ namespace TheEscort
         public static bool checkPupStatusAgain = false;
         public static bool pupAvailable;
         public static bool pupIsAlive;
-        public static List<int> natrualSpears = new();
-        public static List<int> remakeSpears = new();
+        public static List<EntityID> natrualSpears = new();
+        public static List<EntityID> remakeSpears = new();
 
 
         // Patches
@@ -2157,7 +2157,7 @@ namespace TheEscort
                     remakeSpears.Add(spear.ID);
                     room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
                     spear.realizedObject?.Destroy();
-                    room.abstractRoom.entities[i].RealizeInRoom();
+                    (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
                 }
             }
 
