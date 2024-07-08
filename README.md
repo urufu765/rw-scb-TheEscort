@@ -8,6 +8,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
   * **(0.3.2)** Undo QoL patch for no goddamn reason
+    * **b** Fixed code
+    * **c** Fixed issue where the spears don't convert back to needle
 
   * **(0.3.1.1)** TranslaciOn de EspaNol
 

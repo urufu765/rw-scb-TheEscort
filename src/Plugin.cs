@@ -17,7 +17,7 @@ using static UrufuCutsceneTool.CsInLogger;
 
 namespace TheEscort
 {
-    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.1")]
+    [BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.2")]
     partial class Plugin : BaseUnityPlugin
     {
         public static Plugin ins;
@@ -139,7 +139,7 @@ namespace TheEscort
         public static bool pupAvailable;
         public static bool pupIsAlive;
         public static List<EntityID> natrualSpears = new();
-        public static List<EntityID> remakeSpears = new();
+        public static int remakeSpears;
 
 
         // Patches
@@ -1995,9 +1995,24 @@ namespace TheEscort
                     return;
                 }
                 ins.L().SetF("Escort Check");
+                bool shelterGotPerson;
                 if (self.abstractRoom.shelter)
                 {
                     Ebug("Spear swap ignores shelters!... unless QoL unfixer!", 1);
+                    // Though this means the game checks the room twice (and thus loops twice), it only applies to shelters so it shouldn't impact the performance too much.
+                    for (int i = 0; i < self.abstractRoom.entities.Count; i++)
+                    {
+                        if (self.abstractRoom.entities[i] is abstractCreature ac && ac.realizedCreature is Player p && p.playerState.playerNumber == 0)
+                        {
+                            shelterGotPerson = true;
+                            Ebug("Player shelter!", 1);
+                            break;
+                        }
+                    }
+                    if (!shelterGotPerson)
+                    {
+                        return;
+                    }
                 }
                 // ins.L().SetF("Is not shelter");
                 Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
@@ -2006,13 +2021,17 @@ namespace TheEscort
                 {
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
                     {
-                        if ((self.abstractRoom.shelter? remakeSpears.Contains(spear.ID) : UnityEngine.Random.value > 0.8f) && !spear.explosive && !spear.electric)
+                        if ((shelterGotPerson && remakeSpears > 0 || UnityEngine.Random.value > 0.8f) && !spear.explosive && !spear.electric)
                         {
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                             {
                                 needle = true
                             };
                             natrualSpears.Add(spear.ID);
+                            if (shelterGotPerson)
+                            {
+                                remakeSpears--;
+                            }
                             j++;
                         }
                     }
@@ -2145,8 +2164,12 @@ namespace TheEscort
         /// </summary>
         private void Escort_SaveShelterSpears(Room room)
         {
-            // Clear spears saved in (previous) shelter
-            remakeSpears.Clear();
+            // Clear spears to be remade if there is left over for whatever reason
+            if (remakeSpears > 0)
+            {
+                remakeSpears = 0;
+                Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
+            }
 
 
             // Find needle spears in shelter and replace it with regular spears
@@ -2154,7 +2177,7 @@ namespace TheEscort
             {
                 if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
                 {
-                    remakeSpears.Add(spear.ID);
+                    remakeSpears++;
                     room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
                     spear.realizedObject?.Destroy();
                     (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
