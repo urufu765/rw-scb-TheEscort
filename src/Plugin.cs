@@ -2002,7 +2002,7 @@ namespace TheEscort
                     // Though this means the game checks the room twice (and thus loops twice), it only applies to shelters so it shouldn't impact the performance too much.
                     for (int i = 0; i < self.abstractRoom.entities.Count; i++)
                     {
-                        if (self.abstractRoom.entities[i] is AbstractCreature ac && ac.realizedCreature is Player p && p.playerState.playerNumber == 0)
+                        if (self.abstractRoom.entities[i] is AbstractCreature ac && self.game.Players.Contains(ac))
                         {
                             shelterGotPerson = true;
                             Ebug("Player shelter!", 1);
