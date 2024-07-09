@@ -2190,7 +2190,7 @@ namespace TheEscort
                 }
 
                 // Save remake spear data
-                s.saveState.miscWorldSaveData.Esave().SpearsToRemake = remakeSpears
+                s.saveState.miscWorldSaveData.Esave().SpearsToRemake = remakeSpears;
 
                 // Clear list of spears spawned by natural causes
                 natrualSpears.Clear();
