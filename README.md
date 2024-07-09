@@ -14,6 +14,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **e** Fixed null error caused by replacing the player in shelter check (previously needed realized) with checking if the abstract creature is in the game player list
     * **f** Made it so that the spears are carried over even when game was been exited.
     * **g** Fixed syntax error
+    * **h** Same.
 
   * **(0.3.1.1)** TranslaciOn de EspaNol
 

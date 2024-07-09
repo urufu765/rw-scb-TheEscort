@@ -2030,7 +2030,7 @@ namespace TheEscort
                             natrualSpears.Add(spear.ID);
                             if (shelterGotPerson)
                             {
-                                s.saveState.miscWorldSaveData.Esave().SpearsToRemake--;
+                                (self.world.game.session as StoryGameSession).saveState.miscWorldSaveData.Esave().SpearsToRemake--;
                             }
                             j++;
                         }
