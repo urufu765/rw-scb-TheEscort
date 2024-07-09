@@ -56,6 +56,7 @@ namespace TheEscort
         public float EscortPupTempLike {get; set;} = -1;
         public int EscortPupCampaignID {get; set;} = 0;
         public bool SocksIsAlive {get; set;} = false;
+        public int SpearsToRemake {get; set;} = 0;
     }
 
 

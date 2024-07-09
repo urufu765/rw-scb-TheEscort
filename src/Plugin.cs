@@ -139,7 +139,6 @@ namespace TheEscort
         public static bool pupAvailable;
         public static bool pupIsAlive;
         public static List<EntityID> natrualSpears = new();
-        public static int remakeSpears;
 
 
         // Patches
@@ -2021,7 +2020,8 @@ namespace TheEscort
                 {
                     if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
                     {
-                        if ((shelterGotPerson && remakeSpears > 0 || UnityEngine.Random.value > 0.8f) && !spear.explosive && !spear.electric)
+                        if ((shelterGotPerson && self.world?.game?.session is 
+                        StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0 || UnityEngine.Random.value > 0.8f) && !spear.explosive && !spear.electric)
                         {
                             self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                             {
@@ -2030,7 +2030,7 @@ namespace TheEscort
                             natrualSpears.Add(spear.ID);
                             if (shelterGotPerson)
                             {
-                                remakeSpears--;
+                                s.saveState.miscWorldSaveData.Esave().SpearsToRemake--;
                             }
                             j++;
                         }
@@ -2164,29 +2164,41 @@ namespace TheEscort
         /// </summary>
         private void Escort_SaveShelterSpears(Room room)
         {
-            // Clear spears to be remade if there is left over for whatever reason
-            if (remakeSpears > 0)
+            if (room.world?.game?.session is StoryGameSession s)
             {
-                remakeSpears = 0;
-                Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
-            }
+                // Retrieve the remake spear data from save
+                int remakeSpears = s.saveState.miscWorldSaveData.Esave().SpearsToRemake;
 
-
-            // Find needle spears in shelter and replace it with regular spears
-            for (int i = 0; i < room.abstractRoom.entities.Count; i++)
-            {
-                if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
+                // Clear spears to be remade if there is left over for whatever reason
+                if (remakeSpears > 0)
                 {
-                    remakeSpears++;
-                    room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
-                    spear.realizedObject?.Destroy();
-                    (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
+                    remakeSpears = 0;
+                    Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
                 }
+
+
+                // Find needle spears in shelter and replace it with regular spears
+                for (int i = 0; i < room.abstractRoom.entities.Count; i++)
+                {
+                    if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
+                    {
+                        remakeSpears++;
+                        room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
+                        spear.realizedObject?.Destroy();
+                        (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
+                    }
+                }
+
+                // Save remake spear data
+                s.saveState.miscWorldSaveData.Esave().SpearsToRemake = remakeSpears
+
+                // Clear list of spears spawned by natural causes
+                natrualSpears.Clear();
             }
-
-
-            // Clear list of spears spawned by natural causes
-            natrualSpears.Clear();
+            else
+            {
+                Ebug("Failed to find savestate!", 0);
+            }
         }
     }
 }
