@@ -177,6 +177,11 @@ namespace TheEscort
         public int BrawSetCooldown;
 
         /// <summary>
+        /// Explosive punch state
+        /// </summary>
+        public bool BrawExPunch;
+
+        /// <summary>
         /// IS IT FUCKING DEFLECTOR?!
         /// </summary>
         public bool Deflector;
@@ -416,6 +421,11 @@ namespace TheEscort
         public BodyChunk RailTargetAcquired;
 
         /// <summary>
+        /// Railgunner weakened state. HAHA GET REKT LOL RAILS WHY YOU SO WEAK
+        /// </summary>
+        public bool RailFrail;
+
+        /// <summary>
         /// IS THIS THE GOLDEN ICECREAM?!
         /// </summary>
         public bool Gilded;
@@ -540,11 +550,13 @@ namespace TheEscort
             this.RailBombJump = false;
             this.RailRecoilLag = -1;
             this.RailLastThrowDir = new(0, 0);
+            this.RailTargetClock = 39;
 
             EscortSS();
             EscortGD(player);
             EscortNE();
             EscortUS();
+            EscortBB(player);
         }
 
 

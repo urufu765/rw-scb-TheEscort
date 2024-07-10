@@ -450,5 +450,59 @@ namespace TheEscort
 
             return text;
         }
+
+
+        /// <summary>
+        /// Checks if the thing's position is inside a cone area with Position as the origin(anglegirth acts as angle +- girth)
+        /// </summary>
+        public static bool ConeDetection(this Creature origin, Vector2 thing, float range, float angle, float angleGirth)
+        {
+            if (!RWCustom.Custom.DistLess(thing, origin.firstChunk.pos, range))
+            {
+                return false;
+            }
+
+            float a = RWCustom.Custom.VecToDeg(RWCustom.Custom.DirVec(origin.firstChunk.pos, thing));
+            if (a > angle - angleGirth && a < angle + angleGirth)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Translates player input to angle
+        /// </summary>
+        public static float InputToDeg(Player.InputPackage input)
+        {
+            Vector2 dirInput = new(input.x, input.y);
+            if (dirInput == Vector2.zero)
+            {
+                throw new ZeroValException("Input cannot be zero!");
+            }
+
+            if (input.analogueDir.magnitude > 0.2f)
+            {
+                dirInput = input.analogueDir;
+            }
+            return RWCustom.Custom.VecToDeg(dirInput);
+        }
+    }
+
+    [Serializable]
+    public class ZeroValException : Exception
+    {
+        public ZeroValException() : base()
+        {
+        }
+
+        public ZeroValException(string message) : base(message)
+        {
+        }
+
+        public ZeroValException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

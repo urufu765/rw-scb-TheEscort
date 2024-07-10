@@ -39,48 +39,94 @@ namespace TheEscort
         private void Esclass_BL_Update(Player self, ref Escort e)
         {
             // Melee weapon use
-            if (e.BrawMeleeWeapon.Count > 0 && e.BrawThrowGrab == 0 && self.grasps[e.BrawThrowUsed] == null)
+            try
             {
-                if (e.BrawMeleeWeapon.Peek() == null)
+                if (e.BrawMeleeWeapon.Count > 0 && e.BrawThrowGrab == 0 && self.grasps[e.BrawThrowUsed] == null)
                 {
-                    e.BrawMeleeWeapon.Clear();
-                    return;
-                }
-                Ebug("Weapon mode was: " + e.BrawMeleeWeapon.Peek().mode);
-                if (self.room != null && e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
-                {
-                    self.room.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
-                    self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
-                    if (self.slowMovementStun > 0) self.Blink(30);
-                    else 
+                    if (e.BrawMeleeWeapon.Peek() == null)
                     {
-                        self.slowMovementStun += 20;
+                        Ebug("NULL IN STACK!");
+                        e.BrawMeleeWeapon.Clear();
+                        return;
                     }
+                    Ebug("Weapon mode was: " + e.BrawMeleeWeapon.Peek().mode);
+
+                    // Post weapon usage cooldowns
+                    try
+                    {
+                        if (self.room != null && e.BrawMeleeWeapon.Peek().mode == Weapon.Mode.StuckInCreature)
+                        {
+                            self.room.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
+                            self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
+                            if (self.slowMovementStun > 0) self.Blink(30);
+                            else 
+                            {
+                                self.slowMovementStun += 20;
+                            }
+                        }
+                        else if (e.BrawMeleeWeapon.Peek() is Rock)
+                        {
+                            self.slowMovementStun += 25;
+                            e.BrawPunch = false;
+                        }
+                        else if (e.BrawMeleeWeapon.Peek() is ScavengerBomb sb)
+                        {
+                            self.slowMovementStun += 40;
+                            e.BrawExPunch = false;
+                            sb.ignited = false;
+                            sb.burn = 0f;
+                        }
+                    }
+                    catch (Exception exceptPostWeapEff)
+                    {
+                        Ebug(exceptPostWeapEff, "Post Weapon Usage Cooldown fail!");
+                        throw exceptPostWeapEff;
+                    }
+
+                    // Spear post effects
+                    try
+                    {
+                        if (e.BrawMeleeWeapon.Peek() is Spear)
+                        {
+                            e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
+                            self.slowMovementStun += 20;
+                        }
+                    }
+                    catch (Exception exceptPostSpearEff)
+                    {
+                        Ebug(exceptPostSpearEff, "Post Spear Usage Thing Fail!");
+                        throw exceptPostSpearEff;
+                    }
+
+                    // Item retrieval effect
+                    try
+                    {
+                        if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall){
+                            e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
+                            self.SlugcatGrab(e.BrawMeleeWeapon.Pop(), e.BrawThrowUsed);
+                        }
+                        else {
+                            e.BrawMeleeWeapon.Pop();
+                        }
+                    }
+                    catch (Exception exceptGetBackItem)
+                    {
+                        Ebug(exceptGetBackItem, "Item retrieval fail!");
+                        throw exceptGetBackItem;
+                    }
+
+                    if (e.isChunko)
+                    {
+                        self.slowMovementStun += (int)(10 * self.TotalMass / e.originalMass) - 10;
+                    }
+                    e.BrawSetCooldown = self.slowMovementStun;
+                    e.BrawThrowGrab = -1;
+                    e.BrawThrowUsed = -1;
                 }
-                else if (e.BrawMeleeWeapon.Peek() is Rock)
-                {
-                    self.slowMovementStun += 25;
-                    e.BrawPunch = false;
-                }
-                if (e.BrawMeleeWeapon.Peek() is Spear)
-                {
-                    e.BrawMeleeWeapon.Peek().doNotTumbleAtLowSpeed = e.BrawShankSpearTumbler;
-                    self.slowMovementStun += 20;
-                }
-                if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall){
-                    e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
-                    self.SlugcatGrab(e.BrawMeleeWeapon.Pop(), e.BrawThrowUsed);
-                }
-                else {
-                    e.BrawMeleeWeapon.Pop();
-                }
-                if (e.isChunko)
-                {
-                    self.slowMovementStun += (int)(10 * self.TotalMass / e.originalMass) - 10;
-                }
-                e.BrawSetCooldown = self.slowMovementStun;
-                e.BrawThrowGrab = -1;
-                e.BrawThrowUsed = -1;
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Something went wrong when applying effect for melee weapon!");
             }
 
             if (e.BrawMeleeWeapon.Count == 0)
@@ -273,7 +319,7 @@ namespace TheEscort
             else if (
                 self.grasps[grasp]?.grabbed is Rock
             ) return "punch";
-            else if (false &&
+            else if (
                 self.grasps[grasp]?.grabbed is ScavengerBomb
             ) return "powerpunch";
             return "";
@@ -396,6 +442,41 @@ namespace TheEscort
                     e.BrawThrowUsed = j;
                     e.BrawLastWeapon = "punch";
                     orig(self, j, eu);
+                    return true;
+                }
+                // Explosive punch
+                else if (self.grasps[j] != null && self.grasps[j].grabbed != null && self.grasps[j].grabbed is ScavengerBomb sb)
+                {
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Weapon)
+                    {
+                        continue;
+                    }
+                    if (self.grasps[1 - j] != null && self.grasps[1 - j].grabbed != null && self.grasps[1 - j].grabbed is Creature)
+                    {
+                        break;
+                    }
+                    self.aerobicLevel = Mathf.Max(0, self.aerobicLevel - 0.07f);
+                    if (self.slowMovementStun > 0)
+                    {
+                        Ebug(self, "Too tired to explopunch!");
+                        self.Blink(15);
+                        Eshelp_Player_Shaker(self, 1f);
+                        return true;
+                    }
+                    try
+                    {
+                        Ebug(self, "EXPLOPUNCH!");
+                        e.BrawExPunch = true;
+                        e.BrawMeleeWeapon.Push(sb);
+                        e.BrawThrowGrab = 4;
+                        e.BrawThrowUsed = j;
+                        e.BrawLastWeapon = "powerpunch";
+                        orig(self, j, eu);
+                    }
+                    catch (Exception exploerr)
+                    {
+                        Ebug(exploerr, "Failure to explopunch!");
+                    }
                     return true;
                 }
             }

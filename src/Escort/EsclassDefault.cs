@@ -49,6 +49,7 @@ namespace TheEscort
 
         private int filenum;
 
+#region Common
         private void Esclass_Tick(Player self)
         {
             if (!eCon.TryGetValue(self, out Escort e))
@@ -64,6 +65,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
+            if (e.Barbarian) Esclass_BB_Tick(self, ref e);
             if (e.Unstable) Esclass_US_Tick(self, ref e);
 
             // Dropkick damage cooldown
@@ -266,6 +268,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);
+            if (e.Barbarian) Esclass_BB_Update(self, ref e);
             if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
@@ -804,9 +807,10 @@ namespace TheEscort
             // Update tracker
             //e.Escat_Update_Ring_Trackers();
         }
+#endregion
 
 
-
+#region Movement stuff
         // Implement Movementtech
         private void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self)
         {
@@ -1100,6 +1104,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
+#endregion
 
         /// <summary>
         /// Implements code that makes Escort drop something live if it grabs them. TODO.
@@ -1584,9 +1589,9 @@ namespace TheEscort
                     {
                         biteMult -= 0.35f;
                     }
-                    if (e.Railgunner)
+                    if (e.Deflector)
                     {
-                        biteMult = self.Malnourished? 10000f : 0.75f;
+                        biteMult = self.Malnourished? 0f : 0.75f;
                     }
                     if (e.Escapist)
                     {
@@ -1663,6 +1668,14 @@ namespace TheEscort
             // connects to the Escort's Parryslide option
             e.ParrySuccess = false;
             if (e.Railgunner && e.RailIReady && type != null && type == Creature.DamageType.Explosion)
+            {
+                if (e.iFrames == 0)
+                {
+                    e.ParrySuccess = true;
+                }
+                stunBonus = 0;
+            }
+            if (e.Brawler && e.BrawExPunch && e.BrawMeleeWeapon.Count > 0)
             {
                 if (e.iFrames == 0)
                 {

@@ -60,14 +60,14 @@ namespace TheEscort
             }
 
             // 1 second clock
-            if (e.RailTargetClock > 0)
-            {
-                e.RailTargetClock--;
-            }
-            else
-            {
-                e.RailTargetClock = 39;
-            }
+            // if (e.RailTargetClock > 0)
+            // {
+            //     e.RailTargetClock--;
+            // }
+            // else
+            // {
+            //     e.RailTargetClock = 39;
+            // }
         }
 
         private void Esclass_RG_Update(Player self, ref Escort e)
@@ -112,7 +112,7 @@ namespace TheEscort
             {
                 e.RailRecoilLag = -1;
                 // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
-                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod);
+                Esclass_RG_Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod, e.RailFrail);
             }
 
 
@@ -122,6 +122,22 @@ namespace TheEscort
                 e.RailTargetAcquired = Esclass_RG_Spotter(self);
             }
 
+
+            // Auto-escape out of danger grasp if overcharged
+            if (self.dangerGraspTime == 29 && UnityEngine.Random.value <= (e.RailgunUse / e.RailgunLimit))
+            {
+                self.dangerGrasp.grabber.LoseAllGrasps();
+                self.cantBeGrabbedCounter = 40;
+                if (!e.RailFrail)
+                {
+                    Esclass_RG_SetGlassMode(true, ref e);
+                    Esclass_RG_InnerSplosion(self);
+                }
+                else
+                {
+                    Esclass_RG_InnerSplosion(self, UnityEngine.Random.value < 0.75f);
+                }
+            }
         }
 
 
@@ -164,15 +180,15 @@ namespace TheEscort
                         //e.BarbDoubleSpear = false;
                         if (self.bodyMode == Player.BodyModeIndex.Crawl)
                         {
-                            thrust *= (rSpearThr[0] + (self.Malnourished ? 1f : 0f));
+                            thrust *= (rSpearThr[0] + (e.RailFrail ? 1f : 0f));
                         }
                         else if (self.bodyMode == Player.BodyModeIndex.Stand)
                         {
-                            thrust *= (rSpearThr[1] + (self.Malnourished ? 3.25f : 0f));
+                            thrust *= (rSpearThr[1] + (e.RailFrail ? 3.25f : 0f));
                         }
                         else
                         {
-                            thrust *= (rSpearThr[2] + (self.Malnourished ? 5f : 0f));
+                            thrust *= (rSpearThr[2] + (e.RailFrail ? 5f : 0f));
                         }
                     }
                     spear.spearDamageBonus *= Mathf.Lerp(rSpearDmg[0], rSpearDmg[1], Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse));
@@ -411,7 +427,9 @@ namespace TheEscort
             */
         }
 
-
+        /// <summary>
+        /// Method that allows Railgunner to throw two objects at once.
+        /// </summary>
         private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
@@ -434,13 +452,30 @@ namespace TheEscort
                 v = self.grasps[grasp].grabbed.firstChunk.vel;
                 w = weapon;
             }
-            //Weapon w = self.grasps[grasp].grabbed as Weapon;
-            orig(self, grasp, eu);
-            e.RailLastThrowDir = w.throwDir;  // Save last throw direction
+
+            // Misfire!
+            if (UnityEngine.Random.value < (e.RailFrail? 0.02f : 0.005f) * e.RailgunUse)
+            {
+                self.TossObject(grasp, eu);
+                self.TossObject(1 - grasp, eu);
+                Esclass_GD_ReplicateThrowBodyPhysics(self, grasp);
+                Esclass_GD_ReplicateThrowBodyPhysics(self, 1 - grasp);
+                self.ReleaseGrasp(grasp);
+                self.ReleaseGrasp(1 - grasp);
+                self.dontGrabStuff = 15;
+                Esclass_RG_InnerSplosion(self);
+                self.Stun(120);
+            }
+            else // normal
+            {
+                //Weapon w = self.grasps[grasp].grabbed as Weapon;
+                orig(self, grasp, eu);
+                e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
+                self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
+                //self.grasps[1].grabbed.firstChunk.vel = v;
+                orig(self, 1 - grasp, eu);
+            }
             e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
-            self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
-            //self.grasps[1].grabbed.firstChunk.vel = v;
-            orig(self, 1 - grasp, eu);
 
             if (self.room != null)
             {
@@ -466,7 +501,7 @@ namespace TheEscort
                 // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
                 // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
             }
-            if (self.Malnourished)
+            if (e.RailFrail)
             {
                 e.RailgunUse++;
                 int stunValue = 10 * e.RailgunUse;
@@ -500,7 +535,7 @@ namespace TheEscort
             }
             else
             {
-                e.RailgunCD += (self.Malnourished ? 60 : 80) * addition;
+                e.RailgunCD += (e.RailFrail ? 60 : 80) * addition;
             }
             if (e.RailgunCD > 800)
             {
@@ -549,27 +584,17 @@ namespace TheEscort
         }
 
 
-        public bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+        /// <summary>
+        /// Makes Railgunner go BOOM
+        /// </summary>
+        public static void Esclass_RG_InnerSplosion(Player self, bool lethal=false)
         {
-            bool secondChance = false;
-            if (e.RailgunUse >= e.RailgunLimit)
+            try
             {
-                if (UnityEngine.Random.value > (self.Malnourished ? 0.75f : 0.25f))
-                {
-                    secondChance = true;
-                }
                 Color c = new(0.5f, 0.85f, 0.78f);
                 Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
+                Room room = self.room;
                 room.AddObject(new SootMark(room, v, 120f, bigSprite: true));
-                if (!secondChance)
-                {
-                    room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
-                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
-                }
-                else
-                {
-                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
-                }
                 room.AddObject(new Explosion.ExplosionLight(v, 210f, 0.7f, 7, c));
                 room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
                 for (int i = 0; i < 20; i++)
@@ -579,24 +604,50 @@ namespace TheEscort
                     room.AddObject(new Explosion.FlashingSmoke(v + v2 * 40f * UnityEngine.Random.value, v2 * Mathf.Lerp(4f, 20f, Mathf.Pow(UnityEngine.Random.value, 2f)), 1f + 0.05f * UnityEngine.Random.value, Color.white, c, UnityEngine.Random.Range(3, 11)));
                 }
                 room.ScreenMovement(v, default, 1.5f);
-                if (!secondChance)
+
+
+                if (lethal)
                 {
-                    room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.93f, 0.28f);
+                    room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
+                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
+                    room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.93f, 0.28f);
                     self.Die();
                 }
                 else
                 {
-                    room.PlaySound(SoundID.Bomb_Explode, e.SFXChunk, false, 0.86f, 0.4f);
-                    //self.stun += self.Malnourished ? 320 : 160;
-                    int stunDur = self.Malnourished ? 320 : 160;
+                    room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.86f, 0.4f);
+                    room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(self, err, "Explosioning FAILED UH OH");
+            }
+        }
+
+
+        public bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+        {
+            if (e.RailgunUse >= e.RailgunLimit)
+            {
+                if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
+                {
+                    Esclass_RG_InnerSplosion(self);
+                    //self.stun += e.RailFrail ? 320 : 160;
+                    int stunDur = e.RailFrail ? 320 : 160;
                     if (self.room?.game?.session is StoryGameSession sgs)
                     {
                         stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
                     }
 
                     self.Stun(stunDur);
-                    self.SetMalnourished(true);
+                    //self.SetMalnourished(true);
+                    Esclass_RG_SetGlassMode(true, ref e);
                     e.RailgunUse = e.RailgunLimit - 3;
+                }
+                else
+                {
+                    Esclass_RG_InnerSplosion(self, true);
                 }
                 return true;
             }
@@ -643,7 +694,7 @@ namespace TheEscort
         /// <summary>
         /// Applies recoil on the player
         /// </summary>
-        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default)
+        public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default, bool glassCannonBonus = false)
         {
             // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
             if (self.bodyMode != Player.BodyModeIndex.ZeroG)
@@ -669,7 +720,7 @@ namespace TheEscort
             }
 
             // Malnutrition bonus
-            if (self.Malnourished)
+            if (glassCannonBonus)
             {
                 force *= recoilMod[4];
             }
@@ -823,6 +874,15 @@ namespace TheEscort
                     self.hands[i].absoluteHuntPos = e.RailTargetAcquired.pos;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Immitates malnourished state entering stuff TODO!
+        /// </summary>
+        public static void Esclass_RG_SetGlassMode(bool fragility, ref Escort e)
+        {
+            e.RailFrail = fragility;
         }
     }
 }
