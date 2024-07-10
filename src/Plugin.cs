@@ -309,6 +309,11 @@ partial class Plugin : BaseUnityPlugin
     /// </summary> 
     public static bool pupIsAlive;
 
+    /// <summary>
+    /// Contains the list of naturally spawned needle spears
+    /// </summary>
+    public static List<EntityID> natrualSpears;
+
 
     // Patches
     
