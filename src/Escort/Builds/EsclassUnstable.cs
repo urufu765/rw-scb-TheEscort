@@ -217,6 +217,10 @@ namespace TheEscort
                     Esclass_US_HomeKick(self, e.UnsRockitCret);
                 }
             }
+            catch (Exception err)
+            {
+                Ebug(err, "Unstable homing kick failed!");
+            }
         }
 
 

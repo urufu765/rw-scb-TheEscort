@@ -2350,45 +2350,45 @@ partial class Plugin : BaseUnityPlugin
         return theOriginal;
     }
 
-        /// <summary>
-        /// Undoes the QoL fix of spearmaster spears disappearing from shelters by replacing them with regular spears before save.. assumes the game will save spear IDs
-        /// </summary>
-        private void Escort_SaveShelterSpears(Room room)
+    /// <summary>
+    /// Undoes the QoL fix of spearmaster spears disappearing from shelters by replacing them with regular spears before save.. assumes the game will save spear IDs
+    /// </summary>
+    private void Escort_SaveShelterSpears(Room room)
+    {
+        if (room.world?.game?.session is StoryGameSession s)
         {
-            if (room.world?.game?.session is StoryGameSession s)
+            // Retrieve the remake spear data from save
+            int remakeSpears = s.saveState.miscWorldSaveData.Esave().SpearsToRemake;
+
+            // Clear spears to be remade if there is left over for whatever reason
+            if (remakeSpears > 0)
             {
-                // Retrieve the remake spear data from save
-                int remakeSpears = s.saveState.miscWorldSaveData.Esave().SpearsToRemake;
-
-                // Clear spears to be remade if there is left over for whatever reason
-                if (remakeSpears > 0)
-                {
-                    remakeSpears = 0;
-                    Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
-                }
-
-
-                // Find needle spears in shelter and replace it with regular spears
-                for (int i = 0; i < room.abstractRoom.entities.Count; i++)
-                {
-                    if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
-                    {
-                        remakeSpears++;
-                        room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
-                        spear.realizedObject?.Destroy();
-                        (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
-                    }
-                }
-
-                // Save remake spear data
-                s.saveState.miscWorldSaveData.Esave().SpearsToRemake = remakeSpears;
-
-                // Clear list of spears spawned by natural causes
-                natrualSpears.Clear();
+                remakeSpears = 0;
+                Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
             }
-            else
+
+
+            // Find needle spears in shelter and replace it with regular spears
+            for (int i = 0; i < room.abstractRoom.entities.Count; i++)
             {
-                Ebug("Failed to find savestate!", 0);
+                if (room.abstractRoom.entities[i] != null && room.abstractRoom.entities[i] is AbstractSpear spear && spear.needle && natrualSpears.Contains(spear.ID))
+                {
+                    remakeSpears++;
+                    room.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false);
+                    spear.realizedObject?.Destroy();
+                    (room.abstractRoom.entities[i] as AbstractSpear).RealizeInRoom();
+                }
             }
+
+            // Save remake spear data
+            s.saveState.miscWorldSaveData.Esave().SpearsToRemake = remakeSpears;
+
+            // Clear list of spears spawned by natural causes
+            natrualSpears.Clear();
         }
+        else
+        {
+            Ebug("Failed to find savestate!", 0);
+        }
+    }
 }
