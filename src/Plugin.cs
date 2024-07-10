@@ -1344,37 +1344,6 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    private void Escort_AdditionalDraw(On.RoomCamera.orig_DrawUpdate orig, RoomCamera self, float timeStacker, float timeSpeed)
-    {
-        orig(self, timeStacker, timeSpeed);
-        try
-        {
-            foreach (AbstractCreature abstractCreature in self.game.Players)
-            {
-                if (abstractCreature.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
-                {
-                    //e.Escat_showTrail();
-                    //foreach(var speedTrail in escort.SpeTrail2)
-                    //{
-                        //speedTrail.Draw(self, timeStacker, self.CamPos);
-                    //}
-                }
-            }
-        }
-        catch (NullReferenceException nre)
-        {
-            Ebug(nre, "Nulled when trying to update graphics for miscellanious stuff");
-        }
-        catch (ArgumentNullException ane)
-        {
-            Ebug(ane, "Argument nulled when trying to find an escort in a CWT");
-        }
-        catch (Exception err)
-        {
-            Ebug(err, "Generic error when trying to update graphics for miscellanious stuff");
-        }
-    }
-
 
     /// <summary>
     /// Each build gets different food requirements!
@@ -1413,6 +1382,9 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
+    /// <summary>
+    /// Resets/sets some saved values upon end of cycle/session
+    /// </summary>
     private void Escort_Reset_Values(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
     {
         try
@@ -1465,7 +1437,9 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-
+    /// <summary>
+    /// Spawns slugpup in shelter on a successful end of cycle upon the door being closed. Also saves naturally spawned needle spears so they don't get trashed.
+    /// </summary>
     private void SpawnPupInShelterAtWin(On.ShelterDoor.orig_DoorClosed orig, ShelterDoor self)
     {
         try
@@ -1535,7 +1509,6 @@ partial class Plugin : BaseUnityPlugin
                             if (ac.state.dead)  // There's probably a better way but for now this will suffice
                             {
                                 // Pup exists in the room but is dead so must be respawned!
-                                //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
                                 ac.Destroy();
                                 SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                                 Ebug("Socks has revived from dead!", 1, true);
@@ -1549,7 +1522,6 @@ partial class Plugin : BaseUnityPlugin
                         else if (e.socksAbstract?.realizedCreature is not null)
                         {
                             // Pup exists somewhere in the world so must just be respawned!
-                            //JollyCoop.JollyCustom.WarpAndRevivePlayer(ac, self.room.abstractRoom, self.room.LocalCoordinateOfNode(0));
                             SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                             Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
                         }
@@ -1603,10 +1575,9 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-    private void FinishSpawningPup(ref Player player)
-    {
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     private void Escort_Add_Slugpup(On.Menu.SleepAndDeathScreen.orig_AddBkgIllustration orig, Menu.SleepAndDeathScreen self)
     {
         MenuScene.SceneID newScene = null;
@@ -1628,21 +1599,6 @@ partial class Plugin : BaseUnityPlugin
             {
                 try
                 {
-                    //bool flag = false;
-                    // if (self.saveState?.miscWorldSaveData?.Esave() is not null)
-                    // {
-                    //     Ebug("Sleep Savestate found on menu", 1, true);
-                    //     flag = self.saveState.miscWorldSaveData.Esave().SocksIsAlive;
-                    // }
-                    // else if (self.manager.currentMainLoop is RainWorldGame rwg && rwg.session is StoryGameSession sgs)
-                    // {
-                    //     Ebug("Sleep Savestate found on storysession", 1, true);
-                    //     flag = sgs.saveState.miscWorldSaveData.Esave().SocksIsAlive;
-                    // }
-                    // else 
-                    // {
-                    //     Ebug("Sleep Savestate couldn't be found!", 1, true);
-                    // }
                     if (pupIsAlive)
                     {
                         Ebug("Socks is alive!", 1, true);
@@ -1828,31 +1784,6 @@ partial class Plugin : BaseUnityPlugin
         return false;
     }
 
-    // TODO: Remove this
-    private void Backpack_ILRealize(ILContext il)
-    {
-        var cursor = new ILCursor(il);
-        while (cursor.TryGotoNext(MoveType.After,
-            i => i.MatchLdarg(0),
-            i => i.MatchLdarg(0),
-            i => i.MatchLdarg(0),
-            i => i.MatchLdfld<AbstractWorldEntity>("world"),
-            i => i.MatchNewobj<TubeWorm>(),
-            i => i.MatchCall<AbstractCreature>("set_realizedCreature")
-        ))
-        {
-
-        }
-        cursor.EmitDelegate<Action<CreatureTemplate>>(
-            (cb) =>
-            {
-                if (cb.type == GrappleBackpack.GrapplingPack)
-                {
-                    throw new NotImplementedException();
-                }
-            }
-        );
-    }
 
     /// <summary>
     /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack
@@ -2233,16 +2164,6 @@ partial class Plugin : BaseUnityPlugin
                     }
                 }
             }
-            /*
-            foreach (AbstractPhysicalObject a in self.abstractRoom.entities){
-                if (a != null && a is AbstractSpear spear){
-                    if (UnityEngine.Random.value > 0.67f && !spear.explosive && !spear.electric){
-                        a = new AbstractSpear(self.world, null, a.pos, a.ID, false){
-                            needle = true
-                        };
-                    }
-                }
-            }*/
             Ebug("Swapped " + j + " spears!");
         }
         catch (Exception err)
