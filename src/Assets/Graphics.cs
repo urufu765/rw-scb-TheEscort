@@ -19,9 +19,7 @@ namespace TheEscort
             { -3, "Escapist" }, 
             { -4, "Railgunner" }, 
             { -5, "Speedster" }, 
-            { -6, "Gilded" },
-            { -7, "Barbarian" },
-            { -8, "Unstable" }
+            { -6, "Gilded" }
         };
         public static UIelementWrapper[] hackyWrapper;
         public static UIelementWrapper[] fairlyIllegalWrapper;

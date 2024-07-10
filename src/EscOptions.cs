@@ -102,7 +102,7 @@ namespace TheEscort
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
         public Configurable<int> cfgSpeedsterGears;
-        private OpLabel sctTestBuildText;
+        //private OpLabel sctTestBuildText;
         private OpTextBox secretText;
         //private OpCheckBox hypableBtn;
         //private OpSliderTick hypedSlide;
@@ -151,14 +151,14 @@ namespace TheEscort
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
-        public int buildDiv = -8;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
+        public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.3";
+        private static readonly string VERSION = "0.3.2";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "The End Part 1<LINE>- Added slugpup to Escort's Default campaign<LINE>- option to allow other builds to access the slugpup<LINE>- A proper ending has been implemented(Ascension)<LINE>- Sleepscreen changes depending on whether you have the special slup or not<LINE>- This will be the final update for some time...");
+                "- Undone the QoL patch that makes 'naturally spawning' SM spears disappear in shelters.");
             }
         }
 
@@ -241,22 +241,22 @@ namespace TheEscort
             this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
             this.hudShowOptions = new()
             {
-                new ListItem("hide", Translate("Hide"), 0),
+                new ListItem(Translate("hide"), Translate("Hide"), 0),
                 //new ListItem("map", Translate("Show With Map"), 1),
                 //new ListItem("relevant", Translate("Show When Relevant"), 2),
-                new ListItem("always", Translate("Always Show"), 3)
+                new ListItem(Translate("always"), Translate("Always Show"), 3)
             };
             this.hudLocaOptions = new()
             {
-                new ListItem("botleft", Translate("Bottom Left"), 0),
-                new ListItem("botmid", Translate("Bottom Middle"), 1),
-                new ListItem("leftstack", Translate("Left Stacked"), 2)
+                new ListItem(Translate("botleft"), Translate("Bottom Left"), 0),
+                new ListItem(Translate("botmid"), Translate("Bottom Middle"), 1),
+                new ListItem(Translate("leftstack"), Translate("Left Stacked"), 2)
             };
             this.cfgShowHud = this.config.Bind<string>("cfg_Show_Hud", hudShowOptions[1].name);
             this.cfgHudLocation = this.config.Bind("cfg_Hud_Location", hudLocaOptions[0].name);
             this.cfgNoMoreFlips = this.config.Bind<bool>("cfg_Shutup_Flips", false);
             this.buildDraggerHelper = config.Bind("escort_builddragger_helper_ignore_this", 0, new ConfigAcceptableRange<int>(1, PlayerCount));
-            this.buildItems = new()
+            /*this.buildItems = new()
             {
                 new ListItem("default", Translate("Default"), 0),
                 new ListItem("brawler", Translate("Brawler"), -1),
@@ -267,6 +267,16 @@ namespace TheEscort
                 new ListItem("gilded", Translate("Gilded"), -6),
                 new ListItem("barbarian", Translate("Barbarian"), -7),
                 new ListItem("unstable", Translate("Unstable"), -8)
+            };*/
+            this.buildItems = new()
+            {
+                new ListItem("default", Translate("Default"), 0),
+                new ListItem("brawler", Translate("Brawler"), -1),
+                new ListItem("deflector", Translate("Deflector"), -2),
+                new ListItem("escapist", Translate("Escapist"), -3),
+                new ListItem("railgunner", Translate("Railgunner"), -4),
+                new ListItem("speedster", Translate("Speedster"), -5),
+                new ListItem("gilded", Translate("Gilded"), -6)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
@@ -335,9 +345,9 @@ namespace TheEscort
             };
             this.secretText.OnValueChanged += InputTheSecret;
 
-            this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
-                color = bTesting * 0.7f
-            };
+            //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
+            //    color = bTesting * 0.7f
+            //};
             // This is meaningless since the option isn't actually hidden
             // if (this.sctTestBuild.Value)
             // {
@@ -592,7 +602,7 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), Translate("Default") + " {***__}", true){
                     color = bDefault * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), Translate("Brawler") + " {**___}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), Translate("Brawler") + " {*____}", true){
                     color = bBrawler * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), Translate("Deflector") + " {*****}", true){
@@ -604,16 +614,17 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
                     color = bRailgunner * 0.7f
                 },
-                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {*____}", true){
+                new OpLabel(xo + (xp * 2), yo - (yp * 7.5f) - (tp * 1.3f), Translate("Speedster") + " {**___}", true){
                     color = bSpeedster * 0.7f
                 },
                 new OpLabel(xo + (xp * 2), yo - (yp * 8.5f) - (tp * 1.3f), Translate("Gilded") + " {***__}", true){
                     color = bGilded * 0.7f
                 },
+                /*
                 new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("UNAVAILABLE") + "[Barbarian] {?????}", true){
                     color = Color.green
-                },
-                sctTestBuildText,
+                },*/
+                //sctTestBuildText,
             };
             const string buildTextPad = "  ";
             this.buildText = new UIelement[]{
@@ -684,15 +695,15 @@ namespace TheEscort
                 {
                     description = j switch
                     {
-                        0 => "[P1] ",
-                        1 => "[P2] ",
-                        2 => "[P3] ",
-                        _ => "[P4] "
+                        0 => Translate("[P1] "),
+                        1 => Translate("[P2] "),
+                        2 => Translate("[P3] "),
+                        _ => Translate("[P4] ")
                     } + Swapper(Translate("escoptions_buildeasy_desc"), j switch {
-                        0 => "Player 1",
-                        1 => "Player 2",
-                        2 => "Player 3",
-                        _ => "Player 4"
+                        0 => Translate("Player 1"),
+                        1 => Translate("Player 2"),
+                        2 => Translate("Player 3"),
+                        _ => Translate("Player 4")
                     }),
                     colorEdge = easyColor,
                     colorFill = j switch
@@ -746,15 +757,15 @@ namespace TheEscort
                 {
                     description = j switch
                     {
-                        0 => "[P1] ",
-                        1 => "[P2] ",
-                        2 => "[P3] ",
-                        _ => "[P4] "
+                        0 => Translate("[P1] "),
+                        1 => Translate("[P2] "),
+                        2 => Translate("[P3] "),
+                        _ => Translate("[P4] ")
                     } + Swapper(Translate("escoptions_build_desc"), j switch {
-                        0 => "Player 1",
-                        1 => "Player 2",
-                        2 => "Player 3",
-                        _ => "Player 4"
+                        0 => Translate("Player 1"),
+                        1 => Translate("Player 2"),
+                        2 => Translate("Player 3"),
+                        _ => Translate("Player 4")
                     }),
                 };
                 (this.buildPlayer[j].colorLine, this.buildPlayer[j].colorEdge) = j switch
@@ -888,7 +899,7 @@ namespace TheEscort
                 // this.buildEasy[2],
                 // this.buildEasy[3],
 
-                new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), "(1)   (2)   (3)   (4) <-PLAYER #"){
+                new OpLabel(xo - (tp * 3.8f), yo + 3f - (yp * 1.5f), Translate("(1)   (2)   (3)   (4) <-PLAYER #")){
                     color = new Color(0.5f, 0.5f, 0.5f)
                 },
 
@@ -1243,7 +1254,7 @@ namespace TheEscort
                     this.cfgSectretGod.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Translate(
-                            "escoptions_sectret_invincible"
+                            Translate("escoptions_sectret_invincible")
                         ), insult, doThing
                     );
                 }
@@ -1257,7 +1268,7 @@ namespace TheEscort
                     this.cfgSectretMagic.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
                         Translate(
-                            "escoptions_sectret_magic"
+                            Translate("escoptions_sectret_magic")
                         ), insult, doThing
                     );
                 }
@@ -1270,7 +1281,7 @@ namespace TheEscort
                 {
                     this.sctTestBuild.Value = true;
                     ConfigConnector.CreateDialogBoxMultibutton(
-                        "Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!", insult, doThing
+                        Translate("Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!"), insult, doThing
                     );
                 }
                 Ebug("Set secret build testing mode");

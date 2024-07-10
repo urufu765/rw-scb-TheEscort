@@ -6,6 +6,7 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
+
 * ### 0.4 - Polished Gameplay Update
   * **0.4.0.1** All of the 0.4.0 development versions has been implemented
     * **dev01** Labeled a part of New Escapist
@@ -44,6 +45,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev27** A bit more work on homing kick
     * **dev28** Collision complete
     * **dev28a** Commenting so it's kinda easier to follow
+    * **dev29** Brought over 0.3.1.1 and 0.3.2 from BETA
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
@@ -173,6 +175,17 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev72** Fixed new arena icon sizes
 
 * ### 0.3 - Ending I
+  * **(0.3.2)** Undo QoL patch for no goddamn reason
+    * **b** Fixed syntax error
+    * **c** Fixed issue where the spears don't convert back to needle
+    * **d** Fixed syntax error
+    * **e** Fixed null error caused by replacing the player in shelter check (previously needed realized) with checking if the abstract creature is in the game player list
+    * **f** Made it so that the spears are carried over even when game was been exited.
+    * **g** Fixed syntax error
+    * **h** Same.
+
+  * **(0.3.1.1)** TranslaciOn de EspaNol
+
   * **(0.3.1)** Big Update Fix
     * **dev01** Updated libraries
     * **dev02** Fixed syntax issues
@@ -181,6 +194,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** Changed Escort icons
     * **dev06** Reorganizing devlogs and implemented many of the changes from 0.4.0 alpha build (and disabled Unstable from ever appearing)
     * **dev07** Fixed the versions, changed the difficulty a little bit, fixed Socks dupe glitch from Escapist cloning
+    * **dev07a** Cutscene labeling a tiny bit
+    * **POSTa** Changed building style so it correctly builds it in the 1.9.15 format and added legacy mod permanently for now
     * General Changes
       * Each build has different default colors
       * Escort now has a different arena icon (no more soul-staring Escort)

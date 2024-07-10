@@ -94,7 +94,7 @@ public partial class Escort
     /// 
     /// </summary>
     public int NEsDangerGraspExtend;
-    
+
     /// <summary>
     /// Variable that determins if Socks has been spawned or not (may need revision)
     /// </summary>
