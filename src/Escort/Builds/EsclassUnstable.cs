@@ -703,8 +703,8 @@ namespace TheEscort
                     new Vector2(self.bodyChunks[1].vel.x * DKMultiplier, self.bodyChunks[1].vel.y * DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
-                    e.UnsRKDx * e.UnsBlinkCount,
-                    e.UnsRKSx * e.UnsBlinkCount
+                    Escort.UnsRKDx * e.UnsBlinkCount,
+                    Escort.UnsRKSx * e.UnsBlinkCount
                 );
                 self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 1f, 1.5f);
             }
