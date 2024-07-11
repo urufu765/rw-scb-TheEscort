@@ -539,6 +539,8 @@ partial class Plugin : BaseUnityPlugin
     private void LoadResources(RainWorld rainWorld)
     {
         ins.L().Set();
+
+        // Sound effects! (Used mostly for silly reasons)
         Escort_SFX_Death = new SoundID("Escort_Failure", true);
         Escort_SFX_Flip = new SoundID("Escort_Flip", true);
         Escort_SFX_Roll = new SoundID("Escort_Roll", true);
@@ -555,6 +557,9 @@ partial class Plugin : BaseUnityPlugin
         Esconfig_SFX_Sectret = new SoundID("Esconfig_Sectret", true);
         Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
         Escort_SFX_Gild_Stomp = new SoundID("Escort_Gild_Stomp", true);
+        //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
+
+        // Custom sprites! Includes a checker to check if they loaded correctly and are not null!
         FAtlas aB, aH, hA, hB;
         aB = Futile.atlasManager.LoadAtlas("atlases/escorthip");
         aH = Futile.atlasManager.LoadAtlas("atlases/escorthead");
@@ -564,9 +569,7 @@ partial class Plugin : BaseUnityPlugin
         {
             Ebug("Oh no. Sprites dead.", 0);
         }
-        //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
         Ebug("All SFX loaded!", 1);
-        EscEnums.RegisterValues();  // TODO: do something with this
         this.config = new EscOptions(rainWorld);
         MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
         ins.L().Christmas(config.cfgSectret.Value);
