@@ -153,12 +153,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
         public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.3.2";
+        private static readonly string VERSION = "0.3.2.1";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Undone the QoL patch that makes 'naturally spawning' SM spears disappear in shelters.");
+                "- Fixed Speedster ability not turning off.<LINE>- Fixed calculation for Speedster ability time reduction upon tripping.");
             }
         }
 

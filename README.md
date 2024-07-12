@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.3 - Ending I
+  * **(0.3.2.1)** Fixed speedster's ability not turning off and fixed ability time reduction calculation
+
   * **(0.3.2)** Undo QoL patch for no goddamn reason
     * **b** Fixed syntax error
     * **c** Fixed issue where the spears don't convert back to needle

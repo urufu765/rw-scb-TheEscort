@@ -173,7 +173,7 @@ namespace TheEscort
                     if (e.SpeDashNCrash && e.SpeGear > 0)
                     {
                         e.SpeGear--;
-                        e.SpeSpeedin = Math.Min(0, e.SpeSpeedin - 80);
+                        e.SpeSpeedin = Math.Max(0, e.SpeSpeedin - 80);
                     }
                 }
                 if (self.Stunned)
@@ -274,7 +274,7 @@ namespace TheEscort
                     {
                         self.slowMovementStun = 5;
                     }
-                    if (e.SpeSpeedin == 0)
+                    if (e.SpeSpeedin <= 0)
                     {
                         e.SpeGear = 0;
                         e.SpeDashNCrash = false;
