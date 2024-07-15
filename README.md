@@ -175,6 +175,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev72** Fixed new arena icon sizes
 
 * ### 0.3 - Ending I
+  * **(0.3.2.1)** Fixed speedster's ability not turning off and fixed ability time reduction calculation
+
   * **(0.3.2)** Undo QoL patch for no goddamn reason
     * **b** Fixed syntax error
     * **c** Fixed issue where the spears don't convert back to needle

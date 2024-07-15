@@ -274,7 +274,7 @@ namespace TheEscort
                     {
                         self.slowMovementStun = 5;
                     }
-                    if (e.SpeSpeedin == 0)
+                    if (e.SpeSpeedin <= 0)
                     {
                         e.SpeGear = 0;
                         e.SpeDashNCrash = false;
