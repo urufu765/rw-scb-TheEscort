@@ -899,11 +899,17 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// This appears to not have a slugbase json version. It's done like this just to make the settings look matching to a certain degree. Controls whether Escort can dunk on lizards.
+    /// </summary>
     private bool Esconfig_Dunkin()
     {
         return config.cfgDunkin.Value;
     }
 
+    /// <summary>
+    /// Applies the setting for spear tricks (that send Escort rolling or flyin'). Some builds have this forced off by setting the value of e.tossEscort to false.
+    /// </summary>
     private bool Esconfig_Spears(Player self)
     {
         try
@@ -925,6 +931,9 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
+    /// </summary>
     private bool Esconfig_Build(Player self)
     {
         try
@@ -936,7 +945,7 @@ partial class Plugin : BaseUnityPlugin
             // Get build ID from configuration
             int pal = config.cfgBuild[self.playerState.playerNumber].Value;
 
-            // Story expansion skips
+            // Story campaign expansion skips
             if (self.slugcatStats?.name?.value is not null)
             {
                 pal = self.slugcatStats.name.value switch 
@@ -1118,15 +1127,6 @@ partial class Plugin : BaseUnityPlugin
                 e.DeflPerma = DeflInitSharedPerma;
             }
 
-#if false
-            if (self.room?.game?.StoryCharacter == EscortMe){
-                Ebug(self, "Session is Escort!", 1);
-                self.slugcatStats.maxFood = maximumPips;
-                if (!self.Malnourished){
-                    self.slugcatStats.foodToHibernate = minimumPips;
-                }
-            }
-#endif
             Ebug(self, "Set build complete!", 1);
             Ebug(self, new string[]{
                 $"Weightfac: {self.slugcatStats.bodyWeightFac}",
@@ -1150,6 +1150,9 @@ partial class Plugin : BaseUnityPlugin
 #endregion
 
 #region Escort New Configurations
+    /// <summary>
+    /// Intended to adjust the force of the slidestun launch, on the fence about implementing it.
+    /// </summary>
     private bool Esconfig_Launch(Player self, out float value, string type="spear"){
         value = 0;
         if (!pRTEdits.TryGet(self, out bool RT) ||
@@ -1186,7 +1189,9 @@ partial class Plugin : BaseUnityPlugin
         };
     }
 
-    // Implement lizard aggression (edited from template)
+    /// <summary>
+    /// Implement lizard aggression (edited from template)... don't know if this even does anything.
+    /// </summary>
     private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
     {
         ins.L().SetF();
@@ -1199,23 +1204,6 @@ partial class Plugin : BaseUnityPlugin
             self.spawnDataEvil = Mathf.Max(self.spawnDataEvil, 100f);
         }
     }
-    /*
-    private void Escort_Lizard_Denial(On.LizardAI.orig_GiftRecieved orig, LizardAI self, SocialEventRecognizer.OwnedItemOnGround giftOfferedToMe)
-    {
-        try{
-            if (giftOfferedToMe != null && giftOfferedToMe.owner != null && giftOfferedToMe.owner is Player p){
-                if (p.slugcatStats.name.value == "EscortMe" && config.cfgMeanLizards.Value){
-                    giftOfferedToMe.active = false;
-                    giftOfferedToMe.offered = false;
-                    giftOfferedToMe.owner = null;
-                }
-            }
-            orig(self, giftOfferedToMe);
-        } catch (Exception err){
-            orig(self, giftOfferedToMe);
-            Ebug(err, "Exception when lizard likes!");
-        }
-    }*/
 
 
     private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)

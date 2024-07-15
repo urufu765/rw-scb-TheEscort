@@ -45,7 +45,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev27** A bit more work on homing kick
     * **dev28** Collision complete
     * **dev28a** Commenting so it's kinda easier to follow
-    * **dev29** Brought over 0.3.1.1 and 0.3.2 from BETA
+    * **dev29** Brought over 0.3.1.1 and 0.3.2 from main release
+    * **dev30** Brought over 0.3.2.1 from main release
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__
