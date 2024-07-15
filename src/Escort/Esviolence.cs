@@ -89,6 +89,7 @@ partial class Plugin : BaseUnityPlugin
             }
             if (e.Speedster) Esclass_SS_Collision(self, creature, ref e);
             if (e.Gilded) Esclass_GD_Collision(self, creature, ref e);
+            if (e.Unstable) Esclass_US_Collision(self, creature, ref e);
 
             // Creature Trampoline (or if enabled Escort's Elevator)
             /*

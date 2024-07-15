@@ -653,6 +653,9 @@ namespace TheEscort
             return false;
         }
 
+        /// <summary>
+        /// Replicates the animation of throwing an object, in case tossing an object is required
+        /// </summary>
         private static void Esclass_GD_ReplicateThrowBodyPhysics(Player self, int grasp)
         {
             IntVector2 throwDir = new(self.ThrowDirection, 0);

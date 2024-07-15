@@ -264,6 +264,9 @@ namespace TheEscort
             }
         }
 
+        /// <summary>
+        /// Updates the visuals of Escort
+        /// </summary>
         private void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP)
         {
             try
@@ -294,6 +297,8 @@ namespace TheEscort
                     Ebug(self.player, "Oh crap. Sprites? Hello?!", 0);
                     return;
                 }
+
+                // Capture scale of sprites (presumably modified by other mods like rotund world)
                 if (s.sprites.Length > 9 && s.sprites[1] != null)
                 {
                     e.hipScaleX = s.sprites[1].scaleX;
@@ -304,11 +309,15 @@ namespace TheEscort
                     e.hipScaleX = bD[0];
                     e.hipScaleY = bD[0];
                 }
+
+                // Unused
                 if (e.NewEscapist)
                 {
                     //e.Escat_NE_AddTrail(rCam, s);
                 }
-                orig(self, s, rCam, t, camP);
+
+                orig(self, s, rCam, t, camP);  // ORIIIIIIIGGGG! AAAAAAA
+
                 if (s.sprites.Length > e.mainSpriteIndex)
                 {
                     // Hypelevel visual fx
@@ -316,6 +325,7 @@ namespace TheEscort
                     {
                         if (self.player != null && Esconfig_Hypable(self.player))
                         {
+                            // calculation of transparency
                             float alphya = 1f;
                             if (hypeRequirement > self.player.aerobicLevel)
                             {
@@ -326,8 +336,18 @@ namespace TheEscort
                                 s.sprites[a].alpha = alphya;
                                 s.sprites[a].color = e.hypeColor * Mathf.Lerp(1f, 1.8f, Mathf.InverseLerp(0f, 15f, e.smoothTrans));
                             }
+
+                            // Hide chest sprite if Railgunner
+                            if (e.Railgunner)
+                            {
+                                s.sprites[e.mainSpriteIndex + 1].alpha = 0f;
+                            }
+
+                            // Rotund!
                             s.sprites[e.mainSpriteIndex + 1].scaleX = e.hipScaleX;
                             s.sprites[e.mainSpriteIndex + 1].scaleY = e.hipScaleY;
+
+                            // Surrounding light FX
                             if (e.hypeLight != null && e.hypeSurround != null)
                             {
                                 float alpine = 0f;
@@ -365,10 +385,18 @@ namespace TheEscort
                     {
                         Ebug(self.player, err, "something went wrong when altering alpha");
                     }
+
+                    // Fix rotation of head sprite to face
                     s.sprites[e.mainSpriteIndex].rotation = s.sprites[9].rotation;
+
+                    // Fix rotation of chest sprite to torso
                     s.sprites[e.mainSpriteIndex + 1].rotation = s.sprites[1].rotation;
+
+                    // Head sprite scale
                     s.sprites[e.mainSpriteIndex].scaleX = hD[0];
                     //s.sprites[e.spriteQueue + 1].scaleX = bD[0];
+
+                    // Spin animation
                     if (self.player.animation == Player.AnimationIndex.Flip || self.player.animation == Player.AnimationIndex.Roll)
                     {
                         Vector2 vectoria = RWCustom.Custom.DegToVec(s.sprites[9].rotation) * hD[1];
@@ -378,7 +406,7 @@ namespace TheEscort
                         s.sprites[e.mainSpriteIndex + 1].x = s.sprites[1].x + vectorib.x;
                         s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + vectorib.y;
                     }
-                    else
+                    else  // Non-spin animation
                     {
                         s.sprites[e.mainSpriteIndex].x = s.sprites[9].x + hD[2];
                         s.sprites[e.mainSpriteIndex].y = s.sprites[9].y + hD[3];
