@@ -867,6 +867,9 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// LongWallJump: Enables/disables the ability to long press jump while hanging onto the wall to perform a high wall jump... Funky to use so disabled by default
+    /// </summary>
     private bool Esconfig_WallJumps(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !LWallJump.TryGet(self, out bool wallJumper))
@@ -883,6 +886,9 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// Better Pounce: Upon being enabled, causes Escort to do a sick flip whenever they pounce (by long-pressing jump)
+    /// </summary>
     private bool Esconfig_Pouncing(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !BtrPounce.TryGet(self, out bool pouncing))
@@ -1205,16 +1211,22 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-
+    /// <summary>
+    /// Upon creation of the player, also initialize the Escort variables and turn the slugcat into an Escort.
+    /// </summary>
     private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
     {
-        ins.L().Set();
+        ins.L().Set();  // ignore this
         Ebug("Ctor Triggered!");
+        // Let the game create the player first
         orig(self, abstractCreature, world);
+
+        // Checks if player is an Escort
         if (Eshelp_IsMe(self.slugcatStats.name, false))
         {
             ins.L().Set("Escort Check");
-            eCon.Add(self, new Escort(self));
+
+            eCon.Add(self, new Escort(self));  // Create a new Escort class for that player instance
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
