@@ -367,6 +367,11 @@ namespace TheEscort
                     return !nullCheck; // it IS an Escort!
                 }
 
+                if (theSlugcat.value == "EscortSocks")
+                {
+                    return nullCheck;
+                }
+
                 // In case I get lazy
                 if (theSlugcat.value.Length > 6 && theSlugcat.value.Substring(0, 6) == "Escort")
                 {

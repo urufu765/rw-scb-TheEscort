@@ -1227,16 +1227,24 @@ partial class Plugin : BaseUnityPlugin
             ins.L().Set("Escort Check");
 
             eCon.Add(self, new Escort(self));  // Create a new Escort class for that player instance
+
+            // Check if the Escort instance has been correctly created and stored in the CWT
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
                 return;
             }
-            if (world?.game?.session is ArenaGameSession) e.escortArena = true;
+
+            if (world?.game?.session is ArenaGameSession) e.escortArena = true;  // Set arena mode to true (Affects a few different things, hover over to see details)
+
+            // Slugpup code
             if (world?.game?.session is StoryGameSession s)
             {
+                // Checks if Escort has encountered the pup
                 pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
                 Ebug(self, $"Pup available? {pupAvailable}", 1, true);
+
+                // Set the Socks variant on first encounter
                 if (s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID == 0)
                 {
                     s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID = UnityEngine.Random.value switch
@@ -1248,26 +1256,23 @@ partial class Plugin : BaseUnityPlugin
                 }
                 e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
             }
-            Esconfig_Build(self);
-            e.Escat_Add_Ring_Trackers(self);
-            e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;
+            Esconfig_Build(self);  // Set build
+            e.Escat_Add_Ring_Trackers(self);  // Add the trackers that will track variables for the HUD to use
+
+            e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;  // Calculates the original mass to compare to most current mass (Rotund World)
+
             //logImportance = config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
-            try
+
+            try  // Initialize and set up SFX that play on loop
             {
                 Ebug(self, "Setting silly sounds", 2);
                 e.Escat_setSFX_roller(Escort_SFX_Roll);
                 e.Escat_setSFX_lizgrab(Escort_SFX_Lizard_Grab);
                 Ebug(self, "All done! Awaiting activation.", 2);
 
-                /*
-                Color col = new Color(0.796f, 0.549f, 0.27843f);
-                e.Esclass_set_hypeLight(self, col);
-                Ebug(self, "Setting hyped light", 2);
-                */
-                // April fools!
+                // 2023 April fools!
                 //self.setPupStatus(set: true);
                 //self.room.PlaySound(Escort_SFX_Spawn, self.mainBodyChunk);
-                //Ebug(new NullReferenceException(), "Test");
             }
             catch (Exception err)
             {
@@ -1278,18 +1283,20 @@ partial class Plugin : BaseUnityPlugin
                 Ebug(self, "All ctor'd", 1);
             }
         }
+
+        // Socks ctor (Socks Campaign Socks, not to be confused with Escort Campaign Socks)
         if (self.slugcatStats.name == EscortSocks)
         {
             ins.L().Set("Socks Check");
-            sCon.Add(self, new Socks(self));
+            sCon.Add(self, new Socks(self));  // Add to CWT
             if (!sCon.TryGetValue(self, out Socks es))
-            {
+            {  // Check if instance has been added correctly
                 Ebug(self, "Something happened while initializing then accessing Socks instance!", 0);
                 return;
             }
-            Socks_ctor(self);
+            Socks_ctor(self);  // Additional ctor stuff
             es.SockWorld = world;
-            try
+            try  // Initialize grapple backpack
             {
                 Creature.Grasp[] tempGrasps = self.grasps;
                 Array.Resize(ref tempGrasps, self.grasps.Length + 1);
@@ -1357,7 +1364,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (Eshelp_IsMe(slugcat)) return orig(slugcat);
             IntVector2 foodReq = config.cfgBuild[0].Value switch{
-                -7 => new(14, UnityEngine.Random.Range(1, 14)),
+                -7 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable? (Replace with Barbarian!)
                 -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
@@ -1368,7 +1375,7 @@ partial class Plugin : BaseUnityPlugin
             };
             if (config.cfgEasy[0].Value && foodReq.y > 3) 
             {
-                foodReq.y -= 3;
+                foodReq.y -= 3;  // Reduce food requirement upon easier mode triggered
             }
             return foodReq;
         } 
