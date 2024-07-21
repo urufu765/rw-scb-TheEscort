@@ -1326,11 +1326,16 @@ partial class Plugin : BaseUnityPlugin
                 {
                     if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
+                        // Updates the Escort property trackers outside player update to allow the tracker to continue checking for updates
                         escort.Escat_Update_Ring_Trackers();
+
+                        // Speedster's afterimage
                         if (escort.Speedster)
                         {
                             escort.Escat_showTrail();
                         }
+
+                        // New Escapist's afterimage?
                         if (escort.NewEscapist)
                         {
                             //escort.Escat_NE_ShowTrail();
