@@ -1426,8 +1426,12 @@ partial class Plugin : BaseUnityPlugin
             {
                 self.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, true);
             }
+
+            // Remove reinforced karma
             self.deathPersistentSaveData.reinforcedKarma = false;
         }
+
+        // Respawn pup if karma flower is used instead
         if (survived && self.miscWorldSaveData.Esave().AltRespawnReady)
         {
             self.miscWorldSaveData.Esave().AltRespawnReady = false;
@@ -1437,11 +1441,11 @@ partial class Plugin : BaseUnityPlugin
             {
                 self.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, true);
             }
-
         }
 
         orig(self, game, survived, newMalnourished);
-        DeflSharedPerma = 0;
+
+        DeflSharedPerma = 0;  // Reset shared pool (Will be replaced with saved value from individual deflector)
         try
         {
             Ebug($"Savestate SEA: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", 1, true);
@@ -1459,14 +1463,14 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (self?.room is null)
+            if (self?.room is null)  // Room exist?
             {
                 orig(self);
                 return;
             }
 
-            bool winCondition = true;
-            if (ModManager.CoopAvailable)
+            bool winCondition = true;  // Checks if the players are in a win condition
+            if (ModManager.CoopAvailable)  // Coop condition
             {
                 List<PhysicalObject> listOfShelterers = (
                     from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> y) => y)
@@ -1475,7 +1479,7 @@ partial class Plugin : BaseUnityPlugin
 
                 winCondition = listOfShelterers.Count >= self.room.game.PlayersToProgressOrWin.Count;
             }
-            else
+            else  // Solo play condition
             {
                 foreach (AbstractCreature abstractPlayer in self.room.game.Players)
                 {
@@ -1494,7 +1498,7 @@ partial class Plugin : BaseUnityPlugin
                     Escort_SaveShelterSpears(self.room);
                 }
                 
-                Player focus = null;
+                Player focus = null;  // Focuses on just the first player. Fuck you other players ;)
                 foreach (AbstractCreature abstractCreature in self.room.game.Players)
                 {
                     if (abstractCreature?.realizedCreature is Player player && player.playerState.playerNumber == 0)
@@ -1505,26 +1509,23 @@ partial class Plugin : BaseUnityPlugin
                 }
                 if (eCon.TryGetValue(focus, out Escort e))
                 {
+                    // If slugpup respawn state
                     if (s.saveState.miscWorldSaveData.Esave().RespawnPupReady || s.saveState.miscWorldSaveData.Esave().AltRespawnReady)
                     {
+                        // Make the slugpup like you
                         float like, tempLike;
                         like = s.saveState.miscWorldSaveData.Esave().EscortPupLike;
                         tempLike = s.saveState.miscWorldSaveData.Esave().EscortPupTempLike;
-                        if (like == -1)
-                        {
-                            like = 1;
-                        }
-                        if (tempLike == -1)
-                        {
-                            tempLike = 1;
-                        }
+                        if (like == -1) like = 1;
+                        if (tempLike == -1) tempLike = 1;
                         
+
                         if (TryFindThePup(self.room, out AbstractCreature ac))
                         {
                             if (ac.state.dead)  // There's probably a better way but for now this will suffice
                             {
                                 // Pup exists in the room but is dead so must be respawned!
-                                ac.Destroy();
+                                ac.Destroy();  // Might be redundant as .Destory() is done in the method below.
                                 SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
                                 Ebug("Socks has revived from dead!", 1, true);
                             }
@@ -1547,7 +1548,7 @@ partial class Plugin : BaseUnityPlugin
                             Ebug("Hello Socks!", 1, true);
                         }
                     }
-                    bool flag = TryFindThePup(self.room, out _);
+                    bool flag = TryFindThePup(self.room, out _);  // Verify slugpup revived and exists
                     s.saveState.miscWorldSaveData.Esave().SocksIsAlive = flag;
                     pupIsAlive = flag;
                 }
@@ -1570,44 +1571,43 @@ partial class Plugin : BaseUnityPlugin
     /// <param name="iD">ID of player that the slugpup will like</param>
     public static void SpawnThePup(ref Escort escort, Room room, WorldCoordinate worldCoordinate, EntityID? iD = null, float like = 1, float tempLike = 1)
     {
-        escort.socksAbstract?.Destroy();
-        //room.game.GetNewID()
-        int socksID = escort.PupCampaignID;
-        escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugpup"), null, worldCoordinate, new(-1, socksID));
-        //escort.socksAbstract.state = new PlayerState(escort.socksAbstract, 0, MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Slugpup, false);
-        //escort.socksAbstract.state = new MoreSlugcats.PlayerNPCState(escort.socksAbstract, 0);
-        //escort.socksAbstract.ID.setAltSeed(socksID);
-        room.abstractRoom.AddEntity(escort.socksAbstract);
-        escort.socksAbstract.RealizeInRoom();
-        //escort.socksAbstract.realizedCreature.PlaceInRoom(room);
-        if (iD is not null)
+        escort.socksAbstract?.Destroy();  // Remove traces of slugpup if exists
+        int socksID = escort.PupCampaignID;  // Retrieves Socks type
+        escort.socksAbstract = new AbstractCreature(room.world, StaticWorld.GetCreatureTemplate("Slugpup"), null, worldCoordinate, new(-1, socksID));  // Make new SocksAbstract
+        room.abstractRoom.AddEntity(escort.socksAbstract);  // Add the socks to room
+        escort.socksAbstract.RealizeInRoom();  // Make socks real
+        if (iD is not null)  // Try to make slugpup like you
         {
             escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceLike(like);
             escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceTempLike(tempLike);
         }
-        escort.SocksAliveAndHappy.Stun(100);
+        escort.SocksAliveAndHappy.Stun(100);  // Fuck Socks.
         Ebug("Spawn socks (unofficially)!", 1, true);
     }
 
 
     /// <summary>
-    /// 
+    /// Hijacks the sleep scene and adds the slugpup if slugpup is alive and well
     /// </summary>
     private void Escort_Add_Slugpup(On.Menu.SleepAndDeathScreen.orig_AddBkgIllustration orig, Menu.SleepAndDeathScreen self)
     {
         MenuScene.SceneID newScene = null;
         SlugcatStats.Name name;
+        // Find name of slugcat
         if (self.manager.currentMainLoop is RainWorldGame)
             name = (self.manager.currentMainLoop as RainWorldGame).StoryCharacter;
         else
             name = self.manager.rainWorld.progression.PlayingAsSlugcat;
 
+        // Check if slugcat is Escort
         if (Eshelp_IsMe(name, true))
         {
             Ebug("Not an escort!", 1);
             orig(self);
             return;
         }
+
+        // Grabs the completed scene depending on 
         if (SlugBaseCharacter.TryGet(name, out var chara))
         {
             if (self.IsSleepScreen) 
@@ -1638,6 +1638,7 @@ partial class Plugin : BaseUnityPlugin
             }
         }
 
+        // Set Escort sleep screen!
         if(newScene != null && newScene.Index != -1)
         {
             self.scene = new InteractiveMenuScene(self, self.pages[0], newScene);
@@ -1801,7 +1802,7 @@ partial class Plugin : BaseUnityPlugin
 
 
     /// <summary>
-    /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack
+    /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack (Move to Socks' stuff)
     /// </summary>
     private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
     {
@@ -1825,37 +1826,6 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    /// <summary>
-    /// Was once planned to be used for adding backpacks as an actual creatures... before Uru got real lazy and couldn't be bothered
-    /// </summary>
-    private void Custom_Stuff(On.StaticWorld.orig_InitCustomTemplates orig)
-    {
-        orig();
-    }
-
-    /// <summary>
-    /// Changes spawn location... WARNING: Also overrides expedition spawns, so therefore unused.
-    /// </summary>
-    private void EscortChangingRoom(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
-    {
-        orig(self, manager);
-        Ebug("Changing room!");
-        Ebug(self.startingRoom);
-        if (self.StoryCharacter == EscortMe){
-            self.startingRoom = config.cfgBuild[0].Value switch {
-                0 => "CC_SUMP02", // Default
-                -1 => "SU_A02",  // Brawler
-                -2 => "SI_C03",  // Deflector
-                -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
-                -4 => "GW_C02_PAST",  // Railgunner
-                -5 => "LF_E03",  // Speedster
-                -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
-                _ => "SB_C09"  // Unspecified
-            };
-            Ebug("It's time UwU");
-            Ebug(self.startingRoom);
-        }
-    }
 
     /// <summary>
     /// Changes the spawn location of Escort. Compatible with Expedition random spawns
@@ -1864,6 +1834,8 @@ partial class Plugin : BaseUnityPlugin
         orig(self);
         Ebug("Changing room 2!");
         Ebug(self.denPosition);
+
+        // Ignores build-specific spawn for Expedition
         if (
             (ModManager.MSC && self.progression.rainWorld.safariMode) ||
             (self.progression.rainWorld.setup.startMap != "") ||
@@ -1914,9 +1886,8 @@ partial class Plugin : BaseUnityPlugin
             if (i == EscortSocks)
             {
                 ins.L().Set("Socks Check");
-                // TODO: Find a way to check if Escort has been beaten or not
+                // TODO: Find a way to check if Escort has been beaten or not (DONE! All that has to be done is to actually make Socks stable)
                 return !UnplayableSocks;
-                // return rainWorld.progression.miscProgressionData.beaten_SpearMaster;
             }
         }
         catch (Exception err)
@@ -1926,44 +1897,6 @@ partial class Plugin : BaseUnityPlugin
         return orig(i, rainWorld);
     }
 
-    private static SlugcatStats.Name[] Escort_Time(On.SlugcatStats.orig_getSlugcatTimelineOrder orig)
-    {
-        ins.L().Set();
-        SlugcatStats.Name[] timeline = orig();
-        try
-        {
-            SlugcatStats.Name[] newTimeline = new SlugcatStats.Name[timeline.Length + 1];
-            int j = 0;
-            for (int i = 0; i < timeline.Length; i++)
-            {
-                if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear)
-                {
-                    ins.L().Set("Escort Check");
-                    newTimeline[j] = timeline[i];
-                    j++;
-                    newTimeline[j] = EscortMe;
-                }
-                else if (timeline[i] == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer)
-                {
-                    ins.L().Set("Socks Check");
-                    newTimeline[j] = EscortSocks;
-                    j++;
-                    newTimeline[j] = timeline[i];
-                }
-                else
-                {
-                    newTimeline[j] = timeline[i];
-                }
-                j++;
-            }
-            return newTimeline;
-        }
-        catch (Exception err)
-        {
-            Ebug(err, "Couldn't set timeline!");
-        }
-        return timeline;
-    }
 
     private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
     {
