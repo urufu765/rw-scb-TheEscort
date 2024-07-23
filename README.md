@@ -47,6 +47,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev28a** Commenting so it's kinda easier to follow
     * **dev29** Brought over 0.3.1.1 and 0.3.2 from main release
     * **dev30** Brought over 0.3.2.1 from main release
+    * **dev30e** Fixed the natural spears array from not being actually initialized
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

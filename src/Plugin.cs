@@ -1685,16 +1685,22 @@ partial class Plugin : BaseUnityPlugin
             {
                 return false;
             }
+
+            // Deflector extra parry check
             if (e.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
             {
                 Ebug(player, "Parryteched condition!", 2);
                 return true;
             }
+
+            // Regular parry check
             else if (player.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
             {
                 Ebug(player, "Regular parry condition!", 2);
                 return true;
             }
+
+            // Not in parry condition
             else
             {
                 Ebug(player, "Not in parry condition", 2);
@@ -1704,6 +1710,7 @@ partial class Plugin : BaseUnityPlugin
         }
         return false;
     }
+
     /// <summary>
     /// Check Escort's parry condition
     /// </summary>
@@ -1855,7 +1862,7 @@ partial class Plugin : BaseUnityPlugin
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
-                -7 => "SS_A18",  // Unstable
+                -7 => "SS_A18",  // Unstable (now Barbarian, replace!)
                 _ => "SB_C09"  // Unspecified
             };
             Ebug("It's time OwO");
@@ -1898,6 +1905,9 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
+    /// <summary>
+    /// I don't know what this does but this does something
+    /// </summary>
     private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
     {
         ins.L().Set();
@@ -1959,6 +1969,9 @@ partial class Plugin : BaseUnityPlugin
         return orig(i);
     }
 
+    /// <summary>
+    /// Modifies the explosive spear chance
+    /// </summary>
     private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
@@ -1988,6 +2001,9 @@ partial class Plugin : BaseUnityPlugin
         return orig(index);
     }
 
+    /// <summary>
+    /// Modifes the electrical spear spawn chance
+    /// </summary>
     private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
@@ -2017,6 +2033,9 @@ partial class Plugin : BaseUnityPlugin
         return orig(index);
     }
 
+    /// <summary>
+    /// Modifies the generic spear spawn chance
+    /// </summary>
     private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
     {
         ins.L().SetF();
@@ -2046,6 +2065,9 @@ partial class Plugin : BaseUnityPlugin
         return orig(index, originalSpearChance);
     }
 
+    /// <summary>
+    /// Replaces some regular spawned spears with Spearmaster needle versions
+    /// </summary>
     private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
     {
         ins.L().SetF();
@@ -2066,6 +2088,8 @@ partial class Plugin : BaseUnityPlugin
             ins.L().SetF("Escort Check");
             
             bool shelterGotPerson = false;
+
+            // Shelter check
             if (self.abstractRoom.shelter)
             {
                 Ebug("Spear swap ignores shelters!... unless QoL unfixer!", 1);
@@ -2074,6 +2098,7 @@ partial class Plugin : BaseUnityPlugin
                 {
                     if (self.abstractRoom.entities[i] is AbstractCreature ac && self.game.Players.Contains(ac))
                     {
+                        // Find the shelter that contains the player, to determine this is indeed the starting shelter. At one point I could have all the needle spears be saved but that's only if we got enough performance
                         shelterGotPerson = true;
                         Ebug("Player shelter!", 1);
                         break;
