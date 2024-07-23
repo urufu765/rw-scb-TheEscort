@@ -312,7 +312,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Contains the list of naturally spawned needle spears
     /// </summary>
-    public static List<EntityID> natrualSpears;
+    public static List<EntityID> natrualSpears = new();
 
 
     // Patches
