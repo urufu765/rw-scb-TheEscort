@@ -2104,25 +2104,30 @@ partial class Plugin : BaseUnityPlugin
                         break;
                     }
                 }
-                if (!shelterGotPerson)
+                if (!shelterGotPerson)  // If shelter that the players don't spawn in
                 {
                     return;
                 }
             }
-            // ins.L().SetF("Is not shelter");
             Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
-            int j = 0;
-            float chance = 0.2f;
+            int j = 0;  // Numbers of spears swapped
+            float chance = 0.2f;  // Swap chance (default)
+
+            // Get room-specific swap chance
             if (self.world?.region is not null && self.abstractRoom is not null)
             {
                 chance = SMSM(self.world.region.name, self.abstractRoom.name);
             }
+
+            // Replace them spears!
             for (int i = 0; i < self.abstractRoom.entities.Count; i++)
             {
-                if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear)
+                // Find a regular spear
+                if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear && !spear.explosive && !spear.electric)
                 {
-                    if ((shelterGotPerson && self.world?.game?.session is 
-                        StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0 || UnityEngine.Random.value < chance) && !spear.explosive && !spear.electric)
+
+                    if (shelterGotPerson && self.world?.game?.session is 
+                        StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0 || (!shelterGotPerson && UnityEngine.Random.value < chance))
                     {
                         self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                         {
