@@ -2126,16 +2126,21 @@ partial class Plugin : BaseUnityPlugin
                 if (self.abstractRoom.entities[i] != null && self.abstractRoom.entities[i] is AbstractSpear spear && !spear.explosive && !spear.electric)
                 {
 
-                    if (shelterGotPerson && self.world?.game?.session is 
-                        StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0 || (!shelterGotPerson && UnityEngine.Random.value < chance))
+                    if (
+                        (shelterGotPerson && self.world?.game?.session is StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0) || 
+                        (!shelterGotPerson && UnityEngine.Random.value < chance)
+                    )
                     {
+                        // Convert a spear into a needle
                         self.abstractRoom.entities[i] = new AbstractSpear(spear.world, null, spear.pos, spear.ID, false)
                         {
                             needle = true
                         };
-                        natrualSpears.Add(spear.ID);
+
+                        natrualSpears.Add(spear.ID);  // Add spear id of the naturally converted needles so they may be saved
                         if (shelterGotPerson)
                         {
+                            // Tick down the number of spears to remake
                             (self.world.game.session as StoryGameSession).saveState.miscWorldSaveData.Esave().SpearsToRemake--;
                         }
                         j++;
@@ -2150,6 +2155,9 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
     {
         ins.L().SetF();
