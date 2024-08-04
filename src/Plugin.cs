@@ -2156,7 +2156,7 @@ partial class Plugin : BaseUnityPlugin
     }
 
     /// <summary>
-    /// 
+    /// Loads custom room settings when playing Escort campaign
     /// </summary>
     private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
     {
