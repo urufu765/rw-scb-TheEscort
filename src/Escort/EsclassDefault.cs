@@ -870,10 +870,13 @@ namespace TheEscort
             if (self.animation == Player.AnimationIndex.RocketJump && config.cfgDKAnimation.Value)
             {
                 Vector2 n = self.bodyChunks[0].vel.normalized;
+                // Increase leap height if rolling for some time
+                float roller = Mathf.InverseLerp(0, 120f, e.RollinCount);
+                
                 self.bodyChunks[0].vel -= n * 2;
                 self.bodyChunks[1].vel += n * 2;
-                self.bodyChunks[0].vel.y += 0.05f;
-                self.bodyChunks[1].vel.y += 0.1f;
+                self.bodyChunks[0].vel.y += 0.05f + Mathf.Lerp(0f, 0.1f, roller);
+                self.bodyChunks[1].vel.y += 0.1f + Mathf.Lerp(0f, 0.2f, roller);
             }
             // Implement frontslide animation (not working right)
             if (false && self.animation == Player.AnimationIndex.BellySlide && config.cfgDKAnimation.Value && !self.longBellySlide)
