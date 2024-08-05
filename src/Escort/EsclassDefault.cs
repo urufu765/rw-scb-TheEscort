@@ -50,6 +50,9 @@ namespace TheEscort
         private int filenum;
 
 #region Common
+        /// <summary>
+        /// Ticks variables and values on update
+        /// </summary>
         private void Esclass_Tick(Player self)
         {
             if (!eCon.TryGetValue(self, out Escort e))

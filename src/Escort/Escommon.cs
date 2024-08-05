@@ -131,7 +131,9 @@ namespace TheEscort
         }
 
 
-        // Implement a different type of dropkick
+        /// <summary>
+        /// Implement a different type of dropkick
+        /// </summary>
         private void Escort_TossObject(On.Player.orig_TossObject orig, Player self, int grasp, bool eu)
         {
             orig(self, grasp, eu);
@@ -169,6 +171,9 @@ namespace TheEscort
         }
 
 
+        /// <summary>
+        /// Contrary to the name, prevents Escort from dying on certain conditions.
+        /// </summary>
         private void Escort_Die(On.Player.orig_Die orig, Player self)
         {
             try
