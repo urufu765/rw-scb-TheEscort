@@ -9,61 +9,11 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    /*
-    class EscCusOpt : Dialog, SelectOneButton.SelectOneButtonOwner
-    {
-        public MenuIllustration title;
-        public SimpleButton cancelButton;
-        public float leftAnchor, rightAnchor;
-        public bool opening, closing;
-        public float movementCounter;
-        public SelectOneButton[] topicButtons;
-        public MenuLabel pageLabel;
-        public ManualPage currentTopicPage;
-        public int index, pageNumber;
-        public String currentTopic;
-        public Dictionary<string, int> topics;
-        public float sin;
-        public bool firstView;
-        public float lastAlpha;
-        public float currentAlpha;
-        public float uAlpha;
-        public float targetAlpha;
-        public float globalOffX;
-        public float contentOffX;
-        public float wrapTextMargin;
-
-        public EscCusOpt(ProcessManager manager, Dictionary<string, int> topics, MenuObject owner) : base(manager)
-        {
-            float[] screenOffsets = RWCustom.Custom.GetScreenOffsets();
-            leftAnchor = screenOffsets[0]; rightAnchor = screenOffsets[1];
-            this.topics = topics;
-            pages[0].pos = new Vector2(0.01f, 0f);
-            pages[0].pos.y += 2000f;
-            pages.Add(new Page(this, owner, "CLASS", 1));
-            pages[1].pos = new Vector2(520.01f, 155f);
-            pages[1].pos.y += 2155f;
-
-        }
-
-        public int GetCurrentlySelectedOfSeries(string series)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentlySelectedOfSeries(string series, int to)
-        {
-            throw new NotImplementedException();
-        }
-    }*/
-
     class EscOptions : OptionInterface
     {
-        //public readonly Plugin instance;
         public readonly RainWorld rainworld;
         public Configurable<bool> cfgMeanLizards;
         public Configurable<bool> cfgVengefulLizards;
-        // public Configurable<bool> cfgMeanGarbWorms;
         public Configurable<float> cfgHeavyLift;
         public Configurable<float> cfgDKMult;
         public Configurable<bool> cfgElevator;
@@ -73,12 +23,8 @@ namespace TheEscort
         public Configurable<bool> cfgSFX;
         public Configurable<bool> cfgPounce;
         public Configurable<bool> cfgLongWallJump;
-        //[Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
-        //[Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
         public Configurable<int>[] cfgBuild;
-        //[Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
         public Configurable<bool>[] cfgEasy;
-        //[Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
         public Configurable<bool> cfgDKAnimation;
@@ -102,10 +48,7 @@ namespace TheEscort
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
         public Configurable<int> cfgSpeedsterGears;
-        //private OpLabel sctTestBuildText;
         private OpTextBox secretText;
-        //private OpCheckBox hypableBtn;
-        //private OpSliderTick hypedSlide;
         private OpCheckBox hypeableBox;
         private OpSliderTick hypeableTick;
         private OpLabel[] hypeableText;
@@ -114,9 +57,7 @@ namespace TheEscort
         private OpLabel shutUpFlipText;
         private UIelement[] mainSet;
         private UIelement[] buildSet, buildTitle, buildText, buildShadow;
-        //private OpCheckBox buildEasyP1, buildEasyP2, buildEasyP3, buildEasyP4;
         public OpCheckBox[] buildEasy;
-        //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
         public OpSliderTick[] buildPlayer;
         private OpDragger buildDragger;
         private readonly Configurable<int> buildDraggerHelper;
@@ -165,7 +106,6 @@ namespace TheEscort
         // Jolly Coop button stuff don't worry about it
         public OpSimpleButton[] jollyEscortBuilds;
         public OpSimpleButton[] jollyEscortEasies;
-        //public bool[] jollyEasierState = new bool[4];
 
         // Arena button stuff
         //public OpSimpleButton[] arenaEscortBuilds;
@@ -186,11 +126,6 @@ namespace TheEscort
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
             this.cfgDKAnimation = this.config.Bind<bool>("cfg_Drop_Kick_Animation", true);
-            //this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             PlayerCount = Mathf.Max(4, RainWorld.PlayerObjectBodyColors.Length, rainworld.options.controls.Length);
             this.cfgBuild = new Configurable<int>[PlayerCount];  // Make this expandable to more than 4 players by checking how many players are being logged in?
             this.cfgEasy = new Configurable<bool>[PlayerCount];  // This too
@@ -202,14 +137,6 @@ namespace TheEscort
                 this.cfgBindKeys[x] = this.config.Bind<KeyCode>("cfg_Custom_Escort_Keybinds_Player" + x, KeyCode.None);
                 this.cfgCustomBinds[x] = this.config.Bind<bool>("cfg_Enable_Custom_Escort_Binds_Player" + x, false);
             }
-            //this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
-            //this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
-            //this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
-            //this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
-            //this.cfgCustomP1 = this.config.Bind<bool>("cfg_Custom_P1", false);
-            //this.cfgCustomP2 = this.config.Bind<bool>("cfg_Custom_P2", false);
-            //this.cfgCustomP3 = this.config.Bind<bool>("cfg_Custom_P3", false);
-            //this.cfgCustomP4 = this.config.Bind<bool>("cfg_Custom_P4", false);
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
             this.cfgNoticeHype = this.config.Bind<bool>("cfg_Noticeable_Hype", false);
@@ -286,11 +213,6 @@ namespace TheEscort
             this.bindKeyHelper = config.Bind("escort_bindkey_helper", KeyCode.None);
 
             this.cfgAllBuildsGetPup = config.Bind("cfg_Let_All_The_Builds_Have_Slugpups", false);
-
-
-            // Plugin.ins.L().Christmas(this.cfgSectret.Value);
-            // Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
-            // Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
         }
 
 
@@ -348,28 +270,7 @@ namespace TheEscort
             //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
             //    color = bTesting * 0.7f
             //};
-            // This is meaningless since the option isn't actually hidden
-            // if (this.sctTestBuild.Value)
-            // {
-            //     this.sctTestBuildText.Show();
-            // }
-            // else
-            // {
-            //     this.sctTestBuildText.Hide();
-            // }
 
-            /*
-            this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
-                description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
-            };
-            this.hypedSlide = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 6)), 400 - (int)xp - 7){
-                min = 0,
-                max = 6,
-                description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
-            };
-            //this.hypableBtn.OnDeactivate += setTheHype;
-            //this.hypableBtn.OnReactivate += killTheHype;
-            */
             this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp / 2))
             {
                 description = OptionInterface.Translate("escoptions_hypecheckbox_desc") + SetDefault(cfgHypable.defaultValue)
@@ -473,33 +374,6 @@ namespace TheEscort
             this.bindReset.OnClick += ResetCustomKeybind;
             this.bindText = new OpLabel(xo + (xp * 10), yo - (yp * 7) + tp/2, Translate("escoptions_custombinds_text"));
 
-
-            /*
-            this.buildP1 = new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p1Color*0.8f,
-                colorEdge = p1Color*0.9f,
-                min = this.buildDiv,
-                max = 0
-            };
-            //this.buildP1.OnFocusGet += viewBuild;
-            this.buildP2 = new OpSliderTick(this.cfgBuildP2, new Vector2(xo - (tp * 1), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p2Color*0.8f,
-                colorEdge = p2Color*0.9f,
-                min = this.buildDiv,
-                max = 0
-            };
-            this.buildP3 = new OpSliderTick(this.cfgBuildP3, new Vector2(xo + (tp * 3), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p3Color*0.9f,
-                colorEdge = p3Color,
-                min = this.buildDiv,
-                max = 0
-            };
-            this.buildP4 = new OpSliderTick(this.cfgBuildP4, new Vector2(xo + (tp * 7), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p4Color*2.4f,
-                colorEdge = p4Color*2.8f,
-                min = this.buildDiv,
-                max = 0
-            };*/
 
             //bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;
