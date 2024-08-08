@@ -55,7 +55,7 @@ namespace TheEscort
             GildedColor = new Color(0.122f, 0.176f, 0.28f);
             GildFloatState = false;
             GildLevitateLimit = 120;
-            GildPowerMax = self.Malnourished? 4000: 6400;
+            GildPowerMax = Plugin.ins.config.cfgGildedMaxPower * self.Malnourished? 0.625 : 1;
             GildPowerPipsMax = self.Malnourished? 10: 16;
             GildPowerPipsIndex = -1;
             Escat_GD_reset_vars();

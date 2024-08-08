@@ -25,7 +25,7 @@ namespace TheEscort
             {
                 e.SpeBonk--;
             }
-            if (e.SpeSpeedin > 0 && !e.SpeOldSpeed)
+            if ((e.SpeSpeedin > 0 || e.SpeDashNCrash) && !e.SpeOldSpeed)
             {
                 e.SpeSpeedin--;
                 if (self.input[0].x != 0 && e.SpeNitros > 0)

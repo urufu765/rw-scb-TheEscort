@@ -545,7 +545,7 @@ namespace TheEscort
             this.RailWeaping = 0;
             this.RailgunCD = 0;
             this.RailgunUse = 0;
-            this.RailgunLimit = 10;
+            this.RailgunLimit = Plugin.ins.config.cfgRailgunnerLimiter;
             this.RailIReady = false;
             this.RailBombJump = false;
             this.RailRecoilLag = -1;

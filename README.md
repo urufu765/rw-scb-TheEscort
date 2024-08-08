@@ -48,7 +48,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev29** Brought over 0.3.1.1 and 0.3.2 from main release
     * **dev30** Brought over 0.3.2.1 from main release
     * **dev30e** Fixed the natural spears array from not being actually initialized
-    * **dev31** 0.4.0.1.dev31: Tried to make dropkicks higher for long rolls
+    * **dev31** Tried to make dropkicks higher for long rolls
+    * **dev32** Attempt to fix Speedster's infinite ability duration when running out during stun and gave Railgunner and Gilded configurable limits.
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
     * __Default TODO__

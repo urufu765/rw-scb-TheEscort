@@ -47,7 +47,9 @@ namespace TheEscort
         public Configurable<bool> cfgDeflecterSharedPool;
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
-        public Configurable<int> cfgSpeedsterGears;
+        public Configurable<int> cfgSpeedsterGears;  // 4
+        public Configurable<int> cfgRailgunnerLimiter;  // 10
+        public Configurable<int> cfgGildedMaxPower;  // 6400
         private OpTextBox secretText;
         private OpCheckBox hypeableBox;
         private OpSliderTick hypeableTick;
@@ -159,6 +161,8 @@ namespace TheEscort
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
             this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
+            this.cfgRailgunnerLimiter = this.config.Bind<int>("cfg_Overrails_Limiter", 10, new ConfigAcceptableRange<int>(1, 1000));
+            this.cfgGildedMaxPower = this.config.Bind<int>("cfg_Gilded_Max_POWAH", 6400, new ConfigAcceptableRange<int>(1000, 1000000));
 
             
             this.cfgSecret.OnChange += InputSecret;
@@ -857,6 +861,16 @@ namespace TheEscort
                 new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Speedster Gear Limit")),
                 new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100){
                     description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
+                },
+
+                new OpLabel(xo + (xp * 4) + 7f, yo - (yp * 11), Translate("Railgunner Overcharge Limit")),
+                new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 130){
+                    description = Translate("Sets the overcharge limit for the Railgunner build.") + SetDefault(cfgRailgunnerLimiter.defaultValue)
+                },
+
+                new OpLabel(xo + (xp * 6) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
+                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 200){
+                    description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
                 },
 
                 secretText
