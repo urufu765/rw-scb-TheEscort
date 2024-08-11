@@ -12,8 +12,8 @@ namespace TheEscort
     class EscOptions : OptionInterface
     {
         public readonly RainWorld rainworld;
-        public Configurable<bool> cfgMeanLizards;
-        public Configurable<bool> cfgVengefulLizards;
+        public Configurable<bool> cfgMeanLizards;  // Mean Lizards
+        public Configurable<bool> cfgVengefulLizards;  // Vengeful Lizards
         public Configurable<float> cfgHeavyLift;
         public Configurable<float> cfgDKMult;
         public Configurable<bool> cfgElevator;
