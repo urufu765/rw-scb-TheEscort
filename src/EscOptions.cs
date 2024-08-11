@@ -12,19 +12,19 @@ namespace TheEscort
     class EscOptions : OptionInterface
     {
         public readonly RainWorld rainworld;
-        public Configurable<bool> cfgMeanLizards;  // Mean Lizards
-        public Configurable<bool> cfgVengefulLizards;  // Vengeful Lizards
-        public Configurable<float> cfgHeavyLift;
-        public Configurable<float> cfgDKMult;
-        public Configurable<bool> cfgElevator;
-        public Configurable<bool> cfgHypable;
-        public Configurable<int> cfgHypeReq;
-        public Configurable<float> cfgHypeRequirement;
-        public Configurable<bool> cfgSFX;
-        public Configurable<bool> cfgPounce;
-        public Configurable<bool> cfgLongWallJump;
-        public Configurable<int>[] cfgBuild;
-        public Configurable<bool>[] cfgEasy;
+        public Configurable<bool> cfgMeanLizards;  // Mean Lizards: Configures the lizards to be a bit meaner and aggressive
+        public Configurable<bool> cfgVengefulLizards;  // Vengeful Lizards: Configures the lizards to take revenge if too many of their kin has been killed
+        public Configurable<float> cfgHeavyLift;  // Carryweight multiplier: Higher the value, the more they can carry
+        public Configurable<float> cfgDKMult;  // Dropkick knockback multiplier: Higher the value, the further creatures get sent
+        public Configurable<bool> cfgElevator;  // Elevatorrrrr!!!: Holding jump near creatures flings Escort upwards
+        public Configurable<bool> cfgHypable;  // Allow Battlehype mechanic
+        public Configurable<int> cfgHypeReq;  // Battlehype activation threshhold
+        // public Configurable<float> cfgHypeRequirement;  // Specific requirement threshhold
+        public Configurable<bool> cfgSFX;  // Allow silly sfx
+        public Configurable<bool> cfgPounce;  // Crazy sick flip!
+        public Configurable<bool> cfgLongWallJump;  // Long wall jump
+        public Configurable<int>[] cfgBuild;  // Per player Escort build settings
+        public Configurable<bool>[] cfgEasy;  // Per player Easier mode settings
         public Configurable<bool> cfgDunkin;
         public Configurable<bool> cfgSpears;
         public Configurable<bool> cfgDKAnimation;
