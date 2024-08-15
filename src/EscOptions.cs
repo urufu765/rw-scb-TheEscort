@@ -259,6 +259,7 @@ namespace TheEscort
                 bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
             // I'm so done with this shit, may we never remotely reach 1.5k
+            // future me here, FUCK YOU WE ALMOST REACHED 5K!!!!
 
 
             this.secretText = new OpTextBox(this.cfgSecret, new Vector2(xo + (xp * 14f), yo - (yp * 14)), 60)
@@ -592,45 +593,6 @@ namespace TheEscort
                         _ => p4Color
                     },
                 };
-                // this.buildEasy[j].SetValueBool(this.jollyEasierState[j]);
-                // this.buildEasy[j].SetValueBool(
-                //     j switch {
-                //         0 => this.cfgEasyP1.Value,
-                //         1 => this.cfgEasyP2.Value,
-                //         2 => this.cfgEasyP3.Value,
-                //         _ => this.cfgEasyP4.Value
-                //     }
-                // );
-                // try {
-                //     this.buildEasy.SetValue(j switch {
-                //         0 => this.cfgEasyP1.Value,
-                //         1 => this.cfgEasyP2.Value,
-                //         2 => this.cfgEasyP3.Value,
-                //         _ => this.cfgEasyP4.Value
-                //     }, j);
-                // } catch (Exception err){
-                //     Ebug(err, "Oh no not my remix menu");
-                // }
-                    /*
-                this.buildPlayer[j] = new OpSliderTick(
-                    j switch
-                    {
-                        0 => this.cfgBuildP1,
-                        1 => this.cfgBuildP2,
-                        2 => this.cfgBuildP3,
-                        _ => this.cfgBuildP4
-                    }, new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true
-                )
-                {
-                    value = j switch
-                    {
-                        0 => ValueConverter.ConvertToString(this.cfgBuildP1.Value, this.cfgBuildP1.settingType),
-                        1 => ValueConverter.ConvertToString(this.cfgBuildP2.Value, this.cfgBuildP2.settingType),
-                        2 => ValueConverter.ConvertToString(this.cfgBuildP3.Value, this.cfgBuildP3.settingType),
-                        _ => ValueConverter.ConvertToString(this.cfgBuildP4.Value, this.cfgBuildP4.settingType)
-                    },
-                };
-                    */
                 this.buildPlayer[j] = new OpSliderTick(this.cfgBuild[j], new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true)
                 {
                     description = j switch
@@ -1041,46 +1003,6 @@ namespace TheEscort
                 Plugin.ins.L().TurnOffLog();
             }
         }
-        /*
-                private void inputSecret()
-                {
-                    int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-                    string[] insult = new string[1];
-                    Action[] doThing = new Action[1]{
-                        makeSomeNoiseEsconfig
-                    };
-                    insult[0] = "Ur not my mum.";
-                    switch(UnityEngine.Random.Range(0, 5)){
-                        case 1: insult[0] = "F#@k off."; break;
-                        case 2: insult[0] = "Skill issue."; break;
-                        case 3: insult[0] = "I don't care."; break;
-                        case 4: insult[0] = "Shut the f$&k up."; break;
-                    }
-                    if (this.cfgSecret.Value == num){
-                        if (!this.cfgSectret.Value){
-                            this.cfgSectret.Value = true;
-                            ConfigConnector.CreateDialogBoxMultibutton(
-                                swapper(
-                                    "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
-                                ), insult, doThing
-                            );
-                        }
-                        Plugin.ins.L().christmas(this.cfgSectret.Value);
-                    }
-                    else {
-                        this.cfgSectret.Value = false;
-                        Plugin.ins.L().christmas();
-                        try{
-                            if (Plugin.Esconfig_SFX_Sectret != null){
-                                ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
-                            }
-                        } catch (Exception err){
-                            Debug.LogError("Couldn't play sound!");
-                            Debug.LogException(err);
-                        }
-                    }
-                }
-        */
         private void InputTheSecret(UIconfig config, string value, string oldValue)
         {
             ResultsBaby(value);
@@ -1095,6 +1017,18 @@ namespace TheEscort
         {
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
+            // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
+            // int eschallenge_LizardPomPoms = 24155;
+            // int eschallenge_SpeedingTicket = 25862;
+            // int eschallenge_ = 22612;
+            // int eschallenge_ = 27295;
+            // int eschallenge_ = 22690;
+            // int eschallenge_ = 27211;
+            // int eschallenge_ = 24226;
+            // int eschallenge_ = 28182;
+            // int eschallenge_ = 21856;
+            // int eschallenge_ = 28716;
+            // int eschallenge_ = 21708;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
