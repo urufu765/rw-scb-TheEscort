@@ -19,21 +19,21 @@ namespace TheEscort
         public Configurable<bool> cfgElevator;  // Elevatorrrrr!!!: Holding jump near creatures flings Escort upwards
         public Configurable<bool> cfgHypable;  // Allow Battlehype mechanic
         public Configurable<int> cfgHypeReq;  // Battlehype activation threshhold
-        // public Configurable<float> cfgHypeRequirement;  // Specific requirement threshhold
+        public Configurable<float> cfgHypeRequirement;  // Specific requirement threshhold
         public Configurable<bool> cfgSFX;  // Allow silly sfx
         public Configurable<bool> cfgPounce;  // Crazy sick flip!
         public Configurable<bool> cfgLongWallJump;  // Long wall jump
         public Configurable<int>[] cfgBuild;  // Per player Escort build settings
         public Configurable<bool>[] cfgEasy;  // Per player Easier mode settings
-        public Configurable<bool> cfgDunkin;
-        public Configurable<bool> cfgSpears;
-        public Configurable<bool> cfgDKAnimation;
-        public Configurable<bool> cfgNoticeHype;
-        public Configurable<bool> cfgNoticeEmpower;
-        public Configurable<bool> cfgFunnyDeflSlide;
-        public Configurable<bool> cfgPoleBounce;
-        public Configurable<bool> cfgOldSpeedster;
-        public Configurable<bool> cfgOldEscapist;
+        public Configurable<bool> cfgDunkin;  // Whether Escort can dunk lizards (TODO: Rework system)
+        public Configurable<bool> cfgSpears;  // Double spear
+        public Configurable<bool> cfgDKAnimation;  // Make rocket jump go feet first rather than face first
+        public Configurable<bool> cfgNoticeHype;  // Change hype VFX
+        public Configurable<bool> cfgNoticeEmpower;  // Change Deflector empower VFX
+        public Configurable<bool> cfgFunnyDeflSlide;  // Give Deflector an unnecessarily long slide
+        public Configurable<bool> cfgPoleBounce;  // Allow other builds to bounce on poles like Guardian
+        public Configurable<bool> cfgOldSpeedster;  // Switch to old Speedster mechanics
+        public Configurable<bool> cfgOldEscapist;  // Switch to old Escapist mechanics
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
         public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod, cfgSectretMagic;
@@ -1018,15 +1018,15 @@ namespace TheEscort
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
-            // int eschallenge_LizardPomPoms = 24155;
-            // int eschallenge_SpeedingTicket = 25862;
-            // int eschallenge_ = 22612;
-            // int eschallenge_ = 27295;
-            // int eschallenge_ = 22690;
-            // int eschallenge_ = 27211;
-            // int eschallenge_ = 24226;
-            // int eschallenge_ = 28182;
-            // int eschallenge_ = 21856;
+            // int eschallenge_LizardPomPoms = 24155;  // Take 5 pictures of any Escort dancing with two dead lizards on the tip of a pole
+            // int eschallenge_SpeedingTicket = 25862;  // Take 3 pictures of Speedster going past tolls
+            // int eschallenge_FoodTour = 22612;  // Eat every single fruit
+            // int eschallenge_RockEm = 27295;  // Kill 20 (extra: 100) creatures with a single (same) rock
+            // int eschallenge_BecomingAGod = 22690;  // Achieve infinity damage three times in a cycle
+            // int eschallenge_AirDesruption = 27211;  // Stun a creature into a deathpit using Escapist's dash ability
+            // int eschallenge_MerchantsMustPay = 24226;  // Kill every single scav merchant
+            // int eschallenge_DrivingPenalty = 28182;  // Crash into an elite scav and run away
+            // int eschallenge_Pacifism = 21856;  // Survive a cycle (extra: 2) without ever using Gilded's power
             // int eschallenge_ = 28716;
             // int eschallenge_ = 21708;
             string[] insult = new string[1];
