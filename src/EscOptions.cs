@@ -1018,16 +1018,16 @@ namespace TheEscort
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
-            // int eschallenge_LizardPomPoms = 24155;  // Take 5 pictures of any Escort dancing with two dead lizards on the tip of a pole
-            // int eschallenge_SpeedingTicket = 25862;  // Take 3 pictures of Speedster going past tolls
-            // int eschallenge_FoodTour = 22612;  // Eat every single fruit
-            // int eschallenge_RockEm = 27295;  // Kill 20 (extra: 100) creatures with a single (same) rock
-            // int eschallenge_BecomingAGod = 22690;  // Achieve infinity damage three times in a cycle
-            // int eschallenge_AirDesruption = 27211;  // Stun a creature into a deathpit using Escapist's dash ability
-            // int eschallenge_MerchantsMustPay = 24226;  // Kill every single scav merchant
-            // int eschallenge_DrivingPenalty = 28182;  // Crash into an elite scav and run away
-            // int eschallenge_Pacifism = 21856;  // Survive a cycle (extra: 2) without ever using Gilded's power
-            // int eschallenge_ = 28716;
+            // int eschallenge_LizardPomPoms = 24155;     // Take 5 pictures of any Escort dancing with two dead lizards on the tip of a pole (MANUAL VERIFICATION ONLY)
+            // int eschallenge_SpeedingTicket = 25862;    // Take 3 pictures of Speedster going past tolls (MANUAL VERIFICATION ONLY)
+            // int eschallenge_FoodTour = 22612;          // Eat every single fruit (extra: +all kinds of lizards(to fill dragonslayer), squicadas, centipedes) (extra: +every single creature)
+            // int eschallenge_SocksIsDumb = 28716;       // Make your way through three (extra: 7) regions without ever holding Socks's hand
+            // int eschallenge_RockEm = 27295;            // Kill 20 (extra: 100) creatures with a single (same) rock
+            // int eschallenge_BecomingAGod = 22690;      // Achieve infinity damage three times (extra: 5) in a cycle
+            // int eschallenge_AirDesruption = 27211;     // Stun a creature into a deathpit using Escapist's dash ability
+            // int eschallenge_MerchantsMustPay = 24226;  // Find and kill every single merchant in vanilla RW (extra: No deaths)
+            // int eschallenge_DontStop = 28182;          // Visit every single region without ever being stunned (4 gear perma while in challenge)
+            // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
             // int eschallenge_ = 21708;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
