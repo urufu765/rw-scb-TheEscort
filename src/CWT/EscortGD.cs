@@ -63,7 +63,7 @@ namespace TheEscort
 
         public void Escat_GD_reset_vars(bool fromDeath = false)
         {
-            GildPower = GildStartPower = fromDeath? 0 : 2000;
+            GildPower = GildStartPower = fromDeath? 0 : (int)(GildPowerMax * 0.3f);
             GildMoonJump = GildReservePower = GildRequiredPower = GildPowerUsage = GildInstaCreate = GildCrushTime = 0;
             GildCancel = GildLockRecharge = GildNeedsToReset = false;
         }

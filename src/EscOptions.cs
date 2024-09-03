@@ -161,8 +161,8 @@ namespace TheEscort
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
             this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
-            this.cfgRailgunnerLimiter = this.config.Bind<int>("cfg_Overrails_Limiter", 10, new ConfigAcceptableRange<int>(1, 1000));
-            this.cfgGildedMaxPower = this.config.Bind<int>("cfg_Gilded_Max_POWAH", 6400, new ConfigAcceptableRange<int>(1000, 1000000));
+            this.cfgRailgunnerLimiter = this.config.Bind<int>("cfg_Overrails_Limiter", 10, new ConfigAcceptableRange<int>(1, 500));
+            this.cfgGildedMaxPower = this.config.Bind<int>("cfg_Gilded_Max_POWAH", 6400, new ConfigAcceptableRange<int>(3000, 100000));
 
             
             this.cfgSecret.OnChange += InputSecret;
@@ -830,8 +830,8 @@ namespace TheEscort
                     description = Translate("Sets the overcharge limit for the Railgunner build.") + SetDefault(cfgRailgunnerLimiter.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 4) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
-                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 130){
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
+                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100){
                     description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
                 },
 

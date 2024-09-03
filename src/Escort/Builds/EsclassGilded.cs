@@ -106,7 +106,7 @@ namespace TheEscort
 
             e.GildLockRecharge = self.dead || self.inVoidSea;
 
-            if (!self.input[0].thrw || e.GildClearReserve) e.GildAlsoPop = false;
+            if (!self.input[0].thrw) e.GildAlsoPop = false;
 
             if (e.GildClearReserve) e.GildClearReserve = false;
 
@@ -136,11 +136,11 @@ namespace TheEscort
             }
 
             // Die by overpower
-            if (e.GildPower > e.GildPowerMax - 800 && !self.dead)
+            if (e.GildPower > e.GildPowerMax - (int)(e.GildPowerMax * 0.125f) && !self.dead)
             {
                 self.Blink(5);
-                Eshelp_Player_Shaker(self, 0.7f * Mathf.InverseLerp(e.GildPowerMax - 800, e.GildPowerMax, e.GildPower));
-                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(e.GildPowerMax - 800, e.GildPowerMax, e.GildPower));
+                Eshelp_Player_Shaker(self, 0.7f * Mathf.InverseLerp(e.GildPowerMax - (e.GildPowerMax * 0.125f), e.GildPowerMax, e.GildPower));
+                self.aerobicLevel = Mathf.Max(self.aerobicLevel, Mathf.InverseLerp(e.GildPowerMax - (e.GildPowerMax * 0.125f), e.GildPowerMax, e.GildPower));
             }
             if (e.GildPower > e.GildPowerMax && !self.dead)
             {
@@ -183,11 +183,11 @@ namespace TheEscort
                 }
                 else 
                 {
-                    e.GildLevitateLimit = 480;
+                    e.GildLevitateLimit = 640;
                 }
             }
             bool deCondition = e.CustomKeybindEnabled? !Input.GetKey(e.CustomKeybind) : !self.input[0].jmp;
-            bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : self.wantToJump > 0 && (
+            bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) && e.GildLevitateCooldown <= 0 : self.wantToJump > 0 && (
                     e.GildLevitateCooldown <= 0 || 
                     self.input[0].jmp && !self.input[1].jmp
                 );
@@ -210,6 +210,11 @@ namespace TheEscort
                 self.standing = !(self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump);
                 self.wantToJump = 0;
                 e.GildReservePower = 0;
+            }
+
+            if (e.GildLevitateLimit == 0)
+            {
+                e.GildLevitateCooldown = Escort.GildUseLevitate;
             }
 
             // Activate levitation
