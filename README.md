@@ -8,6 +8,55 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 
 * ### 0.4 - Polished Gameplay Update
+  * **0.4.0.2** Preparing update this time WOAH
+    * **dev01** Removed Socks from game
+    * __GENERAL TODO__
+      * *dev* New Lidarz Dunk™!
+      * *dev* CW dialog
+      * *dev* Server missions
+      * *dev* Text for new Railgunner and Gilded options
+      * *dev* Redo build section
+    * __Default TODO__
+      * *dev* Give 'em ol' Brawler's buffed rock hit
+      * *dev* Bubbleweed on jump rather than passive, give stronger boost
+    * __Brawler TODO__
+      * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
+      * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
+      * *dev* Lock Brawler's explosive punch behind an achievement
+      * *dev* Nerf Brawler's dropkick and slidestun and rock hit
+    * __Deflector TODO__
+      * *dev* Fix Deflector deflecting bees (and add the option to have it back)
+      * *dev* Set Deflector's death by bite chance to 100% always
+    * __Escapist TODO__
+    * __Railgunner TODO__
+      * *dev* Railgunners' dual spear goes through creatures
+      * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
+      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
+      * *dev* More charge = faster projectile
+      * *dev* Glass cannon mode makes things ricochet a whole lot more
+      * *dev* Rialgunner takes care of scav merchents challenge implementation
+      * *dev* Electric spear implementation
+    * __Speedster TODO__
+      * *dev* Speedster can't stop running challenge implementation
+      * *dev* Bodyslam priority over boop
+    * __Gilded TODO__
+    * __Barbarian shit__
+      * *dev* make Barbarian's color nicer
+      * *dev* Barbarian creature shield
+      * *dev* Barbarian shield bash (slide with creature)
+      * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
+      * *dev* Barbarian faster slide
+      * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
+    * __Unstable shit__
+      * *dev* Homing kick if dashing down towards the closest target
+      * *dev* More dashes, the stronger the kick
+      * *dev* Sliding button input does a slide-dash
+    * __Railgunner sightseer (do at home)__
+      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
+      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
+      * *dev* Railgunner screenpeek
+
   * **0.4.0.1** All of the 0.4.0 development versions has been implemented
     * **dev01** Labeled a part of New Escapist
     * **dev02** Layed out the foundation for Barbarian
@@ -50,42 +99,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev30e** Fixed the natural spears array from not being actually initialized
     * **dev31** Tried to make dropkicks higher for long rolls
     * **dev32** Attempt to fix Speedster's infinite ability duration when running out during stun and gave Railgunner and Gilded configurable limits.
-    * __GENERAL TODO__
-      * *dev* New Lidarz Dunk™!
-    * __Default TODO__
-      * *dev* Give 'em ol' Brawler's buffed rock hit
-    * __Brawler TODO__
-      * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
-      * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
-      * *dev* Lock Brawler's explosive punch behind an achievement
-      * *dev* Nerf Brawler's dropkick and slidestun and rock hit
-    * __Deflector TODO__
-      * *dev* Fix Deflector deflecting bees (and add the option to have it back)
-    * __Escapist TODO__
-    * __Railgunner TODO__
-      * *dev* Railgunners' dual spear goes through creatures
-      * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
-      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
-      * *dev* More charge = faster projectile
-      * *dev* Glass cannon mode makes things ricochet a whole lot more
-    * __Speedster TODO__
-    * __Gilded TODO__
-    * __Barbarian shit__
-      * *dev* make Barbarian's color nicer
-      * *dev* Barbarian creature shield
-      * *dev* Barbarian shield bash (slide with creature)
-      * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
-      * *dev* Barbarian faster slide
-      * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
-    * __Unstable shit__
-      * *dev* Homing kick if dashing down towards the closest target
-      * *dev* More dashes, the stronger the kick
-      * *dev* Sliding button input does a slide-dash
-    * __Railgunner sightseer (do at home)__
-      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
-      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
-      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
-      * *dev* Railgunner screenpeek
 
   * **0.4.0** Unstable update
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist

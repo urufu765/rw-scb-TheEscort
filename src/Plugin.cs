@@ -164,7 +164,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Replaces the grapple backpack.... idk why forgor
     /// </summary>
-    public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
+    //public static readonly GameFeature<bool> replaceGrapple = GameBool("thesocks/replacegrapple");
 
     /// <summary>
     /// Registers the Escort sleep scene
@@ -1811,27 +1811,27 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Probably used when swapping backpacks... unused due to sudden and unknown null exception caused by the other backpack (Move to Socks' stuff)
     /// </summary>
-    private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
-    {
-        orig(self);
-        try
-        {
-            if (self?.world?.game is null || (replaceGrapple is not null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG))
-            {
-                return;
-            }
-            if (self.Room is not null && self.Room.shelter && self.realizedCreature is not null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack)
-            {
-                Ebug("Replaced Grapple with Backpack!");
-                self.realizedCreature.Destroy();
-                self.realizedCreature = new GrappleBackpack(self, self.world);
-            }
-        }
-        catch (Exception err)
-        {
-            Ebug(err, "Something happened while replacing Tubeworm with GrappleBackpack!");
-        }
-    }
+    // private void Backpack_Realize(On.AbstractCreature.orig_Realize orig, AbstractCreature self)
+    // {
+    //     orig(self);
+    //     try
+    //     {
+    //         if (self?.world?.game is null || (replaceGrapple is not null && replaceGrapple.TryGet(self.world.game, out bool rG) && !rG))
+    //         {
+    //             return;
+    //         }
+    //         if (self.Room is not null && self.Room.shelter && self.realizedCreature is not null && self.realizedCreature is TubeWorm && self.realizedCreature is not GrappleBackpack)
+    //         {
+    //             Ebug("Replaced Grapple with Backpack!");
+    //             self.realizedCreature.Destroy();
+    //             self.realizedCreature = new GrappleBackpack(self, self.world);
+    //         }
+    //     }
+    //     catch (Exception err)
+    //     {
+    //         Ebug(err, "Something happened while replacing Tubeworm with GrappleBackpack!");
+    //     }
+    // }
 
 
     /// <summary>
