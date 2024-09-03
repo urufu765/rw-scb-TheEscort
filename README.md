@@ -10,12 +10,12 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 * ### 0.4 - Polished Gameplay Update
   * **0.4.0.2** Preparing update this time WOAH
     * **dev01** Removed Socks from game
-    * **dev02** Trying to fix Railgunner
-    * **dev03** Trying to fix Gilded
+    * **dev02** Trying to fix Railgunner settings
+    * **dev03** Trying to fix Gilded settings
     * **dev04** Trying to fix rolljump height + Poletech buff
+    * **dev05** CW dialog fix (Check for SS)
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
-      * *dev* CW dialog fix (Check for SS)
       * *dev* Server missions
       * *dev* Text for new Railgunner and Gilded options
       * *dev* Redo build section

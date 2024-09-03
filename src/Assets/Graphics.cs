@@ -229,12 +229,17 @@ namespace TheEscort
                 }
                 if (e.mainSpriteIndex < s.sprites.Length)
                 {
+                    // removes from foreground layer
                     rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex]);
                     rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex + 1]);
                     Ebug(self.player, "Removal success.", 1);
+
+                    // adds to midground layer
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex]);
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex + 1]);
                     Ebug(self.player, "Addition success.", 1);
+
+                    // puts custom sprites behind game sprites (3=head, 9=face)
                     s.sprites[e.mainSpriteIndex].MoveBehindOtherNode(s.sprites[9]);
                     s.sprites[e.mainSpriteIndex + 1].MoveBehindOtherNode(s.sprites[3]);
                     //Ebug(self.player, "Restructure success.", 1);

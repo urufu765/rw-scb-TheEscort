@@ -393,7 +393,7 @@ namespace TheEscort
             On.SSOracleBehavior.PebblesConversation.AddEvents += Escort_Meets_Pebbles;
             On.SSOracleBehavior.PebblesConversation.AddEvents += Escort_Meets_Moon;
             On.SSOracleBehavior.Update += Moon_Updates_Escort;
-            On.HUD.DialogBox.Interrupt += Escort_Not_Interrupt_Pearl;
+            //On.HUD.DialogBox.Interrupt += Escort_Not_Interrupt_Pearl;
             //On.SLOracleBehaviorHasMark.MoonConversation.AddEvents += Escort_Meets_Moon;
         }
 
@@ -426,7 +426,7 @@ namespace TheEscort
 
         private static void Moon_Updates_Escort(On.SSOracleBehavior.orig_Update orig, SSOracleBehavior self, bool eu)
         {
-            if (self.oracle.room.game.StoryCharacter == EscortMe && self.action == SSOracleBehavior.Action.General_GiveMark)
+            if (self.oracle.ID == MoreSlugcats.MoreSlugcatsEnums.OracleID.DM && self.oracle.room.game.StoryCharacter == EscortMe && self.action == SSOracleBehavior.Action.General_GiveMark)
             {
                 self.inActionCounter++;
                 self.movementBehavior = SSOracleBehavior.MovementBehavior.KeepDistance;
@@ -510,7 +510,7 @@ namespace TheEscort
         {
             try
             {
-                if (DoAConverse.TryGet(self.oracle.room.game, out bool val) && val && self.oracle.room.game.StoryCharacter == EscortMe)
+                if (DoAConverse.TryGet(self.oracle.room.game, out bool val) && val && self.oracle.room.game.StoryCharacter == EscortMe && (self.oracle.ID == MoreSlugcats.MoreSlugcatsEnums.OracleID.DM || self.oracle.ID == Oracle.OracleID.SS))
                 {
                     if (self.timeSinceSeenPlayer < 0)
                     {
@@ -551,6 +551,11 @@ namespace TheEscort
 
         private static void Escort_Next_Sight(On.SSOracleBehavior.orig_NewAction orig, SSOracleBehavior self, SSOracleBehavior.Action nextAction)
         {
+            if (!(self.oracle.ID == MoreSlugcats.MoreSlugcatsEnums.OracleID.DM || self.oracle.ID == Oracle.OracleID.SS))
+            {
+                orig(self, nextAction);
+                return;
+            }
             if (nextAction == self.action)
             {
                 return;
