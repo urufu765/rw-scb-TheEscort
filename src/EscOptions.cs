@@ -825,13 +825,13 @@ namespace TheEscort
                     description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 4) + 7f, yo - (yp * 11), Translate("Railgunner Overcharge Limit")),
-                new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 130){
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 11), Translate("Railgunner Overcharge Limit")),
+                new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 100){
                     description = Translate("Sets the overcharge limit for the Railgunner build.") + SetDefault(cfgRailgunnerLimiter.defaultValue)
                 },
 
-                new OpLabel(xo + (xp * 6) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
-                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 200){
+                new OpLabel(xo + (xp * 4) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
+                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 130){
                     description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
                 },
 

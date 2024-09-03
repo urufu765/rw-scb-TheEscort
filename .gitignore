@@ -399,3 +399,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 mod/soundeffects/escort_failure.pkf
+mod/newest/plugins/TheEscort.dll

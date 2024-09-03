@@ -80,10 +80,10 @@ namespace TheEscort
                 {
                     Color railgunColor = new(0.5f, 0.85f, 0.78f);
                     float r = UnityEngine.Random.Range(-1, 1);
-                    for (int i = 0; i < (e.RailgunUse >= e.RailgunLimit - 3 ? 3 : 1); i++)
+                    for (int i = 0; i < (e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 3 : 1); i++)
                     {
                         Vector2 v = RWCustom.Custom.RNV() * (r == 0 ? 0.1f : r);
-                        self.room.AddObject(new Spark(self.mainBodyChunk.pos + 15f * v, v, Color.Lerp(railgunColor * 0.5f, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit - 3, e.RailgunUse)), null, (e.RailgunUse >= e.RailgunLimit - 3 ? 8 : 6), (e.RailgunUse >= e.RailgunLimit - 3 ? 16 : 10)));
+                        self.room.AddObject(new Spark(self.mainBodyChunk.pos + 15f * v, v, Color.Lerp(railgunColor * 0.5f, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit * 0.7f, e.RailgunUse)), null, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 8 : 6, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 16 : 10));
                     }
                     /*
                     self.room.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[0].pos, self.mainBodyChunk.vel + new Vector2(0, 1), 1f, Color.Lerp(Color.black, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)), Color.Lerp(new Color(0f, 0f, 0f, 0f), railgunColor, Mathf.InverseLerp(0, 400, e.RailgunCD)), (e.RailgunUse >= e.RailgunLimit - 3? 12 : 6)));
@@ -488,7 +488,7 @@ namespace TheEscort
                     s.EmitSmoke(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, self.mainBodyChunk.vel + v * UnityEngine.Random.value * -10f, c, 12);
                 }
                 self.room.AddObject(new Explosion.ExplosionLight(p, 90f, 0.7f, 4, c));
-                self.room.PlaySound(e.RailgunUse >= e.RailgunLimit - 3 ? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, (e.RailgunUse >= e.RailgunLimit - 3 ? 0.8f : 0.93f), Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
+                self.room.PlaySound(e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 0.8f : 0.93f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
                 if (Esclass_RG_Death(self, self.room, ref e))
                 {
                     if (Esconfig_SFX(self))
@@ -643,7 +643,7 @@ namespace TheEscort
                     self.Stun(stunDur);
                     //self.SetMalnourished(true);
                     Esclass_RG_SetGlassMode(true, ref e);
-                    e.RailgunUse = e.RailgunLimit - 3;
+                    e.RailgunUse = (int)(e.RailgunLimit * 0.7f);
                 }
                 else
                 {

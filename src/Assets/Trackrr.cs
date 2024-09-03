@@ -337,7 +337,7 @@ public static class ETrackrr
             effectColor = new Color(1f, 0.45f, 0.0f);
             this.e = escort;
             this.Max = e.RailgunLimit;
-            this.Limit = e.RailgunLimit - 3;
+            this.Limit = (int)(e.RailgunLimit * 0.7f);
         }
 
         public override void DrawTracker(float timeStacker)
