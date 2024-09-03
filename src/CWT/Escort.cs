@@ -38,6 +38,7 @@ namespace TheEscort
         public bool tossEscort;
         public bool dualWield;
         public int superWallFlip;
+        public int verticalPoleFlipSpamPrevention;
         public bool easyMode;
         public bool easyKick;
         public int consoleTick;

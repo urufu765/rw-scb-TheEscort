@@ -12,6 +12,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev01** Removed Socks from game
     * **dev02** Trying to fix Railgunner
     * **dev03** Trying to fix Gilded
+    * **dev04** Trying to fix rolljump height + Poletech buff
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* CW dialog fix (Check for SS)

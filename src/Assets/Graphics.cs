@@ -164,6 +164,9 @@ namespace TheEscort
                                 case 3:
                                     c = new Color(0.91f, 0.7f, 0.9f);
                                     break;
+                                default:
+                                    c = new Color(0.796f, 0.549f, 0.27843f);
+                                    break;
                             }
                         }
                         Ebug(self.player, "Arena/Single end.", 2);

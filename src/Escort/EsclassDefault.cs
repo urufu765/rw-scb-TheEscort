@@ -45,6 +45,14 @@ namespace TheEscort
         /// <item>5: Non-hyped body speed</item>
         /// </list></summary>
         public static readonly PlayerFeature<float[]> BetterPoleHang = PlayerFloats("theescort/better_polehang");
+
+        /// <summary><list type="bullet">
+        /// <item>0: Rolling Dropkick</item>
+        /// <item>1: Rolling poleflip</item>
+        /// <item>2: Dropkick poleflip</item>
+        /// <item>3: Flip poleflip</item>
+        /// </list></summary>
+        public static readonly PlayerFeature<float[]> RollCage = PlayerFloats("theescort/rollfly");
         
 
         private int filenum;
@@ -205,6 +213,15 @@ namespace TheEscort
             {
                 e.tryFindingPup--;
             }
+
+            if (e.verticalPoleTech && e.verticalPoleFlipSpamPrevention > 0)
+            {
+                e.verticalPoleFlipSpamPrevention--;
+            }
+            else
+            {
+                e.verticalPoleTech = false;
+            }
         }
 
 
@@ -251,6 +268,7 @@ namespace TheEscort
 
             if (
                 !WallJumpVal.TryGet(self, out float[] WJV) ||
+                !RollCage.TryGet(self, out float[] rollFly) ||
                 !eCon.TryGetValue(self, out Escort e) ||
                 !InstaHype.TryGet(self, out bool inhy)
                 )
@@ -475,13 +493,9 @@ namespace TheEscort
                 {
                     e.Rollin.Update();
                 }
-                else
-                {
-                    e.RollinCount = 0f;
-                }
                 if (e.LizGet != null)
                 {
-                    e.LizGet.Volume = (e.LizardDunk ? 1f : 0f);
+                    e.LizGet.Volume = e.LizardDunk ? 1f : 0f;
                     e.LizGet.Update();
                 }
             }
@@ -531,7 +545,7 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = 6f;
                                 self.bodyChunks[0].vel.x *= 1.08f;
                                 self.bodyChunks[1].vel.x *= 1.04f;
-                                self.jumpBoost += 8f;
+                                self.jumpBoost = rollFly[3];
                             }
                             else if (kickeroni)
                             {
@@ -539,7 +553,7 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = 5f;
                                 self.bodyChunks[0].vel.x *= 1.1f;
                                 self.bodyChunks[1].vel.x *= 1.2f;
-                                self.jumpBoost += 7f;
+                                self.jumpBoost = rollFly[2];
                             }
                             else if (rollaunch)
                             {
@@ -547,13 +561,13 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = 13f;
                                 self.bodyChunks[0].vel.x *= 1.3f;
                                 self.bodyChunks[1].vel.x *= 1.45f;
-                                self.jumpBoost += 9f;
+                                self.jumpBoost = rollFly[1];
                             }
                             else
                             {
                                 self.bodyChunks[0].vel.y = 5f;
                                 self.bodyChunks[1].vel.y = 4f;
-                                self.jumpBoost += 6f;
+                                self.jumpBoost = 6f;
                             }
                             if (self.animation != Player.AnimationIndex.None)
                             {
@@ -561,7 +575,7 @@ namespace TheEscort
                                 {
                                     self.room.AddObject(new WaterDrip(self.mainBodyChunk.pos + new Vector2(self.mainBodyChunk.rad * self.mainBodyChunk.vel.x, 0f), Custom.DegToVec(UnityEngine.Random.value * 180f * (0f - self.mainBodyChunk.vel.x)) * Mathf.Lerp(10f, 17f, UnityEngine.Random.value), waterColor: false));
                                 }
-                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk, false, 1f, rollaunch ? 0.5f : 1f);
+                                self.room.PlaySound(Escort_SFX_Pole_Bounce, e.SFXChunk, false, 0.45f, rollaunch ? 0.5f : 1f);
                             }
                             else
                             {
@@ -591,6 +605,7 @@ namespace TheEscort
                         )
                         {
                             e.verticalPoleTech = true;
+                            e.verticalPoleFlipSpamPrevention = 40;
                             Ebug(self, "Vertical Poletech Condition", ignoreRepetition: true);
                             if (flipperoni)
                             {
@@ -598,7 +613,7 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = e.verticalPoleToggle? 8f : 6f;
                                 self.bodyChunks[0].vel.x *= e.verticalPoleToggle? 0.28f: 0.24f;
                                 self.bodyChunks[1].vel.x *= e.verticalPoleToggle? 0.24f: 0.28f;
-                                self.jumpBoost += 8f;
+                                self.jumpBoost = rollFly[3];
                                 e.verticalPoleToggle = !e.verticalPoleToggle;
                             }
                             else if (kickeroni)
@@ -607,7 +622,7 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = 4.5f;
                                 self.bodyChunks[0].vel.x *= -2.5f;
                                 self.bodyChunks[1].vel.x *= -1.5f;
-                                self.jumpBoost += 7f;
+                                self.jumpBoost = rollFly[2];
                             }
                             else if (rollaunch)
                             {
@@ -615,7 +630,7 @@ namespace TheEscort
                                 self.bodyChunks[1].vel.y = 13f;
                                 self.bodyChunks[0].vel.x *= 0.1f;
                                 self.bodyChunks[1].vel.x *= 0f;
-                                self.jumpBoost += 9f;
+                                self.jumpBoost = rollFly[1];
                                 self.animation = Player.AnimationIndex.Flip;
                                 e.verticalPoleToggle = true;
                             }
@@ -830,7 +845,10 @@ namespace TheEscort
                 Ebug(self, err);
                 return;
             }
-            if (!eCon.TryGetValue(self, out Escort e))
+            if (
+                !RollCage.TryGet(self, out float[] rc) ||
+                !eCon.TryGetValue(self, out Escort e)
+            )
             {
                 return;
             }
@@ -859,6 +877,12 @@ namespace TheEscort
 
                 if (self.animation != Player.AnimationIndex.Roll)
                 {
+                    if (self.animation == Player.AnimationIndex.RocketJump)
+                    {
+                        // Rolling dropkick height boost
+                        float roller = Mathf.InverseLerp(0, 120f, e.RollinCount);
+                        self.jumpBoost = roller * rc[0];
+                    }
                     e.RollinCount = 0f;
                 }
             }
@@ -870,13 +894,11 @@ namespace TheEscort
             if (self.animation == Player.AnimationIndex.RocketJump && config.cfgDKAnimation.Value)
             {
                 Vector2 n = self.bodyChunks[0].vel.normalized;
-                // Increase leap height if rolling for some time
-                float roller = Mathf.InverseLerp(0, 120f, e.RollinCount);
                 
                 self.bodyChunks[0].vel -= n * 2;
                 self.bodyChunks[1].vel += n * 2;
-                self.bodyChunks[0].vel.y += 0.05f + Mathf.Lerp(0f, 0.1f, roller);
-                self.bodyChunks[1].vel.y += 0.1f + Mathf.Lerp(0f, 0.2f, roller);
+                self.bodyChunks[0].vel.y += 0.05f;
+                self.bodyChunks[1].vel.y += 0.1f;
             }
             // Implement frontslide animation (not working right)
             if (false && self.animation == Player.AnimationIndex.BellySlide && config.cfgDKAnimation.Value && !self.longBellySlide)
