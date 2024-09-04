@@ -55,7 +55,7 @@ namespace TheEscort
             GildedColor = new Color(0.122f, 0.176f, 0.28f);
             GildFloatState = false;
             GildLevitateLimit = 120;
-            GildPowerMax = self.Malnourished? 4000: 6400;
+            GildPowerMax = (int)(Plugin.ins.config.cfgGildedMaxPower.Value * (self.Malnourished? 0.625 : 1));
             GildPowerPipsMax = self.Malnourished? 10: 16;
             GildPowerPipsIndex = -1;
             Escat_GD_reset_vars();
@@ -63,7 +63,7 @@ namespace TheEscort
 
         public void Escat_GD_reset_vars(bool fromDeath = false)
         {
-            GildPower = GildStartPower = fromDeath? 0 : 2000;
+            GildPower = GildStartPower = fromDeath? 0 : (int)(GildPowerMax * 0.3f);
             GildMoonJump = GildReservePower = GildRequiredPower = GildPowerUsage = GildInstaCreate = GildCrushTime = 0;
             GildCancel = GildLockRecharge = GildNeedsToReset = false;
         }

@@ -38,6 +38,7 @@ namespace TheEscort
         public bool tossEscort;
         public bool dualWield;
         public int superWallFlip;
+        public int verticalPoleFlipSpamPrevention;
         public bool easyMode;
         public bool easyKick;
         public int consoleTick;
@@ -79,6 +80,8 @@ namespace TheEscort
         public int tryFindingPup;
         public bool expeditionSpawnPup;
         public bool cheatedSpawnPup;
+        public int challengeChecker = 40;
+        public Scavenger challenge03InView;
         public Player SocksAliveAndHappy
         {
             get 
@@ -175,6 +178,11 @@ namespace TheEscort
         /// stores the value of slowMovementStun (Used primarily for HUD tracking)
         /// </summary>
         public int BrawSetCooldown;
+
+        /// <summary>
+        /// Explosive punch state
+        /// </summary>
+        public bool BrawExPunch;
 
         /// <summary>
         /// IS IT FUCKING DEFLECTOR?!
@@ -416,6 +424,11 @@ namespace TheEscort
         public BodyChunk RailTargetAcquired;
 
         /// <summary>
+        /// Railgunner weakened state. HAHA GET REKT LOL RAILS WHY YOU SO WEAK
+        /// </summary>
+        public bool RailFrail;
+
+        /// <summary>
         /// IS THIS THE GOLDEN ICECREAM?!
         /// </summary>
         public bool Gilded;
@@ -535,16 +548,18 @@ namespace TheEscort
             this.RailWeaping = 0;
             this.RailgunCD = 0;
             this.RailgunUse = 0;
-            this.RailgunLimit = 10;
+            this.RailgunLimit = Plugin.ins.config.cfgRailgunnerLimiter.Value;
             this.RailIReady = false;
             this.RailBombJump = false;
             this.RailRecoilLag = -1;
             this.RailLastThrowDir = new(0, 0);
+            this.RailTargetClock = 39;
 
             EscortSS();
             EscortGD(player);
             EscortNE();
             EscortUS();
+            EscortBB(player);
         }
 
 

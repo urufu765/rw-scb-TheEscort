@@ -62,6 +62,10 @@ public static class EscortHUD
         orig(self, cam);
         try
         {
+            if (self.owner is Player p && p.playerState.playerNumber == 0 && SChallengeMachine.ESC_ACTIVE)
+            {
+                SChallengeMachine.SC03_GrafixInit(self);
+            }
             if (Plugin.ins.config.cfgShowHud.Value == Plugin.ins.config.hudShowOptions[0].name) return;
             if (self.owner is Player)
             {
@@ -380,7 +384,8 @@ public static class EscortHUD
             {
                 brawlSprites[i] = new FSprite(i switch
                 {
-                    3 => "escort_hud_brawpowerpunch",  // Not implemented yet
+                    //3 => "escort_hud_brawpowerpunch",  // Not implemented yet
+                    3 => "escort_hud_brawpunch",
                     2 => "escort_hud_brawpunch",
                     1 => "escort_hud_brawshank",
                     _ => "escort_hud_brawsupershank"

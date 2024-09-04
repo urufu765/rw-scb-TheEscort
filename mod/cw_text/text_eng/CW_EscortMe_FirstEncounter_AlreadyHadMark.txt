@@ -1,0 +1,20 @@
+SPECIAL : LOCKPATHS
+SPECIAL : GRAV
+WAIT : 5
+A second one?
+I have never seen your kind before, and now I meet two in a row!
+Do you come from the same place? Let me see...
+...
+Oh, my analyzing software is going wild! I can't make sense of this data. Are these traces of... void fluid?
+Where could you be coming from? You also look like a purposed organism, but you're so different.
+Did one of my neighbors bestowed you the gift of communication? This is a surprising privilege for a small lifeform like you.
+I'm afraid I have pressing matters waiting for me, but make yourself at home.
+This should help you for your travel.
+SPECIAL : FOODMAX
+I wish I had more time to study you!
+WAIT : 5
+You can exit my structure by using the access shaft on the left, when you're ready.
+I will now resume my work, I need to contact someone.
+Good luck, little one.
+SPECIAL : PARTIALGRAV
+SPECIAL : UNLOCKPATHS

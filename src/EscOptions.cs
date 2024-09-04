@@ -9,85 +9,31 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
-    /*
-    class EscCusOpt : Dialog, SelectOneButton.SelectOneButtonOwner
-    {
-        public MenuIllustration title;
-        public SimpleButton cancelButton;
-        public float leftAnchor, rightAnchor;
-        public bool opening, closing;
-        public float movementCounter;
-        public SelectOneButton[] topicButtons;
-        public MenuLabel pageLabel;
-        public ManualPage currentTopicPage;
-        public int index, pageNumber;
-        public String currentTopic;
-        public Dictionary<string, int> topics;
-        public float sin;
-        public bool firstView;
-        public float lastAlpha;
-        public float currentAlpha;
-        public float uAlpha;
-        public float targetAlpha;
-        public float globalOffX;
-        public float contentOffX;
-        public float wrapTextMargin;
-
-        public EscCusOpt(ProcessManager manager, Dictionary<string, int> topics, MenuObject owner) : base(manager)
-        {
-            float[] screenOffsets = RWCustom.Custom.GetScreenOffsets();
-            leftAnchor = screenOffsets[0]; rightAnchor = screenOffsets[1];
-            this.topics = topics;
-            pages[0].pos = new Vector2(0.01f, 0f);
-            pages[0].pos.y += 2000f;
-            pages.Add(new Page(this, owner, "CLASS", 1));
-            pages[1].pos = new Vector2(520.01f, 155f);
-            pages[1].pos.y += 2155f;
-
-        }
-
-        public int GetCurrentlySelectedOfSeries(string series)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentlySelectedOfSeries(string series, int to)
-        {
-            throw new NotImplementedException();
-        }
-    }*/
-
     class EscOptions : OptionInterface
     {
-        //public readonly Plugin instance;
         public readonly RainWorld rainworld;
-        public Configurable<bool> cfgMeanLizards;
-        public Configurable<bool> cfgVengefulLizards;
-        // public Configurable<bool> cfgMeanGarbWorms;
-        public Configurable<float> cfgHeavyLift;
-        public Configurable<float> cfgDKMult;
-        public Configurable<bool> cfgElevator;
-        public Configurable<bool> cfgHypable;
-        public Configurable<int> cfgHypeReq;
-        public Configurable<float> cfgHypeRequirement;
-        public Configurable<bool> cfgSFX;
-        public Configurable<bool> cfgPounce;
-        public Configurable<bool> cfgLongWallJump;
-        //[Obsolete] public Configurable<int> cfgBuildNum;  // LEGACY!
-        //[Obsolete] public Configurable<int> cfgBuildP1, cfgBuildP2, cfgBuildP3, cfgBuildP4;  // LEGACY #2
-        public Configurable<int>[] cfgBuild;
-        //[Obsolete] public Configurable<bool> cfgEasyP1, cfgEasyP2, cfgEasyP3, cfgEasyP4;  // LEGACY #2
-        public Configurable<bool>[] cfgEasy;
-        //[Obsolete] public Configurable<bool> cfgCustomP1, cfgCustomP2, cfgCustomP3, cfgCustomP4;
-        public Configurable<bool> cfgDunkin;
-        public Configurable<bool> cfgSpears;
-        public Configurable<bool> cfgDKAnimation;
-        public Configurable<bool> cfgNoticeHype;
-        public Configurable<bool> cfgNoticeEmpower;
-        public Configurable<bool> cfgFunnyDeflSlide;
-        public Configurable<bool> cfgPoleBounce;
-        public Configurable<bool> cfgOldSpeedster;
-        public Configurable<bool> cfgOldEscapist;
+        public Configurable<bool> cfgMeanLizards;  // Mean Lizards: Configures the lizards to be a bit meaner and aggressive
+        public Configurable<bool> cfgVengefulLizards;  // Vengeful Lizards: Configures the lizards to take revenge if too many of their kin has been killed
+        public Configurable<float> cfgHeavyLift;  // Carryweight multiplier: Higher the value, the more they can carry
+        public Configurable<float> cfgDKMult;  // Dropkick knockback multiplier: Higher the value, the further creatures get sent
+        public Configurable<bool> cfgElevator;  // Elevatorrrrr!!!: Holding jump near creatures flings Escort upwards
+        public Configurable<bool> cfgHypable;  // Allow Battlehype mechanic
+        public Configurable<int> cfgHypeReq;  // Battlehype activation threshhold
+        public Configurable<float> cfgHypeRequirement;  // Specific requirement threshhold
+        public Configurable<bool> cfgSFX;  // Allow silly sfx
+        public Configurable<bool> cfgPounce;  // Crazy sick flip!
+        public Configurable<bool> cfgLongWallJump;  // Long wall jump
+        public Configurable<int>[] cfgBuild;  // Per player Escort build settings
+        public Configurable<bool>[] cfgEasy;  // Per player Easier mode settings
+        public Configurable<bool> cfgDunkin;  // Whether Escort can dunk lizards (TODO: Rework system)
+        public Configurable<bool> cfgSpears;  // Double spear
+        public Configurable<bool> cfgDKAnimation;  // Make rocket jump go feet first rather than face first
+        public Configurable<bool> cfgNoticeHype;  // Change hype VFX
+        public Configurable<bool> cfgNoticeEmpower;  // Change Deflector empower VFX
+        public Configurable<bool> cfgFunnyDeflSlide;  // Give Deflector an unnecessarily long slide
+        public Configurable<bool> cfgPoleBounce;  // Allow other builds to bounce on poles like Guardian
+        public Configurable<bool> cfgOldSpeedster;  // Switch to old Speedster mechanics
+        public Configurable<bool> cfgOldEscapist;  // Switch to old Escapist mechanics
         public Configurable<bool> cfgDeveloperMode;
         public Configurable<int> cfgSecret;
         public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod, cfgSectretMagic;
@@ -101,11 +47,10 @@ namespace TheEscort
         public Configurable<bool> cfgDeflecterSharedPool;
         public Configurable<bool> cfgAllBuildsGetPup;
         public Configurable<bool> sctTestBuild;
-        public Configurable<int> cfgSpeedsterGears;
-        //private OpLabel sctTestBuildText;
+        public Configurable<int> cfgSpeedsterGears;  // 4
+        public Configurable<int> cfgRailgunnerLimiter;  // 10
+        public Configurable<int> cfgGildedMaxPower;  // 6400
         private OpTextBox secretText;
-        //private OpCheckBox hypableBtn;
-        //private OpSliderTick hypedSlide;
         private OpCheckBox hypeableBox;
         private OpSliderTick hypeableTick;
         private OpLabel[] hypeableText;
@@ -114,9 +59,7 @@ namespace TheEscort
         private OpLabel shutUpFlipText;
         private UIelement[] mainSet;
         private UIelement[] buildSet, buildTitle, buildText, buildShadow;
-        //private OpCheckBox buildEasyP1, buildEasyP2, buildEasyP3, buildEasyP4;
         public OpCheckBox[] buildEasy;
-        //private OpSliderTick buildP1, buildP2, buildP3, buildP4;
         public OpSliderTick[] buildPlayer;
         private OpDragger buildDragger;
         private readonly Configurable<int> buildDraggerHelper;
@@ -140,6 +83,8 @@ namespace TheEscort
         public OpCheckBox[] cfgCustomBindsContainer;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
+        private UIelement[] challengeSet;
+        private OpLabel challenge03;
         private Color[] buildColors;
         private Color p1Color, p2Color, p3Color, p4Color;
         private Color tempColor;
@@ -165,7 +110,6 @@ namespace TheEscort
         // Jolly Coop button stuff don't worry about it
         public OpSimpleButton[] jollyEscortBuilds;
         public OpSimpleButton[] jollyEscortEasies;
-        //public bool[] jollyEasierState = new bool[4];
 
         // Arena button stuff
         //public OpSimpleButton[] arenaEscortBuilds;
@@ -186,11 +130,6 @@ namespace TheEscort
             this.cfgPounce = this.config.Bind<bool>("cfg_Pounce", true);
             this.cfgLongWallJump = this.config.Bind<bool>("cfg_Long_Wall_Jump", false);
             this.cfgDKAnimation = this.config.Bind<bool>("cfg_Drop_Kick_Animation", true);
-            //this.cfgBuildNum = this.config.Bind<int>("cfg_Build", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP1 = this.config.Bind<int>("cfg_Build_P1", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP2 = this.config.Bind<int>("cfg_Build_P2", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP3 = this.config.Bind<int>("cfg_Build_P3", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
-            //this.cfgBuildP4 = this.config.Bind<int>("cfg_Build_P4", 0, new ConfigAcceptableRange<int>(this.buildDiv, 0));
             PlayerCount = Mathf.Max(4, RainWorld.PlayerObjectBodyColors.Length, rainworld.options.controls.Length);
             this.cfgBuild = new Configurable<int>[PlayerCount];  // Make this expandable to more than 4 players by checking how many players are being logged in?
             this.cfgEasy = new Configurable<bool>[PlayerCount];  // This too
@@ -202,14 +141,6 @@ namespace TheEscort
                 this.cfgBindKeys[x] = this.config.Bind<KeyCode>("cfg_Custom_Escort_Keybinds_Player" + x, KeyCode.None);
                 this.cfgCustomBinds[x] = this.config.Bind<bool>("cfg_Enable_Custom_Escort_Binds_Player" + x, false);
             }
-            //this.cfgEasyP1 = this.config.Bind<bool>("cfg_Easy_P1", false);
-            //this.cfgEasyP2 = this.config.Bind<bool>("cfg_Easy_P2", false);
-            //this.cfgEasyP3 = this.config.Bind<bool>("cfg_Easy_P3", false);
-            //this.cfgEasyP4 = this.config.Bind<bool>("cfg_Easy_P4", false);
-            //this.cfgCustomP1 = this.config.Bind<bool>("cfg_Custom_P1", false);
-            //this.cfgCustomP2 = this.config.Bind<bool>("cfg_Custom_P2", false);
-            //this.cfgCustomP3 = this.config.Bind<bool>("cfg_Custom_P3", false);
-            //this.cfgCustomP4 = this.config.Bind<bool>("cfg_Custom_P4", false);
             this.cfgDunkin = this.config.Bind<bool>("cfg_Dunkin_Lizards", true);
             this.cfgSpears = this.config.Bind<bool>("cfg_Super_Spear", true);
             this.cfgNoticeHype = this.config.Bind<bool>("cfg_Noticeable_Hype", false);
@@ -232,6 +163,8 @@ namespace TheEscort
             this.cfgLogImportance = this.config.Bind<int>("cfg_Log_Importance", 0, new ConfigAcceptableRange<int>(-1, 4));
             this.sctTestBuild = this.config.Bind<bool>("sct_Test_Build", false);
             this.cfgSpeedsterGears = this.config.Bind<int>("cfg_Speedster_Gear_Limit", 4, new ConfigAcceptableRange<int>(1, 42));
+            this.cfgRailgunnerLimiter = this.config.Bind<int>("cfg_Overrails_Limiter", 10, new ConfigAcceptableRange<int>(1, 500));
+            this.cfgGildedMaxPower = this.config.Bind<int>("cfg_Gilded_Max_POWAH", 6400, new ConfigAcceptableRange<int>(3000, 100000));
 
             
             this.cfgSecret.OnChange += InputSecret;
@@ -286,11 +219,6 @@ namespace TheEscort
             this.bindKeyHelper = config.Bind("escort_bindkey_helper", KeyCode.None);
 
             this.cfgAllBuildsGetPup = config.Bind("cfg_Let_All_The_Builds_Have_Slugpups", false);
-
-
-            // Plugin.ins.L().Christmas(this.cfgSectret.Value);
-            // Plugin.ins.L().Easter(this.cfgSectretBuild.Value);
-            // Plugin.ins.L().Valentines(this.cfgSectretGod.Value);
         }
 
 
@@ -333,6 +261,7 @@ namespace TheEscort
                 bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded
             };
             // I'm so done with this shit, may we never remotely reach 1.5k
+            // future me here, FUCK YOU WE ALMOST REACHED 5K!!!!
 
 
             this.secretText = new OpTextBox(this.cfgSecret, new Vector2(xo + (xp * 14f), yo - (yp * 14)), 60)
@@ -348,28 +277,7 @@ namespace TheEscort
             //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
             //    color = bTesting * 0.7f
             //};
-            // This is meaningless since the option isn't actually hidden
-            // if (this.sctTestBuild.Value)
-            // {
-            //     this.sctTestBuildText.Show();
-            // }
-            // else
-            // {
-            //     this.sctTestBuildText.Hide();
-            // }
 
-            /*
-            this.hypableBtn = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 6) + tp/2)){
-                description = OptionInterface.Translate("Enables/disables Escort's Battle-Hype mechanic. (Default=true)")
-            };
-            this.hypedSlide = new OpSliderTick(this.cfgHypeReq, new Vector2(xo + (xp * 1) + 7f, yo - (yp * 6)), 400 - (int)xp - 7){
-                min = 0,
-                max = 6,
-                description = OptionInterface.Translate("Determines how lenient the Battle-Hype requirements are. (Default=3)"),
-            };
-            //this.hypableBtn.OnDeactivate += setTheHype;
-            //this.hypableBtn.OnReactivate += killTheHype;
-            */
             this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp / 2))
             {
                 description = OptionInterface.Translate("escoptions_hypecheckbox_desc") + SetDefault(cfgHypable.defaultValue)
@@ -474,33 +382,6 @@ namespace TheEscort
             this.bindText = new OpLabel(xo + (xp * 10), yo - (yp * 7) + tp/2, Translate("escoptions_custombinds_text"));
 
 
-            /*
-            this.buildP1 = new OpSliderTick(this.cfgBuildP1, new Vector2(xo - (tp * 5), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p1Color*0.8f,
-                colorEdge = p1Color*0.9f,
-                min = this.buildDiv,
-                max = 0
-            };
-            //this.buildP1.OnFocusGet += viewBuild;
-            this.buildP2 = new OpSliderTick(this.cfgBuildP2, new Vector2(xo - (tp * 1), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p2Color*0.8f,
-                colorEdge = p2Color*0.9f,
-                min = this.buildDiv,
-                max = 0
-            };
-            this.buildP3 = new OpSliderTick(this.cfgBuildP3, new Vector2(xo + (tp * 3), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p3Color*0.9f,
-                colorEdge = p3Color,
-                min = this.buildDiv,
-                max = 0
-            };
-            this.buildP4 = new OpSliderTick(this.cfgBuildP4, new Vector2(xo + (tp * 7), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true){
-                colorLine = p4Color*2.4f,
-                colorEdge = p4Color*2.8f,
-                min = this.buildDiv,
-                max = 0
-            };*/
-
             //bool catBeat = rainworld.progression.miscProgressionData.redUnlocked;
             saitBeat = rainworld.progression.miscProgressionData.beaten_Saint;
             base.Initialize();
@@ -508,11 +389,13 @@ namespace TheEscort
             OpTab buildTab = new(this, Translate("Builds"));
             OpTab gimmickTab = new(this, Translate("Gimmicks"));
             OpTab accessibilityTab = new(this, Translate("Accessibility"));
+            OpTab challengesTab = new(this, Translate("Challenges"));
             this.Tabs = new OpTab[]{
                 mainTab,
                 buildTab,
                 gimmickTab,
-                accessibilityTab
+                accessibilityTab,
+                challengesTab
             };
 
 
@@ -714,45 +597,6 @@ namespace TheEscort
                         _ => p4Color
                     },
                 };
-                // this.buildEasy[j].SetValueBool(this.jollyEasierState[j]);
-                // this.buildEasy[j].SetValueBool(
-                //     j switch {
-                //         0 => this.cfgEasyP1.Value,
-                //         1 => this.cfgEasyP2.Value,
-                //         2 => this.cfgEasyP3.Value,
-                //         _ => this.cfgEasyP4.Value
-                //     }
-                // );
-                // try {
-                //     this.buildEasy.SetValue(j switch {
-                //         0 => this.cfgEasyP1.Value,
-                //         1 => this.cfgEasyP2.Value,
-                //         2 => this.cfgEasyP3.Value,
-                //         _ => this.cfgEasyP4.Value
-                //     }, j);
-                // } catch (Exception err){
-                //     Ebug(err, "Oh no not my remix menu");
-                // }
-                    /*
-                this.buildPlayer[j] = new OpSliderTick(
-                    j switch
-                    {
-                        0 => this.cfgBuildP1,
-                        1 => this.cfgBuildP2,
-                        2 => this.cfgBuildP3,
-                        _ => this.cfgBuildP4
-                    }, new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true
-                )
-                {
-                    value = j switch
-                    {
-                        0 => ValueConverter.ConvertToString(this.cfgBuildP1.Value, this.cfgBuildP1.settingType),
-                        1 => ValueConverter.ConvertToString(this.cfgBuildP2.Value, this.cfgBuildP2.settingType),
-                        2 => ValueConverter.ConvertToString(this.cfgBuildP3.Value, this.cfgBuildP3.settingType),
-                        _ => ValueConverter.ConvertToString(this.cfgBuildP4.Value, this.cfgBuildP4.settingType)
-                    },
-                };
-                    */
                 this.buildPlayer[j] = new OpSliderTick(this.cfgBuild[j], new Vector2((xo - (tp * (5 - 4 * j))), (yo + tp) - (yp * 2.5f) + (yp * buildDiv)), (int)(yp * -buildDiv), true)
                 {
                     description = j switch
@@ -985,6 +829,16 @@ namespace TheEscort
                     description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
                 },
 
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 11), Translate("Railgunner Overcharge Limit")),
+                new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 100){
+                    description = Translate("Sets the overcharge limit for the Railgunner build.") + SetDefault(cfgRailgunnerLimiter.defaultValue)
+                },
+
+                new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
+                new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100){
+                    description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
+                },
+
                 secretText
             };
             this.accessibleSet = new UIelement[]{
@@ -1042,6 +896,24 @@ namespace TheEscort
                 bindText
 
             };
+            string ch03 = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03? "X":"_";
+            string ch03a = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03a? "*":"_";
+            string ch03b = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03b? "*":"_";
+            challenge03 = new OpLabel(xo, yo - (yp * 2) + tp/2, Translate($"[{ch03}{ch03a}{ch03b}] Merchants Must Pay!"))
+            {
+                color = bRailgunner
+            };
+
+            challengeSet = new UIelement[]
+            {
+                new OpLabel(xo, yo, Translate("Challenges"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Translate("Here's where your trophies go!")){
+                    color = descColor
+                },
+
+                challenge03
+            };
+
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
             buildTab.AddItems(buildEasy);
@@ -1053,6 +925,7 @@ namespace TheEscort
             accessibilityTab.AddItems(this.accessibleSet);
             accessibilityTab.AddItems(cfgBindKeysContainer);
             accessibilityTab.AddItems(cfgCustomBindsContainer);
+            challengesTab.AddItems(this.challengeSet);
             if (cfgVersion.Value != VERSION){
                 ConfigConnector.CreateDialogBoxNotify(HelloWorld);
                 cfgVersion.Value = VERSION;
@@ -1153,46 +1026,6 @@ namespace TheEscort
                 Plugin.ins.L().TurnOffLog();
             }
         }
-        /*
-                private void inputSecret()
-                {
-                    int num = (int)this.yoffset * (int)this.tpadding - ((int)this.xoffset / 2) * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
-                    string[] insult = new string[1];
-                    Action[] doThing = new Action[1]{
-                        makeSomeNoiseEsconfig
-                    };
-                    insult[0] = "Ur not my mum.";
-                    switch(UnityEngine.Random.Range(0, 5)){
-                        case 1: insult[0] = "F#@k off."; break;
-                        case 2: insult[0] = "Skill issue."; break;
-                        case 3: insult[0] = "I don't care."; break;
-                        case 4: insult[0] = "Shut the f$&k up."; break;
-                    }
-                    if (this.cfgSecret.Value == num){
-                        if (!this.cfgSectret.Value){
-                            this.cfgSectret.Value = true;
-                            ConfigConnector.CreateDialogBoxMultibutton(
-                                swapper(
-                                    "     ...though never intent...     <LINE> ...the pup escapes containment... <LINE>  ...careful out there, yeah?...   "
-                                ), insult, doThing
-                            );
-                        }
-                        Plugin.ins.L().christmas(this.cfgSectret.Value);
-                    }
-                    else {
-                        this.cfgSectret.Value = false;
-                        Plugin.ins.L().christmas();
-                        try{
-                            if (Plugin.Esconfig_SFX_Sectret != null){
-                                ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
-                            }
-                        } catch (Exception err){
-                            Debug.LogError("Couldn't play sound!");
-                            Debug.LogException(err);
-                        }
-                    }
-                }
-        */
         private void InputTheSecret(UIconfig config, string value, string oldValue)
         {
             ResultsBaby(value);
@@ -1205,8 +1038,21 @@ namespace TheEscort
 
         private void ResultsBaby(string value = "")
         {
+            bool challengeMode = false;
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
+            // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
+            // int eschallenge_LizardPomPoms = 24155;     // Take 5 pictures of any Escort dancing with two dead lizards on the tip of a pole (MANUAL VERIFICATION ONLY)
+            // int eschallenge_SpeedingTicket = 25862;    // Take 3 pictures of Speedster going past tolls (MANUAL VERIFICATION ONLY)
+            // int eschallenge_FoodTour = 22612;          // Eat every single fruit (extra: +all kinds of lizards(to fill dragonslayer), squicadas, centipedes) (extra: +every single creature)
+            // int eschallenge_SocksIsDumb = 28716;       // Make your way through three (extra: 7) regions without ever holding Socks's hand
+            // int eschallenge_RockEm = 27295;            // Kill 20 (extra: 100) creatures with a single (same) rock
+            // int eschallenge_BecomingAGod = 22690;      // Achieve infinity damage three times (extra: 5) in a cycle
+            // int eschallenge_AirDesruption = 27211;     // Stun a creature into a deathpit using Escapist's dash ability
+            const string eschallenge_MerchantsMustPay = "24226";  // Find and kill every single merchant in vanilla RW (extra: No deaths)
+            // int eschallenge_DontStop = 28182;          // Visit every single region without ever being stunned (4 gear perma while in challenge)
+            // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
+            // int eschallenge_ = 21708;
             string[] insult = new string[1];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
@@ -1294,9 +1140,26 @@ namespace TheEscort
                 this.cfgSectretMagic.Value = false;
                 this.sctTestBuild.Value = false;
                 Plugin.ins.L().Holiday();
+                switch (value)
+                {
+                    case eschallenge_MerchantsMustPay:
+                        if (!SChallengeMachine.SC03_Starter)
+                        {
+                            ConfigConnector.CreateDialogBoxNotify(
+                                Swapper(Translate("The world is full of vermin. A tragedy shall occur in the stock market. Fight the law.<LINE><LINE>- Play as Railgunner<LINE>-Max charges set to 10<LINE>-Scavenger reputation is locked at -1<LINE><LINE>WIN CONDITION: Kill the merchant in Shaded Citadel, Garbage Wastes, Sky Islands, and Subterranean<LINE>BONUS 1: Kill 150 Normal Scavengers<LINE>BONUS 2: Kill 20 Elite Scavengers"))
+                            );
+                        }
+                        challengeMode = true;
+                        SChallengeMachine.SC03_Starter = true;
+                        break;
+                    default:
+                        SChallengeMachine.SC03_Starter = false;
+                        challengeMode = false;
+                        break;
+                }
                 try
                 {
-                    if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && Plugin.Esconfig_SFX_Sectret != null)
+                    if (!challengeMode && rainworld.processManager.currentMainLoop is Menu.ModdingMenu && Plugin.Esconfig_SFX_Sectret != null)
                     {
                         ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
                     }
@@ -1307,6 +1170,7 @@ namespace TheEscort
                     Debug.LogException(err);
                 }
                 Ebug("No More Secrets");
+                
             }        
         }
 

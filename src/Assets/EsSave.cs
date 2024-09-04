@@ -7,41 +7,6 @@ using IL.Menu;
 namespace TheEscort
 {
     /// <summary>
-    /// A simple list that expands upon having an index greater than the size
-    /// </summary>
-    public class ExpandableList<T> : List<T>
-    {
-        private readonly List<T> _list = new();
-
-        public new T this[int index]
-        {
-            get
-            {
-                while (index >= _list.Count)
-                {
-                    _list.Add(default);
-                }
-                return _list[index];
-            }
-            set
-            {
-                if (index >= _list.Count)
-                {
-                    while (index > _list.Count)
-                    {
-                        _list.Add(default);
-                    }
-                    _list.Add(value);
-                }
-                else
-                {
-                    _list[index] = value;
-                }
-            }
-        }
-    }
-
-    /// <summary>
     /// Escort Savedata for run (doesn't save on death)
     /// </summary>
     public record EscortSaveDataMiscWorld
@@ -57,6 +22,18 @@ namespace TheEscort
         public int EscortPupCampaignID {get; set;} = 0;
         public bool SocksIsAlive {get; set;} = false;
         public int SpearsToRemake {get; set;} = 0;
+
+        // Escort Server Challenge 3
+        public bool ESC03_START {get; set;} = false;
+        public int ESC03_ScavKills {get; set;} = 0;
+        public int ESC03_EScaKills {get; set;} = 0;
+        public bool ESC03_ScavWin {get; set;} = false;
+        public bool ESC03_EScaWin {get; set;} = false;
+        public int ESC03_ObjLeft {get; set;} = 4;
+        public bool ESC03_GW {get; set;} = false;
+        public bool ESC03_SH {get; set;} = false;
+        public bool ESC03_SI {get; set;} = false;
+        public bool ESC03_SB {get; set;} = false;
     }
 
 
@@ -89,6 +66,10 @@ namespace TheEscort
 
 
         // Not Implemented below
+        public bool achieveEschallenge_Challenge03 = false;  // ESC #3: September
+        public bool achieveEschallenge_Challenge03a = false;  // ESC #3: September (Kill 100 scavs)
+        public bool achieveEschallenge_Challenge03b = false;  // ESC #3: September (Kill 20 Elite scavs)
+
         public bool achieveEscort_Bare_Fists = false;  // Beat Escort campaign without ever picking up a weapon
         public bool achieveEscort_All_Known = false;  // Beat Escort true ending OR complete wanderer passage in Escort campaign
         public bool achieveEscort_Peter_Pan = false;  // Bring at least 5 creatures to the void pool and achieve the ascension ending

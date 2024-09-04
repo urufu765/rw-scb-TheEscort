@@ -90,6 +90,29 @@ namespace TheEscort
             {
                 e.UnsMeleeGrab--;
             }
+
+            // Slide prevention system(?)
+            if (e.UnsFuckYourSlide > 0)
+            {
+                e.UnsFuckYourSlide--;
+            }
+
+            // Cancels homing if homing takes too long
+            if (e.UnsRockitCret is not null)
+            {
+                if (e.UnsRockitDur > 0)
+                {
+                    e.UnsRockitDur--;
+                }
+                else
+                {
+                    e.UnsRockitCret = null;
+                }
+            }
+            else
+            {
+                e.UnsRockitDur = 0;
+            }
         }
 
         private void Esclass_US_Update(Player self, ref Escort e)
@@ -185,6 +208,19 @@ namespace TheEscort
             {
                 Ebug(err, "Unstable melee failed!");
             }
+
+            try 
+            {
+                if (e.UnsRockitDur > 0 && e.UnsRockitCret is not null)
+                {
+                    Ebug(self, "Rockit! " + e.UnsRockitDur, ignoreRepetition: true);
+                    Esclass_US_HomeKick(self, e.UnsRockitCret);
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Unstable homing kick failed!");
+            }
         }
 
 
@@ -195,6 +231,11 @@ namespace TheEscort
             {
                 Ebug(self, "Midjump!", ignoreRepetition: true);
                 Esclass_US_MidJump(self, e);
+            }
+            if (e.UnsBlinkCD == 0 && e.UnsBlinkWindow > 0 && self.input[0].thrw && !self.input[1].thrw)
+            {
+                Ebug(self, "HOMING MISSILE!", ignoreRepetition: true);
+                e.UnsRockitCret = Esclass_US_RockitKick(self, e);
             }
 
             // Might want to deal with walljumps too later on
@@ -294,16 +335,17 @@ namespace TheEscort
                 if (self.input[0].x != 0)
                 {
                     self.animation = Player.AnimationIndex.None;
-                    self.bodyChunks[0].vel.y = 2f;
-                    self.bodyChunks[1].vel.y = 1.5f;
-                    self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
-                    self.bodyChunks[1].vel.x = 0.5f * (float)self.flipDirection;
+                    self.bodyChunks[0].vel.y = 2.5f;
+                    self.bodyChunks[1].vel.y = 2f;
+                    self.bodyChunks[0].vel.x = 2f * (float)self.flipDirection;
+                    self.bodyChunks[1].vel.x = 1.5f * (float)self.flipDirection;
                     self.room.PlaySound(SoundID.Slugcat_From_Vertical_Pole_Jump, self.mainBodyChunk, false, 0.95f, 1f);
                     return;
                 }
                 if (self.input[0].y <= 0)
                 {
                     self.animation = Player.AnimationIndex.None;
+                    self.bodyChunks[0].vel.y = 1f;
                     if (self.input[0].y > -1)
                     {
                         self.bodyChunks[0].vel.x = 1f * (float)self.flipDirection;
@@ -542,6 +584,16 @@ namespace TheEscort
             return false;
         }
 
+        /// <summary>
+        /// Homing rocket kick, for kicks ;)
+        /// </summary>
+        public static void Esclass_US_HomeKick(Player self, Creature targit)
+        {
+            // Find a way to move towards Creature dynamically
+            // ADVANCED: Make Unstable go around walls
+            // Orient the player so it's feet first
+        }
+
         private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (self.grasps[grasp]?.grabbed is Weapon w)  // Only accepts throwing weapons. Normal stuff that will be just tossed may not need to be percentaged
@@ -573,5 +625,90 @@ namespace TheEscort
             }
             return false;
         }
+
+        /// <summary>
+        /// Homes into the nearest creature or nearest in selected direction and does a KICK
+        /// </summary>
+        private Creature Esclass_US_RockitKick(Player self, Escort e)
+        {
+            bool directional = false;
+            float maxR = 100;
+            Creature targit = null;
+
+            if (self.input[0].x != 0 || self.input[0].y != 0)
+            {
+                directional = true;
+                maxR = 150;
+            }
+
+            // General creature finder
+            if (!directional)
+            {
+                try
+                {
+                    float closest = maxR;  // Set closest range to max range
+                    foreach (UpdatableAndDeletable thing in self.room.updateList)  // Check all entities in a room
+                    {
+                        if (thing is Creature cret && cret != self && !cret.dead && Custom.DistLess(cret.firstChunk.pos, self.mainBodyChunk.pos, closest))
+                        {
+                            closest = Custom.Dist(cret.firstChunk.pos, self.mainBodyChunk.pos);
+                            targit = cret;
+                            Ebug(self, "Found someone at " + closest, ignoreRepetition: true);
+                        }
+                    }
+                }
+                catch (Exception err)
+                {
+                    Ebug(err, "Something happened whilst trying to home into a creature!");
+                }
+            }
+            else
+            {
+                try
+                {
+                    float closist = maxR;
+                    foreach (UpdatableAndDeletable uad in self.room.updateList)
+                    {
+                        if (uad is Creature crit && crit != self && self.ConeDetection(crit.firstChunk.pos, closist, InputToDeg(self.input[0]), 15))
+                        {
+                            closist = Custom.Dist(crit.firstChunk.pos, self.mainBodyChunk.pos);
+                            targit = crit;
+                            Ebug(self, "Found someone at " + closist + ", angle: " + Custom.VecToDeg(Custom.DirVec(self.firstChunk.pos, crit.firstChunk.pos)), ignoreRepetition: true);
+                        }
+                    }
+                }
+                catch (Exception err)
+                {
+                    Ebug(err, "Something happened whilst trying to home into a creature directionwise!");
+                }
+            }
+
+            // // Home towards creature!
+            // if (targit is not null)
+            // {
+            // }
+            return targit;
+        }
+
+        /// <summary>
+        /// Collision against a creature to apply the homing kick stuff
+        /// </summary>
+        private void Esclass_US_Collision(Player self, Creature creature, ref Escort e)
+        {
+            if (e.UnsRockitDur > 0 && creature == e.UnsRockitCret)
+            {
+                e.UnsRockitDur = 0;
+                creature.Violence(
+                    self.bodyChunks[1], 
+                    new Vector2(self.bodyChunks[1].vel.x * DKMultiplier, self.bodyChunks[1].vel.y * DKMultiplier),
+                    creature.mainBodyChunk, null,
+                    Creature.DamageType.Blunt,
+                    Escort.UnsRKDx * e.UnsBlinkCount,
+                    Escort.UnsRKSx * e.UnsBlinkCount
+                );
+                self.room?.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 1f, 1.5f);
+            }
+        }
+
     }
 }

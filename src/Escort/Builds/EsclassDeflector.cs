@@ -159,23 +159,47 @@ namespace TheEscort
         {
             try
             {
-                if (victim.killTag?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort escort) && escort.Deflector)
+                if (victim.killTag?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort escort))
                 {
-                    if (p.room?.game?.session is StoryGameSession)
+                    if (p.room?.game?.session is StoryGameSession sgs)
                     {
-                        int points = StoryGameStatisticsScreen.GetNonSandboxKillscore(victim.Template.type);
-                        if (points <= 0)
+                        if (escort.Deflector)
                         {
-                            if (themCreatureScores is null) Expedition.ChallengeTools.GenerateCreatureScores(ref themCreatureScores);
-                            if (themCreatureScores.TryGetValue(victim.Template.type.value, out var score))
+                            int points = StoryGameStatisticsScreen.GetNonSandboxKillscore(victim.Template.type);
+                            if (points <= 0)
                             {
-                                points = score;
+                                if (themCreatureScores is null) Expedition.ChallengeTools.GenerateCreatureScores(ref themCreatureScores);
+                                if (themCreatureScores.TryGetValue(victim.Template.type.value, out var score))
+                                {
+                                    points = score;
+                                }
+                            }
+                            escort.DeflPerma += points * 0.001f;
+                            if (p.room?.abstractRoom is not null && p.room.abstractRoom.shelter)
+                            {
+                                escort.shelterSaveComplete = 0;
                             }
                         }
-                        escort.DeflPerma += points * 0.001f;
-                        if (p.room?.abstractRoom is not null && p.room.abstractRoom.shelter)
+                        // Challenge mode stuff
+                        if (SChallengeMachine.SC03_Active && victim.killTag?.realizedCreature is Player pl && pl.playerState.playerNumber == 0 && victim.abstractCreature?.abstractAI is not null && victim is Scavenger s)
                         {
-                            escort.shelterSaveComplete = 0;
+                            Ebug("Scav kill!");
+                            if (
+                                escort.challenge03InView == s)
+                            {
+                                victim.room.SC03_Achieve(true);
+                            }
+                            if (s.Elite)
+                            {
+                                sgs.saveState.miscWorldSaveData.Esave().ESC03_EScaKills++;
+                            }
+                            else
+                            {
+                                sgs.saveState.miscWorldSaveData.Esave().ESC03_ScavKills++;
+                            }
+                            Ebug("Elites:" + sgs.saveState.miscWorldSaveData.Esave().ESC03_EScaKills);
+                            Ebug("Normal:" + sgs.saveState.miscWorldSaveData.Esave().ESC03_ScavKills);
+                            victim.room.SC03_Achieve(false);
                         }
                     }
                     // else if (p.room?.game?.session is ArenaGameSession arenaGameSession)

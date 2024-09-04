@@ -6,6 +6,194 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 ## Version 0: Escort's Beginning
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
+
+* ### 0.4 - Polished Gameplay Update
+  * **0.4.0.2** Preparing update this time WOAH
+    * **dev01** Removed Socks from game
+    * **dev02** Trying to fix Railgunner settings
+    * **dev03** Trying to fix Gilded settings
+    * **dev04** Trying to fix rolljump height + Poletech buff
+    * **dev05** CW dialog fix (Check for SS)
+    * **dev06** Rialgunner takes care of scav merchents challenge implementation start, replaced logger completely
+    * __GENERAL TODO__
+      * *dev* New Lidarz Dunk™!
+      * *dev* Server missions
+      * *dev* Text for new Railgunner and Gilded options
+      * *dev* Redo build section
+    * __Default TODO__
+      * *dev* Give 'em ol' Brawler's buffed rock hit
+      * *dev* Bubbleweed on jump rather than passive, give stronger boost
+    * __Brawler TODO__
+      * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
+      * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
+      * *dev* Lock Brawler's explosive punch behind an achievement
+      * *dev* Nerf Brawler's dropkick and slidestun and rock hit
+    * __Deflector TODO__
+      * *dev* Fix Deflector deflecting bees (and add the option to have it back)
+      * *dev* Set Deflector's death by bite chance to 100% always
+    * __Escapist TODO__
+    * __Railgunner TODO__
+      * *dev* Railgunners' dual spear goes through creatures
+      * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
+      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
+      * *dev* More charge = faster projectile
+      * *dev* Glass cannon mode makes things ricochet a whole lot more
+      * *dev* Electric spear implementation
+    * __Speedster TODO__
+      * *dev* Speedster can't stop running challenge implementation
+      * *dev* Bodyslam priority over boop
+    * __Gilded TODO__
+    * __Barbarian shit__
+      * *dev* make Barbarian's color nicer
+      * *dev* Barbarian creature shield
+      * *dev* Barbarian shield bash (slide with creature)
+      * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
+      * *dev* Barbarian faster slide
+      * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
+    * __Unstable shit__
+      * *dev* Homing kick if dashing down towards the closest target
+      * *dev* More dashes, the stronger the kick
+      * *dev* Sliding button input does a slide-dash
+    * __Railgunner sightseer (do at home)__
+      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
+      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
+      * *dev* Railgunner screenpeek
+
+  * **0.4.0.1** All of the 0.4.0 development versions has been implemented
+    * **dev01** Labeled a part of New Escapist
+    * **dev02** Layed out the foundation for Barbarian
+    * **dev03** Changed how plugins are rendered, added legacy plugin permanently for now, more progress on Barbarian
+    * **dev04** Making more progress on Barbarian, including adding a blacklist of creatures Barbarian cannot barbar.
+    * **dev05** Railgunner no longer uses Malnourished when 'sploded, instead using a custom status. And disabled spotter code since it does nothing for now but potentially 
+    * **dev06** Railgunner explodes out of grasps if overcharged (and made explosion a separate method)
+    * **dev06b** Organization of TODOs
+    * **dev07** Railgunner's bite lethality reduced, Deflector's bite lethality increased, added more code region blocks
+    * **dev08** Have a specific percentage of SM spear spawns per region/room depending on whether it's common for players to traverse that place as SM (setup)
+    * **dev08a** Forgot a semicolon
+    * **dev08b** Fixed things so it compiles
+    * **dev08c** actually fixed things so it compiles
+    * **dev09** Railgunner malnoutrition/arenamode automatically causes glass cannon mode, regional spear placement calculated.
+    * **dev10** Misfire [0% ~ 0.2%], causes Railgunner to not shoot properly and just (non-fatally) 
+    * **dev11** Work on spearmaster data collector database, will work on the datacollector bit tomorrow
+    * **dev12** Logger created
+    * **dev12e** Logger no longer uses slugbase feature to make sure it works
+    * **dev13** Unstable minihop hop off poles fix attempt by making value a tiny bit higher
+    * **dev14** Reverse the punishment for getting stunned from losing all ability to losing a gear(fixed so that you don't lose all gears lol)
+    * **dev14a** Fixed the output issue my god
+    * **dev15** Added Brawler explosive punch
+    * **dev16** Narrowed down potential crashes as well as not making the thing explode in water
+    * **dev16b** Made logs happen every time
+    * **dev17** Removed Railgunner's chest sprite to make it more close to their design
+    * **dev18** Potentially fixed the void ending
+    * **dev19** Got started on unstable homing kick
+    * **dev20** Continue work on the homing kick
+    * **dev21** ^
+    * **dev22** ^
+    * **dev23** Work on cone detection method
+    * **dev24** Helper to translate input to direction
+    * **dev25** Implement cone detection + analog support
+    * **dev26** Fixed stuff
+    * **dev27** A bit more work on homing kick
+    * **dev28** Collision complete
+    * **dev28a** Commenting so it's kinda easier to follow
+    * **dev29** Brought over 0.3.1.1 and 0.3.2 from main release
+    * **dev30** Brought over 0.3.2.1 from main release
+    * **dev30e** Fixed the natural spears array from not being actually initialized
+    * **dev31** Tried to make dropkicks higher for long rolls
+    * **dev32** Attempt to fix Speedster's infinite ability duration when running out during stun and gave Railgunner and Gilded configurable limits.
+
+  * **0.4.0** Unstable update
+    * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
+    * **dev02** Creating a new file to fit all the code into
+    * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
+    * **dev04** Translate in the stuff (Dropkick) and have placeholders for each different dropkick moves
+    * **dev05** Gave up on remaking these things for now... just random coding here folks. Warming up the brain after not being able to code for such a long time.
+    * **dev06** Unstable jump code start
+    * **dev07** Continued work on Unstable jump code
+    * **dev08** Realized the velocity may send Unstable across the map from one blink
+    * **dev09** Continued work on the build
+    * **dev10** Fixes! And alternative implementation of blink becomes primary
+    * **dev11** Investigation
+    * **dev12** Preparing integration with the rest of the code... and this time I hope I actually save my stuff
+    * **dev13** Got started on the throwing stuff
+    * **dev14 [Vigaro]** Quick overview of code to check for obvious errors
+    * **dev15** Continuation of throwing stuff
+    * **dev16** Actual integration... minus the activations such as movement speed, food pips, options, etc.
+    * **dev17** Playtesting enabled
+    * **dev18** Quick fixes while playtesters are being found
+    * **dev19** More fixes involving being able to actually test the damn slugcat
+    * **dev20** Added a few trycatches for Unstable update method due to unknown null exception
+    * **dev21** Fixed melee Unstable causing the game to lag
+    * **dev22** Fixed the Unstable error where things weren't initialized
+    * **dev23** Fixed jolly error
+    * **dev24** Attempt at fixing jump
+    * **dev25** Fixed dumb mistakes and added a few devlogs
+    * **dev26** MOre deflogs
+    * **dev27** Probably a fix (it was!)
+    * **dev28** Created meter for Escort so the player has a better idea when they're allowed to do crap
+    * **dev29** Fix for being unable to upjump
+    * **dev30** a printing attempts to fix the jump, killed one of the huds for now, and one more frame of throw
+    * **dev31** Fixed the damn jump
+    * **dev32** Hud fixes, velocity adjustments, and gave Escort antigrav a little as well as increasing melee frames to 5
+    * **dev33** A little bit of small adjustments to make antigrav still fun and exciting and the levitation less powerful.
+    * **dev33a** Just corrected the readme is all
+    * **dev34** Gave Unstable the slide back
+    * **dev35** Give Unstable a funny little hop
+    * **dev36** Potentially fixed an issue where the melee didn't work simply because I forgot to call orig
+    * **dev37** Changed water dash behaviour
+    * **dev38** Unstable's crawl speed has been reduced to punish the act of tripping... and also reduced the chance to trip to 1%
+    * **dev39** Allow Speedster's max gears to be modified by option.
+    * **dev40** Forgot to let the option change the max gears...
+    * **dev41** Each build's colors are defined now.
+    * **dev42** Per request, tweaked Unstable's color
+    * **dev43** Changed the major version to a whole new version, fixed the zeroG experience, and added a (temporary) sound effect for tripping
+    * **dev44** Fixed the options for speedster gears
+    * **dev45** Fixed sound effect going crazy probably when tripping and increased tripping chance to 5%
+    * **dev46** Make the active time for the ability start to fall off at higher numbers
+    * **dev47** Make Speedster actually go faster if higher gear and increased wallplant tolerance per gear
+    * **dev48** Unstable is allowed to get off Raindeers, gave each build a different body color when no custom colors are selected, changed Deflector's spawn location
+    * **dev49** Redid calculation for Speedster ability duration and doubled the nitros duration and boost (but not the recharge! Still takes the same time)
+    * **dev50** Reduce the speedster ability time if losing a gear && changed Deflector's spawn again
+    * **dev51** Fix speedster's slide (by disabling dynamic slide)
+    * **dev52** Deflector no longer loses empower if they use a joke rifle (now damage applies to ALL BULLETS until the empowered period ends) + Deflector's parry ignores stuns
+    * **dev52a** Forgot a semicolon
+    * **dev53** Railgunner recoil remake
+    * **dev53a** Minor mistake lol
+    * **dev54** Reduced escort swim speed (because frankly it was ridiculous)
+    * **dev55** Give speedster slightly increased passive movement speed as charges build up
+    * **dev55a** Some comments
+    * **dev56** Add hidden builds by making them selectable but when ctoring just default to default and made lizards actually befriendable and achievements!
+    * **dev56a** Made a small mistake + more achievements
+    * **dev56b** Bugfix whoops
+    * **dev57** Got started on Barbarian and capped how much charge is stored in speedster's perma storage when loading in so they don't potentially start with overcharge.
+    * **dev58** Default Escort's underwater breath does bubbleweed effect
+    * **dev59** Reduce brawler's chunko mode cooldown & code fixes
+    * **dev60** Bubbleweed Escort fixes (MOAR)
+    * **dev61** Complete fix
+    * **dev62** Railgunner gets stunned longer (and spasms more) the less karma they have
+    * **dev62a** Backlogs cleanup and more todo list
+    * **dev62b** Backlogs cleanup finished
+    * **dev62c** Taking in suggestions/more achievements (even future ones)
+    * **dev62d** Readme updated with new todo
+    * **dev62e** Readme todo updated
+    * **dev62f** Achievements updated
+    * **dev63** Railgunner recoil fix && bubbleweed escort fix and speedster passive speed and max gears buffed
+    * **dev64** Speedster max gears nerfed back to 42, removed unstable achievement requirement for playtesting purposes, reduced Unstable's range and buffed Unstable's minihop, increased tripped stun duration from 20f to 1s
+    * **dev64a** hud sprite additions (unimplemented)
+    * **dev64b** Todo updated
+    * **dev64c** Backlogs updated
+    * **dev65** Railgunner target detector
+    * **dev66** Unstable can hop off poles even with the tiny hop, and fixed Railgunner target detector
+    * **dev67** default Escorts receive significantly reduced bubbleweed effect from other default Escorts
+    * **dev68** Railgunner points to the target with spears
+    * **dev69** Revivify QoL: Gilded's power restarts when revived so they don't insta-die from power overload & labeled Gilded's vars && Gilded init cleanup
+    * **dev70** Railgunner's movement speed increases the more overcharge she has & variable labeling for Railgunner
+    * **dev70a** Brawler variable labeling
+    * **dev70b** Deflector & Old Escapist variable labeling
+    * **dev71** Fixed some errors and changed Escort's arena icon
+    * **dev72** Fixed new arena icon sizes
+
 * ### 0.3 - Ending I
   * **(0.3.2.1)** Fixed speedster's ability not turning off and fixed ability time reduction calculation
 
@@ -298,7 +486,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
   * **(0.1.9)** Revivify patches!... sorta kinda. Also fixed potential crashes... Also split the tabs and added a new feature called: Builds! And also also, made parryslides a bit more consistent (so stunslides don't make parryslides not work and it works much better on lizards)... and also you can parry jellyfishes properly now.
 
-  * **(0.1.8.0)** aPrIl FoOlS!
+  * **(0.1.8.0)** aPrIl FoOlS! (Made Escort a slugpup and added new sfx that only play on session/cycle starts)
 
   * **(0.1.8)** Escort headbutt. This will be the last feature added before preparation of the code cleanup. Oh one last thing, switched trampoline to requiring you to flip instead of just jumping on stuff to prevent accidental activations (and more physics accurate since it'll seem like they're pushing themselves off a creature.) Another change is that you can trampoline on dead lizards now! HUZZAH! (Elevator behaviour is unchanged.)
 
