@@ -305,6 +305,24 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
+                if (true && self.room?.world?.region is not null)
+                {
+                    if (self.room.world.region.name is "GW" or "SH" or "SI" or "SB")
+                    {
+                        for (int i = 0; i < self.room.abstractRoom.entities.Count; i++)
+                        {
+                            if (
+                                self.room.abstractRoom.entities[i] is AbstractCreature ac && 
+                                ac.realizedCreature is Scavenger && 
+                                ac.abstractAI is ScavengerAbstractAI saai && 
+                                saai.squad is not null && 
+                                saai.squad.missionType == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
+                            {
+                                Ebug("AAAAAA");
+                            }
+                        }
+                    }
+                }
                 if (false && CR.TryGet(self, out int limiter)){
                     // Console ticker
                     if (e.consoleTick > limiter)

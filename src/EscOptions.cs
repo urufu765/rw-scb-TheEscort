@@ -1015,6 +1015,7 @@ namespace TheEscort
 
         private void ResultsBaby(string value = "")
         {
+            bool challengeMode = false;
             int num = (int)this.yoffset * (int)this.tpadding - (int)this.xoffset / 2 * (int)this.ypadding + ((int)this.tpadding - 1) * ((int)this.xoffset + (int)this.xpadding) + 33;
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
@@ -1025,13 +1026,18 @@ namespace TheEscort
             // int eschallenge_RockEm = 27295;            // Kill 20 (extra: 100) creatures with a single (same) rock
             // int eschallenge_BecomingAGod = 22690;      // Achieve infinity damage three times (extra: 5) in a cycle
             // int eschallenge_AirDesruption = 27211;     // Stun a creature into a deathpit using Escapist's dash ability
-            // int eschallenge_MerchantsMustPay = 24226;  // Find and kill every single merchant in vanilla RW (extra: No deaths)
+            const string eschallenge_MerchantsMustPay = "24226";  // Find and kill every single merchant in vanilla RW (extra: No deaths)
             // int eschallenge_DontStop = 28182;          // Visit every single region without ever being stunned (4 gear perma while in challenge)
             // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
             // int eschallenge_ = 21708;
             string[] insult = new string[1];
+            string[] challenger = new string[2];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
+            };
+            Action[] challenging = new Action[2]{
+                AcceptChallenge,
+                DeclineChallenge
             };
             insult[0] = Translate("escoptions_insult_a");
             switch (UnityEngine.Random.Range(0, 5))
@@ -1116,9 +1122,20 @@ namespace TheEscort
                 this.cfgSectretMagic.Value = false;
                 this.sctTestBuild.Value = false;
                 Plugin.ins.L().Holiday();
+                switch (value)
+                {
+                    case eschallenge_MerchantsMustPay:
+                        ConfigConnector.CreateDialogBoxMultibutton(
+                            Translate(""), challenger, challenging
+                        );
+                        break;
+                    default:
+                        challengeMode = false;
+                        break;
+                }
                 try
                 {
-                    if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && Plugin.Esconfig_SFX_Sectret != null)
+                    if (!challengeMode && rainworld.processManager.currentMainLoop is Menu.ModdingMenu && Plugin.Esconfig_SFX_Sectret != null)
                     {
                         ConfigContainer.PlaySound(Plugin.Esconfig_SFX_Sectret);
                     }
@@ -1129,7 +1146,18 @@ namespace TheEscort
                     Debug.LogException(err);
                 }
                 Ebug("No More Secrets");
+                
             }        
+        }
+
+        private void AcceptChallenge()
+        {
+
+        }
+
+        private void DeclineChallenge()
+        {
+
         }
 
         private void MakeSomeNoiseEsconfig()

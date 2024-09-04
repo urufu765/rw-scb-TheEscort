@@ -14,6 +14,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev03** Trying to fix Gilded settings
     * **dev04** Trying to fix rolljump height + Poletech buff
     * **dev05** CW dialog fix (Check for SS)
+    * **dev06** Rialgunner takes care of scav merchents challenge implementation start, replaced logger completely
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions
@@ -37,7 +38,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
       * *dev* More charge = faster projectile
       * *dev* Glass cannon mode makes things ricochet a whole lot more
-      * *dev* Rialgunner takes care of scav merchents challenge implementation
       * *dev* Electric spear implementation
     * __Speedster TODO__
       * *dev* Speedster can't stop running challenge implementation

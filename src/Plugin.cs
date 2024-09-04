@@ -342,7 +342,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public void OnEnable()
     {
-        Debug.Log("-> Escort plugin INIT!");
+        Logger.LogInfo("-> Escort plugin INIT!");
         try
         {
             ins = this;
@@ -1261,7 +1261,7 @@ partial class Plugin : BaseUnityPlugin
 
             e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;  // Calculates the original mass to compare to most current mass (Rotund World)
 
-            //logImportance = config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
+            logImportance = config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
 
             try  // Initialize and set up SFX that play on loop
             {

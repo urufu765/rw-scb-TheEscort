@@ -4,8 +4,6 @@ using SlugBase.SaveData;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static Guardian.CloudLogger;
-using BepInEx.Logging;
-using System.Linq;
 
 namespace TheEscort
 {
@@ -14,7 +12,7 @@ namespace TheEscort
         private static string prevLog = "";
         private static int logRepetition;
         /*
-        LogInfo Priority:
+        Log Priority:
         -1: No logs
          0: Exceptions
          1: Important things
@@ -26,9 +24,6 @@ namespace TheEscort
         private static readonly string[] prevLogs = new string[RainWorld.PlayerObjectBodyColors.Length]; //THIS IS THE MYRIAD PLAYER COUNT -WW
         private static readonly int[] logRepetitions = new int[RainWorld.PlayerObjectBodyColors.Length];
 
-        public static ManualLogSource LR = BepInEx.Logging.Logger.Sources.FirstOrDefault(l => l.SourceName == "EBUGGER") as ManualLogSource?? BepInEx.Logging.Logger.CreateLogSource("EBUGGER");
-
-
         public static Dictionary<string, int> themCreatureScores;
 
         public static void Ebug(string message, int logPrio = 3, bool ignoreRepetition = false)
@@ -39,11 +34,11 @@ namespace TheEscort
                 {
                     if (logRepetition > 0)
                     {
-                        LR.LogInfo("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
+                        Debug.Log("-> Escort: Previous message repeated " + logRepetition + " times: " + prevLog);
                     }
                     prevLog = message;
                     logRepetition = 0;
-                    LR.LogInfo("-> Escort: " + message);
+                    Debug.Log("-> Escort: " + message);
                 }
                 else
                 {
@@ -55,7 +50,7 @@ namespace TheEscort
         {
             if (logPrio <= logImportance)
             {
-                LR.LogInfo("-> Escort: " + message.ToString());
+                Debug.Log("-> Escort: " + message.ToString());
             }
         }
         public static void Ebug(string[] messages, int logPrio = 3, bool separated = true)
@@ -69,7 +64,7 @@ namespace TheEscort
                     {
                         message += ", " + msg;
                     }
-                    LR.LogInfo("-> Escort: " + message.Substring(2));
+                    Debug.Log("-> Escort: " + message.Substring(2));
                 }
                 else
                 {
@@ -77,11 +72,11 @@ namespace TheEscort
                     {
                         if (i == 0)
                         {
-                            LR.LogInfo("-> Escort: " + messages[i]);
+                            Debug.Log("-> Escort: " + messages[i]);
                         }
                         else
                         {
-                            LR.LogInfo("->         " + messages[i]);
+                            Debug.Log("->         " + messages[i]);
                         }
                     }
                 }
@@ -98,7 +93,7 @@ namespace TheEscort
                     {
                         message += ", " + msg.ToString();
                     }
-                    LR.LogInfo("-> Escort: " + message.Substring(2));
+                    Debug.Log("-> Escort: " + message.Substring(2));
                 }
                 else
                 {
@@ -106,11 +101,11 @@ namespace TheEscort
                     {
                         if (i == 0)
                         {
-                            LR.LogInfo("-> Escort: " + messages[i].ToString());
+                            Debug.Log("-> Escort: " + messages[i].ToString());
                         }
                         else
                         {
-                            LR.LogInfo("->         " + messages[i].ToString());
+                            Debug.Log("->         " + messages[i].ToString());
                         }
                     }
                 }
@@ -123,20 +118,20 @@ namespace TheEscort
                 string toSend = $"-> ERcORt[{callerName}]: {message}";
                 if (asregular)
                 {
-                    LR.LogWarning(toSend + " => " + exception.Message);
+                    Debug.LogWarning(toSend + " => " + exception.Message);
                     if (exception.StackTrace != null)
                     {
-                        LR.LogWarning("->       : " + exception.StackTrace);
+                        Debug.LogWarning("->       : " + exception.StackTrace);
                     }
                 }
                 else
                 {
-                    LR.LogError(toSend);
+                    Debug.LogError(toSend);
                     if (exception.StackTrace != null)
                     {
-                        LR.LogError("->       : " + exception.StackTrace);
+                        Debug.LogError("->       : " + exception.StackTrace);
                     }
-                    LR.LogError(exception);
+                    Debug.LogException(exception);
                 }
 
                 if (Plugin.escPatch_guardian)
@@ -159,11 +154,11 @@ namespace TheEscort
                     {
                         if (logRepetitions[self.playerState.playerNumber] > 0)
                         {
-                            LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetitions[self.playerState.playerNumber] + " times: " + prevLogs[self.playerState.playerNumber]);
+                            Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: Previous message repeated " + logRepetitions[self.playerState.playerNumber] + " times: " + prevLogs[self.playerState.playerNumber]);
                         }
                         prevLogs[self.playerState.playerNumber] = message;
                         logRepetitions[self.playerState.playerNumber] = 0;
-                        LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + message);
+                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message);
                     }
                     else
                     {
@@ -188,7 +183,7 @@ namespace TheEscort
             {
                 if (logPrio <= logImportance)
                 {
-                    LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + message.ToString());
+                    Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.ToString());
                 }
             }
             catch (Exception err)
@@ -214,7 +209,7 @@ namespace TheEscort
                         {
                             message += ", " + msg;
                         }
-                        LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
+                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
                     }
                     else
                     {
@@ -222,11 +217,11 @@ namespace TheEscort
                         {
                             if (i == 0)
                             {
-                                LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i]);
+                                Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i]);
                             }
                             else
                             {
-                                LR.LogInfo("->        [" + self.playerState.playerNumber + "]: " + messages[i]);
+                                Debug.Log("->        [" + self.playerState.playerNumber + "]: " + messages[i]);
                             }
                         }
                     }
@@ -256,7 +251,7 @@ namespace TheEscort
                         {
                             message += ", " + msg.ToString();
                         }
-                        LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
+                        Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + message.Substring(2));
                     }
                     else
                     {
@@ -264,11 +259,11 @@ namespace TheEscort
                         {
                             if (i == 0)
                             {
-                                LR.LogInfo("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i].ToString());
+                                Debug.Log("-> Escort[" + self.playerState.playerNumber + "]: " + messages[i].ToString());
                             }
                             else
                             {
-                                LR.LogInfo("->         [" + self.playerState.playerNumber + "]: " + messages[i].ToString());
+                                Debug.Log("->         [" + self.playerState.playerNumber + "]: " + messages[i].ToString());
                             }
                         }
                     }
@@ -294,20 +289,20 @@ namespace TheEscort
                 {
                     if (asregular)
                     {
-                        LR.LogWarning(toSend + $" => {exception.Message}");
+                        Debug.LogWarning(toSend + $" => {exception.Message}");
                         if (exception.StackTrace != null)
                         {
-                            LR.LogWarning("->       : " + exception.StackTrace);
+                            Debug.LogWarning("->       : " + exception.StackTrace);
                         }
                     }
                     else
                     {
-                        LR.LogError(toSend);
+                        Debug.LogError(toSend);
                         if (exception.StackTrace != null)
                         {
-                            LR.LogError($"->       [{callerName}|{self.playerState.playerNumber}]: {exception.StackTrace}");
+                            Debug.LogError($"->       [{callerName}|{self.playerState.playerNumber}]: {exception.StackTrace}");
                         }
-                        LR.LogError(exception);
+                        Debug.LogException(exception);
                     }
                 }
                 if (Plugin.escPatch_guardian)
