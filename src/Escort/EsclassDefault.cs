@@ -222,6 +222,15 @@ namespace TheEscort
             {
                 e.verticalPoleTech = false;
             }
+
+            if (e.challengeChecker > 0)
+            {
+                e.challengeChecker--;
+            }
+            else
+            {
+                e.challengeChecker = 40;
+            }
         }
 
 
@@ -305,24 +314,6 @@ namespace TheEscort
             // Just for seeing what a variable does.
             try
             {
-                if (true && self.room?.world?.region is not null)
-                {
-                    if (self.room.world.region.name is "GW" or "SH" or "SI" or "SB")
-                    {
-                        for (int i = 0; i < self.room.abstractRoom.entities.Count; i++)
-                        {
-                            if (
-                                self.room.abstractRoom.entities[i] is AbstractCreature ac && 
-                                ac.realizedCreature is Scavenger && 
-                                ac.abstractAI is ScavengerAbstractAI saai && 
-                                saai.squad is not null && 
-                                saai.squad.missionType == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
-                            {
-                                Ebug("AAAAAA");
-                            }
-                        }
-                    }
-                }
                 if (false && CR.TryGet(self, out int limiter)){
                     // Console ticker
                     if (e.consoleTick > limiter)
@@ -789,7 +780,7 @@ namespace TheEscort
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks))
+                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks) && !SChallengeMachine.SC03_Active)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
@@ -835,6 +826,32 @@ namespace TheEscort
                             self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!"), 40, 300, true, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawnedNotify, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, false);
+                        }
+                    }
+                }
+            }
+
+
+            // Challenge tracker
+            if (SChallengeMachine.SC03_Active && self.playerState.playerNumber == 0 && e.challengeChecker == 2)
+            {
+                self.room.SC03_Finished();
+            }
+            if (SChallengeMachine.SC03_Active && e.challengeChecker % 10 == 0 && self.room?.world?.region is not null)
+            {
+                e.challenge03InView = null;
+                if (self.room.world.region.name is "GW" or "SH" or "SI" or "SB")
+                {
+                    for (int i = 0; i < self.room.abstractRoom.entities.Count; i++)
+                    {
+                        if (
+                            self.room.abstractRoom.entities[i] is AbstractCreature ac && 
+                            ac.realizedCreature is Scavenger scav && 
+                            ac.abstractAI is ScavengerAbstractAI saai && 
+                            saai.squad is not null && 
+                            saai.squad.missionType == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
+                        {
+                            e.challenge03InView = scav;
                         }
                     }
                 }

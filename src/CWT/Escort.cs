@@ -80,6 +80,8 @@ namespace TheEscort
         public int tryFindingPup;
         public bool expeditionSpawnPup;
         public bool cheatedSpawnPup;
+        public int challengeChecker = 40;
+        public Scavenger challenge03InView;
         public Player SocksAliveAndHappy
         {
             get 

@@ -445,6 +445,10 @@ namespace TheEscort
                         if (abstractPlayer?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort e))
                         {
                             e.Escat_Draw_Ring_Trackers(timeStacker);
+                            if (p.playerState.playerNumber == 0 && SChallengeMachine.ESC_ACTIVE)
+                            {
+                                SChallengeMachine.SC03_GrafixDraw(timeStacker);
+                            }
                         }
                     }
                 }

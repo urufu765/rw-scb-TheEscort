@@ -940,7 +940,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
-    private bool Esconfig_Build(Player self)
+    private bool Esconfig_Build(Player self, int forceBuild = 0)
     {
         try
         {
@@ -950,6 +950,10 @@ partial class Plugin : BaseUnityPlugin
             }
             // Get build ID from configuration
             int pal = config.cfgBuild[self.playerState.playerNumber].Value;
+            if (forceBuild != 0)
+            {
+                pal = forceBuild;
+            }
 
             // Story campaign expansion skips
             if (self.slugcatStats?.name?.value is not null)
@@ -1256,7 +1260,12 @@ partial class Plugin : BaseUnityPlugin
                 }
                 e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
             }
-            Esconfig_Build(self);  // Set build
+            Esconfig_Build(self, Challenge_Presetter(self.room, ref e));  // Set build
+
+            // Override settings for challenge setter
+            Challenge_Postsetter(self.room, ref e);
+
+
             e.Escat_Add_Ring_Trackers(self);  // Add the trackers that will track variables for the HUD to use
 
             e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;  // Calculates the original mass to compare to most current mass (Rotund World)
@@ -1311,6 +1320,46 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    /// <summary>
+    /// Sets the build for the challenge
+    /// </summary>
+    /// <param name="room"></param>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    private int Challenge_Presetter(Room room, ref Escort e)
+    {
+        if (room?.game?.session is not StoryGameSession)
+        {
+            return 0;
+        }
+        if (SChallengeMachine.SC03_Starter && (room.game.GetStorySession.saveState.cycleNumber == 0 || room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC03_START))
+        {
+            room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC03_START = true;
+            SChallengeMachine.SC03_Active = true;
+            return -4;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Configures the rest of the restrictions for the challenge
+    /// </summary>
+    /// <param name="room"></param>
+    /// <param name="e"></param>
+    private void Challenge_Postsetter(Room room, ref Escort e)
+    {
+        if (room?.game?.session is not StoryGameSession)
+        {
+            return;
+        }
+
+        if (SChallengeMachine.SC03_Active)
+        {
+            room.SC03_SessionStart();
+            e.RailgunLimit = 10;
+        }
+    }
+
 
     /// <summary>
     /// For when Esclass updates need to happen outside of Player update
@@ -1340,6 +1389,10 @@ partial class Plugin : BaseUnityPlugin
                         {
                             //escort.Escat_NE_ShowTrail();
                             //Esclass_NE_AbsoluteTick(player, ref escort);
+                        }
+                        if (player.playerState.playerNumber == 0 && SChallengeMachine.ESC_ACTIVE)
+                        {
+                            SChallengeMachine.SC03_GrafixUpda();
                         }
                     }
                 }
@@ -1865,6 +1918,7 @@ partial class Plugin : BaseUnityPlugin
                 -7 => "SS_A18",  // Unstable (now Barbarian, replace!)
                 _ => "SB_C09"  // Unspecified
             };
+            if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";
             Ebug("It's time OwO");
             Ebug(self.denPosition);
         }

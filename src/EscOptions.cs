@@ -83,6 +83,8 @@ namespace TheEscort
         public OpCheckBox[] cfgCustomBindsContainer;
         private UIelement[] gimmickSet;
         private UIelement[] accessibleSet;
+        private UIelement[] challengeSet;
+        private OpLabel challenge03;
         private Color[] buildColors;
         private Color p1Color, p2Color, p3Color, p4Color;
         private Color tempColor;
@@ -387,11 +389,13 @@ namespace TheEscort
             OpTab buildTab = new(this, Translate("Builds"));
             OpTab gimmickTab = new(this, Translate("Gimmicks"));
             OpTab accessibilityTab = new(this, Translate("Accessibility"));
+            OpTab challengesTab = new(this, Translate("Challenges"));
             this.Tabs = new OpTab[]{
                 mainTab,
                 buildTab,
                 gimmickTab,
-                accessibilityTab
+                accessibilityTab,
+                challengesTab
             };
 
 
@@ -892,6 +896,24 @@ namespace TheEscort
                 bindText
 
             };
+            string ch03 = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03? "X":"_";
+            string ch03a = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03a? "*":"_";
+            string ch03b = rainworld.progression.miscProgressionData.Esave().achieveEschallenge_Challenge03b? "*":"_";
+            challenge03 = new OpLabel(xo, yo - (yp * 2) + tp/2, Translate($"[{ch03}{ch03a}{ch03b}] Merchants Must Pay!"))
+            {
+                color = bRailgunner
+            };
+
+            challengeSet = new UIelement[]
+            {
+                new OpLabel(xo, yo, Translate("Challenges"), true),
+                new OpLabelLong(new Vector2(xo, yo - (yp * 2)), new Vector2(500f, yp * 2), Translate("Here's where your trophies go!")){
+                    color = descColor
+                },
+
+                challenge03
+            };
+
             mainTab.AddItems(this.mainSet);
             buildTab.AddItems(this.buildSet);
             buildTab.AddItems(buildEasy);
@@ -903,6 +925,7 @@ namespace TheEscort
             accessibilityTab.AddItems(this.accessibleSet);
             accessibilityTab.AddItems(cfgBindKeysContainer);
             accessibilityTab.AddItems(cfgCustomBindsContainer);
+            challengesTab.AddItems(this.challengeSet);
             if (cfgVersion.Value != VERSION){
                 ConfigConnector.CreateDialogBoxNotify(HelloWorld);
                 cfgVersion.Value = VERSION;
@@ -1031,13 +1054,8 @@ namespace TheEscort
             // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
             // int eschallenge_ = 21708;
             string[] insult = new string[1];
-            string[] challenger = new string[2];
             Action[] doThing = new Action[1]{
                 MakeSomeNoiseEsconfig
-            };
-            Action[] challenging = new Action[2]{
-                AcceptChallenge,
-                DeclineChallenge
             };
             insult[0] = Translate("escoptions_insult_a");
             switch (UnityEngine.Random.Range(0, 5))
@@ -1125,11 +1143,17 @@ namespace TheEscort
                 switch (value)
                 {
                     case eschallenge_MerchantsMustPay:
-                        ConfigConnector.CreateDialogBoxMultibutton(
-                            Translate(""), challenger, challenging
-                        );
+                        if (!SChallengeMachine.SC03_Starter)
+                        {
+                            ConfigConnector.CreateDialogBoxNotify(
+                                Swapper(Translate("The world is full of vermin. A tragedy shall occur in the stock market. Fight the law.<LINE><LINE>- Play as Railgunner<LINE>-Max charges set to 10<LINE>-Scavenger reputation is locked at -1<LINE><LINE>WIN CONDITION: Kill the merchant in Shaded Citadel, Garbage Wastes, Sky Islands, and Subterranean<LINE>BONUS 1: Kill 150 Normal Scavengers<LINE>BONUS 2: Kill 20 Elite Scavengers"))
+                            );
+                        }
+                        challengeMode = true;
+                        SChallengeMachine.SC03_Starter = true;
                         break;
                     default:
+                        SChallengeMachine.SC03_Starter = false;
                         challengeMode = false;
                         break;
                 }
@@ -1148,16 +1172,6 @@ namespace TheEscort
                 Ebug("No More Secrets");
                 
             }        
-        }
-
-        private void AcceptChallenge()
-        {
-
-        }
-
-        private void DeclineChallenge()
-        {
-
         }
 
         private void MakeSomeNoiseEsconfig()
