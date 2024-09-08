@@ -155,13 +155,13 @@ public static class SChallengeMachine
             hud.fContainers[1].AddChild(missionProgressDot[i]);
         }
 
-        missionProgressTxN = new new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
+        missionProgressTxN = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
         {
             x = screensizeX / 2f - 50f,
             y = screensizeY - 25.2f
         };
 
-        missionProgressTxE = new new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
+        missionProgressTxE = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
         {
             x = screensizeX / 2f + 50f,
             y = screensizeY - 25.2f
