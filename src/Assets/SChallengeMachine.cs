@@ -23,7 +23,7 @@ public static class SChallengeMachine
     public static bool SC03_Active {get; set;} = false;
 
     private static MoreSlugcats.FadeOut fadeOut1;
-    private static FSprite[] missionProgressDot = new(4);
+    private static FSprite[] missionProgressDot = new FSprite[4];
     private static FLabel missionProgressTxN;
     private static FLabel missionProgressTxE;
     private static FLabel missionComplete;
