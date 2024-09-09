@@ -35,7 +35,12 @@ public static class SChallengeMachine
     private static int timeFadeIn;
     private static int timeHold;
     private static int timeFadeOut;
-    private static float screensize;
+    private static float screensizeX;
+    private static float screensizeY;
+    private static Color greenConfirm = new(0.5f, 0.85f, 0.5f);
+    private static Color elitKillCountdown = new(0.45f, 0.4f, 0.2f);
+    private static Color normKillCountdown = new(0.35f, 0.35f, 0.35f);
+    private static Color greyIncomplete = new(0.2f, 0.2f, 0.2f);
 
 
     public static void SC03_SessionStart(this Room room)
@@ -118,8 +123,8 @@ public static class SChallengeMachine
     /// </summary>
     public static void SC03_GrafixInit(HUD.HUD hud)
     {
-        float screensizeX = hud.rainWorld.options.ScreenSize.x;
-        float screensizeY = hud.rainWorld.options.ScreenSize.y;
+        screensizeX = hud.rainWorld.options.ScreenSize.x;
+        screensizeY = hud.rainWorld.options.ScreenSize.y;
         missionCompleteGlow = new FSprite("Futile_White")
         {
             scaleX = 50f,
@@ -213,23 +218,23 @@ public static class SChallengeMachine
 
         if (missionProgressTxE is not null)
         {
-            missionProgressTxE.text = (20 - killsElit).toString();
-            missionProgressTxE.Color = new(0.45f, 0.4f, 0.2f);
+            missionProgressTxE.text = "" + (20 - killsElit);
+            missionProgressTxE.color = elitKillCountdown;
             if (killsElit >= 20)
             {
                 missionProgressTxE.text = "0!";
-                missionProgressTxE.Color = new(0.5f, 0.85f, 0.5f);
+                missionProgressTxE.color = greenConfirm;
             }
-            missionProgressTxN.text = (150 - killsNorm).toString();
-            missionProgressTxN.Color = new(0.35f, 0.35f, 0.35f);
+            missionProgressTxN.text = "" + (150 - killsNorm);
+            missionProgressTxN.color = normKillCountdown;
             if (killsNorm >= 150)
             {
                 missionProgressTxN.text = "0!";
-                missionProgressTxN.Color = new(0.5f, 0.85f, 0.5f);
+                missionProgressTxN.color = greenConfirm;
             }
             for (int i = 0; i < 4; i++)
             {
-                missionProgressDot[i].color = (i < killsProg)? ((i == killsProg - 1)? Color.Lerp(new(0.5f, 0.85f, 0.5f), Color.White, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut)) : new(0.5f, 0.85f, 0.5f)) : new(0.2f, 0.2f, 0.2f);
+                missionProgressDot[i].color = (i < killsProg)? ((i == killsProg - 1)? Color.Lerp(greenConfirm, Color.white, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut)) : greenConfirm) : greyIncomplete;
             }
         }
     }
@@ -249,7 +254,7 @@ public static class SChallengeMachine
             
 
             if (
-                killsProg = 4 &&
+                killsProg == 4 &&
                 fadeOut1 is null
             )
             {
