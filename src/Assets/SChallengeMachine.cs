@@ -118,8 +118,8 @@ public static class SChallengeMachine
     /// </summary>
     public static void SC03_GrafixInit(HUD.HUD hud)
     {
-        screensizeX = hud.rainWorld.options.ScreenSize.x;
-        screensizeY = hud.rainWorld.options.ScreenSize.y;
+        float screensizeX = hud.rainWorld.options.ScreenSize.x;
+        float screensizeY = hud.rainWorld.options.ScreenSize.y;
         missionCompleteGlow = new FSprite("Futile_White")
         {
             scaleX = 50f,
@@ -132,14 +132,14 @@ public static class SChallengeMachine
 
 	    missionComplete = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
         {
-            x = hud.rainWorld.options.ScreenSize.x / 2f + 0.2f,
+            x = screensizeX / 2f + 0.2f,
             y = screensizeY + 50.2f
         };
 	    missionComplete.shader = hud.rainWorld.Shaders["MenuText"];
 
 	    missionCompleteSub = new FLabel(RWCustom.Custom.GetFont(), "<TEXT>")
         {
-            x = hud.rainWorld.options.ScreenSize.x / 2f + 0.2f,
+            x = screensizeX / 2f + 0.2f,
             y = screensizeY + 20.2f
         };
 	    missionCompleteSub.shader = hud.rainWorld.Shaders["MenuText"];
