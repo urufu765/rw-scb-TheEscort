@@ -8,6 +8,9 @@ using static TheEscort.Plugin;
 
 
 namespace TheEscort;
+/// <summary>
+/// Oh my god this is so hard coded it's making me cry... it's not like I had much time anyways. I'll fix this when I'm properly back
+/// </summary>
 public static class SChallengeMachine
 {
     public static bool ESC_ACTIVE {
@@ -20,13 +23,24 @@ public static class SChallengeMachine
     public static bool SC03_Active {get; set;} = false;
 
     private static MoreSlugcats.FadeOut fadeOut1;
+    private static FSprite[] missionProgressDot = new FSprite[4];
+    private static FLabel missionProgressTxN;
+    private static FLabel missionProgressTxE;
     private static FLabel missionComplete;
     private static FLabel missionCompleteSub;
     private static FSprite missionCompleteGlow;
+    private static int killsNorm;
+    private static int killsElit;
+    private static int killsProg;
     private static int timeFadeIn;
     private static int timeHold;
     private static int timeFadeOut;
-    private static float screensize;
+    private static float screensizeX;
+    private static float screensizeY;
+    private static Color greenConfirm = new(0.5f, 0.85f, 0.5f);
+    private static Color elitKillCountdown = new(0.45f, 0.4f, 0.2f);
+    private static Color normKillCountdown = new(0.35f, 0.35f, 0.35f);
+    private static Color greyIncomplete = new(0.2f, 0.2f, 0.2f);
 
 
     public static void SC03_SessionStart(this Room room)
@@ -35,6 +49,9 @@ public static class SChallengeMachine
         room.world.game.session.creatureCommunities.InfluenceLikeOfPlayer(CreatureCommunities.CommunityID.Scavengers, -1, 0, -10f, -1, -1);
     }
 
+    /// <summary>
+    /// Gives mission progress
+    /// </summary>
     public static void SC03_Achieve(this Room room, bool merchant)
     {
         if (room?.world?.game?.session is StoryGameSession sgs && room.world.region is not null)
@@ -101,42 +118,83 @@ public static class SChallengeMachine
         }
     }
 
+    /// <summary>
+    /// Initiates the sprites and graphics for the mission HUD
+    /// </summary>
     public static void SC03_GrafixInit(HUD.HUD hud)
     {
-        screensize = hud.rainWorld.options.ScreenSize.y;
-        missionCompleteGlow = new FSprite("Futile_White");
+        screensizeX = hud.rainWorld.options.ScreenSize.x;
+        screensizeY = hud.rainWorld.options.ScreenSize.y;
+        missionCompleteGlow = new FSprite("Futile_White")
+        {
+            scaleX = 50f,
+            scaleY = 20f,
+            x = screensizeX / 2f,
+            y = screensizeY - 50f,
+            alpha = 0
+        };
         missionCompleteGlow.shader = hud.rainWorld.Shaders["FlatLight"];
-        missionCompleteGlow.scaleX = 50f;
-        missionCompleteGlow.scaleY = 20f;
-        missionCompleteGlow.x = hud.rainWorld.options.ScreenSize.x / 2f;
-	    missionCompleteGlow.y = hud.rainWorld.options.ScreenSize.y - 50f;
-        missionCompleteGlow.alpha = 0;
-	    missionComplete = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>");
+
+	    missionComplete = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
+        {
+            x = screensizeX / 2f + 0.2f,
+            y = screensizeY + 50.2f
+        };
 	    missionComplete.shader = hud.rainWorld.Shaders["MenuText"];
-	    missionComplete.x = hud.rainWorld.options.ScreenSize.x / 2f + 0.2f;
-	    missionComplete.y = screensize + 50.2f;
-        missionComplete.alpha = 0;
-	    missionCompleteSub = new FLabel(RWCustom.Custom.GetFont(), "<TEXT>");
+
+	    missionCompleteSub = new FLabel(RWCustom.Custom.GetFont(), "<TEXT>")
+        {
+            x = screensizeX / 2f + 0.2f,
+            y = screensizeY + 20.2f
+        };
 	    missionCompleteSub.shader = hud.rainWorld.Shaders["MenuText"];
-	    missionCompleteSub.x = hud.rainWorld.options.ScreenSize.x / 2f + 0.2f;
-	    missionCompleteSub.y = screensize + 20.2f;
-        missionCompleteSub.alpha = 0;
+
+        for (int i = 0; i < 4; i++)
+        {
+            missionProgressDot[i] = new FSprite("WormEye")
+            {
+                x = screensizeX / 2f + (20f * i) - 30f,
+                y = screensizeY - 25f,
+                scale = 1
+            };
+            hud.fContainers[1].AddChild(missionProgressDot[i]);
+        }
+
+        missionProgressTxN = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
+        {
+            x = screensizeX / 2f - 50f,
+            y = screensizeY - 25.2f
+        };
+
+        missionProgressTxE = new FLabel(RWCustom.Custom.GetDisplayFont(), "<TEXT>")
+        {
+            x = screensizeX / 2f + 50f,
+            y = screensizeY - 25.2f
+        };
+
+        hud.fContainers[1].AddChild(missionProgressTxE);
+        hud.fContainers[1].AddChild(missionProgressTxN);
         hud.fContainers[1].AddChild(missionCompleteGlow);
         hud.fContainers[1].AddChild(missionComplete);
         hud.fContainers[1].AddChild(missionCompleteSub);
     }
 
-
+    /// <summary>
+    /// Draws the graphics for the challenge hud
+    /// </summary>
     public static void SC03_GrafixDraw(float timeStacker)
     {
         if (missionComplete is not null)
         {
-            missionComplete.y = screensize + 50.2f - Mathf.Lerp(0, 100, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut));
-            missionCompleteSub.y = screensize + 20.2f - Mathf.Lerp(0, 100, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut));
+            missionComplete.y = screensizeY + 50.2f - Mathf.Lerp(0, 100, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut));
+            missionCompleteSub.y = screensizeY + 20.2f - Mathf.Lerp(0, 100, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut));
             missionCompleteGlow.alpha = 0.15f * Mathf.InverseLerp(0, 120, timeHold + timeFadeOut);
         }
     }
 
+    /// <summary>
+    /// Updates the graphics variables
+    /// </summary>
     public static void SC03_GrafixUpda()
     {
         if (timeFadeIn > 0)
@@ -157,17 +215,46 @@ public static class SChallengeMachine
         {
             timeFadeIn = timeHold = timeFadeOut = 0;
         }
+
+        if (missionProgressTxE is not null)
+        {
+            missionProgressTxE.text = "" + (20 - killsElit);
+            missionProgressTxE.color = elitKillCountdown;
+            if (killsElit >= 20)
+            {
+                missionProgressTxE.text = "0!";
+                missionProgressTxE.color = greenConfirm;
+            }
+            missionProgressTxN.text = "" + (150 - killsNorm);
+            missionProgressTxN.color = normKillCountdown;
+            if (killsNorm >= 150)
+            {
+                missionProgressTxN.text = "0!";
+                missionProgressTxN.color = greenConfirm;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                missionProgressDot[i].color = (i < killsProg)? ((i == killsProg - 1)? Color.Lerp(greenConfirm, Color.white, Mathf.InverseLerp(0, 120, timeHold + timeFadeOut)) : greenConfirm) : greyIncomplete;
+            }
+        }
     }
 
     public static bool SC03_Finished(this Room room)
     {
         if (room?.world?.game?.session is StoryGameSession sgs)
         {
+            int merchantsKilled = 0;
+            if (sgs.saveState.miscWorldSaveData.Esave().ESC03_GW) merchantsKilled++;
+            if (sgs.saveState.miscWorldSaveData.Esave().ESC03_SH) merchantsKilled++;
+            if (sgs.saveState.miscWorldSaveData.Esave().ESC03_SI) merchantsKilled++;
+            if (sgs.saveState.miscWorldSaveData.Esave().ESC03_SB) merchantsKilled++;
+            killsProg = merchantsKilled;
+            killsNorm = sgs.saveState.miscWorldSaveData.Esave().ESC03_ScavKills;
+            killsElit = sgs.saveState.miscWorldSaveData.Esave().ESC03_EScaKills;
+            
+
             if (
-                sgs.saveState.miscWorldSaveData.Esave().ESC03_GW &&
-                sgs.saveState.miscWorldSaveData.Esave().ESC03_SH &&
-                sgs.saveState.miscWorldSaveData.Esave().ESC03_SI &&
-                sgs.saveState.miscWorldSaveData.Esave().ESC03_SB && 
+                killsProg == 4 &&
                 fadeOut1 is null
             )
             {

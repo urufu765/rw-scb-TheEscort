@@ -98,12 +98,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
         public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.3.2.1";
+        private static readonly string VERSION = "0.3.3";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Fixed Speedster ability not turning off.<LINE>- Fixed calculation for Speedster ability time reduction upon tripping.");
+                "- No More Playable Socks(RIP).<LINE>- Railgunner max overcharge limit now configurable.<LINE>- Gilded max power capacity now configurable.<LINE>- Rolling longer will make the dropkick higher.<LINE>- Vertical poleflip is buffed (Especially once initiated from a flip)<LINE>- CW iterator dialogue support + custom dialogue (by Myrmice!)<LINE>- New builtin Escort Server ChallengeTM (secret code soon to release)<LINE>- Fresh new thumbnail.");
             }
         }
 

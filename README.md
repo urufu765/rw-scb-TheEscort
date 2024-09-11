@@ -8,13 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 
 * ### 0.4 - Polished Gameplay Update
-  * **0.4.0.2** Preparing update this time WOAH
-    * **dev01** Removed Socks from game
-    * **dev02** Trying to fix Railgunner settings
-    * **dev03** Trying to fix Gilded settings
-    * **dev04** Trying to fix rolljump height + Poletech buff
-    * **dev05** CW dialog fix (Check for SS)
-    * **dev06** Rialgunner takes care of scav merchents challenge implementation start, replaced logger completely
+  * **(0.4.0.4)** Railgunner brr
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions
@@ -32,6 +26,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Fix Deflector deflecting bees (and add the option to have it back)
       * *dev* Set Deflector's death by bite chance to 100% always
     * __Escapist TODO__
+      * *dev* Stabilize Escapist
     * __Railgunner TODO__
       * *dev* Railgunners' dual spear goes through creatures
       * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
@@ -60,7 +55,17 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
       * *dev* Railgunner screenpeek
 
-  * **0.4.0.1** All of the 0.4.0 development versions has been implemented
+  * **0.4.0.3 [0.3.3.1]** Added constant challenge hud to avoid confusion
+
+  * **0.4.0.2 [0.3.3]** Preparing update this time WOAH
+    * **dev01** Removed Socks from game
+    * **dev02** Trying to fix Railgunner settings
+    * **dev03** Trying to fix Gilded settings
+    * **dev04** Trying to fix rolljump height + Poletech buff
+    * **dev05** CW dialog fix (Check for SS)
+    * **dev06** Rialgunner takes care of scav merchents challenge implementation start, replaced logger completely
+
+  * **0.4.0.1 [0.3.2.1]** All of the 0.4.0 development versions has been implemented
     * **dev01** Labeled a part of New Escapist
     * **dev02** Layed out the foundation for Barbarian
     * **dev03** Changed how plugins are rendered, added legacy plugin permanently for now, more progress on Barbarian
@@ -103,7 +108,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev31** Tried to make dropkicks higher for long rolls
     * **dev32** Attempt to fix Speedster's infinite ability duration when running out during stun and gave Railgunner and Gilded configurable limits.
 
-  * **0.4.0** Unstable update
+  * **0.4.0 [0.3.1]** Unstable update
     * **dev01** Testing the waters on a military computer... far away from an ide... Fixed description for Escapist
     * **dev02** Creating a new file to fit all the code into
     * **dev03** Translate in the stuff (slidestun) and have placeholders for each different slidestun moves
