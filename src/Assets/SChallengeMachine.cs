@@ -16,11 +16,13 @@ public static class SChallengeMachine
     public static bool ESC_ACTIVE {
         get
         {
-            return SC03_Active;
+            return SC03_Active || SC04_Active;
         }
     }
     public static bool SC03_Starter {get; set;} = false;
     public static bool SC03_Active {get; set;} = false;
+    public static bool SC04_Starter {get; set;} = false;
+    public static bool SC04_Active {get; set;} = false;
 
     private static MoreSlugcats.FadeOut fadeOut1;
     private static FSprite[] missionProgressDot = new FSprite[4];
@@ -29,20 +31,38 @@ public static class SChallengeMachine
     private static FLabel missionComplete;
     private static FLabel missionCompleteSub;
     private static FSprite missionCompleteGlow;
-    private static int killsNorm;
-    private static int killsElit;
-    private static int killsProg;
     private static int timeFadeIn;
     private static int timeHold;
     private static int timeFadeOut;
     private static float screensizeX;
     private static float screensizeY;
     private static Color greenConfirm = new(0.5f, 0.85f, 0.5f);
-    private static Color elitKillCountdown = new(0.45f, 0.4f, 0.2f);
-    private static Color normKillCountdown = new(0.35f, 0.35f, 0.35f);
     private static Color greyIncomplete = new(0.2f, 0.2f, 0.2f);
 
-
+#region Challenge 03: Railgunner Commits Genocide
+    /// <summary>
+    /// regular scavenger kill progress
+    /// </summary>
+    private static int killsNorm;
+    /// <summary>
+    /// Elite scavenger kill progress
+    /// </summary>
+    private static int killsElit;
+    /// <summary>
+    /// Scav merchant overall kill progress (out of 4)
+    /// </summary>
+    private static int killsProg;
+    /// <summary>
+    /// Elite scavenger kill counter colour
+    /// </summary>
+    private static Color elitKillCountdown = new(0.45f, 0.4f, 0.2f);
+    /// <summary>
+    /// Regular scavenger kill counter colour
+    /// </summary>
+    private static Color normKillCountdown = new(0.35f, 0.35f, 0.35f);
+    /// <summary>
+    /// Initialises the room variables at the start of a session (cycle)
+    /// </summary>
     public static void SC03_SessionStart(this Room room)
     {
         room.world.game.session.creatureCommunities.SetLikeOfPlayer(CreatureCommunities.CommunityID.Scavengers, -1, 0, -10f);
@@ -239,6 +259,9 @@ public static class SChallengeMachine
         }
     }
 
+    /// <summary>
+    /// Checks challenge progress, then upon completion ends the run
+    /// </summary>
     public static bool SC03_Finished(this Room room)
     {
         if (room?.world?.game?.session is StoryGameSession sgs)
@@ -276,4 +299,55 @@ public static class SChallengeMachine
         }
         return false;
     }
+#endregion
+
+#region Challenge 04: Speedster Speedrun
+    /// <summary>
+    /// Initialises the room variables at the start of a session (cycle)
+    /// </summary>
+    public static void SC04_SessionStart(this Room room)
+    {
+
+    }
+
+    /// <summary>
+    /// Gives mission progress
+    /// </summary>
+    public static void SC04_Achieve(this Room room)
+    {
+
+    }
+
+    /// <summary>
+    /// Initiates the sprites and graphics for the mission HUD
+    /// </summary>
+    public static void SC04_GrafixInit(HUD.HUD hud)
+    {
+
+    }
+
+    /// <summary>
+    /// Draws the graphics for the challenge hud
+    /// </summary>
+    public static void SC04_GrafixDraw(float timeStacker)
+    {
+
+    }
+
+    /// <summary>
+    /// Updates the graphics variables
+    /// </summary>
+    public static void SC04_GrafixUpda()
+    {
+
+    }
+
+    /// <summary>
+    /// Checks challenge progress, then upon completion ends the run
+    /// </summary>
+    public static bool SC04_Finished(this Room room)
+    {
+
+    }
+#endregion
 }
