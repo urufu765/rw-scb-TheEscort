@@ -7,6 +7,8 @@ Y'all are free to adapt the code for your own usage as long as the original auth
 Development starts here. Goal? To have a complete enough slugcat that can be used in Arena and other campaigns.
 
 * ### 0.3 - Ending I
+  * **(0.3.3.2)** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient
+
   * **(0.3.3.1)** Added constant challenge hud to avoid confusion
 
   * **(0.3.3)** Removed Socks from game (playabilitywise), Railgunner and Gilded's overcharge and power limits have been fixed, rollkick height boost, vertical poletech buff, CW dialogue support, new Escort challenge, new thumbnail

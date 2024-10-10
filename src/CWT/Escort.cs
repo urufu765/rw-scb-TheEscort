@@ -82,6 +82,7 @@ namespace TheEscort
         public bool cheatedSpawnPup;
         public int challengeChecker = 40;
         public Scavenger challenge03InView;
+        public int challenge03loseFocus;
         public Player SocksAliveAndHappy
         {
             get 
