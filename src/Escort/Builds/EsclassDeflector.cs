@@ -181,7 +181,7 @@ namespace TheEscort
                             }
                         }
                         // Challenge mode stuff
-                        if (SChallengeMachine.SC03_Active && victim.killTag?.realizedCreature is Player pl && pl.playerState.playerNumber == 0 && victim.abstractCreature?.abstractAI is not null && victim is Scavenger s)
+                        if (SChallengeMachine.SC03_Active && victim.killTag?.realizedCreature is Player && victim.abstractCreature?.abstractAI is not null && victim is Scavenger s)
                         {
                             Ebug("Scav kill!");
                             if (

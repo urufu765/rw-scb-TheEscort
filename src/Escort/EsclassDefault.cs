@@ -231,6 +231,11 @@ namespace TheEscort
             {
                 e.challengeChecker = 40;
             }
+
+            if (e.challenge03loseFocus > 0)
+            {
+                e.challenge03loseFocus--;
+            }
         }
 
 
@@ -839,7 +844,10 @@ namespace TheEscort
             }
             if (SChallengeMachine.SC03_Active && e.challengeChecker % 10 == 0 && self.room?.world?.region is not null)
             {
-                e.challenge03InView = null;
+                if (e.challenge03loseFocus == 0)
+                {
+                    e.challenge03InView = null;
+                }
                 if (self.room.world.region.name is "GW" or "SH" or "SI" or "SB")
                 {
                     for (int i = 0; i < self.room.abstractRoom.entities.Count; i++)
@@ -852,6 +860,7 @@ namespace TheEscort
                             saai.squad.missionType == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
                         {
                             e.challenge03InView = scav;
+                            e.challenge03loseFocus = 400;
                         }
                     }
                 }

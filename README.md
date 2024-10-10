@@ -8,7 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 
 * ### 0.4 - Polished Gameplay Update
-  * **(0.4.0.4)** Railgunner brr
+  * **(0.4.0.5)** Challenge 04: Speedster Rulz
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions
@@ -54,6 +54,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
       * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
       * *dev* Railgunner screenpeek
+
+  * **0.4.0.4 [0.3.3.2]** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient
 
   * **0.4.0.3 [0.3.3.1]** Added constant challenge hud to avoid confusion
 
