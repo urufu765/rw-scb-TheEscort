@@ -940,7 +940,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
-    private bool Esconfig_Build(Player self, int forceBuild = 0)
+    private bool Esconfig_Build(Player self, int forceBuild = 1)
     {
         try
         {
@@ -950,7 +950,7 @@ partial class Plugin : BaseUnityPlugin
             }
             // Get build ID from configuration
             int pal = config.cfgBuild[self.playerState.playerNumber].Value;
-            if (forceBuild != 0)
+            if (forceBuild != 1)
             {
                 pal = forceBuild;
             }
@@ -1338,6 +1338,7 @@ partial class Plugin : BaseUnityPlugin
             SChallengeMachine.SC03_Active = true;
             return -4;
         }
+        if (SChallengeMachine.SC04_Starter && (room.game.GetStorySession.saveState.cycleNumber == 0 || room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC04_START))
         return 0;
     }
 

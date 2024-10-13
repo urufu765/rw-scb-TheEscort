@@ -10,11 +10,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 * ### 0.4 - Polished Gameplay Update
   * **(0.4.0.5)** Challenge 04: Speedster Rulz
     * **dev01** Challenge 04 outlining
+    * **dev02** C04 continue work
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions
       * *dev* Text for new Railgunner and Gilded options
       * *dev* Redo build section
+      * *dev* Reduce horizontal pole flip height
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
       * *dev* Bubbleweed on jump rather than passive, give stronger boost

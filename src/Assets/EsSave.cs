@@ -34,6 +34,10 @@ namespace TheEscort
         public bool ESC03_SH {get; set;} = false;
         public bool ESC03_SI {get; set;} = false;
         public bool ESC03_SB {get; set;} = false;
+
+        // Escort Server Challenge 4
+        public bool ESC04_START {get; set;} = false;
+        public int ESC04_TimeLeft {get; set;} = 0;
     }
 
 
