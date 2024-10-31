@@ -11,6 +11,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4.0.5)** Challenge 04: Speedster Rulz
     * **dev01** Challenge 04 outlining
     * **dev02** C04 continue work
+    * **dev03** Hearye hearye, a solution to Speedster not being able to travel due to creatures being in the way
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions

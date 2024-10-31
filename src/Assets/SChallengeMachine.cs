@@ -39,6 +39,8 @@ public static class SChallengeMachine
     private static Color greenConfirm = new(0.5f, 0.85f, 0.5f);
     private static Color greyIncomplete = new(0.2f, 0.2f, 0.2f);
 
+    private static FirecrackerPlant.ScareObject intimidatingAura;
+
 #region Challenge 03: Railgunner Commits Genocide
     /// <summary>
     /// regular scavenger kill progress
@@ -347,7 +349,8 @@ public static class SChallengeMachine
     /// </summary>
     public static bool SC04_Finished(this Room room)
     {
-
+        // intimidatingAura = new FirecrackerPlant.ScareObject();
+        // room.AddObject(intimidatingAura);
     }
 #endregion
 }
