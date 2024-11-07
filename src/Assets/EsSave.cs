@@ -38,6 +38,7 @@ namespace TheEscort
         // Escort Server Challenge 4
         public bool ESC04_START {get; set;} = false;
         public int ESC04_TimeLeft {get; set;} = 0;
+        public int ESC04_CurrentRegion {get; set;} = 0;
     }
 
 
@@ -69,11 +70,12 @@ namespace TheEscort
         public bool beaten_Escort = false;  // Beat Escort campaign (set to false on release)
 
 
-        // Not Implemented below
         public bool achieveEschallenge_Challenge03 = false;  // ESC #3: September
         public bool achieveEschallenge_Challenge03a = false;  // ESC #3: September (Kill 100 scavs)
         public bool achieveEschallenge_Challenge03b = false;  // ESC #3: September (Kill 20 Elite scavs)
+        public bool achieveEschallenge_Challenge04 = false;
 
+        // Not Implemented below
         public bool achieveEscort_Bare_Fists = false;  // Beat Escort campaign without ever picking up a weapon
         public bool achieveEscort_All_Known = false;  // Beat Escort true ending OR complete wanderer passage in Escort campaign
         public bool achieveEscort_Peter_Pan = false;  // Bring at least 5 creatures to the void pool and achieve the ascension ending

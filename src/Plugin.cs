@@ -1338,7 +1338,11 @@ partial class Plugin : BaseUnityPlugin
             SChallengeMachine.SC03_Active = true;
             return -4;
         }
-        if (SChallengeMachine.SC04_Starter && (room.game.GetStorySession.saveState.cycleNumber == 0 || room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC04_START))
+        if (SChallengeMachine.SC04_Starter && !e.SpeOldSpeed && (room.game.GetStorySession.saveState.cycleNumber == 0 || room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC04_START))
+        {
+            room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC04_START = true;
+            return -5;
+        }
         return 0;
     }
 
@@ -1920,6 +1924,7 @@ partial class Plugin : BaseUnityPlugin
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";
+            if (SChallengeMachine.SC04_Starter) self.denPosition = "SB_S01";
             Ebug("It's time OwO");
             Ebug(self.denPosition);
         }

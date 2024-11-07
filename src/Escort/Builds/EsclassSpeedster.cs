@@ -27,7 +27,10 @@ namespace TheEscort
             }
             if ((e.SpeSpeedin > 0 || e.SpeDashNCrash) && !e.SpeOldSpeed)
             {
-                e.SpeSpeedin--;
+                if (!e.SpeLockLevel)
+                {
+                    e.SpeSpeedin--;
+                }
                 if (self.input[0].x != 0 && e.SpeNitros > 0)
                 {
                     e.SpeNitros--;
@@ -40,6 +43,54 @@ namespace TheEscort
             else
             {
                 e.SpeNitros = 0;
+            }
+            e.SpeStoodStill = false;
+            if ((Mathf.Abs(self.mainBodyChunk.vel.x) + Mathf.Abs(self.mainBodyChunk.vel.y)) < 2.5f)
+            {
+                e.SpeStandingStill++;
+                if (e.SpeStandingStill > 400)
+                {
+                    try
+                    {
+                        if (self.room?.abstractRoom is not null)
+                        {
+                            if (self.room.abstractRoom.gate)
+                            {
+
+                            }
+                            if (self.room.abstractRoom.shelter)
+                            {
+                                if (self.room.abstractRoom.name != SChallengeMachine.SC04_StartingDen)
+                                {
+                                    SChallengeMachine.SC04_SetFootOut = true;
+                                }
+                                if (self.room.shelterDoor.IsClosing)
+                                {
+                                    SChallengeMachine.SC04_SetFootOut = false;
+                                }
+                                if (SChallengeMachine.SC04_SetFootOut)
+                                {
+                                    e.SpeStoodStill = true;
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Ebug(ex, "Gone Wrong With Speedster Challenge Standing Check");
+                    }
+                }
+            }
+            else
+            {
+                e.SpeStandingStill = 0;
+            }
+
+            if (SChallengeMachine.SC04_Active && SChallengeMachine.SC04_TimeLeft <= 0)
+            {
+                Esclass_RG_InnerSplosion(self, false, true, e.SpeedsterColor);
+                self.Die();
             }
         }
 
@@ -176,6 +227,7 @@ namespace TheEscort
                         e.SpeSpeedin = Math.Max(0, e.SpeSpeedin - 80);
                     }
                 }
+                e.SpeLockLevel = self.Stunned || SChallengeMachine.SC04_Active;
                 if (self.Stunned)
                 {
                     e.SpeBuildup = 0f;
@@ -278,6 +330,18 @@ namespace TheEscort
                     {
                         e.SpeGear = 0;
                         e.SpeDashNCrash = false;
+                    }
+                }
+
+                if (SChallengeMachine.SC04_Active)
+                {
+                    e.SpeGear = 3;
+                    e.SpeDashNCrash = true;
+                    e.SpeExtraSpe = e.SpeSpeedin = 200 + 80 * 3;
+                    if (self.Stunned || e.SpeStoodStill)
+                    {
+                        Esclass_RG_InnerSplosion(self, false, true, e.SpeedsterColor);
+                        self.Die();
                     }
                 }
             }

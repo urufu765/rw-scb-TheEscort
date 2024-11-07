@@ -25,6 +25,10 @@ namespace TheEscort
         public int SpeRollCounter;
         public int SpeMaxGear;
         public int SpeNitros;
+        public bool SpeLockLevel;
+        public int SpeStandingStill;
+        public bool SpeStoodStill;
+        public int SpeTimer;
 
         public void EscortSS(bool useOld = false, int maxGear = 4)
         {

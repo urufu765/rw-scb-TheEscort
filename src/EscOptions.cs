@@ -50,6 +50,9 @@ namespace TheEscort
         public Configurable<int> cfgSpeedsterGears;  // 4
         public Configurable<int> cfgRailgunnerLimiter;  // 10
         public Configurable<int> cfgGildedMaxPower;  // 6400
+        public Configurable<string> dbgNoiseMaker;  // TODO: REMOVE UPON NON-ALPHA
+        private OpTextBox noiseMaker;
+        private OpSimpleButton noiseMaking;
         private OpTextBox secretText;
         private OpCheckBox hypeableBox;
         private OpSliderTick hypeableTick;
@@ -166,7 +169,7 @@ namespace TheEscort
             this.cfgRailgunnerLimiter = this.config.Bind<int>("cfg_Overrails_Limiter", 10, new ConfigAcceptableRange<int>(1, 500));
             this.cfgGildedMaxPower = this.config.Bind<int>("cfg_Gilded_Max_POWAH", 6400, new ConfigAcceptableRange<int>(3000, 100000));
 
-            
+            this.dbgNoiseMaker = this.config.Bind<string>("dbg_Noise_Maker", "");
             this.cfgSecret.OnChange += InputSecret;
             this.cfgLogImportance.OnChange += SetLogImportance;
             this.buildEasy = new OpCheckBox[PlayerCount];  // Only the first four are shown. The rest are hidden.
@@ -273,6 +276,22 @@ namespace TheEscort
                 maxLength = 5
             };
             this.secretText.OnValueChanged += InputTheSecret;
+
+            this.noiseMaker = new OpTextBox(this.dbgNoiseMaker, new Vector2(xo + (xp), yo - (yp * 14)), 400)
+            {
+                description = OptionInterface.Translate("Tests ingame sounds"),
+                colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+                colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+                colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f)
+            };
+            this.noiseMaker.OnValueChanged += InputTheNoise;
+            this.noiseMaking = new OpSimpleButton(new Vector2(xo, yo - (yp * 14)), new Vector2(20, 20))
+            {
+                description = OptionInterface.Translate("Play Sound"),
+                colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+                colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+                soundClick = SoundID.None
+            };
 
             //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
             //    color = bTesting * 0.7f
@@ -839,7 +858,9 @@ namespace TheEscort
                     description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
                 },
 
-                secretText
+                secretText,
+                noiseMaker,
+                noiseMaking
             };
             this.accessibleSet = new UIelement[]{
                 new OpLabel(xo, yo, Translate("Accessibility"), true),
@@ -1031,6 +1052,12 @@ namespace TheEscort
             ResultsBaby(value);
         }
 
+        private void InputTheNoise(UIconfig config, string value, string oldValue)
+        {
+            noiseMaking.soundClick = new SoundID(value);
+        }
+
+
         private void InputSecret()
         {
             ResultsBaby(ValueConverter.ConvertToString(this.cfgSecret.Value, this.cfgSecret.settingType));
@@ -1043,13 +1070,13 @@ namespace TheEscort
             int nu2 = 1500; int nu3 = 87769; int nu4 = 602; int nu5 = 1984;
             // 5 digit code-> 1: Major challenge, 2: Server challenge, 8: Special/unused, 9: Testing only
             // int eschallenge_LizardPomPoms = 24155;     // Take 5 pictures of any Escort dancing with two dead lizards on the tip of a pole (MANUAL VERIFICATION ONLY)
-            // int eschallenge_SpeedingTicket = 25862;    // Take 3 pictures of Speedster going past tolls (MANUAL VERIFICATION ONLY)
             // int eschallenge_FoodTour = 22612;          // Eat every single fruit (extra: +all kinds of lizards(to fill dragonslayer), squicadas, centipedes) (extra: +every single creature)
             // int eschallenge_SocksIsDumb = 28716;       // Make your way through three (extra: 7) regions without ever holding Socks's hand
             // int eschallenge_RockEm = 27295;            // Kill 20 (extra: 100) creatures with a single (same) rock
             // int eschallenge_BecomingAGod = 22690;      // Achieve infinity damage three times (extra: 5) in a cycle
             // int eschallenge_AirDesruption = 27211;     // Stun a creature into a deathpit using Escapist's dash ability
             const string eschallenge_MerchantsMustPay = "24226";  // Find and kill every single merchant in vanilla RW (extra: No deaths)
+            const string eschallenge_SpeedMarathon = "25862";    // Take 3 pictures of Speedster going past tolls (MANUAL VERIFICATION ONLY)
             // int eschallenge_DontStop = 28182;          // Visit every single region without ever being stunned (4 gear perma while in challenge)
             // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
             // int eschallenge_ = 21708;
@@ -1151,6 +1178,17 @@ namespace TheEscort
                         }
                         challengeMode = true;
                         SChallengeMachine.SC03_Starter = true;
+                        break;
+                    case eschallenge_SpeedMarathon:
+                        if (!SChallengeMachine.SC04_Starter)
+                        {
+                            ConfigConnector.CreateDialogBoxNotify(
+                                Swapper(Translate("From bottom to top, nonstop running. A traitorous marathon route guaranteed to make things difficult. Are you speed?<LINE><LINE>- Play as Speedster<LINE>-Speed gear locked at 4<LINE>-Speed ability always active*<LINE>-<LINE><LINE>WIN CONDITION: Complete the marathon<LINE>BONUS 1: Have 100s remaining<LINE><LINE>FAIL CONDITION: Stay still for 10 seconds, get stunned, deviate from route, or run out of time."))
+                            );
+                        }
+                        challengeMode = true;
+                        SChallengeMachine.SC04_Starter = true;
+
                         break;
                     default:
                         SChallengeMachine.SC03_Starter = false;

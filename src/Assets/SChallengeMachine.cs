@@ -39,7 +39,6 @@ public static class SChallengeMachine
     private static Color greenConfirm = new(0.5f, 0.85f, 0.5f);
     private static Color greyIncomplete = new(0.2f, 0.2f, 0.2f);
 
-    private static FirecrackerPlant.ScareObject intimidatingAura;
 
 #region Challenge 03: Railgunner Commits Genocide
     /// <summary>
@@ -304,12 +303,36 @@ public static class SChallengeMachine
 #endregion
 
 #region Challenge 04: Speedster Speedrun
+    private static Dictionary<int, FirecrackerPlant.ScareObject> intimidatingAura;
+    private static string sC04_StartingDen = "";
+    public static string SC04_StartingDen { get => sC04_StartingDen; }
+    public static int SC04_TimeLeft { get => sC04_TimeLeft;}
+
+    private static readonly string[] SC04_Route = {"SB", "LM", "GW", "HI", "VS", "SI"};
+    private static int SC04_ScareTimer = 0;
+    private static int sC04_TimeLeft = 10;
+    private static bool SC04_StopTime = false;
+    private static string SC04_LastRoom = "";
+
+    public static bool SC04_SetFootOut;
+
     /// <summary>
     /// Initialises the room variables at the start of a session (cycle)
     /// </summary>
     public static void SC04_SessionStart(this Room room)
     {
-
+        try
+        {
+            if (room.abstractRoom.name is not null)
+            {
+                sC04_StartingDen = SC04_LastRoom = room.abstractRoom.name;
+            }
+            intimidatingAura = new();
+        }
+        catch (Exception ex)
+        {
+            Ebug(ex);
+        }
     }
 
     /// <summary>
@@ -349,8 +372,100 @@ public static class SChallengeMachine
     /// </summary>
     public static bool SC04_Finished(this Room room)
     {
-        // intimidatingAura = new FirecrackerPlant.ScareObject();
-        // room.AddObject(intimidatingAura);
+        if (room is null) return false;
+        if (SC04_ScareTimer > 0)
+        {
+            SC04_ScareTimer--;
+        }
+        else
+        {
+            SC04_ScareTimer = 400;
+        }
+        try
+        {
+            if (room?.abstractRoom?.name is not null && room.abstractRoom.name != SC04_LastRoom)
+            {
+                SC04_ScareTimer = 40;
+            }
+            foreach (AbstractCreature ap in room.game.Players)
+            {
+                if (ap.realizedCreature is Player p && p.slugcatStats.name.value == "EscortMe")
+                {
+                    if (SC04_ScareTimer == 0)
+                    {
+                        if (intimidatingAura.ContainsKey(p.playerState.playerNumber))
+                        {
+                            intimidatingAura[p.playerState.playerNumber].Destroy();
+                            intimidatingAura.Remove(p.playerState.playerNumber);
+                        }
+                        intimidatingAura.Add(p.playerState.playerNumber, new FirecrackerPlant.ScareObject(p.mainBodyChunk.pos));
+                        room.AddObject(intimidatingAura[p.playerState.playerNumber]);
+                    }
+                    else
+                    {
+                        if (intimidatingAura.ContainsKey(p.playerState.playerNumber))
+                        {
+                            intimidatingAura[p.playerState.playerNumber].pos = p.mainBodyChunk.pos;
+                        }
+                    }
+                }
+            }
+
+            if (room?.world?.game?.session is StoryGameSession sgs)
+            {
+                if (
+                    room.abstractRoom.shelter && room.shelterDoor.IsClosing || 
+                    room.abstractRoom.gate && !(
+                        room.regionGate.mode == RegionGate.Mode.Broken ||
+                        room.regionGate.mode == RegionGate.Mode.Closed ||
+                        room.regionGate.mode == RegionGate.Mode.MiddleClosed
+                    ))
+                {
+                    SC04_StopTime = true;
+                    sgs.saveState.miscWorldSaveData.Esave().ESC04_TimeLeft = SC04_TimeLeft;
+                }
+                else
+                {
+                    SC04_StopTime = false;
+                }
+                if (!room.abstractRoom.gate && room.world.region.name != SC04_Route[sgs.saveState.miscWorldSaveData.Esave().ESC04_CurrentRegion])
+                {
+                    if (sgs.saveState.miscWorldSaveData.Esave().ESC04_CurrentRegion < SC04_Route.Length - 1 && room.world.region.name == SC04_Route[sgs.saveState.miscWorldSaveData.Esave().ESC04_CurrentRegion + 1])
+                    {
+                        sgs.saveState.miscWorldSaveData.Esave().ESC04_CurrentRegion++;
+                    }
+                    else if (room.abstractRoom.shelter && sgs.saveState.miscWorldSaveData.Esave().ESC04_CurrentRegion == SC04_Route.Length && room.abstractRoom.name == "SI_A07")
+                    {
+                        SC04_StopTime = true;
+                        if (fadeOut1 is null)
+                        {
+                            fadeOut1 = new MoreSlugcats.FadeOut(room, new Color(0.03f, 0.57f, 0.59f), 80, false);
+                            room.AddObject(fadeOut1);
+                            return false;
+                        }
+                        if (
+                            fadeOut1 is not null &&
+                            fadeOut1.IsDoneFading()
+                        )
+                        {
+                            room.game.GoToRedsGameOver();
+                            sgs.saveState.progression.miscProgressionData.Esave().achieveEschallenge_Challenge04 = true;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            if (!SC04_StopTime)
+            {
+                sC04_TimeLeft--;
+            }
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Failure to check challenge 4");
+        }
+        return false;
     }
 #endregion
 }

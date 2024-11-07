@@ -587,11 +587,10 @@ namespace TheEscort
         /// <summary>
         /// Makes Railgunner go BOOM
         /// </summary>
-        public static void Esclass_RG_InnerSplosion(Player self, bool lethal=false)
+        public static void Esclass_RG_InnerSplosion(Player self, bool lethal=false, bool silly=false, Color c=default)
         {
             try
             {
-                Color c = new(0.5f, 0.85f, 0.78f);
                 Vector2 v = Vector2.Lerp(self.firstChunk.pos, self.firstChunk.lastPos, 0.35f);
                 Room room = self.room;
                 room.AddObject(new SootMark(room, v, 120f, bigSprite: true));
@@ -611,12 +610,15 @@ namespace TheEscort
                     room.AddObject(new Explosion(room, self, v, 10, 50f, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
                     room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
                     room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.93f, 0.28f);
-                    self.Die();
                 }
-                else
+                else if (!silly)
                 {
                     room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.86f, 0.4f);
                     room.AddObject(new Explosion(room, self, v, 8, 500f, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
+                }
+                else
+                {
+                    room.PlaySound(SoundID.SB_A14, self.mainBodyChunk, false, 0.8f, 1.6f);
                 }
             }
             catch (Exception err)
@@ -632,7 +634,7 @@ namespace TheEscort
             {
                 if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
                 {
-                    Esclass_RG_InnerSplosion(self);
+                    Esclass_RG_InnerSplosion(self, c:e.RailgunnerColor);
                     //self.stun += e.RailFrail ? 320 : 160;
                     int stunDur = e.RailFrail ? 320 : 160;
                     if (self.room?.game?.session is StoryGameSession sgs)
@@ -647,7 +649,8 @@ namespace TheEscort
                 }
                 else
                 {
-                    Esclass_RG_InnerSplosion(self, true);
+                    Esclass_RG_InnerSplosion(self, true, c:e.RailgunnerColor);
+                    self.Die();
                 }
                 return true;
             }
