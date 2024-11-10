@@ -22,6 +22,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * __Default TODO__
       * *dev* Give 'em ol' Brawler's buffed rock hit
       * *dev* Bubbleweed on jump rather than passive, give stronger boost
+      * *dev* Reduce horizontal flip pole flip
     * __Brawler TODO__
       * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
       * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
@@ -43,6 +44,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Speedster can't stop running challenge implementation
       * *dev* Bodyslam priority over boop
     * __Gilded TODO__
+      * *dev* Pause power increase or slow down drastically upon entering zero G mode
     * __Barbarian shit__
       * *dev* make Barbarian's color nicer
       * *dev* Barbarian creature shield
