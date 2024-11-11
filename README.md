@@ -56,6 +56,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * *dev* Homing kick if dashing down towards the closest target
       * *dev* More dashes, the stronger the kick
       * *dev* Sliding button input does a slide-dash
+      * *dev* Decrease dash length
+      * *dev* Increase next dash rate (50% -> 75%)
+      * *dev* Change sound to (sampling real world sounds hold on)
+      * *dev* Backflipping allows 8 directions instead of 4 and increases first (after initial jump) length
     * __Railgunner sightseer (do at home)__
       * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
       * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
