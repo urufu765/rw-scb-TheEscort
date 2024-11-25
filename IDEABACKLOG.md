@@ -81,3 +81,63 @@
 * *(0.2.11)* Fleshed Out Story (Part 2) Update
 * *(0.2.10)* Gilded. (another idea: Blast away the creatures for safety)
 * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
+
+
+
+# Unsorted
+## Pitch Black
+### Complete
+* Give Speedster slightly increased passive movement speed as the charges build up
+* Rework Dropkick and lizard dunk
+* Rework Railgunner's recoil
+
+### Incomplete
+* Allow Gilded to craft while levitating [maybe, debating on this one]
+* Increase Gilded's crafting speed as the karma cap increases
+* Add tutorial/info buttons next to each build in the remix settings for noobsbeginners to have a decent idea how to do Escort-ing
+* The Yippee button
+    * Hear the dev saying Yip- or Yippee whenever you press a button, unlocked by a secret code revealed only on April 1st EST
+* Rework shank sound so it has less reverb
+* Hybrid builds! Theoretically expands the playable builds from 7 to 42 (and eventually 10 to 90)! Take two builds, and mash them together, with unique combo results!
+* New Build: Barbarian Escort
+    * Use creatures as shields or battering rams!
+        * Hold a live creature, keep it passified as you use them as a shield!
+        * Do a slide with a creature in hand to do a battering ram!
+        * Press down while falling to do a massive stomp!
+    * Fat. Very, VERY heavy! Rotund world here thy comes!
+    * Bonus health!
+* New Build: Power Escort
+    * Each arm has a power bar, which allows Power Escort to use telekinesis, shockwave, and lasers!
+        * Power recharges slowly, but gains bonus power on consumption of food
+        * Can pull the closest creature in front of Power Escort towards them (if not stopped will collide, resulting in a weak Speedster's crash-like effect)
+        * Can then blast the creature with a powerful cone-area blast
+        * When empty-handed, pressing throw will charge up a short range laser blast!
+    * Can use powers past the limit, but has an increasing percentage to backfire and break the power meter, which means on next cycle the power starts depleted
+* New Secret Unlockable Build: Unstable Escort
+    * Pray to RNGesus for the optimal outcome, as Unstable Escort speeds through the unforgiving world!
+    * Faster base speed compared to Speedster (though speedster's speed ability will always outpace Unstable
+    * Has a 0.5%~5% (based on hype) chance every second to trip (and a further 20%~50% of letting go of items)
+    * Throwing a weapon has a 20%~40% chance of it being melee (like Brawler), 75%~40% chance of regular throw, and 5%~20% chance of tossing the object
+    * Jumping is replaced with a blink, which is similar to Escapist's dash, except half the distance and has modified velocity
+        * first two blinks are always possible
+        * every blink after that has a 0.5^(blinks done so far - 1) chance of being available.
+        * there is a 20 frame window between each blink that the player is able to press jump to do a blink
+        * Pressing just jump (or the first jump) will always make Unstable blink upwards unless in zero G
+        * after the first jump (or in zero g), Unstable will blink towards the direction the player is holding
+        * each blink will propel the slugcat towards that direction, with each subsequent blink in the same direction amplifying the velocity (until reaching the speed that will cause the slugcat to get stunned upon coming into contact with a wall). Changing direction resets the velocity
+        * Each blink adds 2 (3 if malnourished) seconds to the cooldown, and upon ending the blink sequence, Unstable will go into cooldown where they will be exhausted
+    * While exhausted, Unstable cannot blink and has a further 50% chance on a successful throw of just tossing the object instead.
+    * Unlocking this build will require the completion of Escort's campaign
+* A secret code that says "I love you!" randomly thoughout a playthrough
+* Allow Escort (default only) to meet Spearmaster
+
+### Dead
+* Unique sprites for each build
+    * Brawler: Painted Violet. May or may not get a monocle
+    * Deflector: Painted purple, gets glow-in-the-dark leg bracelets that cause a light trace (like Tron or something)
+    * Escapist: Painted sea green. Has different eyes (markings merged)
+    * Railgunner: Painted cyan. Does away with the chest X, gains a (battery) meter on either side of their neck
+    * Speedster: Painted turquoise. Add an idle animation where they consume cheese
+    * Gilded: Painted dark blue. Add a flickering red karma 10 sprite behind the scug when they reach karma cap 9 (lore stuff)
+* Rework the pup so they actually behave correctly
+* Rework the pup (code) so it's more stable
