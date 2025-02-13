@@ -31,67 +31,67 @@ public partial class Escort
     public int NEsSetCooldown;
     
     /// <summary>
-    /// 
+    /// Cooldown of the New Escapist shadowclone ability
     /// </summary>
     public int NEsCooldown;
     
     /// <summary>
-    /// 
+    /// List of creatures made vulnerable by the shadowclone ability
     /// </summary>
     public List<Creature> NEsVulnerable;
     
     /// <summary>
-    /// 
+    /// Duration left before the vulnerable creature list is purged
     /// </summary>
     public int NEsClearVulnerable;
     
     /// <summary>
-    /// 
+    /// Ability active duration
     /// </summary>
     public int NEsAbility;
     
     /// <summary>
-    /// 
+    /// Abstractcreature address of the shadowclone
     /// </summary>
     public AbstractCreature NEsAbstractShadowPlayer;
     
     /// <summary>
-    /// 
+    /// Address of the shadowclone (realised)
     /// </summary>
     public ShadowPlayer NEsShadowPlayer;
     
     /// <summary>
-    /// 
+    /// Time duration reference of the shadowclone ability
     /// </summary>
     public const int NEsAbilityTime = 320;
     
     /// <summary>
-    /// 
+    /// Early cooldown reset enabler
     /// </summary>
     public bool NEsResetCooldown;
     
     /// <summary>
-    /// 
+    /// Whether shelter is closing or not to prevent shadowclone from being spawned
     /// </summary>
     public bool NEsShelterCloseTime;
     
     /// <summary>
-    /// 
+    /// Trackrr information for the latest max cooldown
     /// </summary>
     public int NEsLastCooldown;
     
     /// <summary>
-    /// 
+    /// (Unused) Shadowclone afterimage trail
     /// </summary>
     public Queue<BodyDouble> NEsShadow;
     
     /// <summary>
-    /// 
+    /// (Unused) Time between each shadowclone afterimage trail
     /// </summary>
     public int NEsAddToTrailCD;
     
     /// <summary>
-    /// 
+    /// Increases the time duration of the slugcat's ability to grab a thing to free themselves from the predator
     /// </summary>
     public int NEsDangerGraspExtend;
 
@@ -100,6 +100,9 @@ public partial class Escort
     /// </summary>
     public bool NEsSocks;
 
+    /// <summary>
+    /// Despite everything, this is not a self contained init function. Only to be used as a method in the main Escort class
+    /// </summary>
     public void EscortNE()
     {
         this.NewEscapist = false;
@@ -119,6 +122,11 @@ public partial class Escort
     }
 
 
+    /// <summary>
+    /// (Unused) Adds and manages shadowclone afterimage trail
+    /// </summary>
+    /// <param name="roomCamera">Inherited romcam from predecessor method</param>
+    /// <param name="s">Inherited sprite leaser from predecessor method</param>
     public void Escat_NE_AddTrail(RoomCamera roomCamera, RoomCamera.SpriteLeaser s)
     {
         if (NEsAddToTrailCD == 0 && NEsCooldown == 0 && NEsAbility == 0)
@@ -139,6 +147,9 @@ public partial class Escort
         }
     }
 
+    /// <summary>
+    /// (Unused) Updates every living shadowclone afterimage
+    /// </summary>
     public void Escat_NE_ShowTrail()
     {
         int killCount = 0;
@@ -158,6 +169,10 @@ public partial class Escort
     }
 }
 
+
+/// <summary>
+/// The jank solution of my lifetime. Creates a shadow clone who's actually a player except stripped of control and AI
+/// </summary>
 public class ShadowPlayer : Player
 {
     private int killTime = Escort.NEsAbilityTime;

@@ -13,6 +13,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev02** C04 continue work
     * **dev03** Hearye hearye, a solution to Speedster not being able to travel due to creatures being in the way
     * **dev04** Made it such that being stunned no longer progresses the charge, progressed a fair bit with the challenge, and added a sound machine (will not exist in Beta!)
+    * **dev05** I'm back b__ches!
     * __GENERAL TODO__
       * *dev* New Lidarz Dunk™!
       * *dev* Server missions
