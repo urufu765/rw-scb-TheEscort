@@ -288,19 +288,6 @@ partial class Plugin : BaseUnityPlugin
                     Vector2 momentum = new(
                         self.mainBodyChunk.vel.x * DKMultiplier, 
                         self.mainBodyChunk.vel.y * DKMultiplier);
-                    if (e.LizardDunk)
-                    {
-                        bool diffYDirection = Mathf.Sign(momentum.y) != Mathf.Sign(self.input[0].y) && self.input[0].y != 0;
-                        if (e.isDefault)
-                        {
-                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 20), 20)) * (diffYDirection? -1 : 1);
-                            momentum.x = Mathf.Abs(momentum.y) * self.input[0].x;
-                        }
-                        else
-                        {
-                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 15), 15));
-                        }
-                    }
                     if (e.Deflector)
                     {
                         if (e.DeflAmpTimer > 0)
@@ -323,10 +310,6 @@ partial class Plugin : BaseUnityPlugin
                         normSlamDamage, stunDur
                     );
                     Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", 2);
-                    if (e.DropKickCD == 0)
-                    {
-                        e.LizardDunk = false;
-                    }
                     if (e.DeflAmpTimer > 0)
                     {
                         e.DeflAmpTimer = 0;

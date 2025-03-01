@@ -14,58 +14,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev03** Hearye hearye, a solution to Speedster not being able to travel due to creatures being in the way
     * **dev04** Made it such that being stunned no longer progresses the charge, progressed a fair bit with the challenge, and added a sound machine (will not exist in Beta!)
     * **dev05** I'm back b__ches!
-    * __GENERAL TODO__
-      * *dev* New Lidarz Dunk™!
-      * *dev* Server missions
-      * *dev* Text for new Railgunner and Gilded options
-      * *dev* Redo build section
-      * *dev* Reduce horizontal pole flip height
-    * __Default TODO__
-      * *dev* Give 'em ol' Brawler's buffed rock hit
-      * *dev* Bubbleweed on jump rather than passive, give stronger boost
-      * *dev* Reduce horizontal flip pole flip
-    * __Brawler TODO__
-      * *dev* Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
-      * *dev* Brawler's explosive punch kills him in water for some reason, maybe due to the force?
-      * *dev* Lock Brawler's explosive punch behind an achievement
-      * *dev* Nerf Brawler's dropkick and slidestun and rock hit
-    * __Deflector TODO__
-      * *dev* Fix Deflector deflecting bees (and add the option to have it back)
-      * *dev* Set Deflector's death by bite chance to 100% always
-    * __Escapist TODO__
-      * *dev* Stabilize Escapist
-    * __Railgunner TODO__
-      * *dev* Railgunners' dual spear goes through creatures
-      * *dev* ??? Railgunner bomb jumps are more controllable and doesn't stun
-      * *dev* Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
-      * *dev* More charge = faster projectile
-      * *dev* Glass cannon mode makes things ricochet a whole lot more
-      * *dev* Electric spear implementation
-    * __Speedster TODO__
-      * *dev* Speedster can't stop running challenge implementation
-      * *dev* Bodyslam priority over boop
-    * __Gilded TODO__
-      * *dev* Pause power increase or slow down drastically upon entering zero G mode
-    * __Barbarian shit__
-      * *dev* make Barbarian's color nicer
-      * *dev* Barbarian creature shield
-      * *dev* Barbarian shield bash (slide with creature)
-      * *dev* Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
-      * *dev* Barbarian faster slide
-      * *dev* Barbarian timed instakill maul ability (SKILL ISSUE)
-    * __Unstable shit__
-      * *dev* Homing kick if dashing down towards the closest target
-      * *dev* More dashes, the stronger the kick
-      * *dev* Sliding button input does a slide-dash
-      * *dev* Decrease dash length
-      * *dev* Increase next dash rate (50% -> 75%)
-      * *dev* Change sound to (sampling real world sounds hold on)
-      * *dev* Backflipping allows 8 directions instead of 4 and increases first (after initial jump) length
-    * __Railgunner sightseer (do at home)__
-      * *dev* Use the crosshair to indicate if the creature is in Railgunner's range
-      * *dev* Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
-      * *dev* If creature is outside camera range, then use an arrow to indicate off screen target
-      * *dev* Railgunner screenpeek
+    * **dev06** Reduced meat consumption to 0.5, implemented new lizard dunk
 
   * **0.4.0.4 [0.3.3.2]** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient
 

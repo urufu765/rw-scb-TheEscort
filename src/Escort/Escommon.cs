@@ -136,38 +136,31 @@ namespace TheEscort
         /// </summary>
         private void Escort_TossObject(On.Player.orig_TossObject orig, Player self, int grasp, bool eu)
         {
-            orig(self, grasp, eu);
             try
             {
                 if (Eshelp_IsMe(self.slugcatStats.name))
                 {
+                    orig(self, grasp, eu);
                     return;
                 }
                 if (!BodySlam.TryGet(self, out var bodySlam) ||
                     !eCon.TryGetValue(self, out Escort e))
                 {
+                    orig(self, grasp, eu);
                     return;
                 }
 
                 Ebug(self, "Toss Object Triggered!");
-                if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead)
-                {
-                    if (Esconfig_SFX(self) && e.LizGet != null)
-                    {
-                        e.LizGet.Volume = 0f;
-                    }
-                    if (self.bodyMode == Player.BodyModeIndex.Default && (!e.Brawler || e.BrawThrowGrab == 0))
-                    {
-                        self.animation = Player.AnimationIndex.RocketJump;
-                        self.bodyChunks[1].vel.x += self.ThrowDirection;
-                    }
-                }
+                // New lizard dunk (alive)
+                LizardDunk(self, grasp, e);
             }
             catch (Exception err)
             {
                 Ebug(self, err);
+                orig(self, grasp, eu);
                 return;
             }
+            orig(self, grasp, eu);
         }
 
 

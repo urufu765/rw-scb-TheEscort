@@ -26,7 +26,7 @@
 		},
 		"diet": {
 			"base": "Red",
-			"corpses": 0.75,
+			"corpses": 0.5,
 			"plants": 0.75,
 			"overrides": {
 				"Fly": 0.5,
@@ -53,7 +53,7 @@
 		"theescort/better_crawl": [3.5, 4.3, 3.7],
 		"theescort/better_polewalk": [3.9, 5.2, 5, 0.6],
 		"theescort/better_polehang": [1.35, 2.16, -0.55, -0.35, 1.9, -0.5],
-		"theescort/body_slam": [0.05, 45, 0.7, 15],
+		"theescort/body_slam": [0.05, 60, 0.7, 15],
 		"theescort/slide_launch_mod": [18, 5, 7, 8, 21, 10],
 		"theescort/dk_multiplier": 3,
 		"theescort/heavylifter": 3,
@@ -76,6 +76,8 @@
 		"theescort/headthing": [1, 3, 0, 2.5],
 		"theescort/bodything": [1, 0, 0, 0],
 		"theescort/rollfly": [20, 5, 10, 11],
+		"theescort/lizard_dunker": [8, 16, -0.4, -0.4, -0.3, -0.3],
+		"theescort/lizard_dunk_type2": false,
 
 		"theescort/brawler/slide_launch_fac": 0.25,
 		"theescort/brawler/dk_h_dmg": 2,

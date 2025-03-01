@@ -133,7 +133,7 @@ namespace TheEscort
                 e.smoothTrans--;
             }
 
-            // Lizard dropkick leniency
+            // // Lizard sfx leniency
             if (e.LizDunkLean > 0)
             {
                 e.LizDunkLean--;
@@ -143,10 +143,6 @@ namespace TheEscort
             if (e.LizGoForWalk > 0)
             {
                 e.LizGoForWalk--;
-            }
-            else
-            {
-                e.LizGrabCount = 0;
             }
 
             // Super Wall Flip
@@ -459,24 +455,28 @@ namespace TheEscort
                     }
                     for (int i = 0; i < self.grasps.Length; i++)
                     {
-                        if (self.grasps[i] != null && self.grasps[i].grabbed is Lizard lizzie && !lizzie.dead)
+                        if (self.grasps[i] != null && self.grasps[i].grabbed is Lizard lizzie)
                         {
-                            e.LizDunkLean = 20;
-                            if (!e.LizardDunk)
+                            if (!lizzie.dead)
                             {
-                                e.LizGrabCount++;
-                            }
-                            if (e.LizGoForWalk > 0 && e.LizGrabCount < 4)
-                            {
-                                self.grasps[i].pacifying = true;
-                                lizzie.Violence(null, null, lizzie.mainBodyChunk, null, Creature.DamageType.Electric, 0f, 40f);
+                                e.LizDunkLean = 10;
+                                if (e.LizGoForWalk > 0)
+                                {
+                                    self.grasps[i].pacifying = true;
+                                    lizzie.Violence(null, null, lizzie.mainBodyChunk, null, Creature.DamageType.Electric, 0f, 40f);
+                                }
+                                else
+                                {
+                                    self.grasps[i].pacifying = false;
+                                }
+                                e.LizardDunk = true;
+                                e.LizIsFeckinDead = false;
+                                break;  // prioritizes playing the pitch of the living if the player grabs both a dead and a living lizard
                             }
                             else
                             {
-                                self.grasps[i].pacifying = false;
+                                e.LizIsFeckinDead = true;
                             }
-                            e.LizardDunk = true;
-                            break;
                         }
                     }
                 }
@@ -486,6 +486,7 @@ namespace TheEscort
                 }
             }
 
+
             // Implement drug use
             if (hypeRequirement >= 0 && self.aerobicLevel < Mathf.Lerp(0f, hypeRequirement + 0.01f, self.Adrenaline))
             {
@@ -493,7 +494,7 @@ namespace TheEscort
             }
 
             // Implement Easy Mode
-            if (e.easyMode && (self.wantToJump > 0 && self.input[0].pckp) && self.input[0].x != 0)
+            if (e.easyMode && self.wantToJump > 0 && self.input[0].pckp && self.input[0].x != 0)
             {
                 self.animation = Player.AnimationIndex.RocketJump;
                 self.wantToPickUp = 0;
@@ -509,7 +510,9 @@ namespace TheEscort
                 }
                 if (e.LizGet != null)
                 {
-                    e.LizGet.Volume = e.LizardDunk ? 1f : 0f;
+                    float volume = e.LizIsFeckinDead ? 0.5f : 1f;
+                    e.LizGet.Volume = e.LizardDunk ? volume : 0f;
+                    e.LizGet.Pitch = e.LizIsFeckinDead ? 0.4f : 1f;
                     e.LizGet.Update();
                 }
             }
@@ -1558,6 +1561,10 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
+
+                // New lizard dunk (dead)
+                LizardDunk(self, grasp, e);
+
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;

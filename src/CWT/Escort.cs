@@ -9,39 +9,135 @@ namespace TheEscort
 {
     public partial class Escort
     {
+        /// <summary>
+        /// The name of the slugcat, in case you need it
+        /// </summary>
         public string Eskie = "Escort";
+        /// <summary>
+        /// For default(guardian)-only abilities
+        /// </summary>
         public bool isDefault;
+        /// <summary>
+        /// A cooldown to prevent the player from dropkicking a creature straight to heck. While dropkick is on cooldown, it does reduced damage
+        /// </summary>
         public int DropKickCD;
+        /// <summary>
+        /// The amount of frames the player has been rollin'
+        /// </summary>
         public float RollinCount;
         public int parrySlideLean;
         public int parryAirLean;
+        /// <summary>
+        /// Invincibility frames (yeah suck it ya dumb b-)
+        /// </summary>
         public int iFrames;
+        /// <summary>
+        /// Whether the player has headbutted when coming out of a corridor
+        /// </summary>
         public bool Cometted;
+        /// <summary>
+        /// Frames of opportunity to get a headbutt in while in or exiting a corridor
+        /// </summary>
         public int CometFrames;
+        /// <summary>
+        /// The bodypart that the sound effects will play from. It's the main body chunk unless told otherwise
+        /// </summary>
         public BodyChunk SFXChunk;
+        /// <summary>
+        /// Contains the loop that plays when the player is rollin'
+        /// </summary>
         public DynamicSoundLoop Rollin;
+        /// <summary>
+        /// Contains the loop that plays when the player is holding a live lizzor
+        /// </summary>
         public DynamicSoundLoop LizGet;
+        /// <summary>
+        /// Lizard dunk sfx activation
+        /// </summary>
         public bool LizardDunk;
+        /// <summary>
+        /// Lizard dunk sfx leaniency
+        /// </summary>
         public int LizDunkLean;
+        /// <summary>
+        /// Lizard pacified grab timer
+        /// </summary>
         public int LizGoForWalk;
-        public int LizGrabCount;
+        /// <summary>
+        /// Determines whether to use the original pitch LizGet or the halved depending on the aliveness of the lizard
+        /// </summary>
+        public bool LizIsFeckinDead;
+        /// <summary>
+        /// Whether the parry was successful or not
+        /// </summary>
         public bool ParrySuccess;
+        /// <summary>
+        /// Whether the parry was electrical, thus stunning the player despite the success... may have changed functions
+        /// </summary>
         public bool ElectroParry;
+        /// <summary>
+        /// The index of the first custom sprite
+        /// </summary>
         public int mainSpriteIndex;
+        /// <summary>
+        /// Total number of custom sprites
+        /// </summary>
         public int mainSprites;
+        /// <summary>
+        /// Light source coming from the markings
+        /// </summary>
         public LightSource hypeLight;
+        /// <summary>
+        /// Floodlight from the player's surroundings affected by the markings
+        /// </summary>
         public LightSource hypeSurround;
+        /// <summary>
+        /// Colour of the markings
+        /// </summary>
         public Color hypeColor;
+        /// <summary>
+        /// Determines whether to add RGB lights to a slugcat
+        /// </summary>
         public bool secretRGB;
+        /// <summary>
+        /// RGB cycle tick
+        /// </summary>
         private float rgbTick;
+        /// <summary>
+        /// Smooth transition for hype light (going from non-hyped to hyped and vice versa)
+        /// </summary>
         public float smoothTrans;
+        /// <summary>
+        /// Turns on additional movement caused by throwing spears
+        /// </summary>
         public bool tossEscort;
+        /// <summary>
+        /// Allows Escort to dualwield
+        /// </summary>
         public bool dualWield;
+        /// <summary>
+        /// Allows Escort to perform a super wall flip
+        /// </summary>
         public int superWallFlip;
+        /// <summary>
+        /// Prevents the player from spamming vertical pole flips
+        /// </summary>
         public int verticalPoleFlipSpamPrevention;
+        /// <summary>
+        /// Escort Easy mode
+        /// </summary>
         public bool easyMode;
+        /// <summary>
+        /// Dropkick performed using the easy mode buttom press
+        /// </summary>
         public bool easyKick;
+        /// <summary>
+        /// Console output on update delays such that the console isn't spammed with messages every tick
+        /// </summary>
         public int consoleTick;
+        /// <summary>
+        /// Saves the player if bitten during a dropkick
+        /// </summary>
         public bool savingThrowed;
         public bool lenientSlide;
         public int voidRetailiate;
@@ -453,7 +549,6 @@ namespace TheEscort
             this.LizardDunk = false;
             this.LizDunkLean = 0;
             this.LizGoForWalk = 0;
-            this.LizGrabCount = 0;
             this.ParrySuccess = false;
             this.ElectroParry = false;
             this.SFXChunk = player.bodyChunks[0];

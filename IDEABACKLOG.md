@@ -71,13 +71,13 @@
 ### Irrelevant/Miscellanioususos
 * For hydrox cat, cursor color is body color and cursor outline is eyes, if there's more than one of the same color give or take 5%, set a random color (recursion, have a separate array with whether the color is set or unset and recurse until all colors are set)
 * *(0.2.12)* Ability update!
-    * Regular Escort can Suplex
-    * Bombs do explosive punches (Brawler)
-    * Deflects weapons properly (sends them back to the sender) (Deflector)
-    * NONE-REWORK SOON(Escapist)
-    * Two rocks + one food pip = bomb, two spears + one food pip = fire spear (Railgunner)
-    * While in speeding state, sliding under enemy causes them to launch upwards (Speedster)
-    * NONE-TOO RECENT(Gilded)
+  * Regular Escort can Suplex
+  * Bombs do explosive punches (Brawler)
+  * Deflects weapons properly (sends them back to the sender) (Deflector)
+  * NONE-REWORK SOON(Escapist)
+  * Two rocks + one food pip = bomb, two spears + one food pip = fire spear (Railgunner)
+  * While in speeding state, sliding under enemy causes them to launch upwards (Speedster)
+  * NONE-TOO RECENT(Gilded)
 * *(0.2.11)* Fleshed Out Story (Part 2) Update
 * *(0.2.10)* Gilded. (another idea: Blast away the creatures for safety)
 * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
@@ -96,48 +96,117 @@
 * Increase Gilded's crafting speed as the karma cap increases
 * Add tutorial/info buttons next to each build in the remix settings for noobsbeginners to have a decent idea how to do Escort-ing
 * The Yippee button
-    * Hear the dev saying Yip- or Yippee whenever you press a button, unlocked by a secret code revealed only on April 1st EST
+  * Hear the dev saying Yip- or Yippee whenever you press a button, unlocked by a secret code revealed only on April 1st EST
 * Rework shank sound so it has less reverb
 * Hybrid builds! Theoretically expands the playable builds from 7 to 42 (and eventually 10 to 90)! Take two builds, and mash them together, with unique combo results!
 * New Build: Barbarian Escort
-    * Use creatures as shields or battering rams!
-        * Hold a live creature, keep it passified as you use them as a shield!
-        * Do a slide with a creature in hand to do a battering ram!
-        * Press down while falling to do a massive stomp!
-    * Fat. Very, VERY heavy! Rotund world here thy comes!
-    * Bonus health!
+  * Use creatures as shields or battering rams!
+    * Hold a live creature, keep it passified as you use them as a shield!
+    * Do a slide with a creature in hand to do a battering ram!
+    * Press down while falling to do a massive stomp!
+  * Fat. Very, VERY heavy! Rotund world here thy comes!
+  * Bonus health!
 * New Build: Power Escort
-    * Each arm has a power bar, which allows Power Escort to use telekinesis, shockwave, and lasers!
-        * Power recharges slowly, but gains bonus power on consumption of food
-        * Can pull the closest creature in front of Power Escort towards them (if not stopped will collide, resulting in a weak Speedster's crash-like effect)
-        * Can then blast the creature with a powerful cone-area blast
-        * When empty-handed, pressing throw will charge up a short range laser blast!
-    * Can use powers past the limit, but has an increasing percentage to backfire and break the power meter, which means on next cycle the power starts depleted
+  * Each arm has a power bar, which allows Power Escort to use telekinesis, shockwave, and lasers!
+    * Power recharges slowly, but gains bonus power on consumption of food
+    * Can pull the closest creature in front of Power Escort towards them (if not stopped will collide, resulting in a weak Speedster's crash-like effect)
+    * Can then blast the creature with a powerful cone-area blast
+    * When empty-handed, pressing throw will charge up a short range laser blast!
+  * Can use powers past the limit, but has an increasing percentage to backfire and break the power meter, which means on next cycle the power starts depleted
 * New Secret Unlockable Build: Unstable Escort
-    * Pray to RNGesus for the optimal outcome, as Unstable Escort speeds through the unforgiving world!
-    * Faster base speed compared to Speedster (though speedster's speed ability will always outpace Unstable
-    * Has a 0.5%~5% (based on hype) chance every second to trip (and a further 20%~50% of letting go of items)
-    * Throwing a weapon has a 20%~40% chance of it being melee (like Brawler), 75%~40% chance of regular throw, and 5%~20% chance of tossing the object
-    * Jumping is replaced with a blink, which is similar to Escapist's dash, except half the distance and has modified velocity
-        * first two blinks are always possible
-        * every blink after that has a 0.5^(blinks done so far - 1) chance of being available.
-        * there is a 20 frame window between each blink that the player is able to press jump to do a blink
-        * Pressing just jump (or the first jump) will always make Unstable blink upwards unless in zero G
-        * after the first jump (or in zero g), Unstable will blink towards the direction the player is holding
-        * each blink will propel the slugcat towards that direction, with each subsequent blink in the same direction amplifying the velocity (until reaching the speed that will cause the slugcat to get stunned upon coming into contact with a wall). Changing direction resets the velocity
-        * Each blink adds 2 (3 if malnourished) seconds to the cooldown, and upon ending the blink sequence, Unstable will go into cooldown where they will be exhausted
-    * While exhausted, Unstable cannot blink and has a further 50% chance on a successful throw of just tossing the object instead.
-    * Unlocking this build will require the completion of Escort's campaign
+  * Pray to RNGesus for the optimal outcome, as Unstable Escort speeds through the unforgiving world!
+  * Faster base speed compared to Speedster (though speedster's speed ability will always outpace Unstable
+  * Has a 0.5%~5% (based on hype) chance every second to trip (and a further 20%~50% of letting go of items)
+  * Throwing a weapon has a 20%~40% chance of it being melee (like Brawler), 75%~40% chance of regular throw, and 5%~20% chance of tossing the object
+  * Jumping is replaced with a blink, which is similar to Escapist's dash, except half the distance and has modified velocity
+    * first two blinks are always possible
+    * every blink after that has a 0.5^(blinks done so far - 1) chance of being available.
+    * there is a 20 frame window between each blink that the player is able to press jump to do a blink
+    * Pressing just jump (or the first jump) will always make Unstable blink upwards unless in zero G
+    * after the first jump (or in zero g), Unstable will blink towards the direction the player is holding
+    * each blink will propel the slugcat towards that direction, with each subsequent blink in the same direction amplifying the velocity (until reaching the speed that will cause the slugcat to get stunned upon coming into contact with a wall). Changing direction resets the velocity
+    * Each blink adds 2 (3 if malnourished) seconds to the cooldown, and upon ending the blink sequence, Unstable will go into cooldown where they will be exhausted
+  * While exhausted, Unstable cannot blink and has a further 50% chance on a successful throw of just tossing the object instead.
+  * Unlocking this build will require the completion of Escort's campaign
 * A secret code that says "I love you!" randomly thoughout a playthrough
 * Allow Escort (default only) to meet Spearmaster
 
 ### Dead
 * Unique sprites for each build
-    * Brawler: Painted Violet. May or may not get a monocle
-    * Deflector: Painted purple, gets glow-in-the-dark leg bracelets that cause a light trace (like Tron or something)
-    * Escapist: Painted sea green. Has different eyes (markings merged)
-    * Railgunner: Painted cyan. Does away with the chest X, gains a (battery) meter on either side of their neck
-    * Speedster: Painted turquoise. Add an idle animation where they consume cheese
-    * Gilded: Painted dark blue. Add a flickering red karma 10 sprite behind the scug when they reach karma cap 9 (lore stuff)
+  * Brawler: Painted Violet. May or may not get a monocle
+  * Deflector: Painted purple, gets glow-in-the-dark leg bracelets that cause a light trace (like Tron or something)
+  * Escapist: Painted sea green. Has different eyes (markings merged)
+  * Railgunner: Painted cyan. Does away with the chest X, gains a (battery) meter on either side of their neck
+  * Speedster: Painted turquoise. Add an idle animation where they consume cheese
+  * Gilded: Painted dark blue. Add a flickering red karma 10 sprite behind the scug when they reach karma cap 9 (lore stuff)
 * Rework the pup so they actually behave correctly
 * Rework the pup (code) so it's more stable
+
+
+# More backlog
+## Direct from README
+* __Complete!__
+  * *dev* New Lidarz Dunk™!
+
+* __GENERAL TODO__
+  * Server missions
+  * Text for new Railgunner and Gilded options
+  * Redo build section
+  * Reduce horizontal pole flip height
+  * Make the mark damaged instead of starting off turned off
+  * Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding
+  * Make Escort eat meat twice as fast
+  * Overall balance overhaul
+  * Change easy mode such that it gives extra food pips
+  * Revamp the vengeful lizards
+  * 1.9.7b edition
+  * Migrate to inbuilt guardian
+* __Art TODO__
+  * Implement the new sprites
+  * Redraw the main menu Escort (so it stops looking so blurry)
+* __Default TODO__
+  * Give 'em ol' Brawler's buffed rock hit
+  * Bubbleweed on jump rather than passive, give stronger boost
+  * Reduce horizontal flip pole flip
+* __Brawler TODO__
+  * Brawler's explosive punch does not make brawler go flying (requires IL hook probably)
+  * Brawler's explosive punch kills him in water for some reason, maybe due to the force?
+  * Lock Brawler's explosive punch behind an achievement
+  * Nerf Brawler's dropkick and slidestun and rock hit
+* __Deflector TODO__
+  * Fix Deflector deflecting bees (and add the option to have it back)
+  * Set Deflector's death by bite chance to 100% always
+* __Escapist TODO__
+  * Stabilize Escapist
+* __Railgunner TODO__
+  * Railgunners' dual spear goes through creatures
+  * ??? Railgunner bomb jumps are more controllable and doesn't stun
+  * Double flashbang causes shockwave on impact, double rock knocks back harder, double firecracker throws hard and activates instantly.
+  * More charge = faster projectile
+  * Glass cannon mode makes things ricochet a whole lot more
+  * Electric spear implementation
+* __Speedster TODO__
+  * Speedster can't stop running challenge implementation
+  * Bodyslam priority over boop
+* __Gilded TODO__
+  * Pause power increase or slow down drastically upon entering zero G mode
+* __Barbarian shit__
+  * make Barbarian's color nicer
+  * Barbarian creature shield
+  * Barbarian shield bash (slide with creature)
+  * Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
+  * Barbarian faster slide
+  * Barbarian timed instakill maul ability (SKILL ISSUE)
+* __Unstable shit__
+  * Homing kick if dashing down towards the closest target
+  * More dashes, the stronger the kick
+  * Sliding button input does a slide-dash
+  * Decrease dash length
+  * Increase next dash rate (50% -> 75%)
+  * Change sound to (sampling real world sounds hold on)
+  * Backflipping allows 8 directions instead of 4 and increases first (after initial jump) length
+* __Railgunner sightseer (do at home)__
+  * Use the crosshair to indicate if the creature is in Railgunner's range
+  * Check room every second (while dual-wielding) if any creature is in range (horizontal line) and figure out how to take advantage of slugcat's vision
+  * If creature is outside camera range, then use an arrow to indicate off screen target
+  * Railgunner screenpeek
