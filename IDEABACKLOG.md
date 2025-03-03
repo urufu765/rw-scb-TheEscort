@@ -146,7 +146,8 @@
 # More backlog
 ## Direct from README
 * __Complete!__
-  * *dev* New Lidarz Dunk™!
+  * *0.4.0.5.dev06* New Lidarz Dunk™!
+  * *0.4.0.6.dev07* Make Escort eat meat twice as fast
 
 * __GENERAL TODO__
   * Server missions
@@ -155,7 +156,6 @@
   * Reduce horizontal pole flip height
   * Make the mark damaged instead of starting off turned off
   * Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding
-  * Make Escort eat meat twice as fast
   * Overall balance overhaul
   * Change easy mode such that it gives extra food pips
   * Revamp the vengeful lizards

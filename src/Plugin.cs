@@ -496,6 +496,7 @@ partial class Plugin : BaseUnityPlugin
             IL.MoreSlugcats.Bullet.HitSomething += Escort_BulletHit;
             IL.Spear.HitSomething += Escort_SpearHit;
             IL.ScavengerBomb.HitSomething += Escort_BombHit;
+            IL.Player.EatMeatUpdate += Consumption.Escort_EatMeatFaster;
             // IL.FirecrackerPlant.Explode;
         }
         catch (Exception err)

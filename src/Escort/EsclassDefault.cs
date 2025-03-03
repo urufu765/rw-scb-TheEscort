@@ -1207,14 +1207,6 @@ namespace TheEscort
                 orig(self, eu);
                 return;
             }
-            /* Eat meat faster?
-            int n = 0;
-            if ((self.grasps[0] == null || !(self.grasps[0].grabbed is Creature)) && self.grasps[1] != null && self.grasps[1].grabbed is Creature){
-                n = 1;
-            }
-            if (self.input[0].pckp && self.grasps[n] != null && self.grasps[n].grabbed is Creature && self.CanEatMeat(self.grasps[n].grabbed as Creature) && (self.grasps[n].grabbed as Creature).Template.meatPoints > 1){
-                //self.EatMeatUpdate(n);
-            }*/
             orig(self, eu);
             try
             {
