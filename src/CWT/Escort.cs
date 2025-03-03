@@ -655,7 +655,7 @@ namespace TheEscort
             EscortGD(player);
             EscortNE();
             EscortUS();
-            EscortBB(player);
+            EscortCQ(player);
         }
 
 

@@ -76,7 +76,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) Esclass_SS_Tick(self, ref e);
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
-            if (e.Barbarian) Esclass_BB_Tick(self, ref e);
+            if (e.Conqueror) Esclass_CQ_Tick(self, ref e);
             if (e.Unstable) Esclass_US_Tick(self, ref e);
 
             // Dropkick damage cooldown
@@ -299,7 +299,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) Esclass_SS_Update(self, ref e);
             if (e.Gilded) Esclass_GD_Update(self, ref e);
-            if (e.Barbarian) Esclass_BB_Update(self, ref e);
+            if (e.Conqueror) Esclass_CQ_Update(self, ref e);
             if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
@@ -1208,6 +1208,7 @@ namespace TheEscort
                 return;
             }
             orig(self, eu);
+            if (e.Conqueror) Esclass_CQ_GrabUpdate(self, ref e);
             try
             {
                 if (e.Railgunner) Esclass_RG_GrabUpdate(self, ref e);
@@ -1515,6 +1516,10 @@ namespace TheEscort
                 {
                     //return false;
                 }
+                if (e.Conqueror && obj is Creature cret && Esclass_CQ_HeavyCarry(self, cret))
+                {
+                    return false;
+                }
 
                 //Ebug(self, "Heavycarry Triggered!");
                 if (obj.TotalMass <= self.TotalMass * ratioed)
@@ -1598,6 +1603,10 @@ namespace TheEscort
                 {
                     return Player.ObjectGrabability.BigOneHand;
                 }
+                if (e.Conqueror && obj is Creature crt && Esclass_CQ_Grabbability(self, crt, ref e, out Player.ObjectGrabability objGrab))
+                {
+                    return objGrab;
+                }
 
                 if (dW && e.dualWield)
                 {
@@ -1671,6 +1680,17 @@ namespace TheEscort
                     if (e.NewEscapist)
                     {
                         biteMult -= 0.45f;
+                    }
+                    if (e.Conqueror)
+                    {
+                        if (e.ConInviParryCD <= 0)
+                        {
+                            biteMult = 10000f;
+                        }
+                        else
+                        {
+                            biteMult -= 0.25f;
+                        }
                     }
                     if (Eshelp_ParryCondition(self) || (!e.Deflector && self.animation == Player.AnimationIndex.RocketJump))
                     {
@@ -1758,6 +1778,18 @@ namespace TheEscort
             {
                 e.ParrySuccess = true;
             }
+            
+            // Conqueror special ABSOLUTE UNIT parry
+            if (e.Conqueror && e.ConInviParryCD <= 0 && type == Creature.DamageType.Bite && source?.owner is Creature cret)
+            {
+                cret.LoseAllGrasps();
+                cret.Violence(player.mainBodyChunk, null, cret.mainBodyChunk, null, Creature.DamageType.Electric, 0, 40f);
+                Ebug(player, "Conqueror parry condition!", 2);
+                e.ConInviParryCD = 2400;
+                e.ParrySuccess = true;
+            }
+
+
             if (Eshelp_ParryCondition(player))
             {
                 // Parryslide (parry module)
@@ -2128,7 +2160,11 @@ namespace TheEscort
             {
                 return true;
             }
-            if (obj != null && obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown)
+            if (e.Conqueror && obj is Creature cret && Esclass_CQ_CanConqPickThisUp(self, cret, ref e))
+            {
+                return true;
+            }
+            if (obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown)
             {
                 Ebug(self, "Hehe, yoink!");
                 if (self.input[0].pckp && !self.input[1].pckp)

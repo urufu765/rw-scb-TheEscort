@@ -17,6 +17,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev06** Reduced meat consumption to 0.5, implemented new lizard dunk
     * **dev07** Made Escort eat meat twice as fast
     * **dev08** Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding (lizors just push the player lol)
+    * **dev09** Barbarian -> Conquerer. Conqueror can now grab creatures and use them as a shield
     * *dev* Implement the new sprites
 
   * **0.4.0.4 [0.3.3.2]** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient

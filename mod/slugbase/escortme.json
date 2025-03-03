@@ -18,7 +18,7 @@
 		"lung_capacity": [2.0, 3.0],
 		"loudness": [2, 1.5],
 		"alignments": {
-			"Lizards": { "like": 1, "strength": 0.98 },
+			"Lizards": { "like": -1, "strength": -0.98 },
 			"Cicadas": { "like": -1, "locked": true },
 			"GarbageWorms": { "like": -1, "locked": true },
 			"Jetfish": { "like": -1, "strength": 0.7 },
@@ -122,6 +122,6 @@
 		"theescort/gilded/pipradius": 12,
 		"theescort/gilded/pipposition": [0, 0],
 
-		"theescort/barbarian/nooverlug": false
+		"theescort/conquerer/nooverlug": false
 		}
 }

@@ -162,6 +162,7 @@
   * 1.9.7b edition
   * Migrate to inbuilt guardian
   * When passing by the karma 10 symbol, briefly boost hype
+  * Nerf rollpounce
 * __Art TODO__
   * Implement the new sprites
   * Redraw the main menu Escort (so it stops looking so blurry)
@@ -186,6 +187,7 @@
   * More charge = faster projectile
   * Glass cannon mode makes things ricochet a whole lot more
   * Electric spear implementation
+  * Only shoots one spear, the other spear explodes into pieces
 * __Speedster TODO__
   * Speedster can't stop running challenge implementation
   * Bodyslam priority over boop
@@ -198,6 +200,10 @@
   * Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
   * Barbarian faster slide
   * Barbarian timed instakill maul ability (SKILL ISSUE)
+  * Can't swallow
+  * Prioritise body over weapon
+  * Prevent Barbarian from turning
+  * Maul protection
 * __Unstable shit__
   * Homing kick if dashing down towards the closest target
   * More dashes, the stronger the kick

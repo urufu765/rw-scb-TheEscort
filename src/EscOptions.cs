@@ -99,14 +99,14 @@ namespace TheEscort
         private readonly float xpadding = 35f;
         private readonly float tpadding = 6f;
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
-        public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
+        public int buildDiv = -7;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
         private static readonly string VERSION = "0.3.3";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- No More Playable Socks(RIP).<LINE>- Railgunner max overcharge limit now configurable.<LINE>- Gilded max power capacity now configurable.<LINE>- Rolling longer will make the dropkick higher.<LINE>- Vertical poleflip is buffed (Especially once initiated from a flip)<LINE>- CW iterator dialogue support + custom dialogue (by Myrmice!)<LINE>- New builtin Escort Server ChallengeTM (secret code soon to release)<LINE>- Fresh new thumbnail.");
+                "- New Build: Conqueror!<LINE>Dominate the wild lands with brute strength and power!<LINE><LINE>-Nerfed meat nutritional value<LINE>- Meat consumption is almost twice as fast<LINE>- First ending now somewhat properly works<LINE>- .");
             }
         }
 
@@ -212,7 +212,8 @@ namespace TheEscort
                 new ListItem("escapist", Translate("Escapist"), -3),
                 new ListItem("railgunner", Translate("Railgunner"), -4),
                 new ListItem("speedster", Translate("Speedster"), -5),
-                new ListItem("gilded", Translate("Gilded"), -6)
+                new ListItem("gilded", Translate("Gilded"), -6),
+                new ListItem("conqueror", Translate("Conqueror"), -7)
             };
             this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
             this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
