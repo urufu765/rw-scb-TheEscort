@@ -16,7 +16,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * **dev05** I'm back b__ches!
     * **dev06** Reduced meat consumption to 0.5, implemented new lizard dunk
     * **dev07** Made Escort eat meat twice as fast
-    * *dev* Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding
+    * **dev08** Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding (lizors just push the player lol)
     * *dev* Implement the new sprites
 
   * **0.4.0.4 [0.3.3.2]** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient

@@ -568,6 +568,8 @@ public class EscortRoomScript
         /// </summary>
         StartController startController;
 
+        CreatureController creatureController;
+
         /// <summary>
         /// Cutscene timer (for each stage/phase)
         /// </summary>
@@ -650,6 +652,23 @@ public class EscortRoomScript
             }
         }
 
+        public class CreatureController : Player.PlayerController
+        {
+            private readonly EscortEndingA owner;
+
+            public CreatureController(EscortEndingA owner)
+            {
+                this.owner = owner;
+            }
+
+            public override Player.InputPackage GetInput()
+            {
+                return new Player.InputPackage(false, Options.ControlSetup.Preset.None, owner.CretXd(), 0, owner.CretJ(), false, false, false, false);
+            }
+        }
+
+        public bool tuchPlayer = false;
+
 
         /// <summary>
         /// Initialization of cutscene object
@@ -693,6 +712,7 @@ public class EscortRoomScript
                             this.room.game.cameras[0].followAbstractCreature = this.Playr.abstractCreature;
                         }
                         this.startController = new StartController(this);  // Create controller
+                        this.creatureController = new CreatureController(this);
                         this.Playr.controller = this.startController;  // Attach controller to the player
 
                         // Make player let go of everything
@@ -729,10 +749,13 @@ public class EscortRoomScript
                         if (uad is Creature c and not Player)
                         {
                             creatures.Add(c.abstractCreature);
+                            c.abstractCreature.controlled = true;
+                            c.freezeControls = true;
                         }
                         else if (uad is Player p && p.Template.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)
                         {
                             creatures.Add(p.abstractCreature);
+                            p.controller = creatureController;
                         }
                     }
                     if (Playr is not null)
@@ -751,16 +774,27 @@ public class EscortRoomScript
             }
             if (this.phase == Phase.CreatureMove || this.phase == Phase.Fade)
             {
+                // Breakdown time
+                /*
+                1. Set controlled to creatures
+                2. Check coordinates
+                3. Check player collision (to move past the player)
+                4. Make creature move
+                5. Profit!
+                */
                 cutsceneTimer++;
                 foreach(AbstractCreature ac in creatures)
                 {
-
-                    if (ac.abstractAI?.RealAI is not null)
+                    ac.realizedCreature.inputWithoutDiagonals = new Player.InputPackage?(new Player.InputPackage(false, Options.ControlSetup.Preset.None, CretX(), CretY(), false, false, false, false, false));
+                    ac.realizedCreature.inputWithDiagonals = new Player.InputPackage?(new Player.InputPackage(false, Options.ControlSetup.Preset.None, CretXd(), CretY(), false, false, false, false, false));
+                    if (ac.realizedCreature.firstChunk.pos.x > Playr?.mainBodyChunk.pos.x - 10 && ac.realizedCreature.firstChunk.pos.x < Playr?.mainBodyChunk.pos.x + 10 && ac.realizedCreature.firstChunk.pos.y > Playr?.mainBodyChunk.pos.y - 20 && ac.realizedCreature.firstChunk.pos.y < Playr?.mainBodyChunk.pos.y + 20)
                     {
-                        ac.abstractAI.RealAI.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                        tuchPlayer = true;
                     }
-                    //ac.abstractAI?.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
-                    //ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                    else
+                    {
+                        tuchPlayer = false;
+                    }
                 }
                 room.roomSettings.GetEffect(RoomSettings.RoomEffect.Type.VoidMelt).amount = Mathf.Lerp(voidMeltInit, 1, Mathf.InverseLerp(0, 400, cutsceneTimer));
                 if (this.phase == Phase.CreatureMove)
@@ -838,6 +872,43 @@ public class EscortRoomScript
                 return 1;
             }
             return 0;
+        }
+
+
+        public int CretXd()
+        {
+            if (phase == Phase.CreatureMove || phase == Phase.Fade)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int CretX()
+        {
+            if (!tuchPlayer && (phase == Phase.CreatureMove || phase == Phase.Fade))
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int CretY()
+        {
+            if (phase == Phase.CreatureMove || phase == Phase.Fade)
+            {
+                if (tuchPlayer)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            return 0;
+        }
+
+        public bool CretJ()
+        {
+            return tuchPlayer;
         }
     }
 

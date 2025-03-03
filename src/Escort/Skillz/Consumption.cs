@@ -1,12 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SlugBase.Features;
-using UnityEngine;
-using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
-using static TheEscort.Plugin;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 

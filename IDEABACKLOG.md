@@ -147,7 +147,8 @@
 ## Direct from README
 * __Complete!__
   * *0.4.0.5.dev06* New Lidarz Dunk™!
-  * *0.4.0.6.dev07* Make Escort eat meat twice as fast
+  * *0.4.0.5.dev07* Make Escort eat meat twice as fast
+  * *0.4.0.5.dev08* Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding (works for slugpup, not so much on a lizor)
 
 * __GENERAL TODO__
   * Server missions
@@ -155,12 +156,12 @@
   * Redo build section
   * Reduce horizontal pole flip height
   * Make the mark damaged instead of starting off turned off
-  * Redo the ending by controlling the creatures manually instead of trying to lead them using pathfinding
   * Overall balance overhaul
   * Change easy mode such that it gives extra food pips
   * Revamp the vengeful lizards
   * 1.9.7b edition
   * Migrate to inbuilt guardian
+  * When passing by the karma 10 symbol, briefly boost hype
 * __Art TODO__
   * Implement the new sprites
   * Redraw the main menu Escort (so it stops looking so blurry)
