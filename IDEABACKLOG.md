@@ -188,6 +188,7 @@
   * Glass cannon mode makes things ricochet a whole lot more
   * Electric spear implementation
   * Only shoots one spear, the other spear explodes into pieces
+  * Make stone a universal do-er thing
 * __Speedster TODO__
   * Speedster can't stop running challenge implementation
   * Bodyslam priority over boop
@@ -199,11 +200,11 @@
   * Barbarian shield bash (slide with creature)
   * Barbarian powerful but inaccurate weapons (jank: keep reference of thrown weapon, call orig, then make the direction spread randomly with random velocity added)
   * Barbarian faster slide
-  * Barbarian timed instakill maul ability (SKILL ISSUE)
   * Can't swallow
   * Prioritise body over weapon
   * Prevent Barbarian from turning
   * Maul protection
+  * Creature throw
 * __Unstable shit__
   * Homing kick if dashing down towards the closest target
   * More dashes, the stronger the kick
