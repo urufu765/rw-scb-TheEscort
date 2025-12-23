@@ -26,7 +26,7 @@ namespace TheEscort;
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
-    /// Static instance of the plugin class to allow public access to things that require this class
+    /// Static instance of the plugin class to allow public access to things that require this class`
     /// </summary>
     public static Plugin ins;
 
@@ -361,7 +361,7 @@ partial class Plugin : BaseUnityPlugin
         On.Lizard.ctor += Escort_Lizard_ctor;
 
         On.Room.Loaded += Escort_Hipbone_Replacement;
-        On.RoomSettings.Load += Escort_Transplant;
+        On.RoomSettings.Load_Name += Escort_Transplant;
 
         On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
         On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -437,9 +437,9 @@ partial class Plugin : BaseUnityPlugin
         On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
 
-        On.SlugcatStats.SpearSpawnModifier += Escort_SpearSpawnMod;
-        On.SlugcatStats.SpearSpawnElectricRandomChance += Escort_EleSpearSpawnChance;
-        On.SlugcatStats.SpearSpawnExplosiveRandomChance += Escort_ExpSpearSpawnChance;
+        On.SlugcatStats.SpearSpawnModifier_Name_float += Escort_SpearSpawnMod;
+        On.SlugcatStats.SpearSpawnElectricRandomChance_Name += Escort_EleSpearSpawnChance;
+        On.SlugcatStats.SpearSpawnExplosiveRandomChance_Name += Escort_ExpSpearSpawnChance;
         On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
         On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
         On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
@@ -605,9 +605,9 @@ partial class Plugin : BaseUnityPlugin
                 //escPatch_DMS = true;
                 Ebug("Found DMS Version: " + DMS_Mod.version, 1);
                 string[] dmsVer = DMS_Mod.version.Split('.');
-
+                
                 // Newer than 1.3?
-                if (int.TryParse(dmsVer[0], out int verMaj) && verMaj >= 1 && int.TryParse(dmsVer[1], out int verMin) && verMin >= 3)
+                if (int.TryParse(dmsVer[0], out int verMaj) && int.TryParse(dmsVer[1], out int verMin) && (verMaj == 1 && verMin >= 3 || verMaj > 1))
                 {
                     Ebug("Applying patch!...", 1);
                     Espatch_DMS(verMaj, verMin);
@@ -2026,7 +2026,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifies the explosive spear chance
     /// </summary>
-    private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance orig, SlugcatStats.Name index)
+    private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Name orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try
@@ -2058,7 +2058,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifes the electrical spear spawn chance
     /// </summary>
-    private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance orig, SlugcatStats.Name index)
+    private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Name orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try
@@ -2090,7 +2090,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifies the generic spear spawn chance
     /// </summary>
-    private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier orig, SlugcatStats.Name index, float originalSpearChance)
+    private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Name_float orig, SlugcatStats.Name index, float originalSpearChance)
     {
         ins.L().SetF();
         try
@@ -2212,7 +2212,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Loads custom room settings when playing Escort campaign
     /// </summary>
-    private bool Escort_Transplant(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name index)
+    private bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try

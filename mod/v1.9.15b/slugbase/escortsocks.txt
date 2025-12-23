@@ -1,0 +1,37 @@
+{
+	"id": "EscortSocks",
+	"name": "The Child",
+	"description": "you shouldn't be seeing this >:( <LINE>... although there may be a secret to unlocking this campaign earlier than intended...<LINE>Shh! Keep quiet!",
+	"features": {
+		"color" : "ede5fa",
+		"custom_colors" : [
+			{"name": "Body", "story": "ede5fa", "arena": ["ffffff", "ffff73", "ff7373", "002e78"]},
+			{"name": "Eyes", "story": "2f2f2f", "arena": ["2f2f2f", "2f2f2f", "2f2f2f", "d0d0d0"]}		
+		],
+		"weight": [0.47, 0.35],
+		"crouch_stealth": [0.7, 0.9],
+		"lung_capacity": 2.5,
+		"loudness": [0.5, 0.4],
+		"alignments": {
+			"Scavengers": { "like": 0.5, "strength": 0.85 }
+		},
+		"diet": {
+			"base": "Gourmand",
+			"corpses": 0.25,
+			"plants": 1
+		},
+		"karma": 4,
+		"karma_cap": 9,
+		"start_room": ["SB_TOPSIDE", "SU_CAVE01"],
+		"food_min": 3,
+		"food_max": 6,
+		"world_state": "Artificer",
+		"timeline_before": "Artificer",
+		"the_mark": true,
+		"select_menu_scene": "EsTemp",
+		"select_menu_scene_ascended": "EsTemp",
+		"sleep_scene": "Sleep_EscortSocks",
+
+		"thesocks/replacegrapple": true
+		}
+}

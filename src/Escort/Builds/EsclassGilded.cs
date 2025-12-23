@@ -517,7 +517,7 @@ namespace TheEscort
                             spear?.Destroy();
                             fireEgg?.Destroy();
                             Ebug(self, "Destroy");
-                            AbstractPhysicalObject apo = new(self.abstractCreature.world, MoreSlugcatsEnums.AbstractObjectType.SingularityBomb, null, wPos, self.room.game.GetNewID());
+                            AbstractPhysicalObject apo = new(self.abstractCreature.world, DLCSharedEnums.AbstractObjectType.SingularityBomb, null, wPos, self.room.game.GetNewID());
                             self.room.abstractRoom.AddEntity(apo);
                             apo.RealizeInRoom();
                             apo.realizedObject.firstChunk.HardSetPosition(posi);

@@ -150,7 +150,7 @@ namespace TheEscort
                             switch (self.player.playerState.playerNumber)
                             {
                                 case 0:
-                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && !nonArena)
+                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != DLCSharedEnums.GameTypeID.Challenge && !nonArena)
                                     {
                                         c = new Color(0.2f, 0.6f, 0.77f);
                                     }

@@ -1,0 +1,14 @@
+{
+	"id": "Sleep_EscortMeAndSocks",
+	"scene_folder": "scenes/sleep screen - escort",
+	"images": [
+		{ "name": "sleep screen - escortsocksandme - flat", "pos": [0, 0], "depth": -1.0, "flatmode": true},
+		{ "name": "sleep - 5", "pos": [672, 236], "depth": 3.6},
+		{ "name": "sleep - 4", "pos": [674, 138], "depth": 3.2, "shader": "Lighten" },
+		{ "name": "sleep - 3", "pos": [710, 120], "depth": 3.1},
+		{ "name": "sleep - 2 - escortme", "pos": [769, 100], "depth": 2.6},
+		{ "name": "sleep - 2 - escortsocks", "pos": [860, 66], "depth": 2.5, "shader": "Basic"},
+		{ "name": "sleep - 1", "pos": [486, -54], "depth": 2.1}
+	],
+	"idle_depths": [ 1.1, 4.5 ]
+}

@@ -12,7 +12,7 @@ namespace TheEscort;
 
 public static class EscortHUD
 {
-    public static readonly GameFeature<float[]> hudLocations = GameFloats("theescort/hudloc");
+    // public static readonly GameFeature<float[]> hudLocations = GameFloats("theescort/hudloc");
 
     public static void Attach()
     {

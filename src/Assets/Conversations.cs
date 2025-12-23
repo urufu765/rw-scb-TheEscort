@@ -1,3 +1,4 @@
+using RWCustom;
 using SlugBase.Features;
 using System;
 using System.Collections.Generic;
@@ -397,30 +398,18 @@ namespace TheEscort
             //On.SLOracleBehaviorHasMark.MoonConversation.AddEvents += Escort_Meets_Moon;
         }
 
-        private static void Escort_Not_Interrupt_Pearl(On.HUD.DialogBox.orig_Interrupt orig, HUD.DialogBox self, string text, int extraLinger)
-        {
-            if (text is "Yes, help yourself. They are not edible.")
-            {
-                return;
-            }
-            else
-            {
-                orig(self, text, extraLinger);
-            }
-        }
-
         private static void Eshelp_Converse(Conversation talkingTo, ref List<Conversation.DialogueEvent> conversation, int delay = 0, int sustain = 0, params string[] wa)
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, delay, talkingTo.interfaceOwner.rainWorld.inGameTranslator.Translate(wawa), sustain));
+                conversation.Add(new Conversation.TextEvent(talkingTo, delay, Custom.rainWorld.inGameTranslator.Translate(wawa), sustain));
             }
         }
         private static void Eshelp_Converse(Conversation talkingTo, ref List<Conversation.DialogueEvent> conversation, params string[] wa)
         {
             foreach (string wawa in wa)
             {
-                conversation.Add(new Conversation.TextEvent(talkingTo, 0, talkingTo.interfaceOwner.rainWorld.inGameTranslator.Translate(wawa), 0));
+                conversation.Add(new Conversation.TextEvent(talkingTo, 0, Custom.rainWorld.inGameTranslator.Translate(wawa), 0));
             }
         }
 

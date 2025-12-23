@@ -47,7 +47,6 @@
 		"gameescort/realtime_edits": false,
 
 		"theescort/converse": true,
-		"theescort/hudloc": [0, 80, -40],
 
 		"theescort/insta_hype": false,
 		"theescort/better_crawl": [3.5, 4.3, 3.7],

@@ -4,6 +4,28 @@
         <name>SlugBase</name>
     </assembly>
     <members>
+        <member name="T:SlugBase.Assets.CustomDreams">
+            <summary>
+            Helpers for adding custom dreams.
+            </summary>
+        </member>
+        <member name="M:SlugBase.Assets.CustomDreams.SetDreamScene(DreamsState.DreamID,Menu.MenuScene.SceneID)">
+            <summary>
+            Registers a new dream and its associated scene.
+            </summary>
+            <param name="dream">The dream ID to add.</param>
+            <param name="scene">The scene ID to display when the dream occurs.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dream"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:SlugBase.Assets.CustomDreams.QueueDream(StoryGameSession,DreamsState.DreamID)">
+            <summary>
+            Set the dream scene that will display when the player hibernates next.
+            </summary>
+            <param name="storySession">The current story game session.</param>
+            <param name="dreamID">The id of the dream to queue.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dreamID"/> or <paramref name="storySession"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="dreamID"/> wasn't registered with <see cref="M:SlugBase.Assets.CustomDreams.SetDreamScene(DreamsState.DreamID,Menu.MenuScene.SceneID)"/>.</exception>
+        </member>
         <member name="T:SlugBase.Assets.CustomScene">
             <summary>
             A scene added by SlugBase.
@@ -13,6 +35,13 @@
             <summary>
             Stores all registered <see cref="T:SlugBase.Assets.CustomScene"/>s.
             </summary>
+        </member>
+        <member name="M:SlugBase.Assets.CustomScene.SetSelectMenuScene(SaveState,Menu.MenuScene.SceneID)">
+            <summary>
+            Set or unset the select menu scene override for a save state.
+            </summary>
+            <param name="save">The save state to modify.</param>
+            <param name="id">The new select menu scene ID, or <see langword="null"/> to remove the override.</param>
         </member>
         <member name="P:SlugBase.Assets.CustomScene.ID">
             <summary>
@@ -58,6 +87,11 @@
             <para>Only effective when used on the slugcat select screen.</para>
             </summary>
         </member>
+        <member name="P:SlugBase.Assets.CustomScene.OverrideDream">
+            <summary>
+            If a scene is used as a dream, should it replace any current dream.
+            </summary>
+        </member>
         <member name="T:SlugBase.Assets.CustomScene.Image">
             <summary>
             An image from a <see cref="T:SlugBase.Assets.CustomScene"/>.
@@ -101,6 +135,179 @@
             Creates a new image from JSON.
             </summary>
             <param name="json">The JSON data to load from.</param>
+        </member>
+        <member name="T:SlugBase.Assets.CustomSlideshow">
+            <summary>
+            An intro cutscene added by SlugBase.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.Registry">
+            <summary>
+            Stores all registered <see cref="T:SlugBase.Assets.CustomSlideshow"/>s.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.ID">
+            <summary>
+            This scene's unique ID.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.SlideshowFolder">
+            <summary>
+            A path relative to StreamingAssets to load images from.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.Music">
+            <summary>
+            The music to play during a custom intro or outro
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.Scenes">
+            <summary>
+            An array of images and other data in this scene.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.Process">
+            <summary>
+            The process to go to after playing the slideshow
+            </summary>
+        </member>
+        <member name="T:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene">
+            <summary>
+            A scene from a <see cref="T:SlugBase.Assets.CustomSlideshow"/> that holds data about when to appear and what images to use for what amount of time.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene.StartAt">
+            <summary>
+            The time that this scene will start fading in, in seconds.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene.FadeInDoneAt">
+            <summary>
+            The time that this image will finish fading in, in seconds.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene.FadeOutStartAt">
+            <summary>
+            The time that this image will start fading out at, in seconds.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene.CameraMovement">
+            <summary>
+            The positions that the camera will focus on when playing this scene.
+            </summary>
+            <remarks>
+            X and Y represent the pixel position of the camera, while Z represents the focus depth.
+            </remarks>
+        </member>
+        <member name="M:SlugBase.Assets.CustomSlideshow.CustomSlideshowScene.#ctor(SlugBase.JsonObject)">
+            <summary>
+            Creates a new Scene from JSON.
+            </summary>
+            <param name="json">The JSON data to load from.</param>
+        </member>
+        <member name="T:SlugBase.Assets.CustomSlideshow.SlideshowMusic">
+            <summary>
+            Data about a song from a <see cref="T:SlugBase.Assets.CustomSlideshow"/>.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.SlideshowMusic.Name">
+            <summary>
+            The file name of the sound to use. This comes from the `StreamingAssets/music/songs` folder.
+            </summary>
+        </member>
+        <member name="P:SlugBase.Assets.CustomSlideshow.SlideshowMusic.FadeIn">
+            <summary>
+            The duration of the song's fade in, in seconds.
+            </summary>
+        </member>
+        <member name="M:SlugBase.Assets.CustomSlideshow.SlideshowMusic.#ctor(SlugBase.JsonObject)">
+            <summary>
+            Load information about a slideshow song from JSON data.
+            </summary>
+            <param name="json">The JSON data to load from.</param>
+        </member>
+        <member name="T:SlugBase.CustomTimeline">
+            <summary>
+            A timeline added by SlugBase.
+            </summary>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.Registry">
+            <summary>
+            Stores all registered <see cref="T:SlugBase.CustomTimeline"/>s.
+            </summary>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.OrderedTimelines">
+            <summary>
+            All registered <see cref="T:SlugBase.CustomTimeline"/>s to be added to <see cref="M:SlugcatStats.SlugcatTimelineOrder"/>.
+            </summary>
+            <remarks>
+            This list is topologically sorted. Each timeline may reference those ahead of it in <see cref="P:SlugBase.CustomTimeline.InsertBefore"/> or <see cref="P:SlugBase.CustomTimeline.InsertAfter"/>.
+            </remarks>
+        </member>
+        <member name="M:SlugBase.CustomTimeline.ReloadTimelineOrder">
+            <summary>
+            Reload the order of custom timelines text time <see cref="P:SlugBase.CustomTimeline.OrderedTimelines"/> is accessed.
+            </summary>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.ID">
+            <summary>
+            This timeline's unique ID.
+            </summary>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.Base">
+            <summary>
+            An array of timelines this timeline inherits from.
+            </summary>
+            <remarks>
+            If a file specific to this timeline isn't found, these are checked in order before using the default.
+            </remarks>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.InsertBefore">
+            <summary>
+            The timeline that comes after this.
+            </summary>
+            <remarks>
+            When determining the order of timelines, this one will be inserted immediately before
+            the first registered element in <see cref="P:SlugBase.CustomTimeline.InsertBefore"/>.
+            </remarks>
+            <seealso cref="P:SlugBase.CustomTimeline.InsertAfter"/>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.InsertAfter">
+            <summary>
+            The timeline that comes before this.
+            </summary>
+            <remarks>
+            When determining the order of timelines, this one will be inserted immediately after
+            the first registered element in <see cref="P:SlugBase.CustomTimeline.InsertBefore"/>.
+            </remarks>
+            <seealso cref="P:SlugBase.CustomTimeline.InsertAfter"/>
+        </member>
+        <member name="P:SlugBase.CustomTimeline.Priorities">
+            <summary>
+            All valid options to use for timeline inheritance, starting with <see cref="P:SlugBase.CustomTimeline.ID"/> and continuing through <see cref="P:SlugBase.CustomTimeline.Base"/>.
+            This includes parent timelines from <see cref="T:SlugBase.CustomTimeline"/>s this inherits from.
+            </summary>
+        </member>
+        <member name="M:SlugBase.CustomTimeline.AddFlattenedPriorities(System.Collections.Generic.List{SlugcatStats.Timeline})">
+            <summary>
+            List all timelines this inherits from. Unlike <see cref="P:SlugBase.CustomTimeline.Priorities"/>,
+            this includes <see cref="P:SlugBase.CustomTimeline.Base"/> timelines from parents.
+            </summary>
+        </member>
+        <member name="M:SlugBase.CustomTimeline.InheritsFrom(SlugcatStats.Timeline)">
+            <summary>
+            Check if <paramref name="parent"/> is in the list of base timelines.
+            </summary>
+        </member>
+        <member name="M:SlugBase.CustomTimeline.GetTimelines(SlugBase.JsonAny)">
+            <summary>
+            Converts a string or list of strings to a list of timelines.
+            </summary>
+        </member>
+        <member name="M:SlugBase.CustomTimeline.GetTimeline(System.String)">
+            <summary>
+            Converts a string to a timeline, ignoring case.
+            </summary>
         </member>
         <member name="T:SlugBase.DataTypes.ColorSlot">
             <summary>
@@ -246,6 +453,24 @@
             </summary>
             <param name="playerGraphics">The player to get the color from.</param>
             <returns>The custom color, or <c>null</c> if it was not overridden via <see cref="F:SlugBase.Features.PlayerFeatures.CustomColors"/>.</returns>
+        </member>
+        <member name="M:SlugBase.DataTypes.PlayerColor.GetCustomColor(PlayerGraphics,System.String)">
+            <summary>
+            Gets a color from the "custom_colors" feature by name for the given SlugBase character graphics.
+            </summary>
+            <param name="playerGraphics">The player graphics to get the color of.</param>
+            <param name="name">The name of the custom color.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="playerGraphics"/> is not a <see cref="T:SlugBase.SlugBaseCharacter"/> instance, or does not have the "custom_colors" feature.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">No custom color was found matching <paramref name="name"/>.</exception>
+        </member>
+        <member name="M:SlugBase.DataTypes.PlayerColor.GetCustomColor(PlayerGraphics,System.Int32)">
+            <summary>
+            Gets a color from the "custom_colors" feature by index for the given SlugBase character graphics.
+            </summary>
+            <param name="playerGraphics">The player graphics to get the color of.</param>
+            <param name="index">The index of the custom color.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="playerGraphics"/> is not a <see cref="T:SlugBase.SlugBaseCharacter"/> instance, or does not have the "custom_colors" feature.</exception>
+            <exception cref="T:System.IndexOutOfRangeException"><paramref name="index"/> is out of range of the "custom_colors" list.</exception>
         </member>
         <member name="T:SlugBase.DataTypes.RepOverride">
             <summary>
@@ -560,6 +785,12 @@
         <member name="F:SlugBase.Features.GameFeatures.KarmaCap">
             <summary>"karma_cap": Initial karma cap.</summary>
         </member>
+        <member name="F:SlugBase.Features.GameFeatures.TheMark">
+            <summary>"the_mark": Start with mark of communication.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.TheGlow">
+            <summary>"the_glow": Start glowing.</summary>
+        </member>
         <member name="F:SlugBase.Features.GameFeatures.StartRoom">
             <summary>"start_room": Initial room, plus backups from highest to lowest priority.</summary>
         </member>
@@ -569,6 +800,9 @@
         <member name="F:SlugBase.Features.GameFeatures.HasDreams">
             <summary>"has_dreams": Whether or not to track dream state.</summary>
         </member>
+        <member name="F:SlugBase.Features.GameFeatures.UseDefaultDreams">
+            <summary>"use_default_dreams": Whether or not to show Survivor's dreams.</summary>
+        </member>
         <member name="F:SlugBase.Features.GameFeatures.CycleLengthMin">
             <summary>"cycle_length_min": Minimum cycle length in minutes.</summary>
         </member>
@@ -576,7 +810,7 @@
             <summary>"cycle_length_max": Maximum cycle length in minutes.</summary>
         </member>
         <member name="F:SlugBase.Features.GameFeatures.PermaUnlockGates">
-            <summary>"perma_unlock_gates": Maximum cycle length in minutes.</summary>
+            <summary>"perma_unlock_gates": Permanently unlock gates once used.</summary>
         </member>
         <member name="F:SlugBase.Features.GameFeatures.FoodMin">
             <summary>"food_min": Food needed to sleep.</summary>
@@ -599,8 +833,32 @@
         <member name="F:SlugBase.Features.GameFeatures.DeathScene">
             <summary>"death_scene": The scene for this slugcat when losing from a non-starvation death.</summary>
         </member>
+        <member name="F:SlugBase.Features.GameFeatures.IntroScene">
+            <summary>"intro_scene": Add an intro scene in the style of Survivor or Gourmand.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.OutroScene">
+            <summary>"outro_scene": Add an outro scene for a slugbase slugcat. </summary>
+        </member>
         <member name="F:SlugBase.Features.GameFeatures.WorldState">
-            <summary>"world_state": The character to use for creature spawns and room connections.</summary>
+            <summary>"world_state": The timeline to use for creature spawns and room connections.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.StoryRegions">
+            <summary>"story_regions": The new or removed story regions from an inherited world_state.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.TimelineBefore">
+            <summary>"timeline_before": The next timeline after this character's.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.TimelineAfter">
+            <summary>"timeline_after": The previous timeline before this character's.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.TitleCard">
+            <summary>"title_card": Add a intro titlecard to be randomly selected. Must be 1366x768 pixels big to display correctly.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.ExpeditionEnabled">
+            <summary>"expedition_enabled": Enable Expedition mode for this character.</summary>
+        </member>
+        <member name="F:SlugBase.Features.GameFeatures.ExpeditionDescription">
+            <summary>"expedition_description": Character description in Expedition mode.</summary>
         </member>
         <member name="T:SlugBase.Features.FeatureTypes">
             <summary>
@@ -622,6 +880,9 @@
         <member name="M:SlugBase.Features.FeatureTypes.PlayerString(System.String)">
             <summary>Create a player feature that takes one string.</summary>
         </member>
+        <member name="M:SlugBase.Features.FeatureTypes.PlayerSlugcatName(System.String)">
+            <summary>Create a player feature that takes a slugcat name.</summary>
+        </member>
         <member name="M:SlugBase.Features.FeatureTypes.PlayerInts(System.String,System.Int32,System.Int32)">
             <summary>Create a player feature that takes an array of integers.</summary>
         </member>
@@ -636,6 +897,9 @@
         </member>
         <member name="M:SlugBase.Features.FeatureTypes.PlayerStrings(System.String,System.Int32,System.Int32)">
             <summary>Create a player feature that takes an array of strings.</summary>
+        </member>
+        <member name="M:SlugBase.Features.FeatureTypes.PlayerSlugcatNames(System.String,System.Int32,System.Int32)">
+            <summary>Create a player feature that takes an array of slugcat names.</summary>
         </member>
         <member name="M:SlugBase.Features.FeatureTypes.PlayerColor(System.String)">
             <summary>Create a player feature that takes a color.</summary>
@@ -652,6 +916,9 @@
         <member name="M:SlugBase.Features.FeatureTypes.PlayerExtEnum``1(System.String)">
             <summary>Create a player feature that takes one enum value.</summary>
         </member>
+        <member name="M:SlugBase.Features.FeatureTypes.PlayerExtEnums``1(System.String,System.Int32,System.Int32)">
+            <summary>Create a player feature that takes an array of enum values.</summary>
+        </member>
         <member name="M:SlugBase.Features.FeatureTypes.GameInt(System.String)">
             <summary>Create a game feature that takes one integer.</summary>
         </member>
@@ -666,6 +933,9 @@
         </member>
         <member name="M:SlugBase.Features.FeatureTypes.GameString(System.String)">
             <summary>Create a game feature that takes one string.</summary>
+        </member>
+        <member name="M:SlugBase.Features.FeatureTypes.GameSlugcatName(System.String)">
+            <summary>Create a game feature that takes a slugcat name.</summary>
         </member>
         <member name="M:SlugBase.Features.FeatureTypes.GameInts(System.String,System.Int32,System.Int32)">
             <summary>Create a game feature that takes an array of integers.</summary>
@@ -682,6 +952,9 @@
         <member name="M:SlugBase.Features.FeatureTypes.GameStrings(System.String,System.Int32,System.Int32)">
             <summary>Create a game feature that takes an array of strings.</summary>
         </member>
+        <member name="M:SlugBase.Features.FeatureTypes.GameSlugcatNames(System.String,System.Int32,System.Int32)">
+            <summary>Create a game feature that takes an array of slugcat names.</summary>
+        </member>
         <member name="M:SlugBase.Features.FeatureTypes.GameColor(System.String)">
             <summary>Create a game feature that takes a color.</summary>
         </member>
@@ -696,6 +969,12 @@
         </member>
         <member name="M:SlugBase.Features.FeatureTypes.GameExtEnum``1(System.String)">
             <summary>Create a game feature that takes one enum value.</summary>
+        </member>
+        <member name="M:SlugBase.Features.FeatureTypes.GameExtEnums``1(System.String,System.Int32,System.Int32)">
+            <summary>Create a game feature that takes an array of enum values.</summary>
+        </member>
+        <member name="P:SlugBase.Features.WorldHooks.Separator">
+            <summary>Path.DirectorySeparatorChar but shorter, because it takes too much space</summary>
         </member>
         <member name="T:SlugBase.JsonAny">
             <summary>
@@ -756,7 +1035,10 @@
             <summary>Try casting to <see cref="T:System.String"/>, returning <c>null</c> on failure.</summary>
         </member>
         <member name="M:SlugBase.JsonAny.TryBool">
-            <summary>Try casting to <see cref="T:System.String"/>, returning <c>null</c> on failure.</summary>
+            <summary>Try casting to <see cref="T:System.Boolean"/>, returning <c>null</c> on failure.</summary>
+        </member>
+        <member name="M:SlugBase.JsonAny.IsNull">
+            <summary>Test if this value is <c>null</c>.</summary>
         </member>
         <member name="M:SlugBase.JsonAny.AsObject(SlugBase.JsonAny)">
             <summary>Cast to <see cref="T:SlugBase.JsonObject"/>.</summary>
@@ -800,7 +1082,7 @@
         </member>
         <member name="P:SlugBase.JsonAny.Type">
             <summary>
-            The type of this element. This may not be <see cref="F:SlugBase.JsonAny.Element.Invalid"/>.
+            The type of this element.
             </summary>
         </member>
         <member name="T:SlugBase.JsonAny.Element">
@@ -833,9 +1115,9 @@
             A boolean.
             </summary>
         </member>
-        <member name="F:SlugBase.JsonAny.Element.Invalid">
+        <member name="F:SlugBase.JsonAny.Element.Null">
             <summary>
-            A value that couldn't be parsed.
+            A <c>null</c> value.
             </summary>
         </member>
         <member name="T:SlugBase.JsonObject">
@@ -1020,6 +1302,78 @@
             <summary>Initializes a new instance of the <see cref="T:SlugBase.JsonException"/> class with a specified error message,
             a reference to the inner exception that is the cause of this exception, and a path to the invalid element.</summary>
         </member>
+        <member name="T:SlugBase.JsonConverter">
+            <summary>
+            Converts to and from JSON values.
+            </summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>Create a read-only <see cref="T:SlugBase.JsonObject"/> from a copy of <paramref name="obj"/>.</summary>
+            <remarks>If <c>null</c> values are valid, use <see cref="M:SlugBase.JsonConverter.ToJsonAny(System.Object)"/> instead.</remarks>
+            <exception cref="T:System.ArgumentException">An object in <paramref name="obj"/> could not be converted to JSON.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="obj"/> was <c>null</c>.</exception>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Collections.Generic.List{System.Object})">
+            <summary>Create a read-only <see cref="T:SlugBase.JsonList"/> from a copy of <paramref name="list"/>.</summary>
+            <remarks>If <c>null</c> values are valid, use <see cref="M:SlugBase.JsonConverter.ToJsonAny(System.Object)"/> instead.</remarks>
+            <exception cref="T:System.ArgumentException">An object in <paramref name="list"/> could not be converted to JSON.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="list"/> was <c>null</c>.</exception>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.String)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.String"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Boolean)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Boolean"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Double)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Double"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Single)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Single"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Int32)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Int32"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.UInt32)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.UInt32"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Int16)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Int16"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.UInt16)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.UInt16"/>.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.Int64)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.Int64"/>. <paramref name="value"/> is converted to a <see cref="T:System.Double"/>, so very large numbers may lose precision.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJson(System.UInt64)">
+            <summary>Create a <see cref="T:SlugBase.JsonAny"/> from a single <see cref="T:System.UInt64"/>. <paramref name="value"/> is converted to a <see cref="T:System.Double"/>, so very large numbers may lose precision.</summary>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToJsonAny(System.Object)">
+            <summary>Create a read-only <see cref="T:SlugBase.JsonAny"/> from a copy of <paramref name="value"/>.</summary>
+            <exception cref="T:System.ArgumentException">An object in the list or dictionary could not be converted to JSON.</exception>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToDictionary(SlugBase.JsonObject)">
+            <summary>
+            Create a mutable copy of a <see cref="T:SlugBase.JsonObject"/>.
+            </summary>
+            <param name="value">The <see cref="T:SlugBase.JsonObject"/> to copy.</param>
+            <returns>A copy of <paramref name="value"/> as a <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToList(SlugBase.JsonList)">
+            <summary>
+            Create a mutable copy of a <see cref="T:SlugBase.JsonList"/>.
+            </summary>
+            <param name="value">The <see cref="T:SlugBase.JsonList"/> to copy.</param>
+            <returns>A copy of <paramref name="value"/> as a <see cref="T:System.Collections.Generic.List`1"/>.</returns>
+        </member>
+        <member name="M:SlugBase.JsonConverter.ToObject(SlugBase.JsonAny)">
+            <summary>
+            Create a mutable copy of a <see cref="T:SlugBase.JsonAny"/>.
+            </summary>
+            <param name="value">The <see cref="T:SlugBase.JsonAny"/> to copy.</param>
+            <returns>A copy of <paramref name="value"/> as a <see cref="T:System.Collections.Generic.List`1"/>, <see cref="T:System.Collections.Generic.Dictionary`2"/>, <see cref="T:System.String"/>, <see cref="T:System.Boolean"/>, <see cref="T:System.Double"/>, or <c>null</c>.</returns>
+        </member>
         <member name="T:SlugBase.JsonParseException">
             <summary>
             Represents errors that occur when parsing JSON data.
@@ -1196,6 +1550,9 @@
         <member name="M:SlugBase.JsonUtils.ToBool(SlugBase.JsonAny)">
             <summary>Convert to <see cref="T:System.Boolean"/>.</summary>
         </member>
+        <member name="M:SlugBase.JsonUtils.ToSlugcatName(SlugBase.JsonAny)">
+            <summary>Convert to <see cref="T:SlugcatStats.Name"/>.</summary>
+        </member>
         <member name="M:SlugBase.JsonUtils.ToColor(SlugBase.JsonAny)">
             <summary>
             Convert to <see cref="T:UnityEngine.Color"/>.
@@ -1222,12 +1579,23 @@
         <member name="M:SlugBase.JsonUtils.ToStrings(SlugBase.JsonAny)">
             <summary>Convert list to <see cref="T:System.String"/>[].</summary>
         </member>
+        <member name="M:SlugBase.JsonUtils.ToSlugcatNames(SlugBase.JsonAny)">
+            <summary>Convert list to <see cref="T:SlugcatStats.Name"/>[].</summary>
+        </member>
         <member name="M:SlugBase.JsonUtils.ToEnum``1(SlugBase.JsonAny)">
             <summary>Convert to <see cref="T:System.Enum"/> value.</summary>
         </member>
         <member name="M:SlugBase.JsonUtils.ToExtEnum``1(SlugBase.JsonAny)">
             <summary>
             Convert to <see cref="T:ExtEnum`1"/> value.
+            </summary>
+            <remarks>
+            <see cref="P:ExtEnumBase.Index"/> will be -1 for values that could not be parsed.
+            </remarks>
+        </member>
+        <member name="M:SlugBase.JsonUtils.ToExtEnums``1(SlugBase.JsonAny)">
+            <summary>
+            Convert list to <see cref="T:ExtEnum`1"/>[].
             </summary>
             <remarks>
             <see cref="P:ExtEnumBase.Index"/> will be -1 for values that could not be parsed.
@@ -1240,6 +1608,89 @@
             <remarks>
             This may be a list of components or an object with "x" and "y" properties.
             </remarks>
+        </member>
+        <member name="T:SlugBase.SaveData.MinedSaveData">
+            <summary>
+            Holds all the slugcat associated data that is needed outside of loaded savestate
+            </summary>
+        </member>
+        <member name="F:SlugBase.SaveData.MinedSaveData.Data">
+            <summary>
+            Registry of all additional data for each savegamedata
+            </summary>
+        </member>
+        <member name="M:SlugBase.SaveData.MinedSaveData.#ctor(RainWorld,SlugcatStats.Name)">
+            <summary>
+            Mines select menu scene from saved data
+            </summary>
+            <param name="rainWorld"></param>
+            <param name="slugcat"></param>
+        </member>
+        <member name="M:SlugBase.SaveData.MinedSaveData.Mine``1(System.String,System.String,System.String,``0)">
+            <summary>
+            Finds a base64 encoded json string inside saveline and tries to unpack it into an object
+            </summary>
+            <typeparam name="T">Type of object that is being looked for</typeparam>
+            <param name="saveLine">Line to search object in</param>
+            <param name="startMarker">Left delimiter of saved value</param>
+            <param name="endMarker">Right delimiter of saved value</param>
+            <param name="defaultValue">What to return if the process failed</param>
+            <returns>instance of T saved inside string</returns>
+        </member>
+        <member name="T:SlugBase.SaveData.SaveDataExtension">
+            <summary>
+            Extensions to generate the <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> helper from the game's save data.
+            </summary>
+        </member>
+        <member name="M:SlugBase.SaveData.SaveDataExtension.GetSlugBaseData(DeathPersistentSaveData)">
+            <summary>
+            Gets a <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> from the game's <see cref="T:DeathPersistentSaveData"/>.
+            </summary>
+            <param name="data">The <see cref="T:DeathPersistentSaveData"/> instance.</param>
+            <returns>A <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> bound to the <see cref="T:DeathPersistentSaveData"/>.</returns>
+        </member>
+        <member name="M:SlugBase.SaveData.SaveDataExtension.GetSlugBaseData(MiscWorldSaveData)">
+            <summary>
+            Gets a <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> from the game's <see cref="T:MiscWorldSaveData"/>.
+            </summary>
+            <param name="data">The <see cref="T:MiscWorldSaveData"/> instance.</param>
+            <returns>A <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> bound to the <see cref="T:MiscWorldSaveData"/> instance.</returns>
+        </member>
+        <member name="M:SlugBase.SaveData.SaveDataExtension.GetSlugBaseData(PlayerProgression.MiscProgressionData)">
+            <summary>
+            Gets a <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> from the game's <see cref="T:PlayerProgression.MiscProgressionData"/>.
+            </summary>
+            <param name="data">The <see cref="T:PlayerProgression.MiscProgressionData"/> instance.</param>
+            <returns>A <see cref="T:SlugBase.SaveData.SlugBaseSaveData"/> bound to the <see cref="T:PlayerProgression.MiscProgressionData"/> instance.</returns>
+        </member>
+        <member name="T:SlugBase.SaveData.SlugBaseSaveData">
+            <summary>
+            A helper for interacting with the game's save data.
+            </summary>
+        </member>
+        <member name="M:SlugBase.SaveData.SlugBaseSaveData.TryGet``1(System.String,``0@)">
+            <summary>
+            Gets a value from the save data.
+            </summary>
+            <param name="key">The key for retrieving the value.</param>
+            <param name="value">The stored value.</param>
+            <typeparam name="T">The value's type.</typeparam>
+            <returns><c>true</c> if a stored value was found, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlugBase.SaveData.SlugBaseSaveData.Set``1(System.String,``0)">
+            <summary>
+            Sets or adds a value to the save data.
+            </summary>
+            <param name="key">The key for storing the value.</param>
+            <param name="value">The value to be stored.</param>
+            <typeparam name="T">The value's type.</typeparam>
+        </member>
+        <member name="M:SlugBase.SaveData.SlugBaseSaveData.Remove(System.String)">
+            <summary>
+            Removes a value from the save data.
+            </summary>
+            <param name="key">The key for removing the value.</param>
+            <returns><see langword="true"/> if the key was found and removed, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="T:SlugBase.SlugBaseCharacter">
             <summary>
@@ -1274,6 +1725,16 @@
             <param name="name">The <see cref="T:SlugcatStats.Name"/> to search for.</param>
             <returns>The <see cref="T:SlugBase.SlugBaseCharacter"/>, or <c>null</c> if it was not found.</returns>
         </member>
+        <member name="M:SlugBase.SlugBaseCharacter.Create(System.String)">
+            <summary>
+            Creates a new, blank <see cref="T:SlugBase.SlugBaseCharacter"/>.
+            </summary>
+            <remarks>
+            Use <see cref="P:SlugBase.SlugBaseCharacter.DisplayName"/>, <see cref="P:SlugBase.SlugBaseCharacter.Description"/>, and <see cref="P:SlugBase.SlugBaseCharacter.Features"/> to customize this character.
+            </remarks>
+            <param name="id">The new character's unique ID.</param>
+            <returns>A new <see cref="T:SlugBase.SlugBaseCharacter"/> with a default name, default description, and no features.</returns>
+        </member>
         <member name="P:SlugBase.SlugBaseCharacter.Name">
             <summary>
             This character's unique name.
@@ -1294,6 +1755,11 @@
             Settings, abilities, or other <see cref="T:SlugBase.Features.Feature"/>s of this character.
             </summary>
         </member>
+        <member name="M:SlugBase.SlugBaseCharacter.UpdateLegacyTimeline">
+            <summary>
+            If necessary, registers or updates a character-specific timeline that uses the pre-Watcher world state system.
+            </summary>
+        </member>
         <member name="T:SlugBase.SlugBaseCharacter.FeatureList">
             <summary>
             Stores the <see cref="T:SlugBase.Features.Feature"/>s of a <see cref="T:SlugBase.SlugBaseCharacter"/>.
@@ -1307,6 +1773,29 @@
             <param name="feature">The feature to get data from.</param>
             <param name="value">The feature's data, or <typeparamref name="T"/>'s default value if it was not found.</param>
             <returns><c>true</c> if the feature was found, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlugBase.SlugBaseCharacter.FeatureList.Set(SlugBase.Features.Feature,SlugBase.JsonAny)">
+            <summary>
+            Add a <see cref="T:SlugBase.Features.Feature"/> or replace an existing <see cref="T:SlugBase.Features.Feature"/>'s value.
+            </summary>
+            <remarks>
+            Some features are only read occasionally, such as when starting a game or entering a room.
+            Instead of modifying features during gameplay, consider defining a custom <see cref="T:SlugBase.Features.Feature`1"/> and corresponding <see cref="T:SlugBase.Features.Data`2"/>.
+            </remarks>
+            <param name="feature">The feature to add or replace.</param>
+            <param name="value">The feature's new value.</param>
+            <exception cref="T:SlugBase.JsonException"><paramref name="value"/> was not a valid value for <paramref name="feature"/>.</exception>
+        </member>
+        <member name="M:SlugBase.SlugBaseCharacter.FeatureList.Remove(SlugBase.Features.Feature)">
+            <summary>
+            Remove a <see cref="T:SlugBase.Features.Feature"/>.
+            </summary>
+            <remarks>
+            Some features are only read occasionally, such as when starting a game or entering a room.
+            Instead of modifying features during gameplay, consider defining a custom <see cref="T:SlugBase.Features.Feature`1"/> and corresponding <see cref="T:SlugBase.Features.Data`2"/>.
+            </remarks>
+            <param name="feature">The feature to remove.</param>
+            <returns><c>true</c> if the feature was present, <c>false</c> otherwise.</returns>
         </member>
         <member name="M:SlugBase.SlugBaseCharacter.FeatureList.Contains(SlugBase.Features.Feature)">
             <summary>
@@ -1338,6 +1827,42 @@
         <member name="P:SlugBase.SlugBaseCharacter.RefreshEventArgs.Character">
             <summary>
             The reloaded <see cref="T:SlugBase.SlugBaseCharacter"/>.
+            </summary>
+        </member>
+        <member name="M:SlugBase.Utils.FirstValidEnum``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets the first non-null, registered enum in <paramref name="values"/>.
+            </summary>
+            <param name="values">The collection to search through.</param>
+            <returns>A registered enum, or <c>null</c> if no enums in the list are registered.</returns>
+        </member>
+        <member name="M:SlugBase.Utils.AllValidEnums``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets all non-null, registered enums in <paramref name="values"/>.
+            </summary>
+            <param name="values">The collection to search through.</param>
+        </member>
+        <member name="M:SlugBase.Utils.GetName(System.String)">
+            <summary>
+            Gets the <see cref="T:SlugcatStats.Name"/> corresponding to <paramref name="text"/>, converting canon character names to code names.
+            </summary>
+            <param name="text">The name of the character to convert to an ID.</param>
+        </member>
+        <member name="M:SlugBase.Utils.MatchCaseInsensitiveEnum``1(System.String)">
+            <summary>
+            Changes the case of <paramref name="name"/> to match the corresponding enum in <typeparamref name="T"/>.
+            </summary>
+            <param name="name">The string to capitalize.</param>
+            <returns>The value of an enum in <typeparamref name="T"/>, or <paramref name="name"/> if no matching entry exists.</returns>
+        </member>
+        <member name="M:SlugBase.Utils.StringsToColors(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Converts a list of hexadecimal strings to colors.
+            </summary>
+        </member>
+        <member name="M:SlugBase.Utils.ColorsToStrings(System.Collections.Generic.IEnumerable{UnityEngine.Color})">
+            <summary>
+            Converts a list of colors to hexadecimal strings.
             </summary>
         </member>
     </members>
