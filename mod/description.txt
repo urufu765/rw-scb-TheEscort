@@ -1,0 +1,56 @@
+A mod that will add The Escort and (eventually) their very special slugpup.
+[i]Thank You SomethingStupid for the Escort headshot![/i]
+
+Currently implements The Escort and some of their abilities and movement tech. 
+[i]Should[/i] be fully compatible for playing in other campaigns or arena.
+[h3]COMPATIBLE WITH LATEST WATCHER UPDATE![/h3]
+
+[b]Feedback of any sort is HIGHLY appreciated![/b]
+
+Found a bug? Put it in the forums or reach me in Discord! I'm in the main RW discord server (as [b]Deathpits[/b]). Feel free to ping me!
+
+[hr][/hr][h2]<~DISCLAIMER~>[/h2]
+Escort's campaign is not 100% finished! The campaign can be completed, however it lacks cutscenes and any rewards. Also the images are super outdated lol. For now, consider this a mod that adds seven different slugcats with common abilities into the game.
+[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~> (Last tested before Watcher release)[/h2]
+These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
+[list]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2924848641]Rico Spear[/url]: [b]Apparently causes Brawler Escort to explode when shanking[/b] (Confirmed to kill Brawler Escort upon "shanking")
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2931679448]SimplifiedMoveset[/url]: [b]Affects Escort gameplay significantly![/b] Many of Escort's movement adjustments don't work when this is turned on, such as the sick flip and low pounce (which makes aiming drop-kicks harder). Use at your own risk!
+[*] [b]Campaign:[/b] Garbage Waste doesn't work properly
+[*] And probably more, there are way too many mods to test this character with...
+[/list]
+[hr][/hr][h2]<~PATCHED MODS~> (Last tested before Watcher release)[/h2]
+This mod will apply a patch to work better with the following mods. How they change the behaviour of the Escort mod is as detailed (Any mods not listed in either conflicts or patched may be assumed to be working):
+[list]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Somewhat patched for 1.2.0[/b] (Doesn't work as well on slugpups...)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2948971756]Dress My Slugcat 1.4.X[/url]: [b]Patched![/b] (Custom sprite ready? Who knows.)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.6.X[/url]: [b]Doesn't need patching really, but added a silly sfx and the chest marking stretch with the body![/b]
+[/list]
+[*] [url=][/url]: [b][/b] ()
+[hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
+[list]
+[*] REMIX MENU to tweak some features and enable optional gimmicks
+[*] Builds that alter how the character plays
+[*] Custom sprites
+[*] Slide Stun (sliding into creature)
+[*] Drop Kick (roll/slide pouncing into creature)
+[*] Flip Pounce (charge pounce)
+[*] Flip wall jump (holding up or down and direction (towards the wall) while on the wall, then pressing jump after a bit)
+[*] Infinite roll (that speeds up!)
+[*] Dual wield spears (and dead lizards)
+[*] Parryslide! (Sliding will parry most damage, including explosives!)
+[*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
+[*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
+[*] Custom (silly) SFX!
+[/list]
+[hr][/hr][h2]<~BUILD STATUSES~>[/h2]
+[list]
+[*] [b]Default:[/b] May need some buffs
+[*] [b]Brawler:[/b] Needs patches and nerfs
+[*] [b]Deflector:[/b] In a fine place
+[*] [b]Escapist:[/b] In a fine place
+[*] [b]Railgunner:[/b] Needs a tiny bit of adjustments
+[*] [b]Speedster:[/b] Needs patches and adjustments
+[/list]
+[hr][/hr][h3]<~REPOSITORY~>[/h3]
+[url=https://github.com/urufu765/rw-scb-TheEscort]Enjoy! It's on Github! Free for you to do whatever (as long as it follows the original licenses and whatever)[/url]
