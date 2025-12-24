@@ -11,7 +11,7 @@ Found a bug? Put it in the forums or reach me in Discord! I'm in the main RW dis
 
 [hr][/hr][h2]<~DISCLAIMER~>[/h2]
 Escort's campaign is not 100% finished! The campaign can be completed, however it lacks cutscenes and any rewards. Also the images are super outdated lol. For now, consider this a mod that adds seven different slugcats with common abilities into the game.
-[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~> (Last tested before Watcher release)[/h2]
+[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~> (Last tested before Watcher DLC release)[/h2]
 These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2924848641]Rico Spear[/url]: [b]Apparently causes Brawler Escort to explode when shanking[/b] (Confirmed to kill Brawler Escort upon "shanking")
@@ -19,7 +19,7 @@ These mods may or may not cause issues with the Escort mod, or these are issues 
 [*] [b]Campaign:[/b] Garbage Waste doesn't work properly
 [*] And probably more, there are way too many mods to test this character with...
 [/list]
-[hr][/hr][h2]<~PATCHED MODS~> (Last tested before Watcher release)[/h2]
+[hr][/hr][h2]<~PATCHED MODS~> (Last tested before Watcher DLC release)[/h2]
 This mod will apply a patch to work better with the following mods. How they change the behaviour of the Escort mod is as detailed (Any mods not listed in either conflicts or patched may be assumed to be working):
 [list]
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Somewhat patched for 1.2.0[/b] (Doesn't work as well on slugpups...)
@@ -46,11 +46,12 @@ This mod will apply a patch to work better with the following mods. How they cha
 [hr][/hr][h2]<~BUILD STATUSES~>[/h2]
 [list]
 [*] [b]Default:[/b] May need some buffs
-[*] [b]Brawler:[/b] Needs patches and nerfs
+[*] [b]Brawler:[/b] Overpowered, but leaving as is
 [*] [b]Deflector:[/b] In a fine place
 [*] [b]Escapist:[/b] In a fine place
 [*] [b]Railgunner:[/b] Needs a tiny bit of adjustments
-[*] [b]Speedster:[/b] Needs patches and adjustments
+[*] [b]Speedster:[/b] Needs a wee bit of adjustments
+[*] [b]Gilded:[/b] Needs nerfs
 [/list]
 [hr][/hr][h3]<~REPOSITORY~>[/h3]
 [url=https://github.com/urufu765/rw-scb-TheEscort]Enjoy! It's on Github! Free for you to do whatever (as long as it follows the original licenses and whatever)[/url]
