@@ -13,15 +13,15 @@ namespace TheEscort
         // public static readonly PlayerFeature<> escapist = Player("theescort/escapist/");
         // public static readonly PlayerFeature<float> escapist = PlayerFloat("theescort/escapist/");
         // public static readonly PlayerFeature<float[]> escapist = PlayerFloats("theescort/escapist/");
-        public static readonly PlayerFeature<float> escapistSlideLaunchMod = PlayerFloat("theescort/escapist/slide_launch_mod");
-        public static readonly PlayerFeature<float> escapistSlideLaunchFac = PlayerFloat("theescort/escapist/slide_launch_fac");
-        public static readonly PlayerFeature<float> escapistSpearVelFac = PlayerFloat("theescort/escapist/spear_vel_fac");
-        public static readonly PlayerFeature<float> escapistSpearDmgFac = PlayerFloat("theescort/escapist/spear_dmg_fac");
-        public static readonly PlayerFeature<int[]> escapistNoGrab = PlayerInts("theescort/escapist/no_grab");
-        public static readonly PlayerFeature<int> escapistCD = PlayerInt("theescort/escapist/cd");
-        public static readonly PlayerFeature<float> escapistColor = PlayerFloat("theescort/escapist/color");
+        public static readonly PlayerFeature<float> escapistSlideLaunchMod;
+        public static readonly PlayerFeature<float> escapistSlideLaunchFac;
+        public static readonly PlayerFeature<float> escapistSpearVelFac;
+        public static readonly PlayerFeature<float> escapistSpearDmgFac;
+        public static readonly PlayerFeature<int[]> escapistNoGrab;
+        public static readonly PlayerFeature<int> escapistCD;
+        public static readonly PlayerFeature<float> escapistColor;
 
-        public void Esclass_EC_Tick(Player self, ref Escort e)
+        public static void Esclass_EC_Tick(Player self, ref Escort e)
         {
             if (e.EscDangerExtend < 10)
             {
@@ -55,7 +55,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_EC_Update(Player self, ref Escort e)
+        public static void Esclass_EC_Update(Player self, ref Escort e)
         {
             if (
                 !escapistColor.TryGet(self, out float eC) ||
@@ -123,7 +123,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_EC_ThrownSpear(Player self, Spear spear)
+        public static void Esclass_EC_ThrownSpear(Player self, Spear spear)
         {
             if (!escapistSpearVelFac.TryGet(self, out float eSpearVel) ||
                 !escapistSpearDmgFac.TryGet(self, out float eSpearDmg))
@@ -135,7 +135,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_EC_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp)
+        public static void Esclass_EC_Grabbed(On.Player.orig_Grabbed orig, Player self, Creature.Grasp grasp)
         {
             orig(self, grasp);
             try

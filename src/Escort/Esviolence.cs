@@ -16,7 +16,7 @@ namespace TheEscort;
 partial class Plugin : BaseUnityPlugin
 {
     // Implement Bodyslam
-    private void Escort_Collision(On.Player.orig_Collide orig, Player self, PhysicalObject otherObject, int myChunk, int otherChunk)
+    public static void Escort_Collision(On.Player.orig_Collide orig, Player self, PhysicalObject otherObject, int myChunk, int otherChunk)
     {
         orig(self, otherObject, myChunk, otherChunk);
         try
@@ -44,8 +44,8 @@ partial class Plugin : BaseUnityPlugin
             !escapistSlideLaunchMod.TryGet(self, out float eSlideMod) ||
             !escapistSlideLaunchFac.TryGet(self, out float eSlideFac) ||
             !escapistNoGrab.TryGet(self, out int[] esNoGrab) ||
-            !Esconfig_HypeReq(self) ||
-            !Esconfig_DKMulti(self) ||
+            !ins.Esconfig_HypeReq(self) ||
+            !ins.Esconfig_DKMulti(self) ||
             !eCon.TryGetValue(self, out Escort e)
             )
         {
@@ -70,10 +70,10 @@ partial class Plugin : BaseUnityPlugin
             Ebug(self, err, "Error when printing collision stuff");
         }
 
-        bool hypedMode = Esconfig_Hypable(self);
+        bool hypedMode = ins.Esconfig_Hypable(self);
 
         // Reimplementing the elevator... the way it was in its glory days
-        if (Esconfig_Elevator(self) && otherObject is Creature && self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead)
+        if (ins.Esconfig_Elevator(self) && otherObject is Creature && self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead)
         {
             self.jumpBoost += 4;
         }
@@ -141,7 +141,7 @@ partial class Plugin : BaseUnityPlugin
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
 
                     float normSlideStun = hypedMode || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1];
-                    if (hypedMode && self.aerobicLevel > hypeRequirement)
+                    if (hypedMode && self.aerobicLevel > ins.hypeRequirement)
                     {
                         normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
                     }
@@ -182,7 +182,7 @@ partial class Plugin : BaseUnityPlugin
                         direction = self.rollDirection;
                         //self.WallJump(direction);
                         //Escort_FakeWallJump(self, direction, boostUp:slideMod[5], yankUp: slideMod[6], boostLR:slideMod[7]);
-                        if (Esconfig_Spears(self))
+                        if (ins.Esconfig_Spears(self))
                         {
                             float tossModifier = slideMod[0];
                             self.animation = Player.AnimationIndex.Roll;
@@ -258,7 +258,7 @@ partial class Plugin : BaseUnityPlugin
 
                     String message = e.easyKick ? "Easykicked!" : "Dropkicked!";
 
-                    DKMultiplier *= creature.TotalMass * 0.66f;
+                    ins.DKMultiplier *= creature.TotalMass * 0.66f;
                     float normSlamDamage = e.easyKick ? 0.001f : 0.05f;
                     float stunDur = bodySlam[3];
                     if (e.DropKickCD == 0)
@@ -266,7 +266,7 @@ partial class Plugin : BaseUnityPlugin
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
                         normSlamDamage = hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f);
                         creature.LoseAllGrasps();
-                        if (hypedMode && self.aerobicLevel > hypeRequirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
+                        if (hypedMode && self.aerobicLevel > ins.hypeRequirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
                         if (e.Deflector)
                         {
                             normSlamDamage *= e.DeflDamageMult + e.DeflPerma;
@@ -286,8 +286,8 @@ partial class Plugin : BaseUnityPlugin
                         self.room.PlaySound(SoundID.Spear_Stick_In_Creature, e.SFXChunk, loop: false, 1f, 0.95f);
                     }
                     Vector2 momentum = new(
-                        self.mainBodyChunk.vel.x * DKMultiplier, 
-                        self.mainBodyChunk.vel.y * DKMultiplier);
+                        self.mainBodyChunk.vel.x * ins.DKMultiplier, 
+                        self.mainBodyChunk.vel.y * ins.DKMultiplier);
                     if (e.LizardDunk)
                     {
                         bool diffYDirection = Mathf.Sign(momentum.y) != Mathf.Sign(self.input[0].y) && self.input[0].y != 0;
@@ -359,12 +359,12 @@ partial class Plugin : BaseUnityPlugin
                 {
                     creature.SetKillTag(self.abstractCreature);
                     creature.Violence(
-                        self.bodyChunks[0], new Vector2(self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass),
+                        self.bodyChunks[0], new Vector2(self.bodyChunks[0].vel.x * (ins.DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (ins.DKMultiplier * 0.5f) * creature.TotalMass),
                         creature.mainBodyChunk, null, Creature.DamageType.Blunt,
                         creature.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly? 1f: 0f, 15f
                     );
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (DKMultiplier * 0.5f) * creature.TotalMass;
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (DKMultiplier * 0.5f) * creature.TotalMass;
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (ins.DKMultiplier * 0.5f) * creature.TotalMass;
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (ins.DKMultiplier * 0.5f) * creature.TotalMass;
                     if (self != null && self.room != null)
                     {
                         self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
@@ -372,7 +372,7 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Headbutted!", 2);
                     if (self.room != null)
                     {
-                        if (Esconfig_SFX(self))
+                        if (ins.Esconfig_SFX(self))
                         {
                             self.room.PlaySound(Escort_SFX_Boop, e.SFXChunk);
                         }
@@ -392,7 +392,7 @@ partial class Plugin : BaseUnityPlugin
 
 #region Thrown
 
-    private void Escort_RockThrow(On.Rock.orig_Thrown orig, Rock self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, RWCustom.IntVector2 throwDir, float frc, bool eu)
+    public static void Escort_RockThrow(On.Rock.orig_Thrown orig, Rock self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, RWCustom.IntVector2 throwDir, float frc, bool eu)
     {
         try
         {
@@ -441,7 +441,7 @@ partial class Plugin : BaseUnityPlugin
 
 
     // Implement unique spearskill
-    private void Escort_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear)
+    public static void Escort_ThrownSpear(On.Player.orig_ThrownSpear orig, Player self, Spear spear)
     {
         orig(self, spear);
         try
@@ -458,7 +458,7 @@ partial class Plugin : BaseUnityPlugin
         }
         if (
             !bonusSpear.TryGet(self, out float[] spearDmgBonuses) ||
-            !Esconfig_HypeReq(self) ||
+            !ins.Esconfig_HypeReq(self) ||
             !eCon.TryGetValue(self, out Escort e)
             )
         {
@@ -468,16 +468,16 @@ partial class Plugin : BaseUnityPlugin
         Ebug(self, "ThrownSpear Triggered!");
         float thrust = 7f;
         bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-        bool doNotYeet = onPole || !Esconfig_Spears(self) || e.RailDoubleSpear;
+        bool doNotYeet = onPole || !ins.Esconfig_Spears(self) || e.RailDoubleSpear;
         try
         {
             if (self.slugcatStats.throwingSkill == 0 && !e.Speedster)
             {
                 spear.spearDamageBonus = Mathf.Max(1, spear.spearDamageBonus);
             }
-            if (Esconfig_Hypable(self))
+            if (ins.Esconfig_Hypable(self))
             {
-                if (self.aerobicLevel > hypeRequirement)
+                if (self.aerobicLevel > ins.hypeRequirement)
                 {
                     spear.throwModeFrames = -1;
                     if (!e.Railgunner)
@@ -593,7 +593,7 @@ partial class Plugin : BaseUnityPlugin
             }
             else
             {
-                if (Esconfig_Spears(self))
+                if (ins.Esconfig_Spears(self))
                 {
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
                 }
@@ -656,7 +656,7 @@ partial class Plugin : BaseUnityPlugin
 
 
 #region Hit
-    private void Escort_BulletHit(ILContext il)
+    private static void Escort_BulletHit(ILContext il)
     {
         var c = new ILCursor(il);
         try
@@ -725,7 +725,7 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-    private void Escort_LillyHit(ILContext il)
+    private static void Escort_LillyHit(ILContext il)
     {
         var c = new ILCursor(il);
         try
@@ -797,7 +797,7 @@ partial class Plugin : BaseUnityPlugin
 
 
     // Implement rock throws
-    private bool Escort_RockHit(On.Rock.orig_HitSomething orig, Rock self, SharedPhysics.CollisionResult result, bool eu)
+    public static bool Escort_RockHit(On.Rock.orig_HitSomething orig, Rock self, SharedPhysics.CollisionResult result, bool eu)
     {
         try
         {
@@ -933,7 +933,7 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-    private void Escort_BombHit(ILContext il)
+    private static void Escort_BombHit(ILContext il)
     {
         var c = new ILCursor(il);
         try
@@ -1008,7 +1008,7 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    private void Escort_SpearHit(ILContext il)
+    private static void Escort_SpearHit(ILContext il)
     {
         var c = new ILCursor(il);
         try
@@ -1078,7 +1078,7 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-    private bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
+    public static bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
     {
         bool ending = orig(self, result, eu);
         if (ending && self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))

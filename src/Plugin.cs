@@ -22,7 +22,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.3")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.4")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -45,110 +45,110 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Allow json values to override internal values (Player instance)
     /// </summary>
-    public static readonly PlayerFeature<bool> pRTEdits = PlayerBool("playescort/realtime_edits");
+    public static readonly PlayerFeature<bool> pRTEdits;
 
     /// <summary>
     /// Allow json values to override internal values (Game instance)
     /// </summary>
-    public static readonly GameFeature<bool> gRTEdits = GameBool("gameescort/realtime_edits");
+    public static readonly GameFeature<bool> gRTEdits;
 
     /// <summary>
     /// Allows Escort to do the sick flip
     /// </summary>
-    public static readonly PlayerFeature<bool> BtrPounce = PlayerBool("theescort/better_pounce");
+    public static readonly PlayerFeature<bool> BtrPounce;
 
     /// <summary>
     /// Angry lizards
     /// </summary>
-    public static readonly GameFeature<bool> SupahMeanLizards = GameBool("theescort/mean_lizards");
+    public static readonly GameFeature<bool> SupahMeanLizards;
 
     /// <summary>
     /// JSON VALUES,
     /// ["Stun Slide damage", "Stun Slide base stun duration", "Drop Kick base damage", "Drop Kick stun duration"]
     /// </summary>
-    public static readonly PlayerFeature<float[]> BodySlam = PlayerFloats("theescort/body_slam");
+    public static readonly PlayerFeature<float[]> BodySlam;
 
     /// <summary>
     /// Slidestun forward thrust/momentum
     /// </summary>
-    public static readonly PlayerFeature<float[]> SlideLaunchMod = PlayerFloats("theescort/slide_launch_mod");
+    public static readonly PlayerFeature<float[]> SlideLaunchMod;
 
     /// <summary>
     /// Heavy lift multiplier (0.6x default, 3x Escort)
     /// </summary>
-    public static readonly PlayerFeature<float> LiftHeavy = PlayerFloat("theescort/heavylifter");
+    public static readonly PlayerFeature<float> LiftHeavy;
 
     /// <summary>
     /// A bit of a wonk. Adds more adrenaline on TOP of the original adrenaline add to make achieving and maintaining battlehype easier
     /// </summary>
-    public static readonly PlayerFeature<float> Exhausion = PlayerFloat("theescort/exhausion");
+    public static readonly PlayerFeature<float> Exhausion;
 
     /// <summary>
     /// Dropkick knockback multiplier. Controls how strong the dropkick knockback is to those who can experience knockback.
     /// </summary>
-    public static readonly PlayerFeature<float> DKM = PlayerFloat("theescort/dk_multiplier");
+    public static readonly PlayerFeature<float> DKM;
 
     /// <summary>
     /// Allow parry slide (parry by sliding on the ground)
     /// </summary>
-    public static readonly PlayerFeature<bool> ParrySlide = PlayerBool("theescort/parry_slide");
+    public static readonly PlayerFeature<bool> ParrySlide;
     
     /// <summary>
     /// Amount of frames after pressing jump in a corridor where contact with another creature would count as a headbutt
     /// </summary>
-    public static readonly PlayerFeature<int> Escomet = PlayerInt("theescort/headbutt");
+    public static readonly PlayerFeature<int> Escomet;
 
     /// <summary>
     /// Allow Escort's elevator (ramping off creatures while pressing and holding jump launches Escort)
     /// </summary>
-    public static readonly PlayerFeature<bool> Elvator = PlayerBool("theescort/elevator");
+    public static readonly PlayerFeature<bool> Elvator;
     
-    public static readonly PlayerFeature<float> TrampOhLean = PlayerFloat("theescort/trampoline");
+    public static readonly PlayerFeature<float> TrampOhLean;
 
     /// <summary>
     /// Allow Escort's hype mechanic
     /// </summary>
-    public static readonly PlayerFeature<bool> HypeSys = PlayerBool("theescort/adrenaline_system");
+    public static readonly PlayerFeature<bool> HypeSys;
 
     /// <summary>
     /// Controls the minimum required adrenaline to activate Battlehype
     /// </summary>
-    public static readonly PlayerFeature<float> HypeReq = PlayerFloat("theescort/stamina_req");
+    public static readonly PlayerFeature<float> HypeReq;
 
     /// <summary>
     /// Controls how many frames between outputs of a log that updates constantly
     /// </summary>
-    public static readonly PlayerFeature<int> CR = PlayerInt("theescort/reset_rate");
+    public static readonly PlayerFeature<int> CR;
 
     /// <summary>
     /// Controls Escort's spear damage
     /// JSON VALUES: ["Hyped spear damage", "Base spear damage"]
     /// </summary>
-    public static readonly PlayerFeature<float[]> bonusSpear = PlayerFloats("theescort/spear_damage");
+    public static readonly PlayerFeature<float[]> bonusSpear;
 
     /// <summary>
     /// Allow Escort being able to hold two spears
     /// </summary>
-    public static readonly PlayerFeature<bool> dualWielding = PlayerBool("theescort/dual_wield");
+    public static readonly PlayerFeature<bool> dualWielding;
 
     /// <summary>
     /// Allow silly sounds
     /// </summary>
-    public static readonly PlayerFeature<bool> soundAhoy = PlayerBool("theescort/sounds_ahoy");
+    public static readonly PlayerFeature<bool> soundAhoy;
 
     /// <summary>
     /// Helps adjust the gutter watter resistance on escort in a variety of on the fly
     /// </summary>
-    public static readonly PlayerFeature<float[]> NoMoreGutterWater = PlayerFloats("theescort/guuh_wuuh");
+    public static readonly PlayerFeature<float[]> NoMoreGutterWater;
     /// <summary>
     /// Do not. Tries to adapt pouncing to walls... not much success here
     /// </summary>
-    public static readonly PlayerFeature<bool> LWallJump = PlayerBool("theescort/long_wall_jump");
+    public static readonly PlayerFeature<bool> LWallJump;
 
     /* JSON VALUES
     ["Head Y velocity", "Body Y velocity", "Head X velocity", "Body X velocity", "ConstantDownDiagnoal floor value", "ConstantDownDiagonal ceiling value", "min JumpBoost", "max JumpBoost"]
     */
-    public static readonly PlayerFeature<float[]> WallJumpVal = PlayerFloats("theescort/wall_jump_val");
+    public static readonly PlayerFeature<float[]> WallJumpVal;
 
 
     /// <summary>
@@ -156,11 +156,11 @@ partial class Plugin : BaseUnityPlugin
     /// JSON VALUES
     /// [Rotation val, X val, Y val]
     /// </summary> 
-    public static readonly PlayerFeature<float[]> headDraw = PlayerFloats("theescort/headthing");
+    public static readonly PlayerFeature<float[]> headDraw;
     /// <summary>
     /// Body marking sprite scaling
     /// </summary>
-    public static readonly PlayerFeature<float[]> bodyDraw = PlayerFloats("theescort/bodything");
+    public static readonly PlayerFeature<float[]> bodyDraw;
     /// <summary>
     /// Replaces the grapple backpack.... idk why forgor
     /// </summary>
@@ -169,16 +169,16 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Registers the Escort sleep scene
     /// </summary>
-    public static readonly GameFeature<MenuScene.SceneID> AltSleepScene = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene");
+    public static readonly GameFeature<MenuScene.SceneID> AltSleepScene;
     /// <summary>
     /// Registers the Escort with Socks sleep scene
     /// </summary>
-    public static readonly GameFeature<MenuScene.SceneID> AltSleepSceneDuo = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene_together");
+    public static readonly GameFeature<MenuScene.SceneID> AltSleepSceneDuo;
     #endregion
 
 #region Plugin Variable Declarations
-    public static readonly SlugcatStats.Name EscortMe = new("EscortMe");
-    public static readonly SlugcatStats.Name EscortSocks = new("EscortSocks");
+    public static readonly SlugcatStats.Name EscortMe;
+    public static readonly SlugcatStats.Name EscortSocks;
     //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
     /// <summary>
@@ -262,11 +262,11 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Contains instances of the Escort class for each applicable players. ALL Escort loadouts use the same Escort class to control the loadout specific abilities.
     /// </summary>
-    public static ConditionalWeakTable<Player, Escort> eCon = new();
+    public static ConditionalWeakTable<Player, Escort> eCon;
     /// <summary>
     /// Contains instances of the Socks class for each applicable players.
     /// </summary>
-    public static ConditionalWeakTable<Player, Socks> sCon = new();
+    public static ConditionalWeakTable<Player, Socks> sCon;
     //public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon = new();
 
     /// <summary>
@@ -312,7 +312,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Contains the list of naturally spawned needle spears
     /// </summary>
-    public static List<EntityID> natrualSpears = new();
+    public static List<EntityID> natrualSpears;
 
 
     // Patches
@@ -320,21 +320,23 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Revivify patch: 1.2.0
     /// </summary>
-    public static bool escPatch_revivify = false;
+    public static bool escPatch_revivify;
     /// <summary>
     /// Rotund World patch: 1.6
     /// </summary>
-    public static bool escPatch_rotundness = false;
+    public static bool escPatch_rotundness;
     /// <summary>
     /// Dress My Slugcat patch: 1.4
     /// </summary>
-    public static bool escPatch_dms = false;
+    public static bool escPatch_dms;
     /// <summary>
     /// Guardian patch: N/A
     /// </summary>
     public static bool escPatch_guardian = false;
     //private bool escPatch_emeraldTweaks = false;
 #endregion
+
+
 
 
     /// <summary>
@@ -382,7 +384,11 @@ partial class Plugin : BaseUnityPlugin
         //On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.Update += Escort_RGBRGBRGB_GoesBrr;
 
         // Arena UI
-        //On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
+        On.Menu.MultiplayerMenu.InitiateGameTypeSpecificButtons += Escort_Arena_Class_Changer;
+        On.Menu.MultiplayerMenu.ClearGameTypeSpecificButtons += Escort_Arena_Class_Button_Gone;
+        On.Menu.MultiplayerMenu.Singal += Escort_Arena_Class_Signaler;
+        On.Menu.MultiplayerMenu.Update += Escort_Arena_Hide_Show_Button;
+        On.Menu.MultiplayerMenu.OnExit += Escort_Arena_Save_On_Exit;
 
         // Escort stuff
         On.Player.Jump += Escort_Jump;
@@ -471,7 +477,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Forces temple guardians to ignore the creatures Escort brings to the piss pool if the flag is true
     /// </summary>
-    private float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
+    public static float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
     {
         if (templeGuardIsFriendly)
         {
@@ -483,14 +489,14 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Originally an attempt at trying to make the remix option not die, repurposed for IL hooks and to make sure they work correctly.
     /// </summary>
-    private void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
+    public static void Escort_Option_Dont_Disappear_Pls_Maybe_Pretty_Please_I_will_do_anything_please(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
         orig(self);
         try
         {
-            if (this.config is null)
+            if (ins.config is null)
             {
-                MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
+                MachineConnector.SetRegisteredOI("urufudoggo.theescort", ins.config);
             }
             IL.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
             IL.MoreSlugcats.Bullet.HitSomething += Escort_BulletHit;
@@ -532,6 +538,7 @@ partial class Plugin : BaseUnityPlugin
 
 
     // Load any resources, such as sprites or sounds
+
 
     /// <summary>
     /// Loads all the external assets for use
@@ -580,7 +587,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Checks if specific mods are enabled, simply flip the flag or apply patches when needed
     /// </summary>
-    private void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
+    public static void Escort_PostInit(On.RainWorld.orig_PostModsInit orig, RainWorld self)
     {
         ins.L().Set();
         orig(self);
@@ -714,7 +721,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Vengeful Lizards: After a certain number of lizard kills, spawns a group of lizards that will hunt you down
     /// </summary>
-    private bool Esconfig_Vengeful_Lizards()
+    public bool Esconfig_Vengeful_Lizards()
     {
         return config.cfgVengefulLizards.Value;
     }
@@ -722,7 +729,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Mean Lizards: Just tries to make the lizards more aggressive
     /// </summary>
-    private bool Esconfig_Mean_Lizards(World self)
+    public bool Esconfig_Mean_Lizards(World self)
     {
         if (!gRTEdits.TryGet(self.game, out bool RT) || !SupahMeanLizards.TryGet(self.game, out bool meanLizard))
         {
@@ -741,7 +748,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// HeavyLift: Sets the (Escort) global max weight for one handed handling
     /// </summary>
-    private bool Esconfig_Heavylift(Player self)
+    public bool Esconfig_Heavylift(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !LiftHeavy.TryGet(self, out float power))
         {
@@ -762,7 +769,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// DropKick Multiplier: Knockback strength (for those who can experience knockback)
     /// </summary>
-    private bool Esconfig_DKMulti(Player self)
+    public bool Esconfig_DKMulti(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !DKM.TryGet(self, out float dk))
         {
@@ -782,7 +789,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Elevator: Allows Escort to take flight by holding jump and coming in contact with another creature
     /// </summary>
-    private bool Esconfig_Elevator(Player self)
+    public bool Esconfig_Elevator(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !Elvator.TryGet(self, out bool yeet))
         {
@@ -801,7 +808,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Hypeable: Enables/disable battlehype mechanic
     /// </summary>
-    private bool Esconfig_Hypable(Player self)
+    public bool Esconfig_Hypable(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !HypeSys.TryGet(self, out bool hm))
         {
@@ -851,7 +858,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// SFX: Allows silly (usually unnecessary) sound effects to "enhance" the user experience
     /// </summary>
-    private bool Esconfig_SFX(Player self)
+    public bool Esconfig_SFX(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !soundAhoy.TryGet(self, out bool soundFX))
         {
@@ -870,7 +877,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// LongWallJump: Enables/disables the ability to long press jump while hanging onto the wall to perform a high wall jump... Funky to use so disabled by default
     /// </summary>
-    private bool Esconfig_WallJumps(Player self)
+    public bool Esconfig_WallJumps(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !LWallJump.TryGet(self, out bool wallJumper))
         {
@@ -889,7 +896,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Better Pounce: Upon being enabled, causes Escort to do a sick flip whenever they pounce (by long-pressing jump)
     /// </summary>
-    private bool Esconfig_Pouncing(Player self)
+    public bool Esconfig_Pouncing(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !BtrPounce.TryGet(self, out bool pouncing))
         {
@@ -908,7 +915,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// This appears to not have a slugbase json version. It's done like this just to make the settings look matching to a certain degree. Controls whether Escort can dunk on lizards.
     /// </summary>
-    private bool Esconfig_Dunkin()
+    public bool Esconfig_Dunkin()
     {
         return config.cfgDunkin.Value;
     }
@@ -916,7 +923,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the setting for spear tricks (that send Escort rolling or flyin'). Some builds have this forced off by setting the value of e.tossEscort to false.
     /// </summary>
-    private bool Esconfig_Spears(Player self)
+    public bool Esconfig_Spears(Player self)
     {
         try
         {
@@ -940,7 +947,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
-    private bool Esconfig_Build(Player self, int forceBuild = 0)
+    public static bool Esconfig_Build(Player self, int forceBuild = 0)
     {
         try
         {
@@ -949,7 +956,7 @@ partial class Plugin : BaseUnityPlugin
                 return false;
             }
             // Get build ID from configuration
-            int pal = config.cfgBuild[self.playerState.playerNumber].Value;
+            int pal = ins.config.cfgBuild[self.playerState.playerNumber].Value;
             if (forceBuild != 0)
             {
                 pal = forceBuild;
@@ -1018,7 +1025,7 @@ partial class Plugin : BaseUnityPlugin
                     break;
                 case -6:  // Gilded build
                     e.Gilded = true;
-                    if (config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
+                    if (ins.config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
                     self.slugcatStats.bodyWeightFac = 1f;
                     self.slugcatStats.lungsFac += 0.3f;
                     self.slugcatStats.runspeedFac = 0.9f;
@@ -1029,8 +1036,8 @@ partial class Plugin : BaseUnityPlugin
                     break;
                 case -5:  // Speedstar build
                     e.Speedster = true;
-                    e.SpeOldSpeed = config.cfgOldSpeedster.Value;
-                    e.SpeMaxGear = config.cfgSpeedsterGears.Value;
+                    e.SpeOldSpeed = ins.config.cfgOldSpeedster.Value;
+                    e.SpeMaxGear = ins.config.cfgSpeedsterGears.Value;
                     if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                     {
                         Ebug(self, "Get Speedster save!");
@@ -1060,7 +1067,7 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Railgunner Build selected!", 2);
                     break;
                 case -3:  // Escapist build
-                    if (config.cfgOldEscapist.Value)
+                    if (ins.config.cfgOldEscapist.Value)
                     {
                         e.Escapist = true;
                         e.dualWield = false;
@@ -1123,7 +1130,7 @@ partial class Plugin : BaseUnityPlugin
             }
 
             // Determine if "Easier mode" is turned on by retrieving the setting
-            e.easyMode = config.cfgEasy[self.playerState.playerNumber].Value;
+            e.easyMode = ins.config.cfgEasy[self.playerState.playerNumber].Value;
             if (e.easyMode)
             {
                 Ebug(self, "Easy Mode active!");
@@ -1132,7 +1139,7 @@ partial class Plugin : BaseUnityPlugin
             // Reduce underwater breath if malnourished
             self.slugcatStats.lungsFac += self.Malnourished ? 0.15f : 0f;
             self.buoyancy -= 0.05f;
-            if (config.cfgDeflecterSharedPool.Value)
+            if (ins.config.cfgDeflecterSharedPool.Value)
             {
                 e.DeflPerma = DeflInitSharedPerma;
             }
@@ -1163,7 +1170,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Intended to adjust the force of the slidestun launch, on the fence about implementing it.
     /// </summary>
-    private bool Esconfig_Launch(Player self, out float value, string type="spear"){
+    public bool Esconfig_Launch(Player self, out float value, string type="spear"){
         value = 0;
         if (!pRTEdits.TryGet(self, out bool RT) ||
             !SlideLaunchMod.TryGet(self, out float[] launcher)) return false;
@@ -1186,7 +1193,7 @@ partial class Plugin : BaseUnityPlugin
     /// Mixes up the escort sick flip sound effects! Or returns a silent thing if configured to do so
     /// </summary>
     /// <returns>a random flip sound effect or silent thing</returns>
-    private SoundID Eshelp_SFX_Flip()
+    public SoundID Eshelp_SFX_Flip()
     {
         if (config.cfgNoMoreFlips.Value) return Escort_SFX_Placeholder;
         float r = UnityEngine.Random.value;
@@ -1202,12 +1209,12 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Implement lizard aggression (edited from template)... don't know if this even does anything.
     /// </summary>
-    private void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
+    public static void Escort_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world)
     {
         ins.L().SetF();
         orig(self, abstractCreature, world);
 
-        if (Esconfig_Mean_Lizards(world))
+        if (ins.Esconfig_Mean_Lizards(world))
         {
             ins.L().SetF(true);
             Ebug("Lizard Ctor Triggered!");
@@ -1218,7 +1225,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Upon creation of the player, also initialize the Escort variables and turn the slugcat into an Escort.
     /// </summary>
-    private void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
+    public static void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
     {
         ins.L().Set();  // ignore this
         Ebug("Ctor Triggered!");
@@ -1270,7 +1277,7 @@ partial class Plugin : BaseUnityPlugin
 
             e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;  // Calculates the original mass to compare to most current mass (Rotund World)
 
-            logImportance = config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
+            logImportance = ins.config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
 
             try  // Initialize and set up SFX that play on loop
             {
@@ -1326,7 +1333,7 @@ partial class Plugin : BaseUnityPlugin
     /// <param name="room"></param>
     /// <param name="e"></param>
     /// <returns></returns>
-    private int Challenge_Presetter(Room room, ref Escort e)
+    public static int Challenge_Presetter(Room room, ref Escort e)
     {
         if (room?.game?.session is not StoryGameSession)
         {
@@ -1346,7 +1353,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     /// <param name="room"></param>
     /// <param name="e"></param>
-    private void Challenge_Postsetter(Room room, ref Escort e)
+    public static void Challenge_Postsetter(Room room, ref Escort e)
     {
         if (room?.game?.session is not StoryGameSession)
         {
@@ -1364,7 +1371,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// For when Esclass updates need to happen outside of Player update
     /// </summary>
-    private void Escort_AbsoluteTick(On.RainWorldGame.orig_Update orig, RainWorldGame self)
+    public static void Escort_AbsoluteTick(On.RainWorldGame.orig_Update orig, RainWorldGame self)
     {
         orig(self);
         try
@@ -1416,22 +1423,22 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Each build gets different food requirements!
     /// </summary>
-    private IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
+    public static IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
     {
         try
         {
             if (Eshelp_IsMe(slugcat)) return orig(slugcat);
-            IntVector2 foodReq = config.cfgBuild[0].Value switch{
+            IntVector2 foodReq = ins.config.cfgBuild[0].Value switch{
                 -7 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable? (Replace with Barbarian!)
-                -6 => config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
+                -6 => ins.config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
-                -3 => config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                -3 => ins.config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
                 -2 => new(14, 8),  // Deflector
                 -1 => new(14, 12),  // Brawler
                 _  => new(14, 9)  // Default and unspecified.
             };
-            if (config.cfgEasy[0].Value && foodReq.y > 3) 
+            if (ins.config.cfgEasy[0].Value && foodReq.y > 3) 
             {
                 foodReq.y -= 3;  // Reduce food requirement upon easier mode triggered
             }
@@ -1453,7 +1460,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Resets/sets some saved values upon end of cycle/session
     /// </summary>
-    private void Escort_Reset_Values(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+    public static void Escort_Reset_Values(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
     {
         try
         {
@@ -1466,7 +1473,7 @@ partial class Plugin : BaseUnityPlugin
 
         if (logForCutscene)
         {
-            this.GetCSIL().Release();
+            ins.GetCSIL().Release();
         }
 
         // Respawn pup so karma reinforcement go away
@@ -1512,7 +1519,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Spawns slugpup in shelter on a successful end of cycle upon the door being closed. Also saves naturally spawned needle spears so they don't get trashed.
     /// </summary>
-    private void SpawnPupInShelterAtWin(On.ShelterDoor.orig_DoorClosed orig, ShelterDoor self)
+    public static void SpawnPupInShelterAtWin(On.ShelterDoor.orig_DoorClosed orig, ShelterDoor self)
     {
         try
         {
@@ -1642,7 +1649,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Hijacks the sleep scene and adds the slugpup if slugpup is alive and well
     /// </summary>
-    private void Escort_Add_Slugpup(On.Menu.SleepAndDeathScreen.orig_AddBkgIllustration orig, Menu.SleepAndDeathScreen self)
+    public static void Escort_Add_Slugpup(On.Menu.SleepAndDeathScreen.orig_AddBkgIllustration orig, Menu.SleepAndDeathScreen self)
     {
         MenuScene.SceneID newScene = null;
         SlugcatStats.Name name;
@@ -1710,7 +1717,7 @@ partial class Plugin : BaseUnityPlugin
     /// <param name="room">Room to look in</param>
     /// <param name="abstractSocks">The abstractcreature of Socks</param>
     /// <returns>If the pup exists in the same room or not</returns>
-    private bool TryFindThePup(Room room, out AbstractCreature abstractSocks)
+    public static bool TryFindThePup(Room room, out AbstractCreature abstractSocks)
     {
         abstractSocks = null;
         foreach (UpdatableAndDeletable thing in room.updateList)
@@ -1730,7 +1737,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     /// <param name="self">A creature</param>
     /// <returns>false if not a player or Escort, true if in parry condition</returns>
-    public bool Eshelp_ParryCondition(Creature self)
+    public static bool Eshelp_ParryCondition(Creature self)
     {
         if (self is Player player)
         {
@@ -1769,7 +1776,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     /// <param name="self">Player</param>
     /// <returns>false if player is not escort, true if in parry condition</returns>
-    public bool Eshelp_ParryCondition(Player self)
+    public static bool Eshelp_ParryCondition(Player self)
     {
         // If not escort, why bother?
         if (!eCon.TryGetValue(self, out Escort e))
@@ -1810,7 +1817,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Secondary parry condition when dropkicking to save Escort from accidental death while trying to kick creatures
     /// </summary>
-    public bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie)
+    public static bool Eshelp_SavingThrow(Player self, BodyChunk offender, Creature.DamageType ouchie)
     {
         // Escort check
         if (!eCon.TryGetValue(self, out Escort e))
@@ -1890,7 +1897,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Changes the spawn location of Escort. Compatible with Expedition random spawns
     /// </summary>
-    private void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
+    public static void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
         orig(self);
         Ebug("Changing room 2!");
         Ebug(self.denPosition);
@@ -1906,15 +1913,15 @@ partial class Plugin : BaseUnityPlugin
         }
         
         if(self.saveStateNumber == EscortMe){
-            self.denPosition = config.cfgBuild[0].Value switch {
+            self.denPosition = ins.config.cfgBuild[0].Value switch {
                 0 => "CC_SUMP02",  // Default
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
+                -3 => ins.config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
-                -6 => config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
+                -6 => ins.config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
                 -7 => "SS_A18",  // Unstable (now Barbarian, replace!)
                 _ => "SB_C09"  // Unspecified
             };
@@ -1927,7 +1934,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Returns whether the character should be playable or not. It hides the Socks
     /// </summary>
-    private static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
+    public static bool Escort_Playable(On.SlugcatStats.orig_SlugcatUnlocked orig, SlugcatStats.Name i, RainWorld rainWorld)
     {
         ins.L().Set();
         try
@@ -1962,7 +1969,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// I don't know what this does but this does something
     /// </summary>
-    private static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
+    public static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
     {
         ins.L().Set();
         try
@@ -2026,7 +2033,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifies the explosive spear chance
     /// </summary>
-    private static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Name orig, SlugcatStats.Name index)
+    public static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Name orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try
@@ -2058,7 +2065,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifes the electrical spear spawn chance
     /// </summary>
-    private static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Name orig, SlugcatStats.Name index)
+    public static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Name orig, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try
@@ -2090,7 +2097,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Modifies the generic spear spawn chance
     /// </summary>
-    private static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Name_float orig, SlugcatStats.Name index, float originalSpearChance)
+    public static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Name_float orig, SlugcatStats.Name index, float originalSpearChance)
     {
         ins.L().SetF();
         try
@@ -2122,7 +2129,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Replaces some regular spawned spears with Spearmaster needle versions
     /// </summary>
-    private void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
+    public static void Escort_Hipbone_Replacement(On.Room.orig_Loaded orig, Room self)
     {
         ins.L().SetF();
         orig(self);
@@ -2212,7 +2219,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Loads custom room settings when playing Escort campaign
     /// </summary>
-    private bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
+    public static bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
     {
         ins.L().SetF();
         try
@@ -2319,7 +2326,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Undoes the QoL fix of spearmaster spears disappearing from shelters by replacing them with regular spears before save.. assumes the game will save spear IDs
     /// </summary>
-    private void Escort_SaveShelterSpears(Room room)
+    public static void Escort_SaveShelterSpears(Room room)
     {
         if (room.world?.game?.session is StoryGameSession s)
         {

@@ -43,6 +43,8 @@
 		"alt_sleep_scene_together": "Sleep_EscortMeAndSocks",
 		"the_mark": false,
 
+		"boxbox": [126, -90],
+
 		"playescort/realtime_edits": false,
 		"gameescort/realtime_edits": false,
 

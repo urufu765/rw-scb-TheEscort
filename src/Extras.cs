@@ -29,7 +29,6 @@ internal static class Extras
                 if (!_initialized)
                 {
                     _initialized = true;
-
                     loadResources(self);
                 }
             }

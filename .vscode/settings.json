@@ -1,4 +1,9 @@
 {
     "cmake.configureOnOpen": true,
-    "dotnet.defaultSolution": "TheEscort.sln"
+    "dotnet.defaultSolution": "TheEscort.sln",
+    "cSpell.words": [
+        "Slugcat",
+        "slugpup",
+        "theescort"
+    ]
 }

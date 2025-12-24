@@ -17,13 +17,13 @@ namespace TheEscort
         // public static readonly PlayerFeature<> gilded = Player("theescort/gilded/");
         // public static readonly PlayerFeature<float> gilded = PlayerFloat("theescort/gilded/");
         // public static readonly PlayerFeature<float[]> gilded = PlayerFloats("theescort/gilded/");
-        public static readonly PlayerFeature<float> gilded_float = PlayerFloat("theescort/gilded/float_speed");
-        public static readonly PlayerFeature<float> gilded_lev = PlayerFloat("theescort/gilded/levitation");
-        public static readonly PlayerFeature<float> gilded_jet = PlayerFloat("theescort/gilded/jetplane");
-        public static readonly PlayerFeature<float> gilded_radius = PlayerFloat("theescort/gilded/pipradius");
-        public static readonly PlayerFeature<float[]> gilded_position = PlayerFloats("theescort/gilded/pipposition");
+        public static readonly PlayerFeature<float> gilded_float;
+        public static readonly PlayerFeature<float> gilded_lev;
+        public static readonly PlayerFeature<float> gilded_jet;
+        public static readonly PlayerFeature<float> gilded_radius;
+        public static readonly PlayerFeature<float[]> gilded_position;
 
-        public void Esclass_GD_Tick(Player self, ref Escort e)
+        public static void Esclass_GD_Tick(Player self, ref Escort e)
         {
             // // Shortcut fix for crafting
             // if (!e.GildLockRecharge && !e.GildCancel && !e.GildClearReserve && e.GildReservePower > 0 && (e.GildWantToThrow != -1 || e.GildAlsoPop))
@@ -37,7 +37,7 @@ namespace TheEscort
             }
 
 
-            if (e.GildLevitateLimit > 0 && e.GildFloatState && !config.cfgSectretBuild.Value)
+            if (e.GildLevitateLimit > 0 && e.GildFloatState && !ins.config.cfgSectretBuild.Value)
             {
                 e.GildLevitateLimit -= e.GildPowerUsage;
             }
@@ -113,7 +113,7 @@ namespace TheEscort
             // if (e.secretRGB) e.Escat_RGB_firespear();
             if (!e.GildOverpowered)
             {
-                e.GildOverpowered = config.cfgSectretBuild.Value;
+                e.GildOverpowered = ins.config.cfgSectretBuild.Value;
                 if (self.room?.game?.session is StoryGameSession && self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap >= 9)
                 {
                     e.GildOverpowered = true;
@@ -121,7 +121,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_GD_Update(Player self, ref Escort e)
+        public static void Esclass_GD_Update(Player self, ref Escort e)
         {
             if (
                 !gilded_float.TryGet(self, out float floatingSpd) ||
@@ -252,7 +252,7 @@ namespace TheEscort
                 self.buoyancy = 0f;
                 self.bodyChunks[0].vel.y += levitation;
                 self.bodyChunks[1].vel.y += levitation - 1f;
-                if (Esconfig_SFX(self) && e.GildJetPackVFX == 0)
+                if (ins.Esconfig_SFX(self) && e.GildJetPackVFX == 0)
                 {
                     e.GildJetPackVFX += UnityEngine.Random.Range(5, 21);
                     /*
@@ -326,7 +326,7 @@ namespace TheEscort
         }
 
 
-        private static void Esclass_GD_GrabUpdate(Player self, bool eu, ref Escort e)
+        public static void Esclass_GD_GrabUpdate(Player self, bool eu, ref Escort e)
         {
             // Throw when letting go of the held button
             if (!self.input[0].thrw && e.GildWantToThrow != -1)
@@ -560,12 +560,12 @@ namespace TheEscort
         }
 
 
-        private static void Esclass_GD_Breathing(Player self, float f)
+        public static void Esclass_GD_Breathing(Player self, float f)
         {
             self.aerobicLevel = Mathf.Min(1f, self.aerobicLevel + (f / 10f));
         }
 
-        private static void Esclass_GD_Jump(Player self, ref Escort e)
+        public static void Esclass_GD_Jump(Player self, ref Escort e)
         {
             if (self.standing)
             {
@@ -577,7 +577,7 @@ namespace TheEscort
         /// <summary>
         /// Crush a creature
         /// </summary>
-        private void Esclass_GD_Collision(Player self, Creature creature, ref Escort e)
+        public static void Esclass_GD_Collision(Player self, Creature creature, ref Escort e)
         {
             if (e.GildCrush && e.GildCrushTime == 0){
                 creature.SetKillTag(self.abstractCreature);
@@ -585,7 +585,7 @@ namespace TheEscort
                 float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 35, Mathf.Abs(self.bodyChunks[0].vel.y)));
                 creature.Violence(
                     self.bodyChunks[1], 
-                    new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * DKMultiplier),
+                    new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * ins.DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
                     dam,
@@ -605,7 +605,7 @@ namespace TheEscort
         /// <summary>
         /// Half the duration of the slide because fuck you.
         /// </summary>
-        private void Esclass_GD_UpdateAnimation(Player self)
+        public static void Esclass_GD_UpdateAnimation(Player self)
         {
             if (self.animation == Player.AnimationIndex.BellySlide)
             {
@@ -624,7 +624,7 @@ namespace TheEscort
         /// <summary>
         /// Prevent player from throwing a rock or spear when they tap the throw button, instead throwing on letting go of the button such that holding the throw button lets the player craft a firebomb or firespear. If let go, make Gilded toss object instead.
         /// </summary>
-        private bool Esclass_GD_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort escort)
+        public static bool Esclass_GD_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort escort)
         {
             if (self.grasps[grasp]?.grabbed is null) return false;
 
@@ -661,7 +661,7 @@ namespace TheEscort
         /// <summary>
         /// Replicates the animation of throwing an object, in case tossing an object is required
         /// </summary>
-        private static void Esclass_GD_ReplicateThrowBodyPhysics(Player self, int grasp)
+        public static void Esclass_GD_ReplicateThrowBodyPhysics(Player self, int grasp)
         {
             IntVector2 throwDir = new(self.ThrowDirection, 0);
             bool upwardsEnabled = ModManager.MMF && MoreSlugcats.MMF.cfgUpwardsSpearThrow.Value;
@@ -713,7 +713,7 @@ namespace TheEscort
         /// <summary>
         /// Initiates the pips that will be shown for the amount of power left
         /// </summary>
-        private static void Esclass_GD_InitiateSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, ref Escort escort)
+        public static void Esclass_GD_InitiateSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, ref Escort escort)
         {
             try
             {
@@ -743,7 +743,7 @@ namespace TheEscort
         /// <summary>
         /// Puts the power pips in the hud layer
         /// </summary>
-        private static void Esclass_GD_AddTaCantaina(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera r, ref Escort escort)
+        public static void Esclass_GD_AddTaCantaina(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera r, ref Escort escort)
         {
             try
             {
@@ -779,7 +779,7 @@ namespace TheEscort
         /// <summary>
         /// Draws the power pips
         /// </summary>
-        private static void Esclass_GD_DrawPipSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, float timeStacker, Vector2 cameraPos, ref Escort escort)
+        public static void Esclass_GD_DrawPipSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera roomCamera, float timeStacker, Vector2 cameraPos, ref Escort escort)
         {
             if (
                 !gilded_radius.TryGet(self.player, out float pipRad) ||
@@ -844,7 +844,7 @@ namespace TheEscort
         /// <summary>
         /// Let Gilded survive the acid pools, based on the hype meter. Recharges a bit of gilded power.
         /// </summary>
-        private static void Esclass_GD_Die(ref Escort escort)
+        public static void Esclass_GD_Die(ref Escort escort)
         {
             if (escort.GildReservePower > 0 && !escort.GildFloatState) 
             {
@@ -860,7 +860,7 @@ namespace TheEscort
         /// <summary>
         /// Kills a guardian in rubicon with just one singularity bomb so it isn't required for them to source and craft three just to get past.
         /// </summary>
-        private void Esclass_GD_KillGuardianWithOneHit(On.MoreSlugcats.HRGuardManager.orig_Update orig, MoreSlugcats.HRGuardManager self, bool eu)
+        public static void Esclass_GD_KillGuardianWithOneHit(On.MoreSlugcats.HRGuardManager.orig_Update orig, MoreSlugcats.HRGuardManager self, bool eu)
         {
             try
             {

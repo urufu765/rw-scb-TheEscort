@@ -12,10 +12,10 @@ namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        public static readonly PlayerFeature<string> CustomShader = PlayerString("theescort/speedster/custom_shader");
-        public static readonly PlayerFeature<float[]> speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");
+        public static readonly PlayerFeature<string> CustomShader;
+        public static readonly PlayerFeature<float[]> speedsterPolewow;
 
-        public void Esclass_SS_Tick(Player self, ref Escort e)
+        public static void Esclass_SS_Tick(Player self, ref Escort e)
         {
             if (e.SpeTrailTick > 0)
             {
@@ -43,7 +43,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_DrawSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
+        public static void Esclass_SS_DrawSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_Update(Player self, ref Escort e)
+        public static void Esclass_SS_Update(Player self, ref Escort e)
         {
             if (!(self != null && self.mainBodyChunk != null))
             {
@@ -227,7 +227,7 @@ namespace TheEscort
                         };
 
                         // Double the gain when in hyped
-                        if (e.SpeGain > 0f && self.aerobicLevel > hypeRequirement)
+                        if (e.SpeGain > 0f && self.aerobicLevel > ins.hypeRequirement)
                         {
                             e.SpeGain *= 2;
                         }
@@ -283,7 +283,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_UpdateBodyMode(Player self, ref Escort e)
+        public static void Esclass_SS_UpdateBodyMode(Player self, ref Escort e)
         {
             float n = 1f;
             float p = 0f;  // Passive speed
@@ -309,7 +309,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_UpdateAnimation(Player self, ref Escort e)
+        public static void Esclass_SS_UpdateAnimation(Player self, ref Escort e)
         {
             if (!speedsterPolewow.TryGet(self, out float[] poleR)) return;
             float n = 0.8f;
@@ -443,7 +443,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_MovementUpdate(Player self, ref Escort e)
+        public static void Esclass_SS_MovementUpdate(Player self, ref Escort e)
         {
             // Nitros boost
             if (!e.SpeOldSpeed && e.SpeDashNCrash && e.SpeNitros > 0)
@@ -454,7 +454,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_SS_Jump(Player self, ref Escort e)
+        public static void Esclass_SS_Jump(Player self, ref Escort e)
         {
             float n = 0.8f;
             if (e.SpeOldSpeed)
@@ -508,7 +508,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_Collision(Player self, Creature creature, ref Escort e)
+        public static void Esclass_SS_Collision(Player self, Creature creature, ref Escort e)
         {
             if (e.SpeDashNCrash && !creature.dead && Mathf.Max(Mathf.Abs(self.mainBodyChunk.vel.x), Mathf.Abs(self.mainBodyChunk.vel.y)) > 10f)
             {
@@ -518,7 +518,7 @@ namespace TheEscort
                     creature.SetKillTag(self.abstractCreature);
                     creature.LoseAllGrasps();
                     creature.Violence(
-                        self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * DKMultiplier, self.bodyChunks[0].vel.y * DKMultiplier)),
+                        self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * ins.DKMultiplier, self.bodyChunks[0].vel.y * ins.DKMultiplier)),
                         creature.mainBodyChunk, null, Creature.DamageType.Blunt,
                         Mathf.Lerp(
                             0.1f, e.SpeSecretSpeed ? 2.5f : 1f, Mathf.InverseLerp(
@@ -533,8 +533,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
                     //self.WallJump(-self.flipDirection);
                     if (!checkSlide)
                     {
@@ -555,7 +555,7 @@ namespace TheEscort
                     creature.SetKillTag(self.abstractCreature);
                     creature.LoseAllGrasps();
                     creature.Violence(
-                        self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * DKMultiplier, self.bodyChunks[0].vel.y * DKMultiplier)),
+                        self.bodyChunks[0], new Vector2?(new Vector2(self.bodyChunks[0].vel.x * ins.DKMultiplier, self.bodyChunks[0].vel.y * ins.DKMultiplier)),
                         creature.mainBodyChunk, null, Creature.DamageType.Blunt,
                         Mathf.Lerp(
                             0.1f, slamDam, Mathf.InverseLerp(
@@ -570,8 +570,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    float velocityX = self.bodyChunks[0].vel.x * DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
-                    float velocityY = self.bodyChunks[0].vel.y * DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
+                    float velocityX = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
+                    float velocityY = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
                     if (e.isChunko)
                     {
                         velocityX *= self.TotalMass / e.originalMass;
@@ -595,7 +595,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_SS_Bonk(On.Player.orig_TerrainImpact orig, Player self, int chunk, IntVector2 direction, float speed, bool firstContact)
+        public static void Esclass_SS_Bonk(On.Player.orig_TerrainImpact orig, Player self, int chunk, IntVector2 direction, float speed, bool firstContact)
         {
             orig(self, chunk, direction, speed, firstContact);
             try

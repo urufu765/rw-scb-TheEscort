@@ -19,7 +19,7 @@ namespace TheEscort
         /// Only used for wall longpounce.
         /// 0.3.1: And now for Unstable's jump
         /// </summary>
-        private void Escort_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
+        public static void Escort_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
         {
             orig(self, eu);
             try
@@ -39,7 +39,7 @@ namespace TheEscort
                 return;
             }
             if (e.Unstable) Esclass_US_MovementUpdate(self, ref e);
-            if (!Esconfig_WallJumps(self))
+            if (!ins.Esconfig_WallJumps(self))
             {
                 return;
             }
@@ -80,7 +80,7 @@ namespace TheEscort
         /// <summary>
         /// Only used for wall longpounce.
         /// </summary>
-        private void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
+        public static void Escort_checkInput(On.Player.orig_checkInput orig, Player self)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace TheEscort
                 Ebug(self, err);
                 return;
             }
-            if (!Esconfig_WallJumps(self))
+            if (!ins.Esconfig_WallJumps(self))
             {
                 orig(self);
                 return;
@@ -134,7 +134,7 @@ namespace TheEscort
         /// <summary>
         /// Implement a different type of dropkick
         /// </summary>
-        private void Escort_TossObject(On.Player.orig_TossObject orig, Player self, int grasp, bool eu)
+        public static void Escort_TossObject(On.Player.orig_TossObject orig, Player self, int grasp, bool eu)
         {
             orig(self, grasp, eu);
             try
@@ -152,7 +152,7 @@ namespace TheEscort
                 Ebug(self, "Toss Object Triggered!");
                 if (self.grasps[grasp].grabbed is Lizard lizzie && !lizzie.dead)
                 {
-                    if (Esconfig_SFX(self) && e.LizGet != null)
+                    if (ins.Esconfig_SFX(self) && e.LizGet != null)
                     {
                         e.LizGet.Volume = 0f;
                     }
@@ -174,7 +174,7 @@ namespace TheEscort
         /// <summary>
         /// Contrary to the name, prevents Escort from dying on certain conditions.
         /// </summary>
-        private void Escort_Die(On.Player.orig_Die orig, Player self)
+        public static void Escort_Die(On.Player.orig_Die orig, Player self)
         {
             try
             {
@@ -217,7 +217,7 @@ namespace TheEscort
                 if (!e.ParrySuccess && e.iFrames == 0 && !self.dead)
                 {
                     orig(self);
-                    if (self.dead && Esconfig_SFX(self) && self.room != null)
+                    if (self.dead && ins.Esconfig_SFX(self) && self.room != null)
                     {
                         self.room.PlaySound(Escort_SFX_Death, e.SFXChunk);
                         //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
@@ -252,7 +252,7 @@ namespace TheEscort
         /// <param name="orig">Original function call (pass the method along)</param>
         /// <param name="self">Player instance</param>
         /// <param name="eu">Even Updates</param>
-        private void Escort_Eated(On.Player.orig_BiteEdibleObject orig, Player self, bool eu)
+        public static void Escort_Eated(On.Player.orig_BiteEdibleObject orig, Player self, bool eu)
         {
             try
             {

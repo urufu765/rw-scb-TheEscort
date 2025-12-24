@@ -8,6 +8,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * **(0.3.4)** Added little patch for needing the mod for Meadow, and finally got the arena build picker working. Also did a sweep and made a bunch of stuff public and static
+
   * **(0.3.3.3)** Updated for Watcher + updated all the libs
 
   * **(0.3.3.2)** Added multiplayer compatibility to challenge 3 and made scav trader tracking a bit more lenient

@@ -13,16 +13,16 @@ namespace TheEscort
         // public static readonly PlayerFeature<> brawler = Player("theescort/brawler/");
         // public static readonly PlayerFeature<float> brawler = PlayerFloat("theescort/brawler/");
         // public static readonly PlayerFeature<float[]> brawler = PlayerFloats("theescort/brawler/");
-        public static readonly PlayerFeature<float> brawlerSlideLaunchFac = PlayerFloat("theescort/brawler/slide_launch_fac");
-        public static readonly PlayerFeature<float> brawlerDKHypeDmg = PlayerFloat("theescort/brawler/dk_h_dmg");
-        public static readonly PlayerFeature<float[]> brawlerSpearVelFac = PlayerFloats("theescort/brawler/spear_vel_fac");
-        public static readonly PlayerFeature<float[]> brawlerSpearDmgFac = PlayerFloats("theescort/brawler/spear_dmg_fac");
-        public static readonly PlayerFeature<float> brawlerSpearThrust = PlayerFloat("theescort/brawler/spear_thrust");
-        public static readonly PlayerFeature<float[]> brawlerSpearShankY = PlayerFloats("theescort/brawler/spear_shank");
-        public static readonly PlayerFeature<float> brawlerRockHeight = PlayerFloat("theescort/brawler/rock_height");
+        public static readonly PlayerFeature<float> brawlerSlideLaunchFac;
+        public static readonly PlayerFeature<float> brawlerDKHypeDmg;
+        public static readonly PlayerFeature<float[]> brawlerSpearVelFac;
+        public static readonly PlayerFeature<float[]> brawlerSpearDmgFac;
+        public static readonly PlayerFeature<float> brawlerSpearThrust;
+        public static readonly PlayerFeature<float[]> brawlerSpearShankY;
+        public static readonly PlayerFeature<float> brawlerRockHeight;
 
 
-        private void Esclass_BL_Tick(Player self, ref Escort e)
+        public static void Esclass_BL_Tick(Player self, ref Escort e)
         {
             if (e.BrawRevertWall > 0)
             {
@@ -36,7 +36,7 @@ namespace TheEscort
 
 
 
-        private void Esclass_BL_Update(Player self, ref Escort e)
+        public static void Esclass_BL_Update(Player self, ref Escort e)
         {
             // Melee weapon use
             try
@@ -162,9 +162,9 @@ namespace TheEscort
         /// <summary>
         /// Stops
         /// </summary>
-        private bool Esclass_BL_HeavyCarry(Player self, PhysicalObject obj)
+        public static bool Esclass_BL_HeavyCarry(Player self, PhysicalObject obj)
         {
-            if (obj.TotalMass <= self.TotalMass * ratioed * 2 && obj is Creature)
+            if (obj.TotalMass <= self.TotalMass * ins.ratioed * 2 && obj is Creature)
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -178,7 +178,7 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_BL_Grabability(Player self, PhysicalObject obj, ref Escort e)
+        public static bool Esclass_BL_Grabability(Player self, PhysicalObject obj, ref Escort e)
         {
             if (obj is Creature c && !c.dead)
             {
@@ -186,7 +186,7 @@ namespace TheEscort
                 {
                     return false;
                 }
-                if (c.Stunned && c is Lizard && Esconfig_Dunkin() && !e.LizardDunk)
+                if (c.Stunned && c is Lizard && ins.Esconfig_Dunkin() && !e.LizardDunk)
                 {
                     if (e.LizGoForWalk == 0)
                     {
@@ -199,7 +199,7 @@ namespace TheEscort
             return false;
         }
 
-        private bool Esclass_BL_Legality(On.Player.orig_IsCreatureLegalToHoldWithoutStun orig, Player self, Creature grabCheck)
+        public static bool Esclass_BL_Legality(On.Player.orig_IsCreatureLegalToHoldWithoutStun orig, Player self, Creature grabCheck)
         {
             try
             {
@@ -220,11 +220,11 @@ namespace TheEscort
             {
                 return orig(self, grabCheck);
             }
-            return grabCheck.TotalMass <= self.TotalMass * ratioed * 2;
+            return grabCheck.TotalMass <= self.TotalMass * ins.ratioed * 2;
         }
 
 
-        private void Esclass_BL_ThrownSpear(Player self, Spear spear, ref Escort e, ref float thrust)
+        public static void Esclass_BL_ThrownSpear(Player self, Spear spear, ref Escort e, ref float thrust)
         {
             if (
                 !brawlerSpearVelFac.TryGet(self, out float[] bSpearVel) ||
@@ -307,7 +307,7 @@ namespace TheEscort
         /// <param name="self"></param>
         /// <param name="grasp"></param>
         /// <returns></returns>
-        private static string Esclass_BL_Weapon(Player self, int grasp)
+        public static string Esclass_BL_Weapon(Player self, int grasp)
         {
             if (
                 self.grasps[grasp]?.grabbed is Spear and not ExplosiveSpear &&
@@ -326,7 +326,7 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
+        public static bool Esclass_BL_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection)
             {
@@ -484,7 +484,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_BL_RockThrow(Rock self, Player p)
+        public static void Esclass_BL_RockThrow(Rock self, Player p)
         {
             if (!brawlerRockHeight.TryGet(p, out float roH))
             {

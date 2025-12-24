@@ -15,12 +15,12 @@ namespace TheEscort
         private static bool UnplayableSocks => ins.L().Crispmunch;
         //private static bool playingSocks = false;
 
-        private void Socks_ctor(Player self)
+        public static void Socks_ctor(Player self)
         {
             self.setPupStatus(true);
         }
 
-        private static bool Socks_hideTheSocks(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name i)
+        public static bool Socks_hideTheSocks(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name i)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace TheEscort
             return orig(i);
         }
 
-        private void Socks_Update(On.Player.orig_Update orig, Player self, bool eu)
+        public static void Socks_Update(On.Player.orig_Update orig, Player self, bool eu)
         {
             ins.L().SetF();
             orig(self, eu);
@@ -121,7 +121,7 @@ namespace TheEscort
             }
         }
 
-        private void Socks_Jump(On.Player.orig_Jump orig, Player self)
+        public static void Socks_Jump(On.Player.orig_Jump orig, Player self)
         {
             orig(self);
             try
@@ -139,7 +139,7 @@ namespace TheEscort
             self.aerobicLevel = Mathf.Min(0, self.aerobicLevel - 0.03f);
         }
 
-        private void Socks_GMU(On.Player.orig_GraphicsModuleUpdated orig, Player self, bool actuallyViewed, bool eu)
+        public static void Socks_GMU(On.Player.orig_GraphicsModuleUpdated orig, Player self, bool actuallyViewed, bool eu)
         {
             ins.L().SetF();
             try
@@ -171,7 +171,7 @@ namespace TheEscort
             orig(self, actuallyViewed, eu);
         }
 
-        private void Socks_Mine(On.Player.orig_SlugcatGrab orig, Player self, PhysicalObject obj, int graspUsed)
+        public static void Socks_Mine(On.Player.orig_SlugcatGrab orig, Player self, PhysicalObject obj, int graspUsed)
         {
             ins.L().SetF();
             try
@@ -204,7 +204,7 @@ namespace TheEscort
             orig(self, obj, graspUsed);
         }
 
-        private bool Socks_Grabby(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
+        public static bool Socks_Grabby(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
         {
             ins.L().SetF();
             if (obj is GrappleBackpack)
@@ -228,7 +228,7 @@ namespace TheEscort
             return orig(self, obj);
         }
 
-        private void Socks_DontLoseBackpack(On.Creature.orig_LoseAllGrasps orig, Creature self)
+        public static void Socks_DontLoseBackpack(On.Creature.orig_LoseAllGrasps orig, Creature self)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace TheEscort
         /// <summary>
         /// Kills the grapple backpack when Socks dies so other players can grab Socks. May not be 100% working as intended with Revivify
         /// </summary>
-        private void Socks_Death(On.Player.orig_Die orig, Player self)
+        public static void Socks_Death(On.Player.orig_Die orig, Player self)
         {
             try
             {
@@ -281,7 +281,7 @@ namespace TheEscort
         /// <summary>
         /// Stops Socks from having an aneurysm whenever they climb poles.
         /// </summary>
-        private float Socks_Stop_Having_An_Aneurysm(On.PlayerGraphics.PlayerObjectLooker.orig_HowInterestingIsThisObject orig, PlayerGraphics.PlayerObjectLooker self, PhysicalObject obj)
+        public static float Socks_Stop_Having_An_Aneurysm(On.PlayerGraphics.PlayerObjectLooker.orig_HowInterestingIsThisObject orig, PlayerGraphics.PlayerObjectLooker self, PhysicalObject obj)
         {
             ins.L().SetF();
             try
@@ -310,7 +310,7 @@ namespace TheEscort
         }
 
 
-        private void Socks_Sticky_Immune(On.TubeWorm.orig_Update orig, TubeWorm self, bool eu)
+        public static void Socks_Sticky_Immune(On.TubeWorm.orig_Update orig, TubeWorm self, bool eu)
         {
             orig(self, eu);
             try
@@ -334,7 +334,7 @@ namespace TheEscort
         }
 
 
-        private void Socks_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
+        public static void Socks_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
         {
             ins.L().Set();
             orig(self, s, rCam);
@@ -381,7 +381,7 @@ namespace TheEscort
         /// <param name="orig">Original Function call</param>
         /// <param name="self">Player instance</param>
         /// <param name="eu">Even Update</param>
-        private void Socks_Legacy(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        public static void Socks_Legacy(On.Player.orig_GrabUpdate orig, Player self, bool eu)
         {
             orig(self, eu);
             try

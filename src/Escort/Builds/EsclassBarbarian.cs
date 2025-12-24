@@ -15,10 +15,10 @@ namespace TheEscort
         // public static readonly PlayerFeature<> barbarian = Player("theescort/barbarian/");
         // public static readonly PlayerFeature<float> barbarian = PlayerFloat("theescort/barbarian/");
         // public static readonly PlayerFeature<float[]> barbarian = PlayerFloats("theescort/barbarian/");
-        public static readonly PlayerFeature<bool> barbarianDisallowOversizedLuggage = PlayerBool("theescort/barbarian/nooverlug");
+        public static readonly PlayerFeature<bool> barbarianDisallowOversizedLuggage;
 
 
-        public void Esclass_BB_Tick(Player self, ref Escort e)
+        public static void Esclass_BB_Tick(Player self, ref Escort e)
         {
             // Resets wiggle count of Barbarian is not holding onto a player
             if (!e.BarFkingCretin && e.BarWiggle > 0)
@@ -76,7 +76,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_BB_Update(Player self, ref Escort e)
+        public static void Esclass_BB_Update(Player self, ref Escort e)
         {
             
         }

@@ -15,12 +15,12 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> escapist = PlayerFloats("theescort//");
 
 
-        public void Esclass__Tick(Player self, ref Escort e)
+        public static void Esclass__Tick(Player self, ref Escort e)
         {
             throw new NotImplementedException();
         }
 
-        private void Esclass__Update(Player self, ref Escort e)
+        public static void Esclass__Update(Player self, ref Escort e)
         {
             throw new NotImplementedException();
         }

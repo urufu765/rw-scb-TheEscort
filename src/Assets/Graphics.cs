@@ -7,29 +7,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TheEscort.Eshelp;
 using static RWCustom.Custom;
+using System.Linq;
+using SlugBase.Features;
+using RWCustom;
+using SlugBase;
 
 namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        public static Dictionary<int, string> selectionable = new() { 
-            {  0, "Default" }, 
-            { -1, "Brawler" }, 
-            { -2, "Deflector" }, 
-            { -3, "Escapist" }, 
-            { -4, "Railgunner" }, 
-            { -5, "Speedster" }, 
-            { -6, "Gilded" }
-        };
+        public static readonly GameFeature<float[]> boxMove;
+        public static Dictionary<int, string> selectionable;
         public static UIelementWrapper[] hackyWrapper;
         public static UIelementWrapper[] fairlyIllegalWrapper;
-        //public static UIelementWrapper[] wackyWrapper;
-        //public static UIelementWrapper[] somewhatIllegalWrapper;
-        private static float[] escortRGBTick = new float[4];
-        private static Color[] escortRGBStore = new Color[4];
+        // public static SimpleButton[] stupidButton;
+        // public static UIelementWrapper[] wackyWrapper;
+        // public static UIelementWrapper[] somewhatIllegalWrapper;
+        public static float[] escortRGBTick;
+        public static Color[] escortRGBStore;
 
 #region Escort Graphics
-        private void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
+        public static void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
         {
             ins.L().Set();
             orig(self, s, rCam);
@@ -77,7 +75,7 @@ namespace TheEscort
             }
         }
 
-        private void Escort_ApplyPalette(On.PlayerGraphics.orig_ApplyPalette orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, RoomPalette palette)
+        public static void Escort_ApplyPalette(On.PlayerGraphics.orig_ApplyPalette orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, RoomPalette palette)
         {
             orig(self, s, rCam, palette);
             try
@@ -150,7 +148,7 @@ namespace TheEscort
                             switch (self.player.playerState.playerNumber)
                             {
                                 case 0:
-                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != DLCSharedEnums.GameTypeID.Challenge && !nonArena)
+                                    if (rCam.room.game.IsArenaSession && rCam.room.game.GetArenaGameSession.arenaSitting.gameTypeSetup.gameType != DLCSharedEnums.GameTypeID.Challenge && !ins.nonArena)
                                     {
                                         c = new Color(0.2f, 0.6f, 0.77f);
                                     }
@@ -201,7 +199,7 @@ namespace TheEscort
             }
         }
 
-        private void Escort_AddGFXContainer(On.PlayerGraphics.orig_AddToContainer orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, FContainer newContainer)
+        public static void Escort_AddGFXContainer(On.PlayerGraphics.orig_AddToContainer orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, FContainer newContainer)
         {
             orig(self, s, rCam, newContainer);
             try
@@ -275,7 +273,7 @@ namespace TheEscort
         /// <summary>
         /// Updates the visuals of Escort
         /// </summary>
-        private void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP)
+        public static void Escort_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP)
         {
             try
             {
@@ -331,13 +329,13 @@ namespace TheEscort
                     // Hypelevel visual fx
                     try
                     {
-                        if (self.player != null && Esconfig_Hypable(self.player))
+                        if (self.player != null && ins.Esconfig_Hypable(self.player))
                         {
                             // calculation of transparency
                             float alphya = 1f;
-                            if (hypeRequirement > self.player.aerobicLevel)
+                            if (ins.hypeRequirement > self.player.aerobicLevel)
                             {
-                                alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
+                                alphya = Mathf.Lerp(self.player.dead ? 0f : 0.57f, 1f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.player.aerobicLevel));
                             }
                             for (int a = e.mainSpriteIndex; a < s.sprites.Length; a++)
                             {
@@ -361,10 +359,10 @@ namespace TheEscort
                                 float alpine = 0f;
                                 float alpite = 0f;
 
-                                if (hypeRequirement > self.player.aerobicLevel)
+                                if (ins.hypeRequirement > self.player.aerobicLevel)
                                 {
-                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
-                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, hypeRequirement, self.player.aerobicLevel));
+                                    alpine = Mathf.Lerp(0f, 0.08f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.player.aerobicLevel));
+                                    alpite = Mathf.Lerp(0f, 0.2f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.player.aerobicLevel));
                                 }
                                 else
                                 {
@@ -434,7 +432,7 @@ namespace TheEscort
             }
         }
 
-        private void Escort_HUD_Draw(On.RoomCamera.orig_DrawUpdate orig, RoomCamera self, float timeStacker, float timeSpeed)
+        public static void Escort_HUD_Draw(On.RoomCamera.orig_DrawUpdate orig, RoomCamera self, float timeStacker, float timeSpeed)
         {
             try
             {
@@ -460,7 +458,7 @@ namespace TheEscort
             orig(self, timeStacker, timeSpeed);
         }
 
-        private void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
+        public static void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
         {
             orig(self);
             try
@@ -485,7 +483,7 @@ namespace TheEscort
         }
 
 
-        private Color Escort_Colorz(On.PlayerGraphics.orig_DefaultSlugcatColor orig, SlugcatStats.Name i)
+        public static Color Escort_Colorz(On.PlayerGraphics.orig_DefaultSlugcatColor orig, SlugcatStats.Name i)
         {
             try {
                 if (i == EscortMe){
@@ -505,14 +503,14 @@ namespace TheEscort
 #endregion
 
 #region Escort Jolly UI
-        private static bool Escort_Jolly_Sprite(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_HasUniqueSprite orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
+        public static bool Escort_Jolly_Sprite(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_HasUniqueSprite orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
         {
             Ebug("Woof woof");
             if (self.symbolNameOff.Contains("escortme")) return true;
             return orig(self);
         }
 
-        private static string Escort_Jolly_Name(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_GetPupButtonOffName orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
+        public static string Escort_Jolly_Name(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_GetPupButtonOffName orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
         {
             SlugcatStats.Name playerClass = self.JollyOptions(self.index).playerClass;
             if (playerClass != null && playerClass.value.Equals("EscortMe"))
@@ -522,7 +520,7 @@ namespace TheEscort
             return orig(self);
         }
 
-        private static Color Escort_Please_Just_Kill_Me(On.PlayerGraphics.orig_JollyUniqueColorMenu orig, SlugcatStats.Name slugName, SlugcatStats.Name reference, int playerNumber)
+        public static Color Escort_Please_Just_Kill_Me(On.PlayerGraphics.orig_JollyUniqueColorMenu orig, SlugcatStats.Name slugName, SlugcatStats.Name reference, int playerNumber)
         {
             if ((RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.DEFAULT || (playerNumber == 0 && RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.AUTO)) && slugName == EscortMe)
             {
@@ -544,7 +542,7 @@ namespace TheEscort
             return escortRGBStore[playerNumber];*/
         }
 
-        private static void Escort_RGBRGBRGB_GoesBrr(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_Update orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
+        public static void Escort_RGBRGBRGB_GoesBrr(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_Update orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
         {
             orig(self);
             if (self.HasUniqueSprite() && self.symbolNameOff == "escortme_pup_off")
@@ -568,7 +566,7 @@ namespace TheEscort
             }
         }
 
-        private static void EscortBuildSelectFromJollyMenu(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_ctor orig, JollyCoop.JollyMenu.JollySlidingMenu self, JollyCoop.JollyMenu.JollySetupDialog menu, MenuObject owner, Vector2 pos)
+        public static void EscortBuildSelectFromJollyMenu(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_ctor orig, JollyCoop.JollyMenu.JollySlidingMenu self, JollyCoop.JollyMenu.JollySetupDialog menu, MenuObject owner, Vector2 pos)
         {
             orig(self, menu, owner, pos);
             if (ins.config.PlayerCount > 4) return;  // Just disable the menu for coherency sake
@@ -634,7 +632,7 @@ namespace TheEscort
             self.UpdatePlayerSlideSelectable(menu.manager.rainWorld.options.JollyPlayerCount - 1);
         }
 
-        private static void EscortPleaseSaveTheGoddamnConfigs(On.JollyCoop.JollyMenu.JollySetupDialog.orig_RequestClose orig, JollyCoop.JollyMenu.JollySetupDialog self)
+        public static void EscortPleaseSaveTheGoddamnConfigs(On.JollyCoop.JollyMenu.JollySetupDialog.orig_RequestClose orig, JollyCoop.JollyMenu.JollySetupDialog self)
         {
             try{
                 if (!self.closing){
@@ -652,7 +650,7 @@ namespace TheEscort
         }
 
 
-        private static void Eshelp_Set_Jolly_To_Easier_Remix(UIfocusable trigger)
+        public static void Eshelp_Set_Jolly_To_Easier_Remix(UIfocusable trigger)
         {
             int index = -1;
             for (int i = 0; i < ins.config.jollyEscortEasies.Length; i++)
@@ -692,7 +690,7 @@ namespace TheEscort
             }*/
         }
 
-        private static void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
+        public static void EscortGrayedOutLikeAnIdiot(On.JollyCoop.JollyMenu.JollySlidingMenu.orig_UpdatePlayerSlideSelectable orig, JollyCoop.JollyMenu.JollySlidingMenu self, int pIndex)
         {
             orig(self, pIndex);
             if (!(ins.config.jollyEscortBuilds is not null && ins.config.jollyEscortBuilds.Length > 0))
@@ -712,7 +710,7 @@ namespace TheEscort
         }
 
 
-        private static void Eshelp_Set_Jolly_To_Remix(UIfocusable trigger)
+        public static void Eshelp_Set_Jolly_To_Remix(UIfocusable trigger)
         {
             int index = -1;
             for (int i = 0; i < ins.config.jollyEscortBuilds.Length; i++)
@@ -759,7 +757,7 @@ namespace TheEscort
             }*/
         }
 
-        private static void EscortHideShowBuildCopium(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_Update orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
+        public static void EscortHideShowBuildCopium(On.JollyCoop.JollyMenu.JollyPlayerSelector.orig_Update orig, JollyCoop.JollyMenu.JollyPlayerSelector self)
         {
             orig(self);
             if (ins.config.jollyEscortBuilds is not null && ins.config.jollyEscortBuilds.Length > 0)
@@ -775,79 +773,180 @@ namespace TheEscort
         }
 #endregion
 
-/*
 #region Arena Mode UI
-        private static void Escort_Arena_Class_Changer(On.Menu.MultiplayerMenu.orig_InitiateGameTypeSpecificButtons orig, Menu.MultiplayerMenu self)
+        public static void Escort_Arena_Class_Changer(On.Menu.MultiplayerMenu.orig_InitiateGameTypeSpecificButtons orig, Menu.MultiplayerMenu self)
+        {
+            // Ebug("Initiate buttons!");
+            orig(self);
+            if (ins.config.PlayerCount > 4) return;  // Not dealing with >4 players
+            // Ebug("After orig + array is null? " + ins.config.arenaEscortBuilds is null);
+            // stupidButton = new SimpleButton[4];
+            ins.config.arenaEscortBuilds ??= new SimpleButton[4];
+            // anchor = new Vector2((120f - 120f) * self.playerClassButtons.Length, 0f);
+            //ins.config.arenaEscortEasies = new OpSimpleButton[4];
+            // wackyWrapper = new UIelementWrapper[4];  // UIElementwrapper to make it work with jolly coop menu lol
+            // somewhatIllegalWrapper = new UIelementWrapper[4];
+            if (self.currentGameType == ArenaSetup.GameTypeID.Sandbox || self.currentGameType == ArenaSetup.GameTypeID.Competitive){
+                // Ebug("entering setup condition");
+                for (int i = 0; i < 4; i++){
+                    // ins.config.arenaEscortBuilds[i] = new(
+                    //     new Vector2(580f + (float)i * 120f, 500f) + new Vector2(106f, -60f) - new Vector2((120f - 120f) * (float)self.playerClassButtons.Length, 0f), new Vector2(100f, 30f)
+                    // ){
+                    //     text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[i].Value]),
+                    //     // text = i switch
+                    //     // {
+                    //     //     0 => selectionable[ins.config.cfgBuildP1.Value],
+                    //     //     1 => selectionable[ins.config.cfgBuildP2.Value],
+                    //     //     2 => selectionable[ins.config.cfgBuildP3.Value],
+                    //     //     _ => selectionable[ins.config.cfgBuildP4.Value]
+                    //     // },
+                    //     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
+                    // };
+                    //ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
+                    ins.config.arenaEscortBuilds[i] = new SimpleButton(self, self.pages[0], rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[i].Value]), "BUILD_CHANGE_" + i, new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f), new Vector2(100f, 30f));
+                    // wackyWrapper[i] = new RectangularMenuObject(self.);
+                    self.pages[0].subObjects.Add(ins.config.arenaEscortBuilds[i]);
+                }
+            }
+        }
+
+        public static void Escort_Arena_Class_Button_Gone(On.Menu.MultiplayerMenu.orig_ClearGameTypeSpecificButtons orig, MultiplayerMenu self)
+        {
+            if (ins.config?.arenaEscortBuilds is not null)
+            {
+                for (int i = 0; i < ins.config.arenaEscortBuilds.Length; i++)
+                {
+                    if (ins.config.arenaEscortBuilds[i] is not null)
+                    {
+                        ins.config.arenaEscortBuilds[i].RemoveSprites();
+                        self.pages[0].RemoveSubObject(ins.config.arenaEscortBuilds[i]);
+                    }
+                }
+                ins.config.arenaEscortBuilds = null;
+            }
+            orig(self);
+        }
+
+        public static void Escort_Arena_Class_Signaler(On.Menu.MultiplayerMenu.orig_Singal orig, MultiplayerMenu self, MenuObject sender, string message)
+        {
+            try
+            {
+                Ebug("Beep! "+ message);
+
+                if(message.StartsWith("BUILD_CHANGE") && int.TryParse(message.Last().ToString(), out int p_index) && ins.config?.arenaEscortBuilds?[p_index] is not null)
+                {
+                    Ebug("Boop! "+ message);
+                    self.PlaySound(SoundID.MENU_Button_Standard_Button_Pressed);
+                    if (ins.config.cfgBuild[p_index].Value - 1 < ins.config.buildDiv)
+                    {
+                        ins.config.cfgBuild[p_index].Value = 0;
+                    }
+                    else
+                    {
+                        ins.config.cfgBuild[p_index].Value--;
+                    }
+                    ins.config.arenaEscortBuilds[p_index].menuLabel.text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[p_index].Value]);
+                    // ins.config.arenaEscortBuilds[p_index].menuLabel = new(
+                    //     ins.config.arenaEscortBuilds[p_index].menu, 
+                    //     ins.config.arenaEscortBuilds[p_index], 
+                    //     rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[p_index].Value]),
+                    //     new(),
+                    //     ins.config.arenaEscortBuilds[p_index].size, 
+                    //     false);
+                    // ins.config.arenaEscortBuilds[p_index].Update();
+                }
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Oh no! Arena class changer signal threw something at the wall! Take cover!");
+            }
+            if (message is "PLAY!" or "RESUME")
+            {
+                ins.config?._SaveConfigFile();
+                Ebug("Saving config!");
+            }
+            orig(self, sender, message);
+        }
+
+        public static void Escort_Arena_Save_On_Exit(On.Menu.MultiplayerMenu.orig_OnExit orig, MultiplayerMenu self)
+        {
+            if (!self.exiting)
+            {
+                ins.config?._SaveConfigFile();
+            }
+            orig(self);
+        }
+
+
+        public static void Escort_Arena_Hide_Show_Button(On.Menu.MultiplayerMenu.orig_Update orig, MultiplayerMenu self)
         {
             orig(self);
-            ins.config.arenaEscortBuilds = new OpSimpleButton[4];
-            //ins.config.arenaEscortEasies = new OpSimpleButton[4];
-            wackyWrapper = new UIelementWrapper[4];  // UIElementwrapper to make it work with jolly coop menu lol
-            somewhatIllegalWrapper = new UIelementWrapper[4];
-            if (self.currentGameType == ArenaSetup.GameTypeID.Sandbox || self.currentGameType == ArenaSetup.GameTypeID.Competitive){
-                for (int i = 0; i < 4; i++){
-                    ins.config.arenaEscortBuilds[i] = new(
-                        new Vector2(580f + (float)i * 120f, 500f) + new Vector2(106f, -60f) - new Vector2((120f - 120f) * (float)self.playerClassButtons.Length, 0f), new Vector2(100f, 30f)
-                    ){
-                        text = i switch
+
+            if (ins.config?.arenaEscortBuilds is not null)
+            {
+                for (int i = 0; i < ins.config.arenaEscortBuilds.Length; i++)
+                {
+                    if (ins.config.arenaEscortBuilds[i] is not null)
+                    {
+                        if (Eshelp_IsMe(self.GetArenaSetup?.playerClass?[i]))
                         {
-                            0 => selectionable[ins.config.cfgBuildP1.Value],
-                            1 => selectionable[ins.config.cfgBuildP2.Value],
-                            2 => selectionable[ins.config.cfgBuildP3.Value],
-                            _ => selectionable[ins.config.cfgBuildP4.Value]
-                        },
-                        description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
-                    };
-                    ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
-                    wackyWrapper[i] = new UIelementWrapper(self.);
-                    self.pages[0].subObjects.Add(wackyWrapper[i]);
+                            ins.config.arenaEscortBuilds[i].pos = new (800, 1000);
+                            ins.config.arenaEscortBuilds[i].inactive = true;
+                        }
+                        else
+                        {
+                            ins.config.arenaEscortBuilds[i].pos = new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f);
+                            ins.config.arenaEscortBuilds[i].inactive = false;
+                        }
+                    }
                 }
             }
         }
 
-        private static void Eshelp_Set_Arena_To_Remix(UIfocusable trigger)
-        {
-            int index = -1;
-            for (int i = 0; i < ins.config.arenaEscortBuilds.Length; i++)
-            {
-                if (ins.config.arenaEscortBuilds[i].bumpBehav == trigger.bumpBehav)
-                {
-                    index = i;
-                    break;
-                }
-            }
-            if (index == -1)
-            {
-                Ebug("Couldn't find button!");
-                return;
-            }
-            switch (index)
-            {
-                case 0:
-                    if (ins.config.cfgBuildP1.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP1.Value = 0;
-                    else ins.config.cfgBuildP1.Value--;
-                    ins.config.arenaEscortBuilds[0].text = selectionable[ins.config.cfgBuildP1.Value];
-                    break;
-                case 1:
-                    if (ins.config.cfgBuildP2.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP2.Value = 0;
-                    else ins.config.cfgBuildP2.Value--;
-                    ins.config.arenaEscortBuilds[1].text = selectionable[ins.config.cfgBuildP2.Value];
-                    break;
-                case 2:
-                    if (ins.config.cfgBuildP3.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP3.Value = 0;
-                    else ins.config.cfgBuildP3.Value--;
-                    ins.config.arenaEscortBuilds[2].text = selectionable[ins.config.cfgBuildP3.Value];
-                    break;
-                case 3:
-                    if (ins.config.cfgBuildP4.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP4.Value = 0;
-                    else ins.config.cfgBuildP4.Value--;
-                    ins.config.arenaEscortBuilds[3].text = selectionable[ins.config.cfgBuildP4.Value];
-                    break;
-            }
-        }
+
+
+        // private static void Eshelp_Set_Arena_To_Remix(UIfocusable trigger)
+        // {
+        //     int index = -1;
+        //     for (int i = 0; i < ins.config.arenaEscortBuilds.Length; i++)
+        //     {
+        //         if (ins.config.arenaEscortBuilds[i].bumpBehav == trigger.bumpBehav)
+        //         {
+        //             index = i;
+        //             break;
+        //         }
+        //     }
+        //     if (index == -1)
+        //     {
+        //         Ebug("Couldn't find button!");
+        //         return;
+        //     }
+        //     switch (index)
+        //     {
+        //         case 0:
+        //             if (ins.config.cfgBuildP1.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP1.Value = 0;
+        //             else ins.config.cfgBuildP1.Value--;
+        //             ins.config.arenaEscortBuilds[0].text = selectionable[ins.config.cfgBuildP1.Value];
+        //             break;
+        //         case 1:
+        //             if (ins.config.cfgBuildP2.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP2.Value = 0;
+        //             else ins.config.cfgBuildP2.Value--;
+        //             ins.config.arenaEscortBuilds[1].text = selectionable[ins.config.cfgBuildP2.Value];
+        //             break;
+        //         case 2:
+        //             if (ins.config.cfgBuildP3.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP3.Value = 0;
+        //             else ins.config.cfgBuildP3.Value--;
+        //             ins.config.arenaEscortBuilds[2].text = selectionable[ins.config.cfgBuildP3.Value];
+        //             break;
+        //         case 3:
+        //             if (ins.config.cfgBuildP4.Value - 1 < ins.config.buildDiv) ins.config.cfgBuildP4.Value = 0;
+        //             else ins.config.cfgBuildP4.Value--;
+        //             ins.config.arenaEscortBuilds[3].text = selectionable[ins.config.cfgBuildP4.Value];
+        //             break;
+        //     }
+        // }
 
 #endregion
-*/
     }
 }
 

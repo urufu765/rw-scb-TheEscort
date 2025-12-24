@@ -14,18 +14,18 @@ namespace TheEscort
         // public static readonly PlayerFeature<> railgun = Player("theescort/railgunner/");
         // public static readonly PlayerFeature<float> railgun = PlayerFloat("theescort/railgunner/");
         // public static readonly PlayerFeature<float[]> railgun = PlayerFloats("theescort/railgunner/");
-        public static readonly PlayerFeature<float[]> railgunSpearVelFac = PlayerFloats("theescort/railgunner/spear_vel_fac");
-        public static readonly PlayerFeature<float[]> railgunSpearDmgFac = PlayerFloats("theescort/railgunner/spear_dmg_fac");
-        public static readonly PlayerFeature<float[]> railgunSpearThrust = PlayerFloats("theescort/railgunner/spear_thrust");
-        public static readonly PlayerFeature<float> railgunRockVelFac = PlayerFloat("theescort/railgunner/rock_vel_fac");
-        public static readonly PlayerFeature<float> railgunLillyVelFac = PlayerFloat("theescort/railgunner/lilly_vel_fac");
-        public static readonly PlayerFeature<float> railgunBombVelFac = PlayerFloat("theescort/railgunner/bomb_vel_fac");
-        public static readonly PlayerFeature<float[]> railgunRockThrust = PlayerFloats("theescort/railgunner/rock_thrust");
-        public static readonly PlayerFeature<float> railgunRecoil = PlayerFloat("theescort/railgunner/recoil_fac");
-        public static readonly PlayerFeature<float[]> railgunRecoilMod = PlayerFloats("theescort/railgunner/recoil_mod");
-        public static readonly PlayerFeature<int> railgunRecoilDelay = PlayerInt("theescort/railgunner/recoil_delay");
+        public static readonly PlayerFeature<float[]> railgunSpearVelFac;
+        public static readonly PlayerFeature<float[]> railgunSpearDmgFac;
+        public static readonly PlayerFeature<float[]> railgunSpearThrust;
+        public static readonly PlayerFeature<float> railgunRockVelFac;
+        public static readonly PlayerFeature<float> railgunLillyVelFac;
+        public static readonly PlayerFeature<float> railgunBombVelFac;
+        public static readonly PlayerFeature<float[]> railgunRockThrust;
+        public static readonly PlayerFeature<float> railgunRecoil;
+        public static readonly PlayerFeature<float[]> railgunRecoilMod;
+        public static readonly PlayerFeature<int> railgunRecoilDelay;
 
-        public void Esclass_RG_Tick(Player self, ref Escort e)
+        public static void Esclass_RG_Tick(Player self, ref Escort e)
         {
             if (e.RailWeaping > 0)
             {
@@ -70,7 +70,7 @@ namespace TheEscort
             // }
         }
 
-        private void Esclass_RG_Update(Player self, ref Escort e)
+        public static void Esclass_RG_Update(Player self, ref Escort e)
         {
             // VFX
             if (self != null && self.room != null)
@@ -144,14 +144,14 @@ namespace TheEscort
         /// <summary>
         /// For now just gives Railgunner passive movement speed boost upon charge buildup
         /// </summary>
-        private void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
+        public static void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
         {
             self.dynamicRunSpeed[0] += e.RailgunUse * 0.3f;
             self.dynamicRunSpeed[1] += e.RailgunUse * 0.3f;
         }
 
 
-        private void Esclass_RG_ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust)
+        public static void Esclass_RG_ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust)
         {
             if (
                 !railgunSpearVelFac.TryGet(self, out float[] rSpearVel) ||
@@ -211,7 +211,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_RG_LillyThrow(On.MoreSlugcats.LillyPuck.orig_Thrown orig, MoreSlugcats.LillyPuck self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+        public static void Esclass_RG_LillyThrow(On.MoreSlugcats.LillyPuck.orig_Thrown orig, MoreSlugcats.LillyPuck self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_RG_BombThrow(On.ScavengerBomb.orig_Thrown orig, ScavengerBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+        public static void Esclass_RG_BombThrow(On.ScavengerBomb.orig_Thrown orig, ScavengerBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
         {
             try
             {
@@ -336,7 +336,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_RG_AntiDeflect(On.Weapon.orig_WeaponDeflect orig, Weapon self, Vector2 inbetweenPos, Vector2 deflectDir, float bounceSpeed)
+        public static void Esclass_RG_AntiDeflect(On.Weapon.orig_WeaponDeflect orig, Weapon self, Vector2 inbetweenPos, Vector2 deflectDir, float bounceSpeed)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_RG_RockThrow(Rock self, Player p, ref float frc, ref Escort e)
+        public static void Esclass_RG_RockThrow(Rock self, Player p, ref float frc, ref Escort e)
         {
             if (
                 !railgunRockVelFac.TryGet(p, out float rRockVel)
@@ -430,7 +430,7 @@ namespace TheEscort
         /// <summary>
         /// Method that allows Railgunner to throw two objects at once.
         /// </summary>
-        private bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
+        public static bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
             {
@@ -491,7 +491,7 @@ namespace TheEscort
                 self.room.PlaySound(e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 0.8f : 0.93f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
                 if (Esclass_RG_Death(self, self.room, ref e))
                 {
-                    if (Esconfig_SFX(self))
+                    if (ins.Esconfig_SFX(self))
                     {
                         self.room.PlaySound(Escort_SFX_Railgunner_Death, e.SFXChunk);
                     }
@@ -545,7 +545,7 @@ namespace TheEscort
             return true;
         }
 
-        private static void Esclass_RG_GrabUpdate(Player self, ref Escort e)
+        public static void Esclass_RG_GrabUpdate(Player self, ref Escort e)
         {
             if (e.RailWeaping == 0)
             {
@@ -626,7 +626,7 @@ namespace TheEscort
         }
 
 
-        public bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+        public static bool Esclass_RG_Death(Player self, Room room, ref Escort e)
         {
             if (e.RailgunUse >= e.RailgunLimit)
             {
@@ -655,7 +655,7 @@ namespace TheEscort
         }
 
 
-        private bool Esclass_RG_SpearGet(PhysicalObject obj)
+        public static bool Esclass_RG_SpearGet(PhysicalObject obj)
         {
             if (obj != null && obj is Spear s && s.mode == Weapon.Mode.StuckInWall)
             {
@@ -664,7 +664,7 @@ namespace TheEscort
             return false;
         }
 
-        private void Esclass_RG_Spasm(On.Player.orig_Stun orig, Player self, int st)
+        public static void Esclass_RG_Spasm(On.Player.orig_Stun orig, Player self, int st)
         {
             orig(self, st);
             try

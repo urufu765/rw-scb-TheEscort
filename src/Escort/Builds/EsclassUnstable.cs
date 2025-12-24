@@ -17,7 +17,7 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> unstable = PlayerFloats("theescort/unstable/");
 
 
-        public void Esclass_US_Tick(Player self, ref Escort e)
+        public static void Esclass_US_Tick(Player self, ref Escort e)
         {
             bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
             // Constant tripping clock
@@ -115,7 +115,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_US_Update(Player self, ref Escort e)
+        public static void Esclass_US_Update(Player self, ref Escort e)
         {
             bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
 
@@ -224,7 +224,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_US_MovementUpdate(Player self, ref Escort e)
+        public static void Esclass_US_MovementUpdate(Player self, ref Escort e)
         {
             // Midair jump
             if (e.UnsBlinkCD == 0 && self.input[0].jmp && !self.input[1].jmp && self.bodyChunks[0].ContactPoint.y != -1 && self.bodyChunks[1].ContactPoint.y != -1)
@@ -245,7 +245,7 @@ namespace TheEscort
         /// <summary>
         /// Calculates whether Unstable can blink. Guaranteed for the first two blinks.
         /// </summary>
-        private static bool Esclass_US_CanBlinkYes(int n)
+        public static bool Esclass_US_CanBlinkYes(int n)
         {
             if (n < 3) return true;
             return UnityEngine.Random.value < Mathf.Pow(0.5f, n - 2);
@@ -256,7 +256,7 @@ namespace TheEscort
         /// Replaces the slugcat jump with a blink instead. Dunno the behaviour of jumps so this code will assume that the jump function will not always run when jump is pressed midair. Only meant to be used as the first blink
         /// It has come to my attention that this jump should replace the player jump since this is essentially how the player basically makes a jump.
         /// </summary>
-        private bool Esclass_US_Jump(Player self, ref Escort e)
+        public static bool Esclass_US_Jump(Player self, ref Escort e)
         {
             bool shortDash = self.bodyMode == Player.BodyModeIndex.Swimming || self.bodyMode == Player.BodyModeIndex.ZeroG;
 
@@ -327,7 +327,7 @@ namespace TheEscort
         /// <summary>
         /// Makes Unstable do a miniature hop that does barely anything... to be expanded upon so it's fully featured like a normal hop
         /// </summary>
-        private void Esclass_US_MiniHop(Player self)
+        public static void Esclass_US_MiniHop(Player self)
         {
             if (self.animation == Player.AnimationIndex.ClimbOnBeam)
             {
@@ -379,7 +379,7 @@ namespace TheEscort
         /// May need to have an extra condition made in MovementUpdate or something for midair jumps
         /// Also I just realized this doesn't account for if the player is not holding a direction and they attenpt to press jump
         /// </summary>
-        private void Esclass_US_MidJump(Player self, Escort e)
+        public static void Esclass_US_MidJump(Player self, Escort e)
         {
             if (e.UnsBlinkCD == 0 && e.UnsBlinkFrame == 0 && (!e.UnsBlinking || e.UnsBlinkWindow > 0))
             {
@@ -594,7 +594,7 @@ namespace TheEscort
             // Orient the player so it's feet first
         }
 
-        private bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
+        public static bool Esclass_US_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
         {
             if (self.grasps[grasp]?.grabbed is Weapon w)  // Only accepts throwing weapons. Normal stuff that will be just tossed may not need to be percentaged
             {
@@ -629,7 +629,7 @@ namespace TheEscort
         /// <summary>
         /// Homes into the nearest creature or nearest in selected direction and does a KICK
         /// </summary>
-        private Creature Esclass_US_RockitKick(Player self, Escort e)
+        public static Creature Esclass_US_RockitKick(Player self, Escort e)
         {
             bool directional = false;
             float maxR = 100;
@@ -693,14 +693,14 @@ namespace TheEscort
         /// <summary>
         /// Collision against a creature to apply the homing kick stuff
         /// </summary>
-        private void Esclass_US_Collision(Player self, Creature creature, ref Escort e)
+        public static void Esclass_US_Collision(Player self, Creature creature, ref Escort e)
         {
             if (e.UnsRockitDur > 0 && creature == e.UnsRockitCret)
             {
                 e.UnsRockitDur = 0;
                 creature.Violence(
                     self.bodyChunks[1], 
-                    new Vector2(self.bodyChunks[1].vel.x * DKMultiplier, self.bodyChunks[1].vel.y * DKMultiplier),
+                    new Vector2(self.bodyChunks[1].vel.x * ins.DKMultiplier, self.bodyChunks[1].vel.y * ins.DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
                     Escort.UnsRKDx * e.UnsBlinkCount,

@@ -20,21 +20,21 @@ namespace TheEscort
     /// </summary>
     partial class Plugin : BaseUnityPlugin
     {
-        public static readonly PlayerFeature<bool> InstaHype = PlayerBool("theescort/insta_hype");
+        public static readonly PlayerFeature<bool> InstaHype;
 
         /// <summary><list type="bullet">
         /// <item>0: Min speed</item>
         /// <item>1: Max speed</item>
         /// <item>2: Non-hyped speed</item>
         /// </list></summary>
-        public static readonly PlayerFeature<float[]> BetterCrawl = PlayerFloats("theescort/better_crawl");
+        public static readonly PlayerFeature<float[]> BetterCrawl;
 
         /// <summary><list type="bullet">
         /// <item>0: Min speed</item>
         /// <item>1: Max speed</item>
         /// <item>2: Non-hyped speed</item>
         /// </list></summary>
-        public static readonly PlayerFeature<float[]> BetterPoleWalk = PlayerFloats("theescort/better_polewalk");
+        public static readonly PlayerFeature<float[]> BetterPoleWalk;
 
         /// <summary><list type="bullet">
         /// <item>0: Head min speed</item>
@@ -44,7 +44,7 @@ namespace TheEscort
         /// <item>4: Non-hyped head speed</item>
         /// <item>5: Non-hyped body speed</item>
         /// </list></summary>
-        public static readonly PlayerFeature<float[]> BetterPoleHang = PlayerFloats("theescort/better_polehang");
+        public static readonly PlayerFeature<float[]> BetterPoleHang;
 
         /// <summary><list type="bullet">
         /// <item>0: Rolling Dropkick</item>
@@ -52,16 +52,16 @@ namespace TheEscort
         /// <item>2: Dropkick poleflip</item>
         /// <item>3: Flip poleflip</item>
         /// </list></summary>
-        public static readonly PlayerFeature<float[]> RollCage = PlayerFloats("theescort/rollfly");
+        public static readonly PlayerFeature<float[]> RollCage;
         
 
-        private int filenum;
+        private static int filenum;
 
 #region Common
         /// <summary>
         /// Ticks variables and values on update
         /// </summary>
-        private void Esclass_Tick(Player self)
+        public static void Esclass_Tick(Player self)
         {
             if (!eCon.TryGetValue(self, out Escort e))
             {
@@ -124,11 +124,11 @@ namespace TheEscort
             }
 
             // Smooth color/brightness transition
-            if (hypeRequirement <= self.aerobicLevel && e.smoothTrans < 15)
+            if (ins.hypeRequirement <= self.aerobicLevel && e.smoothTrans < 15)
             {
                 e.smoothTrans++;
             }
-            else if (hypeRequirement > self.aerobicLevel && e.smoothTrans > 0)
+            else if (ins.hypeRequirement > self.aerobicLevel && e.smoothTrans > 0)
             {
                 e.smoothTrans--;
             }
@@ -242,7 +242,7 @@ namespace TheEscort
         /// <summary>
         /// Does a variety of things, from test logs, ticking the Escort variables, general VFX, lizard grab, easy mode, drug use, looping sfx.
         /// </summary>
-        private void Escort_Update(On.Player.orig_Update orig, Player self, bool eu)
+        public static void Escort_Update(On.Player.orig_Update orig, Player self, bool eu)
         {
             orig(self, eu);
             try
@@ -265,10 +265,10 @@ namespace TheEscort
 
                 if (logForCutscene && self.playerState.playerNumber == 0)
                 {
-                    this.GetCSIL().Capture(self);
+                    ins.GetCSIL().Capture(self);
                     if (Input.GetKeyDown("-"))
                     {
-                        this.GetCSIL().Release($"cutscene_input_log{filenum}");
+                        ins.GetCSIL().Release($"cutscene_input_log{filenum}");
                         filenum++;
                     }
                 }
@@ -312,7 +312,7 @@ namespace TheEscort
             if (e.secretRGB) {
                 e.Escat_runit_thru_RGB(
                     e.hypeColor, 
-                    hypeRequirement < self.aerobicLevel ? 8f: Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, hypeRequirement, self.aerobicLevel))
+                    ins.hypeRequirement < self.aerobicLevel ? 8f: Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.aerobicLevel))
                 );
             }
 
@@ -401,7 +401,7 @@ namespace TheEscort
             }
 
             // Vengeful Lizards
-            if (self != null && self.room != null && self.room.game != null && self.room.game.IsStorySession && Esconfig_Vengeful_Lizards())
+            if (self != null && self.room != null && self.room.game != null && self.room.game.IsStorySession && ins.Esconfig_Vengeful_Lizards())
             {
                 if (e.playerKillCount < self.SessionRecord.kills.Count)
                 {
@@ -422,10 +422,10 @@ namespace TheEscort
             // vfx
             if (self != null && self.room != null)
             {
-                Esconfig_HypeReq(self);
+                ins.Esconfig_HypeReq(self);
 
                 // Battle-hyped visual effect
-                if (config.cfgNoticeHype.Value && Esconfig_Hypable(self) && Esconfig_HypeReq(self) && self.aerobicLevel > hypeRequirement)
+                if (ins.config.cfgNoticeHype.Value && ins.Esconfig_Hypable(self) && ins.Esconfig_HypeReq(self) && self.aerobicLevel > ins.hypeRequirement)
                 {
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
@@ -433,7 +433,7 @@ namespace TheEscort
                 }
 
                 // Charged pounces Visual Effect
-                if (Esconfig_Pouncing(self))
+                if (ins.Esconfig_Pouncing(self))
                 {
                     Color pounceColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
 
@@ -449,7 +449,7 @@ namespace TheEscort
             }
 
             // Check if player is grabbing a lizard
-            if (Esconfig_Dunkin())
+            if (ins.Esconfig_Dunkin())
             {
                 try
                 {
@@ -487,9 +487,9 @@ namespace TheEscort
             }
 
             // Implement drug use
-            if (hypeRequirement >= 0 && self.aerobicLevel < Mathf.Lerp(0f, hypeRequirement + 0.01f, self.Adrenaline))
+            if (ins.hypeRequirement >= 0 && self.aerobicLevel < Mathf.Lerp(0f, ins.hypeRequirement + 0.01f, self.Adrenaline))
             {
-                self.aerobicLevel = Mathf.Lerp(0f, hypeRequirement + 0.01f, self.Adrenaline);
+                self.aerobicLevel = Mathf.Lerp(0f, ins.hypeRequirement + 0.01f, self.Adrenaline);
             }
 
             // Implement Easy Mode
@@ -501,7 +501,7 @@ namespace TheEscort
             }
 
             // Implement looping SFX
-            if (Esconfig_SFX(self))
+            if (ins.Esconfig_SFX(self))
             {
                 if (self.animation == Player.AnimationIndex.Roll && e.Rollin != null)
                 {
@@ -515,7 +515,7 @@ namespace TheEscort
             }
 
             // optional Pole Tech
-            if ((config.cfgPoleBounce.Value || e.isDefault) && self.input[0].jmp && !self.input[1].jmp)
+            if ((ins.config.cfgPoleBounce.Value || e.isDefault) && self.input[0].jmp && !self.input[1].jmp)
             {
                 // Normally rivulet check
                 try
@@ -695,7 +695,7 @@ namespace TheEscort
             {
                 if (!e.isChunko && self.TotalMass / e.originalMass > 1.4f && self.room != null)
                 {
-                    if (Esconfig_SFX(self))
+                    if (ins.Esconfig_SFX(self))
                     {
                         Ebug("Play rotund sound!");
                         self.room.PlaySound(Escort_SFX_Uhoh_Big, e.SFXChunk);
@@ -765,14 +765,14 @@ namespace TheEscort
                 }
 
                 // Regular stuff
-                if (e.isDefault || config.cfgAllBuildsGetPup.Value || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn || self.room.game.rainWorld.ExpeditionMode)
+                if (e.isDefault || ins.config.cfgAllBuildsGetPup.Value || sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn || self.room.game.rainWorld.ExpeditionMode)
                 {
                     if (checkPupStatusAgain)
                     {
                         e.tryFindingPup = 20;
                         checkPupStatusAgain = false;
                     }
-                    if (e.isDefault && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber > 0 && !pupAvailable)
+                    if (e.isDefault && ins.config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber > 0 && !pupAvailable)
                     {
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
                     }
@@ -785,7 +785,7 @@ namespace TheEscort
                         Ebug("Socks has been added to expedition!", 1, true);
                     }
 
-                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks) && !SChallengeMachine.SC03_Active)
+                    if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && ins.config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks) && !SChallengeMachine.SC03_Active)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         Ebug("Socks has been added to an Escort with the power of options!", 1, true);
@@ -874,7 +874,7 @@ namespace TheEscort
 
 #region Movement stuff
         // Implement Movementtech
-        private void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self)
+        public static void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self)
         {
             orig(self);
             try
@@ -911,7 +911,7 @@ namespace TheEscort
                     {
                         Ebug(self, "Rollin at: " + e.RollinCount, 2);
                     }
-                    if (Esconfig_SFX(self) && e.Rollin != null)
+                    if (ins.Esconfig_SFX(self) && e.Rollin != null)
                     {
                         e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
                     }
@@ -935,7 +935,7 @@ namespace TheEscort
                 Ebug(self, nerr, "Caught null error in updateAnimation!");
             }
             // Implement dropkick animation
-            if (self.animation == Player.AnimationIndex.RocketJump && config.cfgDKAnimation.Value)
+            if (self.animation == Player.AnimationIndex.RocketJump && ins.config.cfgDKAnimation.Value)
             {
                 Vector2 n = self.bodyChunks[0].vel.normalized;
                 
@@ -945,7 +945,7 @@ namespace TheEscort
                 self.bodyChunks[1].vel.y += 0.1f;
             }
             // Implement frontslide animation (not working right)
-            if (false && self.animation == Player.AnimationIndex.BellySlide && config.cfgDKAnimation.Value && !self.longBellySlide)
+            if (false && self.animation == Player.AnimationIndex.BellySlide && ins.config.cfgDKAnimation.Value && !self.longBellySlide)
             {
                 if (self.rollCounter < 6)
                 {
@@ -979,7 +979,7 @@ namespace TheEscort
         }
 
         // Implement Movementthings
-        private void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self)
+        public static void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self)
         {
             orig(self);
             try
@@ -1006,7 +1006,7 @@ namespace TheEscort
                 return;
             }
 
-            bool hypedMode = Esconfig_Hypable(self);
+            bool hypedMode = ins.Esconfig_Hypable(self);
 
             float movementSlow = Mathf.Lerp(1, 4, Mathf.InverseLerp(0, 16, self.slowMovementStun));
 
@@ -1181,7 +1181,7 @@ namespace TheEscort
         /// <summary>
         /// Implements code that makes Escort drop something live if it grabs them. TODO.
         /// <summary>
-        private static void Escort_GrabbyUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu)
+        public static void Escort_GrabbyUpdate(On.Player.orig_GrabUpdate orig, Player self, bool eu)
         {
             try
             {
@@ -1235,7 +1235,7 @@ namespace TheEscort
         /// <summary>
         /// Implement Escort's slowed stamina increase. Due to the aerobic decrease found in some movements implemented in Escort, the AerobicIncrease actually does the original, and on top of that the additional to balance things out.
         /// </summary>
-        private void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f)
+        public static void Escort_AerobicIncrease(On.Player.orig_AerobicIncrease orig, Player self, float f)
         {
             if (
                 !Exhausion.TryGet(self, out float exhaust) ||
@@ -1281,7 +1281,7 @@ namespace TheEscort
         /// <remarks>
         /// The sick flip may need to be moved elsewhere to ensure it works with mods like Simplified Movesets.
         /// </remarks>
-        private void Escort_Jump(On.Player.orig_Jump orig, Player self)
+        public static void Escort_Jump(On.Player.orig_Jump orig, Player self)
         {
             // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             try
@@ -1322,7 +1322,7 @@ namespace TheEscort
 
             // Replace chargepounce with a sick flip
             if (
-                Esconfig_Pouncing(self) &&
+                ins.Esconfig_Pouncing(self) &&
                 (
                     self.superLaunchJump >= 19 ||
                     self.simulateHoldJumpButton == 6 ||
@@ -1333,9 +1333,9 @@ namespace TheEscort
             {
                 Ebug(self, "FLIPERONI GO!", 2);
 
-                if (Esconfig_SFX(self) && !e.kickFlip)
+                if (ins.Esconfig_SFX(self) && !e.kickFlip)
                 {
-                    self.room.PlaySound(Eshelp_SFX_Flip(), e.SFXChunk);
+                    self.room.PlaySound(ins.Eshelp_SFX_Flip(), e.SFXChunk);
                 }
                 self.animation = Player.AnimationIndex.Flip;
             }
@@ -1346,7 +1346,7 @@ namespace TheEscort
         /// <summary>
         /// Changes how walljumps work so Escort can have wall longpounce and super wall flip
         /// </summary>
-        private void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
+        public static void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
         {
             /*
             if (self.bodyMode != Player.BodyModeIndex.WallClimb){
@@ -1375,10 +1375,10 @@ namespace TheEscort
             }
 
             Ebug(self, "Walljump Triggered!");
-            bool wallJumper = Esconfig_WallJumps(self);
+            bool wallJumper = ins.Esconfig_WallJumps(self);
             bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
-            bool superWall = (Esconfig_Pouncing(self) && e.superWallFlip > (int)WJV[4]);
-            bool superFlip = self.allowRoll == 15 && Esconfig_Pouncing(self);
+            bool superWall = (ins.Esconfig_Pouncing(self) && e.superWallFlip > (int)WJV[4]);
+            bool superFlip = self.allowRoll == 15 && ins.Esconfig_Pouncing(self);
 
             // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
             if ((wallJumper && self.canWallJump != 0) || !wallJumper && !e.kickFlip)
@@ -1434,7 +1434,7 @@ namespace TheEscort
                 if (superFlip && superWall)
                 {
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((Esconfig_SFX(self) ? Eshelp_SFX_Flip() : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (Esconfig_SFX(self) ? 1f : 1.4f), 0.9f);
+                    self.room.PlaySound((ins.Esconfig_SFX(self) ? ins.Eshelp_SFX_Flip() : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (ins.Esconfig_SFX(self) ? 1f : 1.4f), 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], e.superWallFlip));
                     toPrint.SetValue("SUPERFLIP", 2);
                 }
@@ -1458,7 +1458,7 @@ namespace TheEscort
         /// <summary>
         /// Unsticking spears component of parryslide.
         /// </summary>
-        private bool Escort_StickySpear(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos appPos, Vector2 direction)
+        public static bool Escort_StickySpear(On.Player.orig_SpearStick orig, Player self, Weapon source, float dmg, BodyChunk chunk, PhysicalObject.Appendage.Pos appPos, Vector2 direction)
         {
             try
             {
@@ -1488,14 +1488,14 @@ namespace TheEscort
 
 
         // Implement Heavylifter
-        private bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj)
+        public static bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj)
         {
             try {
                 if (Eshelp_IsMe(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
-                if (!Esconfig_Heavylift(self))
+                if (!ins.Esconfig_Heavylift(self))
                 {
                     return orig(self, obj);
                 }
@@ -1522,7 +1522,7 @@ namespace TheEscort
                 }
 
                 //Ebug(self, "Heavycarry Triggered!");
-                if (obj.TotalMass <= self.TotalMass * ratioed)
+                if (obj.TotalMass <= self.TotalMass * ins.ratioed)
                 {
                     if (ModManager.CoopAvailable && obj is Player player && player != null)
                     {
@@ -1543,7 +1543,7 @@ namespace TheEscort
             }
         }
 
-        private void Escort_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu)
+        public static void Escort_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu)
         {
             try
             {
@@ -1573,7 +1573,7 @@ namespace TheEscort
         }
 
 
-        private Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
+        public static Player.ObjectGrabability Escort_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
         {
             try
             {
@@ -1618,13 +1618,13 @@ namespace TheEscort
                         {
                             return Player.ObjectGrabability.OneHand;
                         }
-                        else if (lizzie.Stunned && Esconfig_Dunkin() && !e.LizardDunk)
+                        else if (lizzie.Stunned && ins.Esconfig_Dunkin() && !e.LizardDunk)
                         {
                             if (e.LizGoForWalk == 0)
                             {
                                 e.LizGoForWalk = 320;
                             }
-                            if (!Esconfig_SFX(self))
+                            if (!ins.Esconfig_SFX(self))
                             {
                                 self.room.PlaySound(SoundID.Slugcat_Pick_Up_Misc_Inanimate, self.mainBodyChunk);
                             }
@@ -1632,7 +1632,7 @@ namespace TheEscort
                             return Player.ObjectGrabability.TwoHands;
                         }
                     }
-                    if (obj is Creature c && c.TotalMass <= self.TotalMass * ratioed && c.dead)
+                    if (obj is Creature c && c.TotalMass <= self.TotalMass * ins.ratioed && c.dead)
                     {
                         return Player.ObjectGrabability.BigOneHand;
                     }
@@ -1646,7 +1646,7 @@ namespace TheEscort
             }
         }
 
-        private float Escort_GotBit(On.Player.orig_DeathByBiteMultiplier orig, Player self)
+        public static float Escort_GotBit(On.Player.orig_DeathByBiteMultiplier orig, Player self)
         {
             try
             {
@@ -1699,7 +1699,7 @@ namespace TheEscort
 
 
         // Implement Parryslide
-        private void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
+        public static void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
         {
             try
             {
@@ -2105,7 +2105,7 @@ namespace TheEscort
 
         }
 
-        private bool Escort_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
+        public static bool Escort_SpearGet(On.Player.orig_CanIPickThisUp orig, Player self, PhysicalObject obj)
         {
             try
             {

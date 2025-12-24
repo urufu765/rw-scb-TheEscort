@@ -1,3 +1,4 @@
+using Menu;
 using Menu.Remix;
 using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
@@ -98,12 +99,12 @@ namespace TheEscort
         public readonly int buildDivFix = -5;  // Literally only used such that the Socks secret code calculation still works
         public int buildDiv = -6;  // Decrement by one everytime a new build is made (TODO: Change such that it can compensate for secret builds or something)
         public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-        private static readonly string VERSION = "0.3.3.3";
+        private static readonly string VERSION = "0.3.4";
         private readonly Configurable<string> cfgVersion;
         private static string HelloWorld {
             get{
                 return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-                "- Merry Christmas.<LINE>- Escort is now updated for the most recent update.<LINE><LINE>... that's it... for now!");
+                "- Merry Christmas.<LINE>- Escort is now updated for the most recent update.<LINE>-Now requires the mod when trying to join an Escort meadow session.<LINE>-You can now change Escort builds from the arena menu just like the jolly coop menu. (Easy mode button not available yet)<LINE><LINE>... that's it... for now!");
             }
         }
 
@@ -112,8 +113,8 @@ namespace TheEscort
         public OpSimpleButton[] jollyEscortEasies;
 
         // Arena button stuff
-        //public OpSimpleButton[] arenaEscortBuilds;
-        //public OpSimpleButton[] arenaEscortEasies;
+        public SimpleButton[] arenaEscortBuilds;
+        // public OpSimpleButton[] arenaEscortEasies;
 
         public EscOptions(RainWorld rainworld)
         {

@@ -15,17 +15,17 @@ namespace TheEscort
         // public static readonly PlayerFeature<> deflector = Player("theescort/deflector/");
         // public static readonly PlayerFeature<float> deflector = PlayerFloat("theescort/deflector/");
         // public static readonly PlayerFeature<float[]> deflector = PlayerFloats("theescort/deflector/");
-        public static readonly PlayerFeature<float> deflectorSlideDmg = PlayerFloat("theescort/deflector/slide_dmg");
-        public static readonly PlayerFeature<float> deflectorSlideLaunchFac = PlayerFloat("theescort/deflector/slide_launch_fac");
-        public static readonly PlayerFeature<float> deflectorSlideLaunchMod = PlayerFloat("theescort/deflector/slide_launch_mod");
-        public static readonly PlayerFeature<float[]> deflectorDKHypeDmg = PlayerFloats("theescort/deflector/dk_h_dmg");
-        public static readonly PlayerFeature<float[]> deflectorSpearVelFac = PlayerFloats("theescort/deflector/spear_vel_fac");
-        public static readonly PlayerFeature<float[]> deflectorSpearDmgFac = PlayerFloats("theescort/deflector/spear_dmg_fac");
+        public static readonly PlayerFeature<float> deflectorSlideDmg;
+        public static readonly PlayerFeature<float> deflectorSlideLaunchFac;
+        public static readonly PlayerFeature<float> deflectorSlideLaunchMod;
+        public static readonly PlayerFeature<float[]> deflectorDKHypeDmg;
+        public static readonly PlayerFeature<float[]> deflectorSpearVelFac;
+        public static readonly PlayerFeature<float[]> deflectorSpearDmgFac;
 
         public static float DeflSharedPerma;
         public static float DeflInitSharedPerma;
 
-        public void Esclass_DF_Tick(Player self, ref Escort e)
+        public static void Esclass_DF_Tick(Player self, ref Escort e)
         {
             // Increased damage when parry tick
             if (e.DeflAmpTimer > 0)
@@ -57,7 +57,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_DF_Update(Player self, ref Escort e)
+        public static void Esclass_DF_Update(Player self, ref Escort e)
         {
             // VFX
             if (self != null && self.room != null)
@@ -77,7 +77,7 @@ namespace TheEscort
                     //Color empoweredColor = new Color(1f, 0.7f, 0.35f, 0.7f);
                     //empoweredColor.a = 0.7f;
                     //self.room.AddObject(new MoreSlugcats.VoidParticle(self.mainBodyChunk.pos, RWCustom.Custom.RNV() * UnityEngine.Random.value, 5f));
-                    if (!config.cfgNoticeEmpower.Value)
+                    if (!ins.config.cfgNoticeEmpower.Value)
                     {
                         if (e.DeflPowah == 1 || e.DeflPowah == 3){
                             self.room.AddObject(new Spark(self.bodyChunks[0].pos + new Vector2((e.DeflAmpTimer % 2 == 0 ? 10 : -10), 0), new Vector2(2f * (e.DeflAmpTimer % 2 == 0 ? 1 : -1), 0), empoweredColor, null, 9, 13));
@@ -106,7 +106,7 @@ namespace TheEscort
             }
         }
 
-        private bool Esclass_DF_StickySpear(Player self)
+        public static bool Esclass_DF_StickySpear(Player self)
         {
             return !(
                 self.animation == Player.AnimationIndex.BellySlide ||
@@ -115,7 +115,7 @@ namespace TheEscort
             );
         }
 
-        private void Esclass_DF_UpdateAnimation(Player self, ref Escort e)
+        public static void Esclass_DF_UpdateAnimation(Player self, ref Escort e)
         {
             if (self.animation == Player.AnimationIndex.BellySlide)
             {
@@ -130,7 +130,7 @@ namespace TheEscort
                 }
                 int da = 32;
                 int db = 18;
-                if (config.cfgFunnyDeflSlide.Value)
+                if (ins.config.cfgFunnyDeflSlide.Value)
                 {
                     da = 46;
                     db = 22;
@@ -155,7 +155,7 @@ namespace TheEscort
 
         }
 
-        private void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
+        public static void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
         {
             try
             {

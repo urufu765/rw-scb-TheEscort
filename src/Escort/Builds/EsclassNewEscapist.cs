@@ -18,7 +18,7 @@ namespace TheEscort
         // public static readonly PlayerFeature<float[]> escapist = PlayerFloats("theescort/newescapist/");
 
 
-        public void Esclass_NE_Tick(Player self, ref Escort e)
+        public static void Esclass_NE_Tick(Player self, ref Escort e)
         {
             if (e.NEsResetCooldown)
             {
@@ -108,7 +108,7 @@ namespace TheEscort
             }
         }
 
-        private void Esclass_NE_Update(Player self, ref Escort e)
+        public static void Esclass_NE_Update(Player self, ref Escort e)
         {
             // Check if player has inputted the direction for ability activation
             if (e.NEsAbility == 0 && e.NEsCooldown == 0)  // Doubletap direction checker
@@ -208,7 +208,7 @@ namespace TheEscort
 
 
 
-        private static void Esclass_NE_CreateShadow(Player self, ref Escort e, bool vertical = false)
+        public static void Esclass_NE_CreateShadow(Player self, ref Escort e, bool vertical = false)
         {
             if (self.room is null || e.NEsShelterCloseTime || (self?.room?.abstractRoom is not null && self.room.abstractRoom.gate))  // Prevents a new one from being spawned in a shelter or gate to not chance an accidental save
             {
@@ -456,7 +456,7 @@ namespace TheEscort
         }
 
 
-        private void Esclass_NE_CheckKiller(On.Creature.orig_SetKillTag orig, Creature self, AbstractCreature killer)
+        public static void Esclass_NE_CheckKiller(On.Creature.orig_SetKillTag orig, Creature self, AbstractCreature killer)
         {
             try
             {
@@ -473,7 +473,7 @@ namespace TheEscort
             orig(self, killer);
         }
 
-        private bool Esclass_NE_HitShadowscort(On.Weapon.orig_HitThisObject orig, Weapon self, PhysicalObject obj)
+        public static bool Esclass_NE_HitShadowscort(On.Weapon.orig_HitThisObject orig, Weapon self, PhysicalObject obj)
         {
             if (obj is ShadowPlayer)
             {
