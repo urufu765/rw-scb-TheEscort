@@ -869,7 +869,7 @@ namespace TheEscort
                 {
                     if (eCon.TryGetValue(self.myPlayer, out Escort escort) && escort.Gilded)
                     {
-                        Ebug(self.myPlayer, "Found Gilded!", 4);
+                        Ebug(self.myPlayer, "Found Gilded!");
                         if (self.myGuard.state.dead && self.myGuard.realizedCreature.killTag == self.myPlayer.abstractCreature && self.hitsToKill > 1)
                         {
                             Ebug(self.myPlayer, "Set killrequirement to 1");

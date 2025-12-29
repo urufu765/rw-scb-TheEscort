@@ -53,11 +53,11 @@ namespace TheEscort
         /// <item>3: Flip poleflip</item>
         /// </list></summary>
         public static readonly PlayerFeature<float[]> RollCage;
-        
+
 
         private static int filenum;
 
-#region Common
+        #region Common
         /// <summary>
         /// Ticks variables and values on update
         /// </summary>
@@ -114,7 +114,7 @@ namespace TheEscort
             // Invincibility Frames
             if (e.iFrames > 0)
             {
-                Ebug(self, "IFrames: " + e.iFrames, 2);
+                Ebug(self, "IFrames: " + e.iFrames);
                 e.iFrames--;
             }
             else
@@ -247,13 +247,14 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
-                    Ebug(self, "Attempted to access a nulled player when updating!", 0);
+                    Ebug(self, "Attempted to access a nulled player when updating!", LogLevel.WARN);
                     return;
                 }
                 // ONE OF THESE WILL TELL ME WHY THE FUCK THE SCUG'S CONTROLLER GETS YEETED OUT THE WINDOW I SWEAR TO FUCKING GOD
-                if (false && (bool)!self.room?.game?.paused){
+                if (false && (bool)!self.room?.game?.paused)
+                {
                     Ebug(new object[]{
                              "X: ", self.input[0].x,
                            "| Y: ", self.input[0].y,
@@ -309,17 +310,19 @@ namespace TheEscort
 
 
             // Secret color tick
-            if (e.secretRGB) {
+            if (e.secretRGB)
+            {
                 e.Escat_runit_thru_RGB(
-                    e.hypeColor, 
-                    ins.hypeRequirement < self.aerobicLevel ? 8f: Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.aerobicLevel))
+                    e.hypeColor,
+                    ins.hypeRequirement < self.aerobicLevel ? 8f : Mathf.Lerp(1f, 4f, Mathf.InverseLerp(0f, ins.hypeRequirement, self.aerobicLevel))
                 );
             }
 
             // Just for seeing what a variable does.
             try
             {
-                if (false && CR.TryGet(self, out int limiter)){
+                if (false && CR.TryGet(self, out int limiter))
+                {
                     // Console ticker
                     if (e.consoleTick > limiter)
                     {
@@ -346,7 +349,7 @@ namespace TheEscort
                         }
                         Ebug(self, "X: " + self.mainBodyChunk.pos.x);
                         Ebug(self, "Y: " + self.mainBodyChunk.pos.y);
-                        #if false
+#if false
                         Ebug(self, "X Velocity: " + self.mainBodyChunk.vel.x);
                         Ebug(self, "Y Velocity: " + self.mainBodyChunk.vel.y);
                         Ebug(self, "Dynamic Move Speed: [" + self.dynamicRunSpeed[0] + ", " + self.dynamicRunSpeed[1] + "]");
@@ -388,7 +391,7 @@ namespace TheEscort
                             //Ebug(self, "VerticalCorrSlideCount: " + self.verticalCorridorSlideCounter);
                             //Ebug(self, "HorizontalCorrSlideCount: " + self.horizontalCorridorSlideCounter);
                         }
-                        #endif
+#endif
                     }
                     //Ebug(self, self.abstractCreature.creatureTemplate.baseDamageResistance);
                     //Ebug(self, "Perpendicularvector: " + RWCustom.Custom.PerpendicularVector(self.bodyChunks[1].pos, self.bodyChunks[0].pos));
@@ -539,7 +542,7 @@ namespace TheEscort
                         !self.IsTileSolid(1, 0, -1) && !self.IsTileSolid(1, 0, 1)
                         )
                     )
-                    {   
+                    {
                         // Horizontal pole skip
                         if (
                             (
@@ -615,7 +618,7 @@ namespace TheEscort
                             ) < 22.5f &&
                             self.input[0].y <= 0 &&
                             self.poleSkipPenalty < 1 &&
-                            ((e.verticalPoleToggle? (self.bodyChunks[0].pos.y > self.bodyChunks[1].pos.y) : (self.bodyChunks[0].pos.y < self.bodyChunks[1].pos.y)) || !e.verticalPoleTech)
+                            ((e.verticalPoleToggle ? (self.bodyChunks[0].pos.y > self.bodyChunks[1].pos.y) : (self.bodyChunks[0].pos.y < self.bodyChunks[1].pos.y)) || !e.verticalPoleTech)
                         )
                         {
                             e.verticalPoleTech = true;
@@ -623,10 +626,10 @@ namespace TheEscort
                             Ebug(self, "Vertical Poletech Condition", ignoreRepetition: true);
                             if (flipperoni)
                             {
-                                self.bodyChunks[0].vel.y = e.verticalPoleToggle? 6f : 8f;
-                                self.bodyChunks[1].vel.y = e.verticalPoleToggle? 8f : 6f;
-                                self.bodyChunks[0].vel.x *= e.verticalPoleToggle? 0.28f: 0.24f;
-                                self.bodyChunks[1].vel.x *= e.verticalPoleToggle? 0.24f: 0.28f;
+                                self.bodyChunks[0].vel.y = e.verticalPoleToggle ? 6f : 8f;
+                                self.bodyChunks[1].vel.y = e.verticalPoleToggle ? 8f : 6f;
+                                self.bodyChunks[0].vel.x *= e.verticalPoleToggle ? 0.28f : 0.24f;
+                                self.bodyChunks[1].vel.x *= e.verticalPoleToggle ? 0.24f : 0.28f;
                                 self.jumpBoost = rollFly[3];
                                 e.verticalPoleToggle = !e.verticalPoleToggle;
                             }
@@ -722,7 +725,7 @@ namespace TheEscort
                     {
                         e.offendingKingTusk.Pop();
                         e.offendingKTtusk = -1;
-                        Ebug("King vulture tusk no longer has an impale owner?", 1, true);
+                        Ebug("King vulture tusk no longer has an impale owner?", LogLevel.DEBUG, true);
                     }
                 }
                 catch (Exception ex)
@@ -754,13 +757,13 @@ namespace TheEscort
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         e.SocksAliveAndHappy.mainBodyChunk.pos = e.SocksAliveAndHappy.mainBodyChunk.lastPos = new Vector2(Futile.mousePosition.x, Futile.mousePosition.y) + self.room.game.cameras[0].pos;
 
-                        Ebug("DEBUG SOCKS on", 2, true);
+                        Ebug("DEBUG SOCKS on", ignoreRepetition: true);
                     }
                     else
                     {
                         sgs.saveState.miscWorldSaveData.Esave().HackPupSpawn = false;
                         e.SocksAliveAndHappy.Destroy();
-                        Ebug("DEBUG SOCKS off", 2, true);
+                        Ebug("DEBUG SOCKS off", ignoreRepetition: true);
                     }
                 }
 
@@ -782,13 +785,13 @@ namespace TheEscort
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
                         e.expeditionSpawnPup = true;
-                        Ebug("Socks has been added to expedition!", 1, true);
+                        Ebug("Socks has been added to expedition!", LogLevel.MESSAGE, true);
                     }
 
                     if (e.SocksAliveAndHappy is null && !e.cheatedSpawnPup && ins.config.cfgAllBuildsGetPup.Value && sgs.saveState.cycleNumber == 0 && !e.isDefault && !(e.NewEscapist && e.NEsSocks) && !SChallengeMachine.SC03_Active)
                     {
                         SpawnThePup(ref e, self.room, self.coord, self.abstractCreature.ID);
-                        Ebug("Socks has been added to an Escort with the power of options!", 1, true);
+                        Ebug("Socks has been added to an Escort with the power of options!", LogLevel.MESSAGE, true);
                         pupAvailable = sgs.saveState.miscWorldSaveData.Esave().EscortPupEncountered = true;
                         e.cheatedSpawnPup = true;
                         if (e.NewEscapist)
@@ -803,7 +806,7 @@ namespace TheEscort
                         if (e.tryFindingPup > 0 && TryFindThePup(self.room, out AbstractCreature ac))
                         {
                             e.socksAbstract = ac;
-                            Ebug($"Socks has been found with {e.tryFindingPup} tries remaining!", 1, true);
+                            Ebug($"Socks has been found with {e.tryFindingPup} tries remaining!", LogLevel.MESSAGE, true);
                         }
                         else
                         {
@@ -818,7 +821,7 @@ namespace TheEscort
                         // Reinforcement consumption
                         if (storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned))
                         {
-                            Ebug("Show socks respawn tutorial!", 1, true);
+                            Ebug("Show socks respawn tutorial!", ignoreRepetition: true);
                             self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("At the cost of a karma flower, the slugpup respawns!"), 40, 300, true, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawnedNotify, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortPupRespawned, false);
@@ -827,7 +830,7 @@ namespace TheEscort
                         // Extra karma flower consumption
                         if (storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned))
                         {
-                            Ebug("Show alternative socks respawn tutorial!", 1, true);
+                            Ebug("Show alternative socks respawn tutorial!", ignoreRepetition: true);
                             self.room.game.cameras[0].hud.textPrompt.AddMessage(RWCustom.Custom.rainWorld.inGameTranslator.Translate("Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!"), 40, 300, true, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawnedNotify, true);
                             storyGameSession.saveState.deathPersistentSaveData.Etut(EscortTutorial.EscortAltPupRespawned, false);
@@ -853,10 +856,10 @@ namespace TheEscort
                     for (int i = 0; i < self.room.abstractRoom.entities.Count; i++)
                     {
                         if (
-                            self.room.abstractRoom.entities[i] is AbstractCreature ac && 
-                            ac.realizedCreature is Scavenger scav && 
-                            ac.abstractAI is ScavengerAbstractAI saai && 
-                            saai.squad is not null && 
+                            self.room.abstractRoom.entities[i] is AbstractCreature ac &&
+                            ac.realizedCreature is Scavenger scav &&
+                            ac.abstractAI is ScavengerAbstractAI saai &&
+                            saai.squad is not null &&
                             saai.squad.missionType == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
                         {
                             e.challenge03InView = scav;
@@ -869,17 +872,17 @@ namespace TheEscort
             // Update tracker
             //e.Escat_Update_Ring_Trackers();
         }
-#endregion
+        #endregion
 
 
-#region Movement stuff
+        #region Movement stuff
         // Implement Movementtech
         public static void Escort_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self)
         {
             orig(self);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -909,14 +912,14 @@ namespace TheEscort
                     e.RollinCount++;
                     if (e.consoleTick == 0)
                     {
-                        Ebug(self, "Rollin at: " + e.RollinCount, 2);
+                        Ebug(self, "Rollin at: " + e.RollinCount);
                     }
                     if (ins.Esconfig_SFX(self) && e.Rollin != null)
                     {
                         e.Rollin.Volume = Mathf.InverseLerp(80f, 240f, e.RollinCount);
                     }
-                    self.rollCounter = e.Brawler? 15: 0;
-                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount)) * (e.Gilded? 0.75f : 1f);
+                    self.rollCounter = e.Brawler ? 15 : 0;
+                    self.mainBodyChunk.vel.x *= Mathf.Lerp(1, 1.25f, Mathf.InverseLerp(0, 120f, e.RollinCount)) * (e.Gilded ? 0.75f : 1f);
                 }
 
                 if (self.animation != Player.AnimationIndex.Roll)
@@ -938,7 +941,7 @@ namespace TheEscort
             if (self.animation == Player.AnimationIndex.RocketJump && ins.config.cfgDKAnimation.Value)
             {
                 Vector2 n = self.bodyChunks[0].vel.normalized;
-                
+
                 self.bodyChunks[0].vel -= n * 2;
                 self.bodyChunks[1].vel += n * 2;
                 self.bodyChunks[0].vel.y += 0.05f;
@@ -984,7 +987,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -1015,8 +1018,8 @@ namespace TheEscort
             {
                 if (e.Unstable)
                 {
-                        self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
-                        self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
+                    self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
+                    self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * 1.1f / movementSlow;
                 }
                 else
                 {
@@ -1086,7 +1089,7 @@ namespace TheEscort
                 e.viscoDance = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.WaterViscosity);
                 if (self.room?.waterObject is not null)
                 {
-                    e.viscoColor = self.room.waterObject.palette.waterColor1;   
+                    e.viscoColor = self.room.waterObject.palette.waterColor1;
                 }
 
                 if (self.animation == Player.AnimationIndex.DeepSwim)
@@ -1097,7 +1100,7 @@ namespace TheEscort
                         Mathf.Lerp(1f, self.mainBodyChunk.vel.y > 0 ? theGut[1] : theGut[2], (float)Math.Pow(e.viscoDance, theGut[7])));
                 }
                 else if (self.animation == Player.AnimationIndex.SurfaceSwim)
-                {                    
+                {
                     if (e.isDefault) self.waterFriction = Mathf.Lerp(0.97f, 0.99f, Mathf.InverseLerp(0, 5, self.waterJumpDelay));
                     self.mainBodyChunk.vel *= new Vector2(
                         Mathf.Lerp(1f, theGut[3], (float)Math.Pow(e.viscoDance, theGut[8])),
@@ -1125,7 +1128,7 @@ namespace TheEscort
                                 if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
                                 {
                                     // Nerf to default escort so two guardian escorts don't infinitely sustain each other
-                                    if (Eshelp_IsMe(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
+                                    if (Escort_IsNull(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
                                     {
                                         cp.airInLungs = Mathf.Min(1f, cp.airInLungs + 0.01f);
                                     }
@@ -1176,7 +1179,7 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Implements code that makes Escort drop something live if it grabs them. TODO.
@@ -1185,7 +1188,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;
@@ -1245,9 +1248,10 @@ namespace TheEscort
                 orig(self, f);
                 return;
             }
-            if (Eshelp_IsMe(self.slugcatStats.name, false))
+            if (Escort_IsNull(self.slugcatStats.name, false))
             {
-                if (e.Gilded && !self.slugcatStats.malnourished){
+                if (e.Gilded && !self.slugcatStats.malnourished)
+                {
                     Esclass_GD_Breathing(self, f);
                     return;
                 }
@@ -1286,7 +1290,7 @@ namespace TheEscort
             // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -1331,7 +1335,7 @@ namespace TheEscort
                 self.bodyMode == Player.BodyModeIndex.Crawl
                 )
             {
-                Ebug(self, "FLIPERONI GO!", 2);
+                Ebug(self, "FLIPERONI GO!", LogLevel.DEBUG);
 
                 if (ins.Esconfig_SFX(self) && !e.kickFlip)
                 {
@@ -1355,7 +1359,7 @@ namespace TheEscort
             }*/
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self, direction);
                     return;
@@ -1424,10 +1428,10 @@ namespace TheEscort
                         self.room.PlaySound((self.superLaunchJump > 19 ? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.SFXChunk, false, 1f, 0.7f);
                     }
                     toPrint.SetValue("Not Water", 1);
-                    Ebug(self, "Y Velocity" + self.bodyChunks[0].vel.y, 2);
-                    Ebug(self, "Y Velocity" + self.bodyChunks[1].vel.y, 2);
-                    Ebug(self, "X Velocity" + self.bodyChunks[0].vel.x, 2);
-                    Ebug(self, "X Velocity" + self.bodyChunks[1].vel.x, 2);
+                    Ebug(self, "Y Velocity" + self.bodyChunks[0].vel.y);
+                    Ebug(self, "Y Velocity" + self.bodyChunks[1].vel.y);
+                    Ebug(self, "X Velocity" + self.bodyChunks[0].vel.x);
+                    Ebug(self, "X Velocity" + self.bodyChunks[1].vel.x);
                 }
                 self.jumpBoost = 0f;
 
@@ -1442,15 +1446,15 @@ namespace TheEscort
                 {
                     toPrint.SetValue("not so flip", 2);
                 }
-                Ebug(self, "Jumpboost" + self.jumpBoost, 2);
-                Ebug(self, "SWallFlip" + e.superWallFlip, 2);
-                Ebug(self, "SLaunchJump" + self.superLaunchJump, 2);
+                Ebug(self, "Jumpboost" + self.jumpBoost);
+                Ebug(self, "SWallFlip" + e.superWallFlip);
+                Ebug(self, "SLaunchJump" + self.superLaunchJump);
                 if (self.superLaunchJump > 19)
                 {
                     self.superLaunchJump = 0;
                 }
                 self.canWallJump = 0;
-                Ebug(self, toPrint, 2);
+                Ebug(self, toPrint, LogLevel.DEBUG);
             }
         }
 
@@ -1462,7 +1466,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, source, dmg, chunk, appPos, direction);
                 }
@@ -1490,8 +1494,9 @@ namespace TheEscort
         // Implement Heavylifter
         public static bool Escort_HeavyCarry(On.Player.orig_HeavyCarry orig, Player self, PhysicalObject obj)
         {
-            try {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+            try
+            {
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1508,9 +1513,9 @@ namespace TheEscort
                 {
                     if (e.consoleTick == 0)
                     {
-                        Ebug(self, "Revivify skip!", 1);
-                        Ebug(self, "Creature: " + creature.GetType(), 1);
-                        Ebug(self, "Player: " + self.GetOwnerType(), 1);
+                        Ebug(self, "Revivify skip!");
+                        Ebug(self, "Creature: " + creature.GetType());
+                        Ebug(self, "Player: " + self.GetOwnerType());
                     }
                     return orig(self, creature);
                 }
@@ -1536,8 +1541,9 @@ namespace TheEscort
                 }
                 return orig(self, obj);
             }
-            
-            catch (Exception err) {
+
+            catch (Exception err)
+            {
                 Ebug(self, err);
                 return orig(self, obj);
             }
@@ -1547,7 +1553,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self, grasp, eu);
                     return;
@@ -1577,7 +1583,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1654,7 +1660,7 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
-                if (Eshelp_IsMe(self.slugcatStats.name, false))
+                if (Escort_IsNull(self.slugcatStats.name, false))
                 {
                     float biteMult = 0.5f;
                     if (e.Brawler)
@@ -1663,7 +1669,7 @@ namespace TheEscort
                     }
                     if (e.Deflector)
                     {
-                        biteMult = self.Malnourished? 0f : 0.75f;
+                        biteMult = self.Malnourished ? 0f : 0.75f;
                     }
                     if (e.Escapist)
                     {
@@ -1703,7 +1709,7 @@ namespace TheEscort
         {
             try
             {
-                if (self is Player p && Eshelp_IsMe(p.slugcatStats.name))
+                if (self is Player p && Escort_IsNull(p.slugcatStats.name))
                 {
                     orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                     return;
@@ -1762,29 +1768,29 @@ namespace TheEscort
             if (Eshelp_ParryCondition(player))
             {
                 // Parryslide (parry module)
-                Ebug(player, "Escort attempted a Parryslide", 2);
+                Ebug(player, "Escort attempted a Parryslide", LogLevel.DEBUG);
                 int direction;
                 direction = player.slideDirection;
 
-                Ebug(player, "Is there a source? " + (source != null), 2);
-                Ebug(player, "Is there a direction & Momentum? " + (directionAndMomentum != null), 2);
-                Ebug(player, "Is there a hitChunk? " + (hitChunk != null), 2);
-                Ebug(player, "Is there a hitAppendage? " + (hitAppendage != null), 2);
-                Ebug(player, "Is there a type? " + (type != null), 2);
-                Ebug(player, $"Is there damage? {damage > 0f} | {damage}", 2);
-                Ebug(player, $"Is there stunBonus? {stunBonus > 0f} | {stunBonus}", 2);
+                Ebug(player, "Is there a source? " + (source != null), LogLevel.DEBUG);
+                Ebug(player, "Is there a direction & Momentum? " + (directionAndMomentum != null), LogLevel.DEBUG);
+                Ebug(player, "Is there a hitChunk? " + (hitChunk != null), LogLevel.DEBUG);
+                Ebug(player, "Is there a hitAppendage? " + (hitAppendage != null), LogLevel.DEBUG);
+                Ebug(player, "Is there a type? " + (type != null), LogLevel.DEBUG);
+                Ebug(player, $"Is there damage? {damage > 0f} | {damage}", LogLevel.DEBUG);
+                Ebug(player, $"Is there stunBonus? {stunBonus > 0f} | {stunBonus}", LogLevel.DEBUG);
 
                 if (source != null)
                 {
-                    Ebug(player, "Escort is being assaulted by: " + source.owner.GetType(), 2);
+                    Ebug(player, "Escort is being assaulted by: " + source.owner.GetType(), LogLevel.DEBUG);
                 }
-                Ebug(player, "Escort parry is being checked", 1);
+                Ebug(player, "Escort parry is being checked", LogLevel.DEBUG);
                 if (type != null)
                 {
-                    Ebug(player, "Escort gets hurt by: " + type.value, 2);
+                    Ebug(player, "Escort gets hurt by: " + type.value, LogLevel.DEBUG);
                     if (type == Creature.DamageType.Bite)
                     {
-                        Ebug(player, "Escort is getting BIT?!", 1);
+                        Ebug(player, "Escort is getting BIT?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature creature)
                         {
                             creature.LoseAllGrasps();
@@ -1794,20 +1800,20 @@ namespace TheEscort
                             damage = 0f;
                             stunBonus = 0f;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort got out of a creature's mouth!", 2);
+                            Ebug(player, "Escort got out of a creature's mouth!", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon)
                         {
-                            Ebug(player, "Weapons can BITE?!", 2);
+                            Ebug(player, "Weapons can BITE?!", LogLevel.DEBUG);
                         }
                         else
                         {
-                            Ebug(player, "Where is Escort getting bit from?!", 2);
+                            Ebug(player, "Where is Escort getting bit from?!", LogLevel.DEBUG);
                         }
                     }
                     else if (type == Creature.DamageType.Stab)
                     {
-                        Ebug(player, "Escort is getting STABBED?!", 1);
+                        Ebug(player, "Escort is getting STABBED?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature creature)
                         {
                             creature.LoseAllGrasps();
@@ -1816,7 +1822,7 @@ namespace TheEscort
                             stunBonus *= 1.5f;
                             type = Creature.DamageType.Blunt;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parried a stabby creature?", 2);
+                            Ebug(player, "Escort parried a stabby creature?", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon weapon)
                         {
@@ -1825,7 +1831,7 @@ namespace TheEscort
                             damage = 0f;
                             type = Creature.DamageType.Blunt;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parried a stabby weapon", 2);
+                            Ebug(player, "Escort parried a stabby weapon", LogLevel.DEBUG);
                         }
                         else
                         {
@@ -1856,22 +1862,22 @@ namespace TheEscort
                                     }
                                 }
                             }
-                            getOut:
+                        getOut:
                             if (foundOffender)
                             {
-                                Ebug(player, "Tusk unimpaled!", 2);
+                                Ebug(player, "Tusk unimpaled!", LogLevel.DEBUG);
                                 //Debug.LogError("-> Escort: Please pay no attention to this! This is how Escort parry works (on King Tusks)!");
                             }
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parried a generic stabby thing", 2);
+                            Ebug(player, "Escort parried a generic stabby thing", LogLevel.DEBUG);
                         }
                     }
                     else if (type == Creature.DamageType.Blunt)
                     {
-                        Ebug(player, "Escort is getting ROCC'ED?!", 1);
+                        Ebug(player, "Escort is getting ROCC'ED?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature)
                         {
-                            Ebug(player, "Creatures aren't rocks...", 2);
+                            Ebug(player, "Creatures aren't rocks...", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon weapon)
                         {
@@ -1880,26 +1886,26 @@ namespace TheEscort
                             damage = 0f;
                             stunBonus /= 5f;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort bounces a blunt thing.", 2);
+                            Ebug(player, "Escort bounces a blunt thing.", LogLevel.DEBUG);
                         }
                         else
                         {
                             damage = 0f;
                             stunBonus = 0f;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parried something blunt.", 2);
+                            Ebug(player, "Escort parried something blunt.", LogLevel.DEBUG);
                         }
                     }
                     else if (type == Creature.DamageType.Water)
                     {
-                        Ebug(player, "Escort is getting Wo'oh'ed?!", 1);
+                        Ebug(player, "Escort is getting Wo'oh'ed?!", LogLevel.DEBUG);
                     }
                     else if (type == Creature.DamageType.Explosion)
                     {
-                        Ebug(player, "Escort is getting BLOWN UP?!", 1);
+                        Ebug(player, "Escort is getting BLOWN UP?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature)
                         {
-                            Ebug(player, "Wait... creatures explode?!", 2);
+                            Ebug(player, "Wait... creatures explode?!", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon)
                         {
@@ -1908,7 +1914,7 @@ namespace TheEscort
                             damage = 0f;
                             stunBonus *= 1.5f;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parries an explosion from weapon?!", 2);
+                            Ebug(player, "Escort parries an explosion from weapon?!", LogLevel.DEBUG);
                         }
                         else
                         {
@@ -1918,12 +1924,12 @@ namespace TheEscort
                             damage = 0f;
                             stunBonus *= 1.5f;
                             e.ParrySuccess = true;
-                            Ebug(player, "Escort parries an explosion", 2);
+                            Ebug(player, "Escort parries an explosion", LogLevel.DEBUG);
                         }
                     }
                     else if (type == Creature.DamageType.Electric)
                     {
-                        Ebug(player, "Escort is getting DEEP FRIED?!", 1);
+                        Ebug(player, "Escort is getting DEEP FRIED?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature creature)
                         {
                             creature.LoseAllGrasps();
@@ -1937,7 +1943,7 @@ namespace TheEscort
                             e.ParrySuccess = true;
                             e.ElectroParry = true;
                             // NOTE TO SELF: Centipede parry goes here
-                            Ebug(player, "Escort somehow parried a shock from creature?!", 2);
+                            Ebug(player, "Escort somehow parried a shock from creature?!", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon)
                         {
@@ -1949,7 +1955,7 @@ namespace TheEscort
                             damage = 0f;
                             e.ParrySuccess = true;
                             e.ElectroParry = true;
-                            Ebug(player, "Escort somehow parried a shock object?!", 2);
+                            Ebug(player, "Escort somehow parried a shock object?!", LogLevel.DEBUG);
                         }
                         else
                         {
@@ -1959,23 +1965,23 @@ namespace TheEscort
                             damage = 0f;
                             e.ParrySuccess = true;
                             e.ElectroParry = true;
-                            Ebug(player, "Escort attempted to parry a shock but why?!", 2);
+                            Ebug(player, "Escort attempted to parry a shock but why?!", LogLevel.DEBUG);
                         }
                     }
                     else
                     {
-                        Ebug(player, "Escort is getting UNKNOWNED!!! RUNNN", 1);
+                        Ebug(player, "Escort is getting UNKNOWNED!!! RUNNN", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature)
                         {
-                            Ebug(player, "IT'S ALSO AN UNKNOWN CREATURE!!", 2);
+                            Ebug(player, "IT'S ALSO AN UNKNOWN CREATURE!!", LogLevel.DEBUG);
                         }
                         else if (source != null && source.owner is Weapon)
                         {
-                            Ebug(player, "IT'S ALSO AN UNKNOWN WEAPON!!", 2);
+                            Ebug(player, "IT'S ALSO AN UNKNOWN WEAPON!!", LogLevel.DEBUG);
                         }
                         else
                         {
-                            Ebug(player, "WHO THE HECK KNOWS WHAT IT IS?!", 2);
+                            Ebug(player, "WHO THE HECK KNOWS WHAT IT IS?!", LogLevel.DEBUG);
                         }
                     }
                 }
@@ -2023,7 +2029,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
                         self.room.PlaySound(Escort_SFX_Parry, e.SFXChunk);
                     }
-                    e.DeflAmpTimer = e.DeflPowah switch {
+                    e.DeflAmpTimer = e.DeflPowah switch
+                    {
                         1 => 200,
                         2 => 400,
                         3 => 800,
@@ -2045,7 +2052,7 @@ namespace TheEscort
                         //self.room.AddObject(new WaterDrip(self.mainBodyChunk.pos, self.mainBodyChunk.vel * Mathf.Lerp(1f, 4f, UnityEngine.Random.value) * player.flipDirection + RWCustom.Custom.RNV() * UnityEngine.Random.value * 9f, false));
                     }
                 }
-                Ebug(player, "Parry successful!", 1);
+                Ebug(player, "Parry successful!", LogLevel.INFO);
                 e.iFrames = 6;
                 if (e.Deflector)
                 {
@@ -2083,7 +2090,7 @@ namespace TheEscort
                     damage = 0f;
                     stunBonus *= 0.5f;
                     orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
-                    Ebug(player, "Stun Resistance frame tick", 2);
+                    Ebug(player, "Stun Resistance frame tick", LogLevel.DEBUG);
                 }
                 else
                 {
@@ -2092,15 +2099,15 @@ namespace TheEscort
                         e.RailIReady = false;
                         e.RailBombJump = false;
                     }
-                    Ebug(player, "Immunity frame tick", 2);
+                    Ebug(player, "Immunity frame tick", LogLevel.DEBUG);
                 }
             }
             else
             {
                 orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
-                Ebug(player, "Nothing or not possible to parry!", 1);
+                Ebug(player, "Nothing or not possible to parry!", LogLevel.DEBUG);
             }
-            Ebug(player, "Parry Check end", 1);
+            Ebug(player, "Parry Check end", LogLevel.DEBUG);
             return;
 
         }
@@ -2109,7 +2116,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -2145,7 +2152,8 @@ namespace TheEscort
         private void StoreWinConditionData(On.ShelterDoor.orig_Close orig, ShelterDoor self)
         {
             orig(self);
-            try{
+            try
+            {
                 List<AbstractCreature> playersInThisGame = self.room.game.Players;
                 List<AbstractCreature> playersToProgressOrWin = self.room.game.PlayersToProgressOrWin;
                 List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
@@ -2219,7 +2227,7 @@ namespace TheEscort
 
                             }
 
-                            
+
                             Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
 
                             // Other builds

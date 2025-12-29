@@ -247,7 +247,7 @@ namespace TheEscort
                 storyGameSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage[playerNumber] = escort.DeflPerma + bonusDamage;
                 if (escort.shelterSaveComplete <= 2)
                 {
-                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), 1, true);
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), ignoreRepetition: true);
                 }
 
             }

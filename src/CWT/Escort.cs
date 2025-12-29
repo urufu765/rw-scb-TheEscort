@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RWCustom;
+using TheEscort.Patches;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
@@ -561,6 +562,12 @@ namespace TheEscort
             EscortNE();
             EscortUS();
             EscortBB(player);
+
+            if (Plugin.escPatch_meadow)
+            {
+                if (player is null) return;
+                EPatchMeadow.AddOnlineEscortData(player);
+            }
         }
 
 

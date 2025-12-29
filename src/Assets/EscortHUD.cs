@@ -76,11 +76,19 @@ public static class EscortHUD
                         if (Plugin.eCon.TryGetValue(player, out Escort e))
                         {
                             Ebug(player, "Found player! Applying single hud", ignoreRepetition: true);
-                            Vector2 o = Plugin.ins.config.cfgHudLocation.Value switch
+                            string pos = Plugin.ins.config.cfgHudLocation.Value;
+                            if (pos == "auto")  // TODO: CHECK MEADOW SESSION not if meadow is present
+                            {
+                                pos = Plugin.escPatch_meadow? "" : "botleft";
+                            }
+                            Vector2 o = pos switch
                             {
                                 "botmid" => new(self.rainWorld.options.ScreenSize.x / 2 + (80 * player.playerState.playerNumber) + (-40 * (cam.room.game.session.Players.Count - 1)), 40),
                                 "leftstack" => new(60, 80 + 80f * player.playerState.playerNumber),
-                                _ => new(60 + 80f * player.playerState.playerNumber, 80)
+                                "botleft" => new(60 + 80f * player.playerState.playerNumber, 80),
+                                "botright" => new(self.rainWorld.options.ScreenSize.x - 60 - (80 * cam.room.game.session.Players.Count - 1) + (80 * player.playerState.playerNumber), 80),
+                                "rightstack" => new(self.rainWorld.options.ScreenSize.x - 60, 40 + 80f * player.playerState.playerNumber),
+                                _ => new(self.rainWorld.options.ScreenSize.x - 60 - (80 * cam.room.game.session.Players.Count - 1) + (80 * player.playerState.playerNumber), 40)
                             };
                             self.Escort_HUD(ref e, o, true);
                         }

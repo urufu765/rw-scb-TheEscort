@@ -1,0 +1,5 @@
+{
+    "id": "EscortMe",
+    "base": ["Spear", "Artificer", "Inv", "Red"],
+    "insert_after": "Spear"
+}

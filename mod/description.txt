@@ -11,22 +11,12 @@ Found a bug? Put it in the forums or reach me in Discord! I'm in the main RW dis
 
 [hr][/hr][h2]<~DISCLAIMER~>[/h2]
 Escort's campaign is not 100% finished! The campaign can be completed, however it lacks cutscenes and any rewards. Also the images are super outdated lol. For now, consider this a mod that adds seven different slugcats with common abilities into the game.
-[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~> (Last tested before Watcher DLC release)[/h2]
+[hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~>[/h2]
 These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2924848641]Rico Spear[/url]: [b]Apparently causes Brawler Escort to explode when shanking[/b] (Confirmed to kill Brawler Escort upon "shanking")
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2931679448]SimplifiedMoveset[/url]: [b]Affects Escort gameplay significantly![/b] Many of Escort's movement adjustments don't work when this is turned on, such as the sick flip and low pounce (which makes aiming drop-kicks harder). Use at your own risk!
-[*] [b]Campaign:[/b] Garbage Waste doesn't work properly
-[*] And probably more, there are way too many mods to test this character with...
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3388224007]Rain Meadow[/url]: [b]For the most part, functional[/b]. However, Escort starting room is not respected, and default body colours may be wrong. Food intake may be a bit wonky as well, further testing required. Feedback would be extremely helpful.
+[*] [b]Campaign:[/b] Garbage Waste doesn't work properly (tested before watcher DLC)
 [/list]
-[hr][/hr][h2]<~PATCHED MODS~> (Last tested before Watcher DLC release)[/h2]
-This mod will apply a patch to work better with the following mods. How they change the behaviour of the Escort mod is as detailed (Any mods not listed in either conflicts or patched may be assumed to be working):
-[list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2950327774]Revivify[/url]: [b]Somewhat patched for 1.2.0[/b] (Doesn't work as well on slugpups...)
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2948971756]Dress My Slugcat 1.4.X[/url]: [b]Patched![/b] (Custom sprite ready? Who knows.)
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2928004252]Rotund World 1.6.X[/url]: [b]Doesn't need patching really, but added a silly sfx and the chest marking stretch with the body![/b]
-[/list]
-[*] [url=][/url]: [b][/b] ()
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
 [*] REMIX MENU to tweak some features and enable optional gimmicks

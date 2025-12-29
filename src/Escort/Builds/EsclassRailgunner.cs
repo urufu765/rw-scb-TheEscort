@@ -454,7 +454,7 @@ namespace TheEscort
             }
 
             // Misfire!
-            if (UnityEngine.Random.value < (e.RailFrail? 0.02f : 0.005f) * e.RailgunUse)
+            if (UnityEngine.Random.value < (e.RailFrail ? 0.02f : 0.005f) * e.RailgunUse)
             {
                 self.TossObject(grasp, eu);
                 self.TossObject(1 - grasp, eu);
@@ -587,7 +587,7 @@ namespace TheEscort
         /// <summary>
         /// Makes Railgunner go BOOM
         /// </summary>
-        public static void Esclass_RG_InnerSplosion(Player self, bool lethal=false)
+        public static void Esclass_RG_InnerSplosion(Player self, bool lethal = false)
         {
             try
             {
@@ -669,7 +669,7 @@ namespace TheEscort
             orig(self, st);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -754,11 +754,11 @@ namespace TheEscort
                         !creature.dead &&
                         Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
                         Esclass_NE_BodyChecker(
-                            creature, 
-                            self.bodyChunks[0].pos, 
-                            self.bodyChunks[1].pos, 
-                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
-                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            creature,
+                            self.bodyChunks[0].pos,
+                            self.bodyChunks[1].pos,
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y),
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y),
                             out int bodyChunk) &&
                         Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
                     )
@@ -798,11 +798,11 @@ namespace TheEscort
                         !creature.dead &&
                         Custom.Dist(self.mainBodyChunk.pos, creature.firstChunk.pos) < minDist &&
                         Esclass_NE_BodyChecker(
-                            creature, 
-                            self.bodyChunks[0].pos, 
-                            self.bodyChunks[1].pos, 
-                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y), 
-                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y), 
+                            creature,
+                            self.bodyChunks[0].pos,
+                            self.bodyChunks[1].pos,
+                            new(self.bodyChunks[0].pos.x + (self.rollDirection * minDist), self.bodyChunks[0].pos.y),
+                            new(self.bodyChunks[1].pos.x + (self.rollDirection * minDist), self.bodyChunks[1].pos.y),
                             out int bodyChunk) &&
                         Esclass_RG_UninterruptedSight(self.room, self.mainBodyChunk.pos, creature.bodyChunks[bodyChunk].pos)
                     )
@@ -839,7 +839,7 @@ namespace TheEscort
 
             for (int i = 0; i <= tileNum; i++)
             {
-                Vector2 position = (lefty || downy)? creturPos : railsPos;
+                Vector2 position = (lefty || downy) ? creturPos : railsPos;
                 if (vertical)
                 {
                     position.y += i * 20;

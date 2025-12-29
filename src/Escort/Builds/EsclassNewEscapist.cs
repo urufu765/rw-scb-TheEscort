@@ -61,7 +61,7 @@ namespace TheEscort
             {
                 e.NEsLastInput.y++;
             }
-        
+
             if (e.NEsAbility > 0)
             {
                 e.NEsAbility--;
@@ -113,7 +113,9 @@ namespace TheEscort
             // Check if player has inputted the direction for ability activation
             if (e.NEsAbility == 0 && e.NEsCooldown == 0)  // Doubletap direction checker
             {
-                if (e.CustomKeybindEnabled)
+                if (e.CustomKeybindEnabled ||
+                (!ins.config.cfgUseDoubleTap.Value && self.input[0].spec && !self.input[1].spec)
+                )
                 {
                     if (Input.GetKey(e.CustomKeybind))
                     {
@@ -265,7 +267,7 @@ namespace TheEscort
                             self.dropGrabTile = tPos;
                             self.animation = Player.AnimationIndex.ClimbOnBeam;
                             self.bodyMode = Player.BodyModeIndex.ClimbingOnBeam;
-                            Ebug(self, $"Vertical beam detected at: {dashDistance}", 2, true);
+                            Ebug(self, $"Vertical beam detected at: {dashDistance}", ignoreRepetition: true);
                             goto breakAll;
                         }
 
@@ -274,22 +276,22 @@ namespace TheEscort
                         {
                             lastBeamPos = tPos;
                             getOnBeam[j] = true;
-                            Ebug(self, $"Horizontal beam detected at: {dashDistance}", 2, true);
+                            Ebug(self, $"Horizontal beam detected at: {dashDistance}", ignoreRepetition: true);
                         }
                         if (getOnBeam[j] && (!rt.horizontalBeam || i == 14 || solidWall))
                         {
                             self.dropGrabTile = lastBeamPos;
                             dashDistance -= 20;
-                            Ebug(self, $"End of horizontal beam detected at: {dashDistance}", 2, true);
+                            Ebug(self, $"End of horizontal beam detected at: {dashDistance}", ignoreRepetition: true);
                             goto breakAll;
                         }
 
                         if (rt.Solid) // Hit a wall and stop
                         {
-                            Ebug(self, $"Wall detected at: {dashDistance}", 2, true);
+                            Ebug(self, $"Wall detected at: {dashDistance}", ignoreRepetition: true);
                             solidWall = true;
                             bool breakit = !goThroughWalls;
-                            foreach(bool onBeam in getOnBeam)
+                            foreach (bool onBeam in getOnBeam)
                             {
                                 if (onBeam) breakit = false;
                             }
@@ -298,8 +300,8 @@ namespace TheEscort
                     }
                     dashDistance += 20;
                 }
-                breakAll:
-                Ebug(self, "Terrain check all done!", 2, true);
+            breakAll:
+                Ebug(self, "Terrain check all done!", ignoreRepetition: true);
             }
             catch (Exception ex)
             {
@@ -358,18 +360,18 @@ namespace TheEscort
                 {
                     if (
                         thing is Creature creature and not ShadowPlayer &&
-                        creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && 
-                        creature != self && 
+                        creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC &&
+                        creature != self &&
                         !(
-                            creature is Player && 
-                            ModManager.CoopAvailable && 
+                            creature is Player &&
+                            ModManager.CoopAvailable &&
                             !Custom.rainWorld.options.friendlyFire
-                        ) && 
-                        !creature.dead && 
+                        ) &&
+                        !creature.dead &&
                         Esclass_NE_BodyChecker(creature, a1, a2, b1, b2) &&
                         (
-                            vertical? 
-                                (creature.firstChunk.pos.x > y2 && creature.firstChunk.pos.x < y1) : 
+                            vertical ?
+                                (creature.firstChunk.pos.x > y2 && creature.firstChunk.pos.x < y1) :
                                 (creature.firstChunk.pos.y > y2 && creature.firstChunk.pos.y < y1)
                         )
                     )
@@ -381,23 +383,23 @@ namespace TheEscort
                             e.NEsVulnerable.Add(creature);
                             e.NEsClearVulnerable = Escort.NEsAbilityTime;
                             creature.Stun((int)(80 * creature.Template.baseStunResistance));
-                            Ebug("There's a creature between!", 2, true);
+                            Ebug("There's a creature between!", ignoreRepetition: true);
                         }
                     }
                     else if (
-                        emptyHanded && 
-                        thing is Weapon weapon && 
-                        Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) && 
+                        emptyHanded &&
+                        thing is Weapon weapon &&
+                        Custom.BetweenLines(weapon.firstChunk.pos, a1, a2, b1, b2) &&
                         (
-                            vertical? 
-                                (weapon.firstChunk.pos.x > y2 && weapon.firstChunk.pos.x < y1) : 
+                            vertical ?
+                                (weapon.firstChunk.pos.x > y2 && weapon.firstChunk.pos.x < y1) :
                                 (weapon.firstChunk.pos.y > y2 && weapon.firstChunk.pos.y < y1)
                         ) &&
                         (weapon.mode != Weapon.Mode.StuckInWall || MMF.cfgDislodgeSpears.Value)
                     )  // Pick up weapon if empty handed.
                     {
                         weaponList.Push(weapon);
-                        Ebug("Yoink a weapon while you're at it", 2, true);
+                        Ebug("Yoink a weapon while you're at it", ignoreRepetition: true);
                     }
                 }
                 if (weaponList.Count > 0 && self.FreeHand() != -1)
@@ -462,7 +464,7 @@ namespace TheEscort
             {
                 if (self is ShadowPlayer)
                 {
-                    Ebug("Ignoring shadowscort", 1, true);
+                    Ebug("Ignoring shadowscort", LogLevel.INFO, true);
                     return;
                 }
             }

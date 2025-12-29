@@ -26,7 +26,7 @@ namespace TheEscort
             {
                 if (i == null)
                 {
-                    Ebug("Found nulled slugcat name when hiding cats!", 1);
+                    Ebug("Found nulled slugcat name when hiding cats!", LogLevel.WARN);
                     return orig(i);
                 }
                 if (i == EscortSocks)
@@ -360,7 +360,7 @@ namespace TheEscort
                 {
                     if (s.sprites[es.mainSpriteIndex] == null)
                     {
-                        Ebug(self.player, "Oh geez. No sprites?", 0);
+                        Ebug(self.player, "Oh geez. No sprites?", LogLevel.ERR);
                     }
                 }
 

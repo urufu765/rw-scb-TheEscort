@@ -25,7 +25,7 @@ public class EscortRoomScript
         orig(room);
         //Ebug("SCRIPTADDER HERE LOL");
         if (room?.game?.session is null) return;
-        if (room.game.session is StoryGameSession storyGameSession && Eshelp_IsMe(storyGameSession.saveState.saveStateNumber, false))
+        if (room.game.session is StoryGameSession storyGameSession && Escort_IsNull(storyGameSession.saveState.saveStateNumber, false))
         {
             string name = room.abstractRoom.name;
             if (name is null) return;
@@ -71,7 +71,8 @@ public class EscortRoomScript
                     if (abstractPlayer.realizedCreature is Player player && player.room == room)
                     {
                         //Ebug(player, "Player detected!");
-                        if (room.abstractRoom.name switch {
+                        if (room.abstractRoom.name switch
+                        {
                             "CC_SHAFT02" => player.mainBodyChunk.pos.y > 2340 && player.mainBodyChunk.pos.y < 2830,
                             "CC_CLOG" => true,
                             "SU_B07" => player.mainBodyChunk.pos.x > 932 && player.mainBodyChunk.pos.x < 1540,
@@ -163,7 +164,7 @@ public class EscortRoomScript
             {
                 if (!initDone)
                 {
-                    Ebug("Cutscene init!", 2);
+                    Ebug("Cutscene init!");
                     initDone = true;
                 }
                 if (this.player is not null)
@@ -198,7 +199,7 @@ public class EscortRoomScript
                 {
                     if (!swimaroundDone)
                     {
-                        Ebug("Cutscene swimaround!", 2);
+                        Ebug("Cutscene swimaround!");
                         swimaroundDone = true;
                     }
                     if (cutsceneTimer > 560)
@@ -220,7 +221,7 @@ public class EscortRoomScript
                 {
                     if (!surfaceDone)
                     {
-                        Ebug("Cutscene forcesurface!", 2);
+                        Ebug("Cutscene forcesurface!");
                         surfaceDone = true;
                     }
                     if (cutsceneTimer > 300)
@@ -236,7 +237,7 @@ public class EscortRoomScript
                 {
                     if (!moveupDone)
                     {
-                        Ebug("Cutscene Move UP!", 2);
+                        Ebug("Cutscene Move UP!");
                         moveupDone = true;
                     }
                     if (cutsceneTimer > 320)
@@ -250,7 +251,7 @@ public class EscortRoomScript
                 {
                     if (!stareatpupDone)
                     {
-                        Ebug("Cutscene stare!", 2);
+                        Ebug("Cutscene stare!");
                         stareatpupDone = true;
                     }
                     // Spawn slugpup to drop down
@@ -265,7 +266,7 @@ public class EscortRoomScript
                 {
                     if (!endDone)
                     {
-                        Ebug("Cutscene end!", 2);
+                        Ebug("Cutscene end!");
                         endDone = true;
                     }
                     if (this.player is not null)
@@ -293,24 +294,24 @@ public class EscortRoomScript
                 {
                     x = cutsceneTimer switch
                     {
-                        >=129 and <=173 => 1,
-                        >=193 and <=194 => 1,
-                        >=196 and <=215 => -1,
-                        >=232 and <=239 => 1,
-                        >=243 and <=251 => -1,
-                        >=253 and <=263 => 1,
-                        >=264 and <=278 => -1,
-                        >=288 and <=309 => 1,
-                        >=342 and <=365 => 1,
-                        >=394 and <=396 => -1,
-                        >=461 and <=467 => -1,
+                        >= 129 and <= 173 => 1,
+                        >= 193 and <= 194 => 1,
+                        >= 196 and <= 215 => -1,
+                        >= 232 and <= 239 => 1,
+                        >= 243 and <= 251 => -1,
+                        >= 253 and <= 263 => 1,
+                        >= 264 and <= 278 => -1,
+                        >= 288 and <= 309 => 1,
+                        >= 342 and <= 365 => 1,
+                        >= 394 and <= 396 => -1,
+                        >= 461 and <= 467 => -1,
                         _ => 0
                     };
                     y = cutsceneTimer switch
                     {
-                        >=112 and <=133 => -1,
-                        >=174 and <=324 => 1,
-                        >=412 and <=456 => 1,
+                        >= 112 and <= 133 => -1,
+                        >= 174 and <= 324 => 1,
+                        >= 412 and <= 456 => 1,
                         _ => 0
                     };
                 }
@@ -318,16 +319,16 @@ public class EscortRoomScript
                 {
                     x = player.mainBodyChunk.pos.x switch
                     {
-                        >596.5f => -1,
-                        <592 => 1,
+                        > 596.5f => -1,
+                        < 592 => 1,
                         _ => 0
                     };
                     y = 1;
                 }
                 jmp = cutsceneTimer switch
                 {
-                    >=525 and <=547 => true,
-                    >=560 and <=571 => true,
+                    >= 525 and <= 547 => true,
+                    >= 560 and <= 571 => true,
                     _ => false
                 };
             }
@@ -337,8 +338,8 @@ public class EscortRoomScript
                 {
                     x = player.mainBodyChunk.pos.x switch
                     {
-                        >503 => -1,
-                        <505 => 1,
+                        > 503 => -1,
+                        < 505 => 1,
                         _ => 0
                     };
                     y = 1;
@@ -347,15 +348,15 @@ public class EscortRoomScript
                 {
                     x = player.mainBodyChunk.pos.x switch
                     {
-                        >596.5f => -1,
-                        <592 => 1,
+                        > 596.5f => -1,
+                        < 592 => 1,
                         _ => 0
                     };
                     y = 1;
                     jmp = cutsceneTimer switch
                     {
-                        >=270 and <=280 => true,
-                        >=290 and <=300 => true,
+                        >= 270 and <= 280 => true,
+                        >= 290 and <= 300 => true,
                         _ => false
                     };
                 }
@@ -364,34 +365,34 @@ public class EscortRoomScript
             {
                 x = cutsceneTimer switch
                 {
-                    >=9 and <=27 => -1,
-                    >=140 and <=164 => 1,
-                    >=194 and <=201 => -1,
-                    >=301 and <=308 => 1,
+                    >= 9 and <= 27 => -1,
+                    >= 140 and <= 164 => 1,
+                    >= 194 and <= 201 => -1,
+                    >= 301 and <= 308 => 1,
                     _ => 0
                 };
                 y = cutsceneTimer switch
                 {
-                    >=89 and <=113 => 1,
-                    >=177 and <=181 => 1,
-                    >=198 and <=203 => 1,
-                    >=216 and <=237 => 1,
-                    >=244 and <=276 => 1,
-                    >=294 and <=301 => 1,
+                    >= 89 and <= 113 => 1,
+                    >= 177 and <= 181 => 1,
+                    >= 198 and <= 203 => 1,
+                    >= 216 and <= 237 => 1,
+                    >= 244 and <= 276 => 1,
+                    >= 294 and <= 301 => 1,
                     _ => 0
                 };
                 pckp = cutsceneTimer switch
                 {
-                    >=40 and <=46 => true,
-                    >=56 and <=62 => true,
-                    >=183 and <=189 => true,
+                    >= 40 and <= 46 => true,
+                    >= 56 and <= 62 => true,
+                    >= 183 and <= 189 => true,
                     _ => false
                 };
                 jmp = cutsceneTimer switch
                 {
-                    >=88 and <=102 => true,
-                    >=222 and <=234 => true,
-                    >=293 and <=303 => true,
+                    >= 88 and <= 102 => true,
+                    >= 222 and <= 234 => true,
+                    >= 293 and <= 303 => true,
                     _ => false
                 };
                 thrw = cutsceneTimer >= 103 && cutsceneTimer <= 107;
@@ -478,7 +479,7 @@ public class EscortRoomScript
             {
                 if (!initDone)
                 {
-                    Ebug("Cutscene init!", 2);
+                    Ebug("Cutscene init!");
                     initDone = true;
                 }
                 if (this.Playr is not null && Playr.room == room)
@@ -491,7 +492,7 @@ public class EscortRoomScript
                     {
                         if (this.Playr.playerState.playerNumber != 0)
                         {
-                            Ebug("No player 0 Escort found!", 1);
+                            Ebug("No player 0 Escort found!", LogLevel.WARN);
                             Destroy();
                         }
                         if (!foodMeterInit && this.room?.game?.cameras[0] is not null)
@@ -520,7 +521,7 @@ public class EscortRoomScript
                 cutsceneTimer++;
                 if (!spawnPupDone)
                 {
-                    Ebug("Cutscene spawnpup!", 2);
+                    Ebug("Cutscene spawnpup!");
                     spawnPupDone = true;
                 }
                 if (this.Playr is not null && !pupInit && Plugin.eCon.TryGetValue(Playr, out Escort e))
@@ -544,7 +545,7 @@ public class EscortRoomScript
             {
                 if (!endDone)
                 {
-                    Ebug("Cutscene end!", 2);
+                    Ebug("Cutscene end!");
                     endDone = true;
                 }
                 if (this.Playr is not null)
@@ -676,10 +677,10 @@ public class EscortRoomScript
                 // Section that only runs once
                 if (!initDone)
                 {
-                    Ebug("Cutscene init!", 2);
+                    Ebug("Cutscene init!");
                     initDone = true;
                 }
-                
+
                 // If player is in room
                 if (this.Playr is not null && Playr.room == room)
                 {
@@ -715,7 +716,7 @@ public class EscortRoomScript
                 cutsceneTimer++;
                 if (!movePlayerDone)
                 {
-                    Ebug("Cutscene moving!", 2);
+                    Ebug("Cutscene moving!");
                     movePlayerDone = true;
                 }
                 if (Playr is not null && Playr.CanRetrieveSlugFromBack)
@@ -724,7 +725,7 @@ public class EscortRoomScript
                 }
                 if (cutsceneTimer > 120)
                 {
-                    foreach(UpdatableAndDeletable uad in room.updateList)
+                    foreach (UpdatableAndDeletable uad in room.updateList)
                     {
                         if (uad is Creature c and not Player)
                         {
@@ -752,7 +753,7 @@ public class EscortRoomScript
             if (this.phase == Phase.CreatureMove || this.phase == Phase.Fade)
             {
                 cutsceneTimer++;
-                foreach(AbstractCreature ac in creatures)
+                foreach (AbstractCreature ac in creatures)
                 {
 
                     if (ac.abstractAI?.RealAI is not null)
@@ -767,7 +768,7 @@ public class EscortRoomScript
                 {
                     if (!creatureMoveDone)
                     {
-                        Ebug("Cutscene moving creatures!", 2);
+                        Ebug("Cutscene moving creatures!");
                         creatureMoveDone = true;
                     }
                     if (cutsceneTimer > 200)
@@ -780,7 +781,7 @@ public class EscortRoomScript
                 {
                     if (!fadeDone)
                     {
-                        Ebug("Cutscene fade!", 2);
+                        Ebug("Cutscene fade!");
                         fadeDone = true;
                     }
                     if (fadeOut is null)
@@ -799,7 +800,7 @@ public class EscortRoomScript
             {
                 if (!endDone)
                 {
-                    Ebug("Cutscene end!", 2);
+                    Ebug("Cutscene end!");
                     endDone = true;
                 }
                 if (!missionComplete)
@@ -808,6 +809,7 @@ public class EscortRoomScript
                     RainWorldGame.BeatGameMode(room.game, true);
                     // Later, hook into BeatGameMode for a more authentic experience
                     room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort = true;
+                    EscOptions.shouldUpdate = true;
                     missionComplete = true;
                 }
             }

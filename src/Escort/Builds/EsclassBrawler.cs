@@ -59,7 +59,7 @@ namespace TheEscort
                             self.room.PlaySound(Escort_SFX_Brawler_Shank, e.SFXChunk);
                             self.room.PlaySound(SoundID.Spear_Dislodged_From_Creature, e.SFXChunk);
                             if (self.slowMovementStun > 0) self.Blink(30);
-                            else 
+                            else
                             {
                                 self.slowMovementStun += 20;
                             }
@@ -101,11 +101,13 @@ namespace TheEscort
                     // Item retrieval effect
                     try
                     {
-                        if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall){
+                        if (self.room != null && e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall)
+                        {
                             e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);
                             self.SlugcatGrab(e.BrawMeleeWeapon.Pop(), e.BrawThrowUsed);
                         }
-                        else {
+                        else
+                        {
                             e.BrawMeleeWeapon.Pop();
                         }
                     }
@@ -203,7 +205,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, grabCheck);
                 }
@@ -257,10 +259,12 @@ namespace TheEscort
                         spear.firstChunk.vel.x *= bSpearVel[2];
                     }
                 }
-                if (self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump){
+                if (self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump)
+                {
                     thrust *= 2;
                 }
-                else {
+                else
+                {
                     thrust *= 0.4f;
                 }
                 if (e.BrawShankMode)
@@ -282,7 +286,8 @@ namespace TheEscort
                 }
                 else
                 {
-                    if (e.BrawShank){
+                    if (e.BrawShank)
+                    {
                         e.BrawShank = false;
                     }
                     if (e.BrawWallSpear.Count > 0)
@@ -349,7 +354,8 @@ namespace TheEscort
                     {
                         break;
                     }
-                    if (self.slowMovementStun > 30){
+                    if (self.slowMovementStun > 30)
+                    {
                         Ebug(self, "Too tired to shank!");
                         self.Blink(15);
                         Eshelp_Player_Shaker(self, 1.4f);

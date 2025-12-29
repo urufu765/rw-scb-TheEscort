@@ -99,7 +99,7 @@ namespace TheEscort
                 }
                 else if (e.EscUnGraspTime == 0)
                 {
-                    Ebug(self, "Attempted to take off grabber", 2);
+                    Ebug(self, "Attempted to take off grabber");
                     e.EscDangerGrasp.grabber.LoseAllGrasps();
                     e.EscUnGraspLimit = 0;
                     self.room.PlaySound(DLCSharedEnums.SharedSoundID.Duck_Pop, e.SFXChunk, false, 0.9f, 1.3f);
@@ -140,7 +140,7 @@ namespace TheEscort
             orig(self, grasp);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }

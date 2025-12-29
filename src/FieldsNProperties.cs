@@ -1,4 +1,6 @@
+using System.Linq;
 using BepInEx;
+using BepInEx.Logging;
 using Menu;
 using SlugBase;
 using SlugBase.Features;
@@ -12,8 +14,11 @@ partial class Plugin : BaseUnityPlugin
 {
     static Plugin()
     {
+        LR = BepInEx.Logging.Logger.Sources.FirstOrDefault(l => l.SourceName == "EBUGGER") as ManualLogSource ?? BepInEx.Logging.Logger.CreateLogSource("EBUGGER");
         EscortMe = new("EscortMe");
         EscortSocks = new("EscortSocks");
+        EscortMeTime = new("EscortMe");
+        EscortSocksTime = new("EscortSocks");
 
         eCon = new();
         sCon = new();
@@ -49,7 +54,7 @@ partial class Plugin : BaseUnityPlugin
         WallJumpVal = PlayerFloats("theescort/wall_jump_val");
         headDraw = PlayerFloats("theescort/headthing");
         bodyDraw = PlayerFloats("theescort/bodything");
-        
+
         boxMove = GameFloats("boxbox");
 
         InstaHype = PlayerBool("theescort/insta_hype");
@@ -103,18 +108,18 @@ partial class Plugin : BaseUnityPlugin
         CustomShader = PlayerString("theescort/speedster/custom_shader");
         speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");
 
-        selectionable = new() { 
-            {  0, "Default" }, 
-            { -1, "Brawler" }, 
-            { -2, "Deflector" }, 
-            { -3, "Escapist" }, 
-            { -4, "Railgunner" }, 
-            { -5, "Speedster" }, 
+        selectionable = new() {
+            {  0, "Guardian" },
+            { -1, "Brawler" },
+            { -2, "Deflector" },
+            { -3, "Escapist" },
+            { -4, "Railgunner" },
+            { -5, "Speedster" },
             { -6, "Gilded" }
         };
         escortRGBTick = new float[4];
         escortRGBStore = new Color[4];
-        Ebug("Static fields load complete");
+        Ebug("-> Static fields load complete");
     }
 }
 

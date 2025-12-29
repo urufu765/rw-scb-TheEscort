@@ -21,7 +21,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, otherObject, myChunk, otherChunk);
         try
         {
-            if (Eshelp_IsMe(self.slugcatStats.name))
+            if (Escort_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -199,14 +199,14 @@ partial class Plugin : BaseUnityPlugin
                             //self.mainBodyChunk.vel.x *= tossModifier;
                             self.bodyChunks[1].vel.x = self.slideDirection * tossModifier - 1;
                             self.bodyChunks[0].vel.x = self.slideDirection * tossModifier;
-                            Escort_FakeWallJump(self, boostUp:slideMod[4], yankUp:slideMod[5]);
+                            Escort_FakeWallJump(self, boostUp: slideMod[4], yankUp: slideMod[5]);
                         }
                         else
                         {
                             self.animation = Player.AnimationIndex.BellySlide;
                             self.longBellySlide = false;
                         }
-                        Ebug(self, "Greatdadstance stunslide!", 2);
+                        Ebug(self, "Greatdadstance stunslide!", LogLevel.DEBUG);
                     }
                     else
                     {
@@ -239,7 +239,7 @@ partial class Plugin : BaseUnityPlugin
                         //self.animation = Player.AnimationIndex.None;
                         self.jumpBoost += slideMod[3];
                         self.animation = Player.AnimationIndex.Flip;
-                        Ebug(self, "Stunslided!", 2);
+                        Ebug(self, "Stunslided!", LogLevel.DEBUG);
                     }
                 }
                 catch (Exception err)
@@ -286,14 +286,14 @@ partial class Plugin : BaseUnityPlugin
                         self.room.PlaySound(SoundID.Spear_Stick_In_Creature, e.SFXChunk, loop: false, 1f, 0.95f);
                     }
                     Vector2 momentum = new(
-                        self.mainBodyChunk.vel.x * ins.DKMultiplier, 
+                        self.mainBodyChunk.vel.x * ins.DKMultiplier,
                         self.mainBodyChunk.vel.y * ins.DKMultiplier);
                     if (e.LizardDunk)
                     {
                         bool diffYDirection = Mathf.Sign(momentum.y) != Mathf.Sign(self.input[0].y) && self.input[0].y != 0;
                         if (e.isDefault)
                         {
-                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 20), 20)) * (diffYDirection? -1 : 1);
+                            momentum.y *= Mathf.Lerp(1, 0.15f, Mathf.Log(Mathf.Clamp(Mathf.Abs(momentum.y), 1, 20), 20)) * (diffYDirection ? -1 : 1);
                             momentum.x = Mathf.Abs(momentum.y) * self.input[0].x;
                         }
                         else
@@ -322,7 +322,7 @@ partial class Plugin : BaseUnityPlugin
                         creature.firstChunk, null, Creature.DamageType.Blunt,
                         normSlamDamage, stunDur
                     );
-                    Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", 2);
+                    Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", LogLevel.DEBUG);
                     if (e.DropKickCD == 0)
                     {
                         e.LizardDunk = false;
@@ -343,7 +343,7 @@ partial class Plugin : BaseUnityPlugin
                     e.kickFlip = false;
                     self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     //self.animation = Player.AnimationIndex.None;
-                    Ebug(self, message + " Dmg: " + normSlamDamage, 2);
+                    Ebug(self, message + " Dmg: " + normSlamDamage, LogLevel.DEBUG);
                 }
                 catch (Exception err)
                 {
@@ -361,7 +361,7 @@ partial class Plugin : BaseUnityPlugin
                     creature.Violence(
                         self.bodyChunks[0], new Vector2(self.bodyChunks[0].vel.x * (ins.DKMultiplier * 0.5f) * creature.TotalMass, self.bodyChunks[0].vel.y * (ins.DKMultiplier * 0.5f) * creature.TotalMass),
                         creature.mainBodyChunk, null, Creature.DamageType.Blunt,
-                        creature.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly? 1f: 0f, 15f
+                        creature.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly ? 1f : 0f, 15f
                     );
                     creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * (ins.DKMultiplier * 0.5f) * creature.TotalMass;
                     creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * (ins.DKMultiplier * 0.5f) * creature.TotalMass;
@@ -369,7 +369,7 @@ partial class Plugin : BaseUnityPlugin
                     {
                         self.room.AddObject(new ExplosionSpikes(self.room, self.bodyChunks[1].pos + new Vector2(0f, -self.bodyChunks[1].rad), 8, 7f, 7f, 8f, 40f, new Color(0f, 0.35f, 1f, 0f)));
                     }
-                    Ebug(self, "Headbutted!", 2);
+                    Ebug(self, "Headbutted!", LogLevel.DEBUG);
                     if (self.room != null)
                     {
                         if (ins.Esconfig_SFX(self))
@@ -390,7 +390,7 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-#region Thrown
+    #region Thrown
 
     public static void Escort_RockThrow(On.Rock.orig_Thrown orig, Rock self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, RWCustom.IntVector2 throwDir, float frc, bool eu)
     {
@@ -446,7 +446,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, spear);
         try
         {
-            if (Eshelp_IsMe(self.slugcatStats.name))
+            if (Escort_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -495,7 +495,7 @@ partial class Plugin : BaseUnityPlugin
                                 e.slideFromSpear = true;
                                 self.whiplashJump = true;
                                 spear.firstChunk.vel.x *= 1.7f;
-                                Ebug(self, "Spear Go!?", 2);
+                                Ebug(self, "Spear Go!?", LogLevel.DEBUG);
                             }
                             else
                             {
@@ -541,7 +541,7 @@ partial class Plugin : BaseUnityPlugin
                                 self.whiplashJump = true;
                                 self.animation = Player.AnimationIndex.BellySlide;
                                 spear.firstChunk.vel.x *= 1.6f;
-                                Ebug(self, "Spear Go!", 2);
+                                Ebug(self, "Spear Go!", LogLevel.DEBUG);
                             }
                             else
                             {
@@ -646,16 +646,16 @@ partial class Plugin : BaseUnityPlugin
         {
             Ebug(self, err, "Error while adjusting the player thrust");
         }
-        Ebug(self, "Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, 2);
+        Ebug(self, "Speartoss! Velocity [X,Y]: [" + spear.firstChunk.vel.x + "," + spear.firstChunk.vel.y + "] Damage: " + spear.spearDamageBonus, LogLevel.DEBUG);
     }
 
 
 
-#endregion
+    #endregion
 
 
 
-#region Hit
+    #region Hit
     private static void Escort_BulletHit(ILContext il)
     {
         var c = new ILCursor(il);
@@ -681,7 +681,7 @@ partial class Plugin : BaseUnityPlugin
             Ebug(ex, "Bullethit IL match 2 failed");
             throw new Exception("IL Match 2 Failed", ex);
         }
-        Ebug("Bullethit Identified point of interest", 0, true);
+        Ebug("Bullethit Identified point of interest", LogLevel.MESSAGE, true);
         try
         {
             c.Emit(OpCodes.Ldarg, 0);
@@ -696,21 +696,22 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.EmitDelegate(
-                (float original, Bullet self, SharedPhysics.CollisionResult result) => {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                (float original, Bullet self, SharedPhysics.CollisionResult result) =>
+                {
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
                             original *= e.DeflDamageMult + e.DeflPerma;
                             if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
                             //e.DeflPowah = 0;
-                            Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}", 3, true);
+                            Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}", LogLevel.DEBUG, true);
                         }
 
                         if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
                         {
                             original *= 5;
-                            Ebug(player, $"Hurt that modafoka! Damage: {original}", 3, true);
+                            Ebug(player, $"Hurt that modafoka! Damage: {original}", LogLevel.DEBUG, true);
                         }
                     }
                     return original;
@@ -750,7 +751,7 @@ partial class Plugin : BaseUnityPlugin
             Ebug(ex, "Lillyhit IL match 2 failed");
             throw new Exception("IL Match 2 Failed", ex);
         }
-        Ebug("Lillyhit Identified point of interest", 0, true);
+        Ebug("Lillyhit Identified point of interest", LogLevel.MESSAGE, true);
         try
         {
             c.Emit(OpCodes.Ldarg, 0);
@@ -765,8 +766,9 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.EmitDelegate(
-                (float original, LillyPuck self, SharedPhysics.CollisionResult result) => {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                (float original, LillyPuck self, SharedPhysics.CollisionResult result) =>
+                {
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
@@ -803,7 +805,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (self.thrownBy is Player p)
             {
-                if (Eshelp_IsMe(p.slugcatStats.name))
+                if (Escort_IsNull(p.slugcatStats.name))
                 {
                     return orig(self, result, eu);
                 }
@@ -958,7 +960,7 @@ partial class Plugin : BaseUnityPlugin
             Ebug(ex, "Bombhit IL match 2 failed");
             throw new Exception("IL Match 2 Failed", ex);
         }
-        Ebug("Bombhit Identified point of interest", 0, true);
+        Ebug("Bombhit Identified point of interest", LogLevel.MESSAGE, true);
         try
         {
             c.Emit(OpCodes.Ldarg, 0);
@@ -973,8 +975,9 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.EmitDelegate(
-                (float original, ScavengerBomb self, SharedPhysics.CollisionResult result) => {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                (float original, ScavengerBomb self, SharedPhysics.CollisionResult result) =>
+                {
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
@@ -1033,7 +1036,7 @@ partial class Plugin : BaseUnityPlugin
             Ebug(ex, "Spearhit IL match 2 failed");
             throw new Exception("IL Match 2 Failed", ex);
         }
-        Ebug("Spearhit Identified point of interest", 0, true);
+        Ebug("Spearhit Identified point of interest", LogLevel.MESSAGE, true);
         try
         {
             c.Emit(OpCodes.Ldarg, 0);
@@ -1048,8 +1051,9 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             c.EmitDelegate(
-                (float original, Spear self, SharedPhysics.CollisionResult result) => {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                (float original, Spear self, SharedPhysics.CollisionResult result) =>
+                {
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector)
                         {
@@ -1081,7 +1085,7 @@ partial class Plugin : BaseUnityPlugin
     public static bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
     {
         bool ending = orig(self, result, eu);
-        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsMe(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
         {
             if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
             {
@@ -1093,7 +1097,7 @@ partial class Plugin : BaseUnityPlugin
         return ending;
     }
 
-#endregion
+    #endregion
 
 
 

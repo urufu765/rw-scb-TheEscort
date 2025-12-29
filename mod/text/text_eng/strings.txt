@@ -197,3 +197,22 @@ At the cost of a karma flower, the slugpup respawns!|At the cost of a karma flow
 Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!|Bringing a karma flower into the shelter while already reinforced will consume the karma flower instead!
 escoptions_pupsforeveryone_text|Unlocked Escort Slugpup
 escoptions_pupsforeveryone_desc|Allow other Escort builds to have the slugpup. WARNING: May cause unintended behaviour
+ENDING ONE MORE UPDATE|ENDING ONE MORE UPDATE
+escoptions_disableslide_text|Disable <SPEEDSTER> Slide Activation
+escoptions_disableslide_desc|Disables the <SPEEDSTER> boost activation when sliding.
+escoptions_useoldcontrols_text|Use Original <ESCAPIST> Clone Controls
+escoptions_useoldcontrols_desc|Goes back to using double-tap direction to activate shadow clone.
+Guardian|Guardian
+speedster_desc_new|Keep moving to become faster and become impossible to catch
+Conqueror|Conqueror
+conqueror_desc|Forgo trust in tools, create a new path with brutality
+Unstable|Unstable
+unstable_desc|Reality is unstable, go wild
+unstable_tut_a|<UNSTABLE>'s jump is replaced by a blink! Press Jump to blink!
+unstable_tut_b|Press jump again within a short window to chain another blink!
+unstable_tut_c|First blink will always go up, next blinks go towards the input directional.
+unstable_tut_d|While the blink window is active, press Special to do a homing kick towards a nearby creature!
+unstable_tut_e|You can only chain a random number of blinks at a time.
+unstable_tut_f|How you throw things is also random, as well as if you trip for no reason.
+Automatic|Automatic
+Bottom Right|Bottom Right

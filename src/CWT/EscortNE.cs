@@ -19,77 +19,77 @@ public partial class Escort
     /// Color of shadow clone
     /// </summary>
     public Color NEsShadowColor;
-    
+
     /// <summary>
     /// Last directional input made by the player (X, Y)
     /// </summary>
     public IntVector2 NEsLastInput;
-    
+
     /// <summary>
     /// Cooldown that will be set next frame
     /// </summary>
     public int NEsSetCooldown;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public int NEsCooldown;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public List<Creature> NEsVulnerable;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public int NEsClearVulnerable;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public int NEsAbility;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public AbstractCreature NEsAbstractShadowPlayer;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public ShadowPlayer NEsShadowPlayer;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public const int NEsAbilityTime = 320;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public bool NEsResetCooldown;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public bool NEsShelterCloseTime;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public int NEsLastCooldown;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public Queue<BodyDouble> NEsShadow;
-    
+
     /// <summary>
     /// 
     /// </summary>
     public int NEsAddToTrailCD;
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -170,7 +170,7 @@ public class ShadowPlayer : Player
     {
         this.controller = new ArenaGameSession.PlayerStopController();
         this.cameraSwitchDelay = -1;
-        
+
         this.dropGrabTile = basePlayer.dropGrabTile;
         this.killTagPlayer = basePlayer;
         for (int i = 0; i < this.bodyChunks.Length; i++)
@@ -189,8 +189,8 @@ public class ShadowPlayer : Player
             smoke = new(basePlayer.room);
             smokeScreen = new(basePlayer.room, bodyChunks[1].pos);
         }
-        Ebug($"Shadowplayer created with ai? {this.AI is not null}", 1, true);
-        Ebug($"I am a {this.slugcatStats.name.value}!", 1, true);
+        Ebug($"Shadowplayer created with ai? {this.AI is not null}", LogLevel.INFO, true);
+        Ebug($"I am a {this.slugcatStats.name.value}!", LogLevel.INFO, true);
     }
 
     public override void Update(bool eu)
@@ -234,7 +234,7 @@ public class ShadowPlayer : Player
         {
             standing = true;
         }
-        
+
         if (killTime <= 0)
         {
             smoke.Destroy();
@@ -268,14 +268,14 @@ public class ShadowPlayer : Player
 
                 if (
                     thing is Creature creature and not ShadowPlayer &&
-                    creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && 
+                    creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC &&
                     creature != this &&
                     !(
-                        creature is Player && 
-                        ModManager.CoopAvailable && 
+                        creature is Player &&
+                        ModManager.CoopAvailable &&
                         !Custom.rainWorld.options.friendlyFire
-                    ) && 
-                    !creature.dead && 
+                    ) &&
+                    !creature.dead &&
                     Custom.Dist(creature.firstChunk.pos, this.firstChunk.pos) < 180f
                 )
                 {
@@ -442,7 +442,7 @@ public class ShadowPlayer : Player
         if (firstContact && speed > 30f)
         {
             this.Violence(null, firstChunk.pos * 0.1f, firstChunk, null, DamageType.Explosion, 0.1f, 40);
-            Ebug("Deploy explosive!", 2, true);
+            Ebug("Deploy explosive!", ignoreRepetition: true);
         }
     }
 }

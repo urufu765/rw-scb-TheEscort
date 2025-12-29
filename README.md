@@ -8,6 +8,17 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * *()* Add setting to adjust parry sfx
+  * *()* Fix Meadow
+  * *()* When hyped, give extra warmth
+  * *()* Cyan lizard also drops with baby, increased profit lmao
+  * *()* Give Railgunner a lasersight
+  * *()* Smater Meadow detection
+
+  * **(0.3.5.1)** Timeline fixes. Default build colours now work in Meadow
+
+  * **(0.3.5)** Few abilities activation key is now bound to the special button. Long Wall Jump option is now disabled. Adjusted logger to log more correctly. Guardian support gone. Also disabled New Escapist if trying to play meadow. HUD in bottom left corner option (if meadow detected, just fucking move it there you lazy bum)
+
   * **(0.3.4)** Added little patch for needing the mod for Meadow, and finally got the arena build picker working. Also did a sweep and made a bunch of stuff public and static
 
   * **(0.3.3.3)** Updated for Watcher + updated all the libs

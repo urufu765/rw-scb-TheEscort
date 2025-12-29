@@ -26,7 +26,7 @@ namespace TheEscort
         public static float[] escortRGBTick;
         public static Color[] escortRGBStore;
 
-#region Escort Graphics
+        #region Escort Graphics
         public static void Escort_InitiateSprites(On.PlayerGraphics.orig_InitiateSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam)
         {
             ins.L().Set();
@@ -62,7 +62,7 @@ namespace TheEscort
                 {
                     if (s.sprites[i] is null)
                     {
-                        Ebug(self.player, "Oh geez. No sprites on index " + i + "?", 0);
+                        Ebug(self.player, "Oh geez. No sprites on index " + i + "?", LogLevel.ERR);
                     }
                 }
                 ins.L().Set("Successful Spriting Check");
@@ -99,49 +99,45 @@ namespace TheEscort
                 }
                 if (e.mainSpriteIndex + e.mainSprites == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
-                    Ebug(self.player, "Oh dear. Null sprites!!", 0);
+                    Ebug(self.player, "Oh dear. Null sprites!!", LogLevel.ERR);
                     return;
                 }
                 Color c = new(0.796f, 0.549f, 0.27843f);
+                bool defaultColour = false;
                 // Applying colors?
                 if (s.sprites.Length > e.mainSpriteIndex)
                 {
                     //Ebug(self.player, "Gone in", 2);
                     if (ModManager.CoopAvailable && self.useJollyColor)
                     {
-                        //Ebug(self.player, "Jollymachine", 2);
+                        //Ebug(self.player, "Jollymachine");
                         c = PlayerGraphics.JollyColor(self.player.playerState.playerNumber, 2);
                         //Ebug(self.player, "R: " + c.r + " G: " + c.g + " B: " + c.b);
-                        //Ebug(self.player, "Jollymachine end", 2);
+                        Ebug(self.player, "Jollymachine end");
                     }
                     else if (PlayerGraphics.CustomColorsEnabled())
                     {
-                        Ebug(self.player, "Custom color go brr", 2);
+                        //Ebug(self.player, "Custom color go brr");
                         c = PlayerGraphics.CustomColorSafety(2);
-                        Ebug(self.player, "Custom color end", 2);
+                        Color esc = PlayerGraphics.CustomColorSafety(0);
+                        Color def = Custom.hexToColor("4169e1");
+                        if (
+                            Mathf.Abs(esc.r - def.r) < 0.01f && 
+                            Mathf.Abs(esc.g - def.g) < 0.01f && 
+                            Mathf.Abs(esc.b - def.b) < 0.01f
+                            )
+                        {
+                            Ebug("Non-custom colour detected! Defaulting to build-specific");
+                            defaultColour = true;
+                        }
+                        Ebug(self.player, "Custom color end");
                     }
                     else
                     {
                         //==Ebug(self.player, "Arenasession or Singleplayer", 2);
 
                         // Unique color for each build
-                        if (rCam.room.game.IsStorySession && !e.isDefault)
-                        {
-                            Color c2 = Color.white;
-                            if (e.Brawler) c2 = e.BrawlerColor;
-                            if (e.Deflector) c2 = e.DeflectorColor;
-                            if (e.Escapist) c2 = e.EscapistColor;
-                            if (e.NewEscapist) c2 = e.NewEscapistColor;
-                            if (e.Railgunner) c2 = e.RailgunnerColor;
-                            if (e.Speedster) c2 = e.SpeedsterColor;
-                            if (e.Gilded) c2 = e.GildedColor;
-                            if (e.Unstable) c2 = e.UnstableColor;
-                            if (self.player is ShadowPlayer) c2 = e.NEsShadowColor;
-                            for (int i = 0; i < 9; i++)
-                            {
-                                s.sprites[i].color = c2;
-                            }
-                        }
+                        defaultColour = true;
 
                         if (rCam.room.game.IsArenaSession && !rCam.room.game.setupValues.arenaDefaultColors)
                         {
@@ -167,7 +163,7 @@ namespace TheEscort
                                     break;
                             }
                         }
-                        Ebug(self.player, "Arena/Single end.", 2);
+                        Ebug(self.player, "Arena/Single end.");
                     }
                 }
                 if (c.r <= 0.02f && c.g <= 0.02f && c.b <= 0.02f)
@@ -191,6 +187,25 @@ namespace TheEscort
                     e.hypeLight.color = c;
                     e.hypeSurround.color = c;
                 }
+
+                if (rCam?.room?.game?.IsStorySession is true && defaultColour && !e.isDefault)
+                {
+                    Color c2 = Color.white;
+                    if (e.Brawler) c2 = e.BrawlerColor;
+                    if (e.Deflector) c2 = e.DeflectorColor;
+                    if (e.Escapist) c2 = e.EscapistColor;
+                    if (e.NewEscapist) c2 = e.NewEscapistColor;
+                    if (e.Railgunner) c2 = e.RailgunnerColor;
+                    if (e.Speedster) c2 = e.SpeedsterColor;
+                    if (e.Gilded) c2 = e.GildedColor;
+                    if (e.Unstable) c2 = e.UnstableColor;
+                    if (self.player is ShadowPlayer) c2 = e.NEsShadowColor;
+                    for (int i = 0; i < 9; i++)
+                    {
+                        s.sprites[i].color = c2;
+                    }
+                }
+
             }
             catch (Exception err)
             {
@@ -222,7 +237,7 @@ namespace TheEscort
                 }
                 if (e.mainSpriteIndex + e.mainSprites == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
-                    Ebug(self.player, "Oh shoot. Where sprites?", 0);
+                    Ebug(self.player, "Oh shoot. Where sprites?", LogLevel.ERR);
                     return;
                 }
                 if (e.mainSpriteIndex < s.sprites.Length)
@@ -230,12 +245,12 @@ namespace TheEscort
                     // removes from foreground layer
                     rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex]);
                     rCam.ReturnFContainer("Foreground").RemoveChild(s.sprites[e.mainSpriteIndex + 1]);
-                    Ebug(self.player, "Removal success.", 1);
+                    Ebug(self.player, "Removal success.");
 
                     // adds to midground layer
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex]);
                     rCam.ReturnFContainer("Midground").AddChild(s.sprites[e.mainSpriteIndex + 1]);
-                    Ebug(self.player, "Addition success.", 1);
+                    Ebug(self.player, "Addition success.");
 
                     // puts custom sprites behind game sprites (3=head, 9=face)
                     s.sprites[e.mainSpriteIndex].MoveBehindOtherNode(s.sprites[9]);
@@ -300,7 +315,7 @@ namespace TheEscort
                 if (e.mainSpriteIndex + 2 == s.sprites.Length && (s.sprites[e.mainSpriteIndex] == null || s.sprites[e.mainSpriteIndex + 1] == null))
                 {
                     orig(self, s, rCam, t, camP);
-                    Ebug(self.player, "Oh crap. Sprites? Hello?!", 0);
+                    Ebug(self.player, "Oh crap. Sprites? Hello?!", LogLevel.ERR);
                     return;
                 }
 
@@ -438,7 +453,7 @@ namespace TheEscort
             {
                 if (self.game?.session is not null)
                 {
-                    foreach(AbstractCreature abstractPlayer in self.game.session.Players)
+                    foreach (AbstractCreature abstractPlayer in self.game.session.Players)
                     {
                         if (abstractPlayer?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort e))
                         {
@@ -485,24 +500,30 @@ namespace TheEscort
 
         public static Color Escort_Colorz(On.PlayerGraphics.orig_DefaultSlugcatColor orig, SlugcatStats.Name i)
         {
-            try {
-                if (i == EscortMe){
+            try
+            {
+                if (i == EscortMe)
+                {
                     return new Color(0.255f, 0.412f, 0.882f);
                 }
                 return orig(i);
-            } catch (NullReferenceException nre) {
+            }
+            catch (NullReferenceException nre)
+            {
                 Ebug(nre, "Null found when setting default scug flavor!");
                 return orig(i);
-            } catch (Exception err) {
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "Generic error found when setting scug flavor!");
                 return orig(i);
             }
         }
 
 
-#endregion
+        #endregion
 
-#region Escort Jolly UI
+        #region Escort Jolly UI
         public static bool Escort_Jolly_Sprite(On.JollyCoop.JollyMenu.SymbolButtonTogglePupButton.orig_HasUniqueSprite orig, JollyCoop.JollyMenu.SymbolButtonTogglePupButton self)
         {
             Ebug("Woof woof");
@@ -528,7 +549,7 @@ namespace TheEscort
             }
             else
             {
-               return orig(slugName, reference, playerNumber);
+                return orig(slugName, reference, playerNumber);
             }
             /*
             if ((RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.DEFAULT || (playerNumber == 0 && RWCustom.Custom.rainWorld.options.jollyColorMode == Options.JollyColorMode.AUTO)) && slugName == EscortMe)
@@ -557,7 +578,8 @@ namespace TheEscort
                 if (escortRGBStore[index].r < 0.05f &&
                     escortRGBStore[index].g < 0.05f &&
                     escortRGBStore[index].b < 0.05f
-                ){
+                )
+                {
                     self.uniqueSymbol.color = Eshelp_cycle_dat_RGB(ref escortRGBTick[index]);
                     //Ebug("GUESS WHAT? RGB!");
                     return;
@@ -589,7 +611,7 @@ namespace TheEscort
                     vector2, new Vector2(100f, 30f)
                 )
                 {
-                    text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[i].Value]),
+                    text = rainWorld.inGameTranslator.Translate(ins.config.GetBuildSelectionable()[ins.config.cfgBuild[i].Value]),
                     /*
                     text = i switch
                     {
@@ -608,7 +630,7 @@ namespace TheEscort
                     vector2 + new Vector2(105.5f, 0f), new Vector2(30f, 30f)
                 )
                 {
-                    text = ins.config.cfgEasy[i].Value? "X" : "",
+                    text = ins.config.cfgEasy[i].Value ? "X" : "",
                     /*
                     text = i switch
                     {
@@ -634,17 +656,25 @@ namespace TheEscort
 
         public static void EscortPleaseSaveTheGoddamnConfigs(On.JollyCoop.JollyMenu.JollySetupDialog.orig_RequestClose orig, JollyCoop.JollyMenu.JollySetupDialog self)
         {
-            try{
-                if (!self.closing){
+            try
+            {
+                if (!self.closing)
+                {
                     ins.config._SaveConfigFile();
-                    
+
                     Ebug("Saving configs!");
                 }
-            } catch (NullReferenceException nre){
+            }
+            catch (NullReferenceException nre)
+            {
                 Ebug(nre, "EscortsavingJOLLYCONFIGS: OH CRAP A NULL EXCEPTOIN");
-            } catch (Exception err){
+            }
+            catch (Exception err)
+            {
                 Ebug(err, "EscortsavingJOLLYCONFIGS: Oh god an different error help me");
-            } finally {
+            }
+            finally
+            {
                 orig(self);
             }
         }
@@ -667,7 +697,7 @@ namespace TheEscort
                 return;
             }
             ins.config.cfgEasy[index].Value = !ins.config.cfgEasy[index].Value;
-            ins.config.jollyEscortEasies[index].text = ins.config.cfgEasy[index].Value? "X" : "";
+            ins.config.jollyEscortEasies[index].text = ins.config.cfgEasy[index].Value ? "X" : "";
             /*
             switch (index)
             {
@@ -726,9 +756,11 @@ namespace TheEscort
                 Ebug("Couldn't find button!");
                 return;
             }
-            if (ins.config.cfgBuild[index].Value - 1 < ins.config.buildDiv) ins.config.cfgBuild[index].Value = 0;
-            else ins.config.cfgBuild[index].Value--;
-            ins.config.jollyEscortBuilds[index].text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[index].Value]);
+            ins.config.cfgBuild[index].Value = ins.config.GetNextBuild(ins.config.cfgBuild[index].Value);
+            if (ins.config.GetBuildSelectionable().TryGetValue(ins.config.cfgBuild[index].Value, out string v))
+            {
+                ins.config.jollyEscortBuilds[index].text = rainWorld.inGameTranslator.Translate(v);
+            }
             /*
             switch (index)
             {
@@ -762,18 +794,21 @@ namespace TheEscort
             orig(self);
             if (ins.config.jollyEscortBuilds is not null && ins.config.jollyEscortBuilds.Length > 0)
             {
-                if (self.slugName == EscortMe) { 
-                    ins.config.jollyEscortBuilds[self.index].Reactivate(); 
-                    ins.config.jollyEscortEasies[self.index].Reactivate(); 
-                } else { 
-                    ins.config.jollyEscortBuilds[self.index].Deactivate(); 
-                    ins.config.jollyEscortEasies[self.index].Deactivate(); 
+                if (self.slugName == EscortMe)
+                {
+                    ins.config.jollyEscortBuilds[self.index].Reactivate();
+                    ins.config.jollyEscortEasies[self.index].Reactivate();
+                }
+                else
+                {
+                    ins.config.jollyEscortBuilds[self.index].Deactivate();
+                    ins.config.jollyEscortEasies[self.index].Deactivate();
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Arena Mode UI
+        #region Arena Mode UI
         public static void Escort_Arena_Class_Changer(On.Menu.MultiplayerMenu.orig_InitiateGameTypeSpecificButtons orig, Menu.MultiplayerMenu self)
         {
             // Ebug("Initiate buttons!");
@@ -786,9 +821,11 @@ namespace TheEscort
             //ins.config.arenaEscortEasies = new OpSimpleButton[4];
             // wackyWrapper = new UIelementWrapper[4];  // UIElementwrapper to make it work with jolly coop menu lol
             // somewhatIllegalWrapper = new UIelementWrapper[4];
-            if (self.currentGameType == ArenaSetup.GameTypeID.Sandbox || self.currentGameType == ArenaSetup.GameTypeID.Competitive){
+            if (self.currentGameType == ArenaSetup.GameTypeID.Sandbox || self.currentGameType == ArenaSetup.GameTypeID.Competitive)
+            {
                 // Ebug("entering setup condition");
-                for (int i = 0; i < 4; i++){
+                for (int i = 0; i < 4; i++)
+                {
                     // ins.config.arenaEscortBuilds[i] = new(
                     //     new Vector2(580f + (float)i * 120f, 500f) + new Vector2(106f, -60f) - new Vector2((120f - 120f) * (float)self.playerClassButtons.Length, 0f), new Vector2(100f, 30f)
                     // ){
@@ -803,7 +840,7 @@ namespace TheEscort
                     //     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
                     // };
                     //ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
-                    ins.config.arenaEscortBuilds[i] = new SimpleButton(self, self.pages[0], rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[i].Value]), "BUILD_CHANGE_" + i, new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f), new Vector2(100f, 30f));
+                    ins.config.arenaEscortBuilds[i] = new SimpleButton(self, self.pages[0], rainWorld.inGameTranslator.Translate(ins.config.GetBuildSelectionable()[ins.config.cfgBuild[i].Value]), "BUILD_CHANGE_" + i, new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f), new Vector2(100f, 30f));
                     // wackyWrapper[i] = new RectangularMenuObject(self.);
                     self.pages[0].subObjects.Add(ins.config.arenaEscortBuilds[i]);
                 }
@@ -831,21 +868,17 @@ namespace TheEscort
         {
             try
             {
-                Ebug("Beep! "+ message);
+                Ebug("Beep! " + message);
 
-                if(message.StartsWith("BUILD_CHANGE") && int.TryParse(message.Last().ToString(), out int p_index) && ins.config?.arenaEscortBuilds?[p_index] is not null)
+                if (message.StartsWith("BUILD_CHANGE") && int.TryParse(message.Last().ToString(), out int p_index) && ins.config?.arenaEscortBuilds?[p_index] is not null)
                 {
-                    Ebug("Boop! "+ message);
+                    Ebug("Boop! " + message);
                     self.PlaySound(SoundID.MENU_Button_Standard_Button_Pressed);
-                    if (ins.config.cfgBuild[p_index].Value - 1 < ins.config.buildDiv)
+                    ins.config.cfgBuild[p_index].Value = ins.config.GetNextBuild(ins.config.cfgBuild[p_index].Value);
+                    if (ins.config.GetBuildSelectionable().TryGetValue(ins.config.cfgBuild[p_index].Value, out string v))
                     {
-                        ins.config.cfgBuild[p_index].Value = 0;
+                        ins.config.arenaEscortBuilds[p_index].menuLabel.text = rainWorld.inGameTranslator.Translate(v);
                     }
-                    else
-                    {
-                        ins.config.cfgBuild[p_index].Value--;
-                    }
-                    ins.config.arenaEscortBuilds[p_index].menuLabel.text = rainWorld.inGameTranslator.Translate(selectionable[ins.config.cfgBuild[p_index].Value]);
                     // ins.config.arenaEscortBuilds[p_index].menuLabel = new(
                     //     ins.config.arenaEscortBuilds[p_index].menu, 
                     //     ins.config.arenaEscortBuilds[p_index], 
@@ -888,9 +921,9 @@ namespace TheEscort
                 {
                     if (ins.config.arenaEscortBuilds[i] is not null)
                     {
-                        if (Eshelp_IsMe(self.GetArenaSetup?.playerClass?[i]))
+                        if (Escort_IsNull(self.GetArenaSetup?.playerClass?[i]))
                         {
-                            ins.config.arenaEscortBuilds[i].pos = new (800, 1000);
+                            ins.config.arenaEscortBuilds[i].pos = new(800, 1000);
                             ins.config.arenaEscortBuilds[i].inactive = true;
                         }
                         else
@@ -946,7 +979,7 @@ namespace TheEscort
         //     }
         // }
 
-#endregion
+        #endregion
     }
 }
 

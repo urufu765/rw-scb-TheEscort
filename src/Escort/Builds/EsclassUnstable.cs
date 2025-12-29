@@ -69,11 +69,11 @@ namespace TheEscort
             //
 
             // For alternate version of blink
-            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < (shortDash? 7 : 10))
+            if (e.UnsBlinkFrame > 0 && e.UnsBlinkFrame < (shortDash ? 7 : 10))
             {
                 e.UnsBlinkFrame++;
             }
-            else if (e.UnsBlinkFrame >= (shortDash? 7 : 10))
+            else if (e.UnsBlinkFrame >= (shortDash ? 7 : 10))
             {
                 e.UnsBlinkFrame = 0;
             }
@@ -209,7 +209,7 @@ namespace TheEscort
                 Ebug(err, "Unstable melee failed!");
             }
 
-            try 
+            try
             {
                 if (e.UnsRockitDur > 0 && e.UnsRockitCret is not null)
                 {
@@ -232,7 +232,14 @@ namespace TheEscort
                 Ebug(self, "Midjump!", ignoreRepetition: true);
                 Esclass_US_MidJump(self, e);
             }
-            if (e.UnsBlinkCD == 0 && e.UnsBlinkWindow > 0 && self.input[0].thrw && !self.input[1].thrw)
+
+            // Hop using special key while on ground
+            if (e.UnsBlinkWindow == 0 && (self.bodyChunks[0].ContactPoint.y == -1 || self.bodyChunks[1].ContactPoint.y == -1) && self.input[0].spec && !self.input[1].spec)
+            {
+                Esclass_US_MiniHop(self);
+            }
+            // bool condition = ins.config.cfgDisableSpeedsterSlide.Value ? self.input[0].thrw && !self.input[1].thrw : self.input[0].spec && !self.input[1].spec;
+            if (e.UnsBlinkCD == 0 && e.UnsBlinkWindow > 0 && self.input[0].spec && !self.input[1].spec)
             {
                 Ebug(self, "HOMING MISSILE!", ignoreRepetition: true);
                 e.UnsRockitCret = Esclass_US_RockitKick(self, e);
@@ -319,7 +326,7 @@ namespace TheEscort
             {
                 Esclass_US_MiniHop(self);
             }
-            
+
             return true;
         }
 
@@ -436,7 +443,7 @@ namespace TheEscort
                     xCom = self.bodyChunks[1].pos.x + xMov;
                     yCom = self.bodyChunks[1].pos.y + yMov;
                 }
-                
+
                 var tPos = self.room.GetTilePosition(new(xCom, yCom));
                 Room.Tile rt = self.room.GetTile(tPos);
 
@@ -561,7 +568,7 @@ namespace TheEscort
                 self.bodyChunks[0].pos.y += 20;
                 self.bodyChunks[1].pos.y += 20;
                 // Though I could get away with increasing the velocity every frame, having it increase only at the end seemed funner
-                if (frame == (shortDash? 6 : 9))
+                if (frame == (shortDash ? 6 : 9))
                 {
                     self.bodyChunks[0].vel.y += velT + 1f;
                     self.bodyChunks[1].vel.y += velT;
@@ -573,7 +580,7 @@ namespace TheEscort
                 self.bodyChunks[1].pos.x += xMov;
                 self.bodyChunks[0].pos.y += yMov;
                 self.bodyChunks[1].pos.y += yMov;
-                if (frame == (shortDash? 6 : 9))
+                if (frame == (shortDash ? 6 : 9))
                 {
                     self.bodyChunks[0].vel.x += velT * dir.x;
                     self.bodyChunks[1].vel.x += velT * dir.x;
@@ -699,7 +706,7 @@ namespace TheEscort
             {
                 e.UnsRockitDur = 0;
                 creature.Violence(
-                    self.bodyChunks[1], 
+                    self.bodyChunks[1],
                     new Vector2(self.bodyChunks[1].vel.x * ins.DKMultiplier, self.bodyChunks[1].vel.y * ins.DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,

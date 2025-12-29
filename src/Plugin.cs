@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using Menu;
 using MonoMod.Cil;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TheEscort.Patches;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -22,7 +24,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.4")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.5.1")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -41,7 +43,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public const string MOD_ID = "urufudoggo.theescort";
 
-#region Declare Features
+    #region Declare Features
     /// <summary>
     /// Allow json values to override internal values (Player instance)
     /// </summary>
@@ -92,7 +94,7 @@ partial class Plugin : BaseUnityPlugin
     /// Allow parry slide (parry by sliding on the ground)
     /// </summary>
     public static readonly PlayerFeature<bool> ParrySlide;
-    
+
     /// <summary>
     /// Amount of frames after pressing jump in a corridor where contact with another creature would count as a headbutt
     /// </summary>
@@ -102,7 +104,7 @@ partial class Plugin : BaseUnityPlugin
     /// Allow Escort's elevator (ramping off creatures while pressing and holding jump launches Escort)
     /// </summary>
     public static readonly PlayerFeature<bool> Elvator;
-    
+
     public static readonly PlayerFeature<float> TrampOhLean;
 
     /// <summary>
@@ -176,9 +178,11 @@ partial class Plugin : BaseUnityPlugin
     public static readonly GameFeature<MenuScene.SceneID> AltSleepSceneDuo;
     #endregion
 
-#region Plugin Variable Declarations
+    #region Plugin Variable Declarations
     public static readonly SlugcatStats.Name EscortMe;
     public static readonly SlugcatStats.Name EscortSocks;
+    public static readonly SlugcatStats.Timeline EscortMeTime;
+    public static readonly SlugcatStats.Timeline EscortSocksTime;
     //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
     /// <summary>
@@ -258,7 +262,7 @@ partial class Plugin : BaseUnityPlugin
     private readonly bool nonArena = false;  // Sets Escort's marking colors to the main color instead of Arena
 
     // Escort instance 
-    
+
     /// <summary>
     /// Contains instances of the Escort class for each applicable players. ALL Escort loadouts use the same Escort class to control the loadout specific abilities.
     /// </summary>
@@ -316,7 +320,7 @@ partial class Plugin : BaseUnityPlugin
 
 
     // Patches
-    
+
     /// <summary>
     /// Revivify patch: 1.2.0
     /// </summary>
@@ -330,13 +334,19 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static bool escPatch_dms;
     /// <summary>
+    /// Rain Meadow patch: 1.10
+    /// </summary>
+    public static bool escPatch_meadow;
+
+
+    /// <summary>
     /// Guardian patch: N/A
     /// </summary>
-    public static bool escPatch_guardian = false;
+    // public static bool escPatch_guardian = false;
     //private bool escPatch_emeraldTweaks = false;
-#endregion
+    #endregion
 
-
+    //public static ManualLogSource Log;
 
 
     /// <summary>
@@ -344,7 +354,7 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public void OnEnable()
     {
-        Logger.LogInfo("-> Escort plugin INIT!");
+        base.Logger.LogMessage("-> Escort plugin INIT!");
         try
         {
             ins = this;
@@ -359,11 +369,12 @@ partial class Plugin : BaseUnityPlugin
 
         On.SaveState.setDenPosition += Escort_ChangingRoom;
         On.SaveState.SessionEnded += Escort_Reset_Values;
-        
+
         On.Lizard.ctor += Escort_Lizard_ctor;
 
         On.Room.Loaded += Escort_Hipbone_Replacement;
         On.RoomSettings.Load_Name += Escort_Transplant;
+        On.RoomSettings.Load_Timeline += Escort_Transplant;
 
         On.PlayerGraphics.InitiateSprites += Escort_InitiateSprites;
         On.PlayerGraphics.ApplyPalette += Escort_ApplyPalette;
@@ -444,9 +455,12 @@ partial class Plugin : BaseUnityPlugin
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
 
         On.SlugcatStats.SpearSpawnModifier_Name_float += Escort_SpearSpawnMod;
+        On.SlugcatStats.SpearSpawnModifier_Timeline_float += Escort_SpearSpawnMod;
         On.SlugcatStats.SpearSpawnElectricRandomChance_Name += Escort_EleSpearSpawnChance;
+        On.SlugcatStats.SpearSpawnElectricRandomChance_Timeline += Escort_EleSpearSpawnChance;
         On.SlugcatStats.SpearSpawnExplosiveRandomChance_Name += Escort_ExpSpearSpawnChance;
-        On.SlugcatStats.getSlugcatStoryRegions += Escort_getStoryRegions;
+        On.SlugcatStats.SpearSpawnExplosiveRandomChance_Timeline += Escort_ExpSpearSpawnChance;
+        On.SlugcatStats.SlugcatStoryRegions += Escort_getStoryRegions;
         On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
         On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
         On.SlugcatStats.SlugcatFoodMeter += Escort_differentBuildsFoodz;
@@ -507,6 +521,23 @@ partial class Plugin : BaseUnityPlugin
         catch (Exception err)
         {
             Ebug(err, "Oh dear.");
+        }
+
+        try
+        {
+            // Rain Meadow
+            if (ModManager.ActiveMods.Any(mod => mod.id == "henpemaz_rainmeadow"))
+            {
+                ins.L().Set("Patch: Rain Meadow");
+                Ebug("Found Rain Meadow! Applying patches...", LogLevel.MESSAGE);
+                escPatch_meadow = true;
+                //EPatchMeadow.Initialize();
+                EscOptions.shouldUpdate = true;
+            }
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Failed to apply crossmod compatibility patches on load!");
         }
     }
 
@@ -574,16 +605,16 @@ partial class Plugin : BaseUnityPlugin
         hB = Futile.atlasManager.LoadAtlas("atlases/escorthudb");
         if (aB == null || aH == null || hA == null || hB == null)
         {
-            Ebug("Oh no. Sprites dead.", 0);
+            Ebug("Oh no. Sprites dead.", LogLevel.ERR);
         }
-        Ebug("All SFX loaded!", 1);
+        Ebug("All SFX loaded!", LogLevel.MESSAGE);
         this.config = new EscOptions(rainWorld);
         MachineConnector.SetRegisteredOI("urufudoggo.theescort", this.config);
         ins.L().Christmas(config.cfgSectret.Value);
-        Ebug("All loaded!", 1);
+        Ebug("All loaded!", LogLevel.MESSAGE);
     }
 
-#region Mod Patches
+    #region Mod Patches
     /// <summary>
     /// Checks if specific mods are enabled, simply flip the flag or apply patches when needed
     /// </summary>
@@ -599,7 +630,7 @@ partial class Plugin : BaseUnityPlugin
             if (ModManager.ActiveMods.Exists(mod => mod.id == "revivify"))
             {
                 ins.L().Set("Patch: Revivify");
-                Ebug("Found Revivify! Applying patch...", 1);
+                Ebug("Found Revivify! Applying patch...", LogLevel.MESSAGE);
                 escPatch_revivify = true;
             }
 
@@ -607,41 +638,42 @@ partial class Plugin : BaseUnityPlugin
             if (ModManager.ActiveMods.Exists(mod => mod.id == "dressmyslugcat"))
             {
                 ins.L().Set("Patch: DressMySlugcat");
-                Ebug("Found Dress My Slugcat!", 1);
+                Ebug("Found Dress My Slugcat!", LogLevel.MESSAGE);
                 ModManager.Mod DMS_Mod = ModManager.ActiveMods.Find(mod => mod.id == "dressmyslugcat");
                 //escPatch_DMS = true;
-                Ebug("Found DMS Version: " + DMS_Mod.version, 1);
+                Ebug("Found DMS Version: " + DMS_Mod.version, LogLevel.MESSAGE);
                 string[] dmsVer = DMS_Mod.version.Split('.');
-                
+
                 // Newer than 1.3?
                 if (int.TryParse(dmsVer[0], out int verMaj) && int.TryParse(dmsVer[1], out int verMin) && (verMaj == 1 && verMin >= 3 || verMaj > 1))
                 {
-                    Ebug("Applying patch!...", 1);
+                    Ebug("Applying patch!...", LogLevel.MESSAGE);
                     Espatch_DMS(verMaj, verMin);
                 }
                 else
                 {
-                    Ebug("Applying dud patch...", 1);
+                    Ebug("Applying dud patch...", LogLevel.MESSAGE);
                     Espatch_DMS();
                 }
                 escPatch_dms = true;
-                Ebug("Patched: " + escPatch_dms, 4);
+                Ebug("Patched: " + escPatch_dms, LogLevel.MESSAGE);
             }
 
             // Rotund world
             if (ModManager.ActiveMods.Exists(mod => mod.id == "willowwisp.bellyplus"))
             {
                 ins.L().Set("Patch: Rotund World");
-                Ebug("Found Rotund World! Applying custom patch...", 1);
+                Ebug("Found Rotund World! Applying custom patch...", LogLevel.MESSAGE);
                 escPatch_rotundness = true;
             }
 
+
             // Guardian (Used for uploading exception outputs)
-            if (ModManager.ActiveMods.Exists(mod => mod.id == "vigaro.guardian"))
-            {
-                Ebug("Found Guardian! Applying patch...", 1);
-                escPatch_guardian = true;
-            }
+            // if (ModManager.ActiveMods.Exists(mod => mod.id == "vigaro.guardian"))
+            // {
+            //     Ebug("Found Guardian! Applying patch...", 1);
+            //     escPatch_guardian = true;
+            // }
         }
         catch (Exception err)
         {
@@ -694,7 +726,7 @@ partial class Plugin : BaseUnityPlugin
         // Versions below 1.3 do not support swapping custom sprites
         try
         {
-            Ebug("Using dud patch...", 1);
+            Ebug("Using dud patch...", LogLevel.MESSAGE);
             DressMySlugcat.SpriteDefinitions.AvailableSprites.Add(new DressMySlugcat.SpriteDefinitions.AvailableSprite
             {
                 Name = "MARKINGS",
@@ -709,10 +741,10 @@ partial class Plugin : BaseUnityPlugin
             Ebug(merr, "Couldn't patch Dress Me Sluggie because...");
         }
     }
-#endregion
+    #endregion
 
 
-#region Escort Legacy Configurations
+    #region Escort Legacy Configurations
     // TODO: Replace or make it better by using out keyword
     /*
     Configurations!
@@ -889,7 +921,8 @@ partial class Plugin : BaseUnityPlugin
         }
         else
         {
-            return config.cfgLongWallJump.Value;
+            // return config.cfgLongWallJump.Value;
+            return false;
         }
     }
 
@@ -947,7 +980,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
-    public static bool Esconfig_Build(Player self, int forceBuild = 0)
+    public static bool Esconfig_Build(Player self, int forceBuild = 1)
     {
         try
         {
@@ -957,25 +990,25 @@ partial class Plugin : BaseUnityPlugin
             }
             // Get build ID from configuration
             int pal = ins.config.cfgBuild[self.playerState.playerNumber].Value;
-            if (forceBuild != 0)
+            if (forceBuild != 1)
             {
                 pal = forceBuild;
             }
 
             // Story campaign expansion skips
-            if (self.slugcatStats?.name?.value is not null)
-            {
-                pal = self.slugcatStats.name.value switch 
-                {
-                    "EscortBriish" => -1,
-                    "EscortGamer" => -2,
-                    "EscortHax" => -3,
-                    "EscortRizzgayer" => -4,
-                    "EscortCheese" => -5,
-                    "EscortDrip" => -6,
-                    _ => pal
-                };
-            }
+            // if (self.slugcatStats?.name?.value is not null)
+            // {
+            //     pal = self.slugcatStats.name.value switch
+            //     {
+            //         "EscortBriish" => -1,
+            //         "EscortGamer" => -2,
+            //         "EscortHax" => -3,
+            //         "EscortRizzgayer" => -4,
+            //         "EscortCheese" => -5,
+            //         "EscortDrip" => -6,
+            //         _ => pal
+            //     };
+            // }
             // Fix this by turning it off for expedition or add multiplier or somethingidk (Future me here; HUH? GUH? WUH?)
 
             switch (pal)
@@ -985,26 +1018,26 @@ partial class Plugin : BaseUnityPlugin
                     break;
                 case -98:  // New Escapist build (Testing, obsolete)
                     e.NewEscapist = true;
-                    Ebug(self, "New Escapist Build selected!", 2);
+                    Ebug(self, "New Escapist Build selected!", LogLevel.INFO);
                     self.slugcatStats.visualStealthInSneakMode = 1;
                     self.spearOnBack = new Player.SpearOnBack(self);
                     break;
-                case -9:  // Power test build
-                    if (self?.room?.game is null)
-                    {
-                        Ebug(self, "NULL GAME!", 1);
-                    }
-                    else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().achieveEscort_Bare_Fists)
-                    {
-                        goto default;
-                    }
-                    break;
+                // case -9:  // Power test build
+                //     if (self?.room?.game is null)
+                //     {
+                //         Ebug(self, "NULL GAME!", LogLevel.ERR);
+                //     }
+                //     else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().achieveEscort_Bare_Fists)
+                //     {
+                //         goto default;
+                //     }
+                //     break;
                 case -8:  // Unstable test build
                     // IF locked, don't let player play as Unstable
-                    if (self?.room?.game is null)
-                    {
-                        Ebug(self, "NULL GAME!", 1);
-                    }
+                    // if (self?.room?.game is null)
+                    // {
+                    //     Ebug(self, "NULL GAME!", LogLevel.ERR);
+                    // }
                     /*
                     else if (!self.room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort)
                     {
@@ -1012,17 +1045,17 @@ partial class Plugin : BaseUnityPlugin
                     }
                     */
                     e.Unstable = true;
-                    Ebug(self, "Unstable (WIP) Build selected!", 2);
+                    Ebug(self, "Unstable (WIP) Build selected!", LogLevel.INFO);
                     self.slugcatStats.runspeedFac += 0.45f;
                     self.slugcatStats.poleClimbSpeedFac += 0.4f;
                     self.slugcatStats.corridorClimbSpeedFac += 0.55f;
                     self.slugcatStats.lungsFac += 0.5f;
                     break;
-                case -7:
-                    e.Barbarian = true;
-                    Ebug(self, "Barbarian (WIP) Build selected!", 2);
-                    self.slugcatStats.bodyWeightFac += 0.95f;
-                    break;
+                // case -7:
+                //     e.Barbarian = true;
+                //     Ebug(self, "Barbarian (WIP) Build selected!", LogLevel.INFO);
+                //     self.slugcatStats.bodyWeightFac += 0.95f;
+                //     break;
                 case -6:  // Gilded build
                     e.Gilded = true;
                     if (ins.config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
@@ -1032,7 +1065,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.7f;
                     self.slugcatStats.bodyWeightFac -= 0.15f;
-                    Ebug(self, "Gilded Build selected!", 2);
+                    Ebug(self, "Gilded Build selected!", LogLevel.INFO);
                     break;
                 case -5:  // Speedstar build
                     e.Speedster = true;
@@ -1040,7 +1073,7 @@ partial class Plugin : BaseUnityPlugin
                     e.SpeMaxGear = ins.config.cfgSpeedsterGears.Value;
                     if (!e.SpeOldSpeed && self.room?.game?.session is StoryGameSession speedsterSession)
                     {
-                        Ebug(self, "Get Speedster save!");
+                        Ebug(self, "Get Speedster save!", LogLevel.MESSAGE);
                         if (speedsterSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(self.playerState.playerNumber, out int charging))
                         {
                             e.SpeCharge = Math.Min(charging, e.SpeMaxGear);
@@ -1052,7 +1085,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.poleClimbSpeedFac += 0.6f;
                     self.slugcatStats.corridorClimbSpeedFac += 0.8f;
                     self.slugcatStats.runspeedFac += 0.35f;
-                    Ebug(self, "Speedstar Build selected!", 2);
+                    Ebug(self, "Speedstar Build selected!", LogLevel.INFO);
                     break;
                 case -4:  // Railgunner build
                     e.Railgunner = true;
@@ -1064,7 +1097,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.generalVisibilityBonus += 1f;
                     self.slugcatStats.visualStealthInSneakMode = 0f;
                     self.slugcatStats.bodyWeightFac += 0.3f;
-                    Ebug(self, "Railgunner Build selected!", 2);
+                    Ebug(self, "Railgunner Build selected!", LogLevel.INFO);
                     break;
                 case -3:  // Escapist build
                     if (ins.config.cfgOldEscapist.Value)
@@ -1074,7 +1107,7 @@ partial class Plugin : BaseUnityPlugin
                         self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
-                        Ebug(self, "Old Escapist Build selected!", 2);
+                        Ebug(self, "Old Escapist Build selected!", LogLevel.INFO);
                     }
                     else
                     {
@@ -1084,14 +1117,14 @@ partial class Plugin : BaseUnityPlugin
                         self.slugcatStats.bodyWeightFac -= 0.15f;
                         self.slugcatStats.throwingSkill = 1;
                         self.spearOnBack = new Player.SpearOnBack(self);
-                        Ebug(self, "New Escapist Build selected!", 2);
+                        Ebug(self, "New Escapist Build selected!", LogLevel.INFO);
                     }
                     break;
                 case -2:  // Deflector build
                     e.Deflector = true;
                     if (self.room?.game?.session is StoryGameSession deflectorSession)
                     {
-                        Ebug(self, "Get Deflector save!");
+                        Ebug(self, "Get Deflector save!", LogLevel.MESSAGE);
                         if (deflectorSession.saveState.miscWorldSaveData.Esave().DeflPermaDamage.TryGetValue(self.playerState.playerNumber, out float permaDamage))
                         {
                             if (permaDamage > e.DeflPerma)
@@ -1102,7 +1135,7 @@ partial class Plugin : BaseUnityPlugin
                         }
                         else
                         {
-                            Ebug(self, "Couldn't find deflector save!");
+                            Ebug(self, "Couldn't find deflector save!", LogLevel.WARN);
                         }
                     }
 
@@ -1110,7 +1143,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.lungsFac += 0.2f;
                     self.slugcatStats.bodyWeightFac += 0.12f;
                     self.slugcatStats.throwingSkill = 1;
-                    Ebug(self, "Deflector Build selected!", 2);
+                    Ebug(self, "Deflector Build selected!", LogLevel.INFO);
                     break;
                 case -1:  // Brawler build
                     e.Brawler = true;
@@ -1120,10 +1153,10 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.4f;
                     self.slugcatStats.throwingSkill = 1;
-                    Ebug(self, "Brawler Build selected!", 2);
+                    Ebug(self, "Brawler Build selected!", LogLevel.INFO);
                     break;
                 default:  // Default build
-                    Ebug(self, "Default Build selected!", 2);
+                    Ebug(self, "Default Build selected!", LogLevel.INFO);
                     e.isDefault = true;
                     self.slugcatStats.lungsFac -= 0.2f;
                     break;
@@ -1144,7 +1177,7 @@ partial class Plugin : BaseUnityPlugin
                 e.DeflPerma = DeflInitSharedPerma;
             }
 
-            Ebug(self, "Set build complete!", 1);
+            Ebug(self, "Set build complete!", LogLevel.MESSAGE);
             Ebug(self, new string[]{
                 $"Weightfac: {self.slugcatStats.bodyWeightFac}",
                 $"Movespeed: {self.slugcatStats.runspeedFac}",
@@ -1155,7 +1188,7 @@ partial class Plugin : BaseUnityPlugin
                 $"Loudnessf: {self.slugcatStats.loudnessFac}",
                 $"Stealthyf: {self.slugcatStats.visualStealthInSneakMode}",
                 $"Visibilit: {self.slugcatStats.generalVisibilityBonus}"
-            }, 2);
+            }, LogLevel.DEBUG);
             return true;
         }
         catch (Exception err)
@@ -1164,13 +1197,14 @@ partial class Plugin : BaseUnityPlugin
             return false;
         }
     }
-#endregion
+    #endregion
 
-#region Escort New Configurations
+    #region Escort New Configurations
     /// <summary>
     /// Intended to adjust the force of the slidestun launch, on the fence about implementing it.
     /// </summary>
-    public bool Esconfig_Launch(Player self, out float value, string type="spear"){
+    public bool Esconfig_Launch(Player self, out float value, string type = "spear")
+    {
         value = 0;
         if (!pRTEdits.TryGet(self, out bool RT) ||
             !SlideLaunchMod.TryGet(self, out float[] launcher)) return false;
@@ -1183,7 +1217,7 @@ partial class Plugin : BaseUnityPlugin
         Esconfig_Launch(self, out float thing); // Not implemented yet
         return thing == 0;
     }
-#endregion
+    #endregion
 
     /*
     Escort code!
@@ -1228,12 +1262,15 @@ partial class Plugin : BaseUnityPlugin
     public static void Escort_ctor(On.Player.orig_ctor orig, Player self, AbstractCreature abstractCreature, World world)
     {
         ins.L().Set();  // ignore this
-        Ebug("Ctor Triggered!");
+        Ebug("Ctor Triggered!", LogLevel.INFO);
         // Let the game create the player first
         orig(self, abstractCreature, world);
 
+        Ebug("StoryChar: " + world?.game?.StoryCharacter?.value);
+        Ebug("Timeline: " + world?.game?.TimelinePoint?.value);
+
         // Checks if player is an Escort
-        if (Eshelp_IsMe(self.slugcatStats.name, false))
+        if (Escort_IsNull(self.slugcatStats.name, false))
         {
             ins.L().Set("Escort Check");
 
@@ -1242,7 +1279,7 @@ partial class Plugin : BaseUnityPlugin
             // Check if the Escort instance has been correctly created and stored in the CWT
             if (!eCon.TryGetValue(self, out Escort e))
             {
-                Ebug(self, "Something happened while initializing then accessing Escort instance!", 0);
+                Ebug(self, "Something happened while initializing then accessing Escort instance!", LogLevel.WARN);
                 return;
             }
 
@@ -1253,7 +1290,7 @@ partial class Plugin : BaseUnityPlugin
             {
                 // Checks if Escort has encountered the pup
                 pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
-                Ebug(self, $"Pup available? {pupAvailable}", 1, true);
+                Ebug(self, $"Pup available? {pupAvailable}", LogLevel.MESSAGE, true);
 
                 // Set the Socks variant on first encounter
                 if (s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID == 0)
@@ -1269,6 +1306,11 @@ partial class Plugin : BaseUnityPlugin
             }
             Esconfig_Build(self, Challenge_Presetter(self.room, ref e));  // Set build
 
+            // if (escPatch_meadow)
+            // {
+            //     EPatchMeadow.AddOnlineEscortData(self);
+            // }
+
             // Override settings for challenge setter
             Challenge_Postsetter(self.room, ref e);
 
@@ -1277,14 +1319,14 @@ partial class Plugin : BaseUnityPlugin
 
             e.originalMass = 0.7f * self.slugcatStats.bodyWeightFac;  // Calculates the original mass to compare to most current mass (Rotund World)
 
-            logImportance = ins.config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
+            // logImportance = ins.config.cfgLogImportance.Value;  // Commented out for ALPHA TESTING
 
             try  // Initialize and set up SFX that play on loop
             {
-                Ebug(self, "Setting silly sounds", 2);
+                Ebug(self, "Setting silly sounds", LogLevel.MESSAGE);
                 e.Escat_setSFX_roller(Escort_SFX_Roll);
                 e.Escat_setSFX_lizgrab(Escort_SFX_Lizard_Grab);
-                Ebug(self, "All done! Awaiting activation.", 2);
+                Ebug(self, "All done! Awaiting activation.", LogLevel.MESSAGE);
 
                 // 2023 April fools!
                 //self.setPupStatus(set: true);
@@ -1296,7 +1338,7 @@ partial class Plugin : BaseUnityPlugin
             }
             finally
             {
-                Ebug(self, "All ctor'd", 1);
+                Ebug(self, "All ctor'd", LogLevel.MESSAGE);
             }
         }
 
@@ -1307,7 +1349,7 @@ partial class Plugin : BaseUnityPlugin
             sCon.Add(self, new Socks(self));  // Add to CWT
             if (!sCon.TryGetValue(self, out Socks es))
             {  // Check if instance has been added correctly
-                Ebug(self, "Something happened while initializing then accessing Socks instance!", 0);
+                Ebug(self, "Something happened while initializing then accessing Socks instance!", LogLevel.WARN);
                 return;
             }
             Socks_ctor(self);  // Additional ctor stuff
@@ -1337,7 +1379,7 @@ partial class Plugin : BaseUnityPlugin
     {
         if (room?.game?.session is not StoryGameSession)
         {
-            return 0;
+            return 1;
         }
         if (SChallengeMachine.SC03_Starter && (room.game.GetStorySession.saveState.cycleNumber == 0 || room.game.GetStorySession.saveState.miscWorldSaveData.Esave().ESC03_START))
         {
@@ -1345,7 +1387,7 @@ partial class Plugin : BaseUnityPlugin
             SChallengeMachine.SC03_Active = true;
             return -4;
         }
-        return 0;
+        return 1;
     }
 
     /// <summary>
@@ -1378,7 +1420,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (!self.paused)
             {
-                foreach(var x in self.Players)
+                foreach (var x in self.Players)
                 {
                     if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
@@ -1427,29 +1469,30 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (Eshelp_IsMe(slugcat)) return orig(slugcat);
-            IntVector2 foodReq = ins.config.cfgBuild[0].Value switch{
-                -7 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable? (Replace with Barbarian!)
-                -6 => ins.config.cfgSectretBuild.Value? new(10, 6) : new(14, 8),  // Gilded
+            if (Escort_IsNull(slugcat)) return orig(slugcat);
+            IntVector2 foodReq = ins.config.cfgBuild[0].Value switch
+            {
+                -8 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable TODO: make random a set thing for better sync
+                -6 => ins.config.cfgSectretBuild.Value ? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
-                -3 => ins.config.cfgOldEscapist.Value? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                -3 => ins.config.cfgOldEscapist.Value ? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
                 -2 => new(14, 8),  // Deflector
                 -1 => new(14, 12),  // Brawler
-                _  => new(14, 9)  // Default and unspecified.
+                _ => new(14, 9)  // Default and unspecified.
             };
-            if (ins.config.cfgEasy[0].Value && foodReq.y > 3) 
+            if (ins.config.cfgEasy[0].Value && foodReq.y > 3)
             {
                 foodReq.y -= 3;  // Reduce food requirement upon easier mode triggered
             }
             return foodReq;
-        } 
+        }
         catch (NullReferenceException nre)
         {
             Ebug(nre, "Null error when setting food meters. Shouldn't be happening.");
             return orig(slugcat);
         }
-        catch (Exception err) 
+        catch (Exception err)
         {
             Ebug(err, "Generic exception when setting food meter.");
             return orig(slugcat);
@@ -1464,7 +1507,7 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            Ebug($"Savestate SEB: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", 1, true);
+            Ebug($"Savestate SEB: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", LogLevel.DEBUG, true);
         }
         catch (Exception err)
         {
@@ -1508,7 +1551,7 @@ partial class Plugin : BaseUnityPlugin
         DeflSharedPerma = 0;  // Reset shared pool (Will be replaced with saved value from individual deflector)
         try
         {
-            Ebug($"Savestate SEA: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", 1, true);
+            Ebug($"Savestate SEA: {JsonConvert.SerializeObject(self.miscWorldSaveData.Esave())}", LogLevel.DEBUG, true);
         }
         catch (Exception err)
         {
@@ -1557,7 +1600,7 @@ partial class Plugin : BaseUnityPlugin
                 {
                     Escort_SaveShelterSpears(self.room);
                 }
-                
+
                 Player focus = null;  // Focuses on just the first player. Fuck you other players ;)
                 foreach (AbstractCreature abstractCreature in self.room.game.Players)
                 {
@@ -1578,7 +1621,7 @@ partial class Plugin : BaseUnityPlugin
                         tempLike = s.saveState.miscWorldSaveData.Esave().EscortPupTempLike;
                         if (like == -1) like = 1;
                         if (tempLike == -1) tempLike = 1;
-                        
+
 
                         if (TryFindThePup(self.room, out AbstractCreature ac))
                         {
@@ -1587,25 +1630,25 @@ partial class Plugin : BaseUnityPlugin
                                 // Pup exists in the room but is dead so must be respawned!
                                 ac.Destroy();  // Might be redundant as .Destory() is done in the method below.
                                 SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
-                                Ebug("Socks has revived from dead!", 1, true);
+                                Ebug("Socks has revived from dead!", LogLevel.INFO, true);
                             }
                             else
                             {
                                 // Pup exists in the room and is well and alive!
-                                Ebug("Socks has made it!", 1, true);
+                                Ebug("Socks has made it!", LogLevel.INFO, true);
                             }
                         }
                         else if (e.socksAbstract?.realizedCreature is not null)
                         {
                             // Pup exists somewhere in the world so must just be respawned!
                             SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0), focus.abstractCreature.ID, like, tempLike);
-                            Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", 1, true);
+                            Ebug("Socks has been brought back from somewhere in the world back to Escort's embrace!", LogLevel.INFO, true);
                         }
                         else
                         {
                             // Pup no longer exists so must be recreated and respawned!
                             SpawnThePup(ref e, self.room, self.room.LocalCoordinateOfNode(0));
-                            Ebug("Hello Socks!", 1, true);
+                            Ebug("Hello Socks!", LogLevel.INFO, true);
                         }
                     }
                     bool flag = TryFindThePup(self.room, out _);  // Verify slugpup revived and exists
@@ -1642,7 +1685,7 @@ partial class Plugin : BaseUnityPlugin
             escort.socksAbstract.state.socialMemory.GetOrInitiateRelationship(iD.Value).InfluenceTempLike(tempLike);
         }
         escort.SocksAliveAndHappy.Stun(100);  // Fuck Socks.
-        Ebug("Spawn socks (unofficially)!", 1, true);
+        Ebug("Spawn socks (unofficially)!", LogLevel.INFO, true);
     }
 
 
@@ -1660,9 +1703,9 @@ partial class Plugin : BaseUnityPlugin
             name = self.manager.rainWorld.progression.PlayingAsSlugcat;
 
         // Check if slugcat is Escort
-        if (Eshelp_IsMe(name, true))
+        if (Escort_IsNull(name, true))
         {
-            Ebug("Not an escort!", 1);
+            Ebug("Not an escort!", LogLevel.INFO);
             orig(self);
             return;
         }
@@ -1670,13 +1713,13 @@ partial class Plugin : BaseUnityPlugin
         // Grabs the completed scene depending on 
         if (SlugBaseCharacter.TryGet(name, out var chara))
         {
-            if (self.IsSleepScreen) 
+            if (self.IsSleepScreen)
             {
                 try
                 {
                     if (pupIsAlive)
                     {
-                        Ebug("Socks is alive!", 1, true);
+                        Ebug("Socks is alive!", LogLevel.INFO, true);
                         if (AltSleepSceneDuo.TryGet(chara, out MenuScene.SceneID sleepTogether))
                         {
                             newScene = sleepTogether;
@@ -1684,7 +1727,7 @@ partial class Plugin : BaseUnityPlugin
                     }
                     else
                     {
-                        Ebug("Socks is dead!", 1, true);
+                        Ebug("Socks is dead!", LogLevel.INFO, true);
                         if (AltSleepScene.TryGet(chara, out MenuScene.SceneID sleepAlone))
                         {
                             newScene = sleepAlone;
@@ -1699,14 +1742,14 @@ partial class Plugin : BaseUnityPlugin
         }
 
         // Set Escort sleep screen!
-        if(newScene != null && newScene.Index != -1)
+        if (newScene != null && newScene.Index != -1)
         {
             self.scene = new InteractiveMenuScene(self, self.pages[0], newScene);
             self.pages[0].subObjects.Add(self.scene);
             return;
         }
         else
-            orig(self);        
+            orig(self);
     }
 
 
@@ -1749,22 +1792,22 @@ partial class Plugin : BaseUnityPlugin
             // Deflector extra parry check
             if (e.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
             {
-                Ebug(player, "Parryteched condition!", 2);
+                Ebug(player, "Parryteched condition!", LogLevel.DEBUG);
                 return true;
             }
 
             // Regular parry check
             else if (player.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
             {
-                Ebug(player, "Regular parry condition!", 2);
+                Ebug(player, "Regular parry condition!", LogLevel.DEBUG);
                 return true;
             }
 
             // Not in parry condition
             else
             {
-                Ebug(player, "Not in parry condition", 2);
-                Ebug(player, "Parry leniency: " + e.parryAirLean, 2);
+                Ebug(player, "Not in parry condition", LogLevel.DEBUG);
+                Ebug(player, "Parry leniency: " + e.parryAirLean, LogLevel.DEBUG);
                 return e.parrySlideLean > 0;
             }
         }
@@ -1787,28 +1830,28 @@ partial class Plugin : BaseUnityPlugin
         // Deflector extra parry check
         if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
         {
-            Ebug(self, "Parryteched condition!", 2);
+            Ebug(self, "Parryteched condition!", LogLevel.DEBUG);
             return true;
         }
 
         // New Escapist hidden parry tech check
         if (e.NewEscapist && e.NEsAbility > 0 && (self.animation == Player.AnimationIndex.Flip))
         {
-            Ebug(self, "New Escapist trickz parry condition!", 2);
+            Ebug(self, "New Escapist trickz parry condition!", LogLevel.DEBUG);
             return true;
         }
 
         // Regular parry check
         else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
         {
-            Ebug(self, "Regular parry condition!", 2);
+            Ebug(self, "Regular parry condition!", LogLevel.DEBUG);
             return true;
         }
 
         // Not in parry condition
         else
         {
-            Ebug(self, "Not in parry condition", 2);
+            Ebug(self, "Not in parry condition", LogLevel.DEBUG);
             Ebug(self, "Parry leniency: " + e.parryAirLean);
             return e.parrySlideLean > 0;
         }
@@ -1822,28 +1865,28 @@ partial class Plugin : BaseUnityPlugin
         // Escort check
         if (!eCon.TryGetValue(self, out Escort e))
         {
-            Ebug(self, "Saving throw failed because Scug is not Escort!", 0);
+            Ebug(self, "Saving throw failed because Scug is not Escort!", LogLevel.INFO);
             return false;
         }
 
         // Null check
         if (self is null || offender is null || ouchie is null)
         {
-            Ebug(self, "Saving throw failed due to null values!", 0);
+            Ebug(self, "Saving throw failed due to null values!", LogLevel.INFO);
             return false;
         }
 
         // Checks whether the attacker is a creature
         if (offender.owner is not Creature)
         {
-            Ebug(self, "Saving throw failed due to the offender not being a creature!", 2);
+            Ebug(self, "Saving throw failed due to the offender not being a creature!", LogLevel.INFO);
             return false;
         }
 
         // Checks whether easier mode is on
         if (e.easyKick)
         {
-            Ebug(self, "Saving throw don't work on easier dropkicks!", 2);
+            Ebug(self, "Saving throw don't work on easier dropkicks!", LogLevel.INFO);
             return false;
         }
 
@@ -1853,7 +1896,7 @@ partial class Plugin : BaseUnityPlugin
             // For now, saving throws only apply to bites
             if (ouchie == Creature.DamageType.Bite && self.animation == Player.AnimationIndex.RocketJump)
             {
-                Ebug(self, "Escort won a saving throw!", 2);
+                Ebug(self, "Escort won a saving throw!", LogLevel.INFO);
                 e.savingThrowed = true;
                 return true;
             }
@@ -1862,7 +1905,7 @@ partial class Plugin : BaseUnityPlugin
         // Fuck you, get rekt
         else
         {
-            Ebug(self, "Saving throw failed: Deflector Build Moment.", 2);
+            Ebug(self, "Saving throw failed: Deflector Build Moment.", LogLevel.INFO);
         }
         return false;
     }
@@ -1897,7 +1940,8 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Changes the spawn location of Escort. Compatible with Expedition random spawns
     /// </summary>
-    public static void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self){
+    public static void Escort_ChangingRoom(On.SaveState.orig_setDenPosition orig, SaveState self)
+    {
         orig(self);
         Ebug("Changing room 2!");
         Ebug(self.denPosition);
@@ -1911,18 +1955,20 @@ partial class Plugin : BaseUnityPlugin
         {
             return;
         }
-        
-        if(self.saveStateNumber == EscortMe){
-            self.denPosition = ins.config.cfgBuild[0].Value switch {
+
+        if (self.saveStateNumber == EscortMe)
+        {
+            self.denPosition = ins.config.cfgBuild[0].Value switch
+            {
                 0 => "CC_SUMP02",  // Default
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => ins.config.cfgOldEscapist.Value? "DM_LEG02" : "SB_B04",  // Escapist
+                -3 => ins.config.cfgOldEscapist.Value ? "DM_LEG02" : "SB_B04",  // Escapist
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
-                -6 => ins.config.cfgSectretBuild.Value? "HR_C01" : "CC_A10",  // Gilded
-                -7 => "SS_A18",  // Unstable (now Barbarian, replace!)
+                -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
+                -8 => "SS_A18",  // Unstable
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";
@@ -1941,7 +1987,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (i is null)
             {
-                Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", 1);
+                Ebug("Found nulled slugcat name when checking if slugcat is unlocked or not!", LogLevel.WARN);
                 return orig(i, rainWorld);
             }
             ins.L().Set("Null Check");
@@ -1969,7 +2015,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// I don't know what this does but this does something
     /// </summary>
-    public static string[] Escort_getStoryRegions(On.SlugcatStats.orig_getSlugcatStoryRegions orig, SlugcatStats.Name i)
+    public static List<string> Escort_getStoryRegions(On.SlugcatStats.orig_SlugcatStoryRegions orig, SlugcatStats.Name i)
     {
         ins.L().Set();
         try
@@ -1983,7 +2029,7 @@ partial class Plugin : BaseUnityPlugin
             if (i == EscortMe)
             {
                 ins.L().Set("Escort Check");
-                return new string[]{
+                return [
                     "SU",
                     "HI",
                     "DS",
@@ -1999,13 +2045,13 @@ partial class Plugin : BaseUnityPlugin
                     "SB",
                     "DM",
                     "OE"
-                };
+                ];
             }
             if (i == EscortSocks)
             {
                 ins.L().Set("Socks Check");
-                return new string[]
-                {
+                return
+                [
                     "SU",
                     "HI",
                     "DS",
@@ -2020,7 +2066,7 @@ partial class Plugin : BaseUnityPlugin
                     "SS",
                     "SB",
                     "OE"
-                };
+                ];
             }
         }
         catch (Exception err)
@@ -2030,26 +2076,35 @@ partial class Plugin : BaseUnityPlugin
         return orig(i);
     }
 
+    public static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Name orig, SlugcatStats.Name index)
+    {
+        if (index == EscortMe)
+        {
+            return SlugcatStats.SpearSpawnExplosiveRandomChance(EscortMeTime);
+        }
+        return orig(index);
+    }
+
     /// <summary>
     /// Modifies the explosive spear chance
     /// </summary>
-    public static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Name orig, SlugcatStats.Name index)
+    public static float Escort_ExpSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnExplosiveRandomChance_Timeline orig, SlugcatStats.Timeline index)
     {
         ins.L().SetF();
         try
         {
             if (index is null)
             {
-                Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", 1);
+                Ebug("Found nulled slugcat name when getting explosive spear spawn chance!", LogLevel.WARN);
                 return orig(index);
             }
             ins.L().SetF("Null Check");
-            if (index == EscortMe)
+            if (index == EscortMeTime)
             {
                 ins.L().SetF("Escort Check");
                 return 0.012f;
             }
-            if (index == EscortSocks)
+            if (index == EscortSocksTime)
             {
                 ins.L().SetF("Socks Check");
                 return 0.01f;
@@ -2062,26 +2117,35 @@ partial class Plugin : BaseUnityPlugin
         return orig(index);
     }
 
+    public static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Name orig, SlugcatStats.Name index)
+    {
+        if (index == EscortMe)
+        {
+            return SlugcatStats.SpearSpawnElectricRandomChance(EscortMeTime);
+        }
+        return orig(index);
+    }
+
     /// <summary>
     /// Modifes the electrical spear spawn chance
     /// </summary>
-    public static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Name orig, SlugcatStats.Name index)
+    public static float Escort_EleSpearSpawnChance(On.SlugcatStats.orig_SpearSpawnElectricRandomChance_Timeline orig, SlugcatStats.Timeline index)
     {
         ins.L().SetF();
         try
         {
             if (index is null)
             {
-                Ebug("Found nulled slugcat name when getting electric spear spawn chance!", 1);
+                Ebug("Found nulled slugcat name when getting electric spear spawn chance!", LogLevel.WARN);
                 return orig(index);
             }
             ins.L().SetF("Null Check");
-            if (index == EscortMe)
+            if (index == EscortMeTime)
             {
                 ins.L().SetF("Escort Check");
                 return 0.078f;
             }
-            if (index == EscortSocks)
+            if (index == EscortSocksTime)
             {
                 ins.L().SetF("Socks Check");
                 return 0.03f;
@@ -2094,26 +2158,35 @@ partial class Plugin : BaseUnityPlugin
         return orig(index);
     }
 
+
+    public static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Name_float orig, SlugcatStats.Name index, float originalSpearChance)
+    {
+        if (index == EscortMe)
+        {
+            return SlugcatStats.SpearSpawnModifier(EscortMeTime, originalSpearChance);
+        }
+        return orig(index, originalSpearChance);
+    }
     /// <summary>
     /// Modifies the generic spear spawn chance
     /// </summary>
-    public static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Name_float orig, SlugcatStats.Name index, float originalSpearChance)
+    public static float Escort_SpearSpawnMod(On.SlugcatStats.orig_SpearSpawnModifier_Timeline_float orig, SlugcatStats.Timeline index, float originalSpearChance)
     {
         ins.L().SetF();
         try
         {
             if (index == null)
             {
-                Ebug("Found nulled slugcat name when applying spear spawn chance!", 1);
+                Ebug("Found nulled slugcat name when applying spear spawn chance!", LogLevel.WARN);
                 return orig(index, originalSpearChance);
             }
             ins.L().SetF("Null Check");
-            if (index == EscortMe)
+            if (index == EscortMeTime)
             {
                 ins.L().SetF("Escort Check");
                 return Mathf.Pow(originalSpearChance, 1.1f);
             }
-            if (index == EscortSocks)
+            if (index == EscortSocksTime)
             {
                 ins.L().SetF("Socks Check");
                 return Mathf.Pow(originalSpearChance, 0.83f);
@@ -2135,25 +2208,31 @@ partial class Plugin : BaseUnityPlugin
         orig(self);
         try
         {
-            if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null))
+            // if (!(self != null && self.game != null && self.game.StoryCharacter != null && self.game.StoryCharacter.value != null))
+            // {
+            //     Ebug("Found nulled slugcat name when replacing spears!", LogLevel.WARN);
+            //     return;
+            // }
+            // ins.L().SetF("Null Check");
+            // if (self.game.StoryCharacter.value != "EscortMe")
+            // {
+            //     Ebug("... That's not Escort... nice try", LogLevel.MESSAGE);
+            //     return;
+            // }
+            // ins.L().SetF("Escort Check");
+
+            if (self?.game?.TimelinePoint != EscortMeTime)
             {
-                Ebug("Found nulled slugcat name when replacing spears!", 1);
+                Ebug("Found a not Escort when trying to replace spears!", LogLevel.DEBUG);
                 return;
             }
-            ins.L().SetF("Null Check");
-            if (self.game.StoryCharacter.value != "EscortMe")
-            {
-                Ebug("... That's not Escort... nice try", 1);
-                return;
-            }
-            ins.L().SetF("Escort Check");
-            
+
             bool shelterGotPerson = false;
 
             // Shelter check
             if (self.abstractRoom.shelter)
             {
-                Ebug("Spear swap ignores shelters!... unless QoL unfixer!", 1);
+                Ebug("Spear swap ignores shelters!... unless QoL unfixer!", LogLevel.MESSAGE);
                 // Though this means the game checks the room twice (and thus loops twice), it only applies to shelters so it shouldn't impact the performance too much.
                 for (int i = 0; i < self.abstractRoom.entities.Count; i++)
                 {
@@ -2161,7 +2240,7 @@ partial class Plugin : BaseUnityPlugin
                     {
                         // Find the shelter that contains the player, to determine this is indeed the starting shelter. At one point I could have all the needle spears be saved but that's only if we got enough performance
                         shelterGotPerson = true;
-                        Ebug("Player shelter!", 1);
+                        Ebug("Player shelter!");
                         break;
                     }
                 }
@@ -2170,7 +2249,7 @@ partial class Plugin : BaseUnityPlugin
                     return;
                 }
             }
-            Ebug("Attempting to replace some spears with Spearmaster's needles!", 2);
+            Ebug("Attempting to replace some spears with Spearmaster's needles!", LogLevel.DEBUG);
             int j = 0;  // Numbers of spears swapped
             float chance = 0.2f;  // Swap chance (default)
 
@@ -2188,7 +2267,7 @@ partial class Plugin : BaseUnityPlugin
                 {
 
                     if (
-                        (shelterGotPerson && self.world?.game?.session is StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0) || 
+                        (shelterGotPerson && self.world?.game?.session is StoryGameSession s && s.saveState.miscWorldSaveData.Esave().SpearsToRemake > 0) ||
                         (!shelterGotPerson && UnityEngine.Random.value < chance)
                     )
                     {
@@ -2208,7 +2287,7 @@ partial class Plugin : BaseUnityPlugin
                     }
                 }
             }
-            Ebug("Swapped " + j + " spears!");
+            Ebug("Swapped " + j + " spears! (" + (chance * 100) + "%)");
         }
         catch (Exception err)
         {
@@ -2216,17 +2295,26 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    public static bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
+    {
+        if (index == EscortMe)
+        {
+            self.Load(EscortMeTime);
+        }
+        return orig(self, index);
+    }
+
     /// <summary>
     /// Loads custom room settings when playing Escort campaign
     /// </summary>
-    public static bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
+    public static bool Escort_Transplant(On.RoomSettings.orig_Load_Timeline orig, RoomSettings self, SlugcatStats.Timeline index)
     {
         ins.L().SetF();
         try
         {
             if (index is null)
             {
-                Ebug("Transplant failed due to nulled slugcat name!");
+                Ebug("Transplant failed due to nulled slugcat timeline!");
                 return orig(self, index);
             }
             ins.L().SetF("Null Check");
@@ -2236,38 +2324,50 @@ partial class Plugin : BaseUnityPlugin
                 return orig(self, index);
             }
             ins.L().SetF("Roomsetting presence Check");
-            if (index == EscortMe)
+            if (index == EscortMeTime)
             {
                 ins.L().SetF("Escort Check");
                 Ebug("Roomsetting name: " + self.name);
                 string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
+                string q = WorldLoader.FindRoomFile(self.name, false, "-escortme.txt");
                 if (File.Exists(p))
                 {
-                    Ebug("Escort Transplanted!", 4);
+                    Ebug("Escort Transplanted!", LogLevel.DEBUG);
                     self.filePath = p;
+                }
+                else if (File.Exists(q))
+                {
+                    Ebug("Escort template Transplanted!", LogLevel.DEBUG);
+                    self.filePath = q;
                 }
                 else
                 {
                     p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
+                    q = WorldLoader.FindRoomFile(self.name, false, "-spear.txt");
                     if (File.Exists(p))
                     {
-                        Ebug("Spearmaster Transplanted!", 4);
+                        Ebug("Spearmaster Transplanted!", LogLevel.DEBUG);
                         self.filePath = p;
+                    }
+                    else if (File.Exists(q))
+                    {
+                        Ebug("Spearmaster template Transplated!", LogLevel.DEBUG);
+                        self.filePath = q;
                     }
                     else
                     {
-                        Ebug("No Transplant, gone default", 4);
+                        Ebug("No Transplant, gone default.", LogLevel.DEBUG);
                     }
                 }
             }
-            if (index == EscortSocks)
+            if (index == EscortSocksTime)
             {
                 ins.L().SetF("Socks Check");
                 Ebug("Roomsetting name: " + self.name);
                 string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
                 if (File.Exists(p))
                 {
-                    Ebug("Socks Transplanted!", 4);
+                    Ebug("Socks Transplanted!", LogLevel.MESSAGE);
                     self.filePath = p;
                 }
                 else
@@ -2275,12 +2375,12 @@ partial class Plugin : BaseUnityPlugin
                     p = WorldLoader.FindRoomFile(self.name, false, "_settings-artificer.txt");
                     if (File.Exists(p))
                     {
-                        Ebug("Artificer Transplanted!", 4);
+                        Ebug("Artificer Transplanted!", LogLevel.MESSAGE);
                         self.filePath = p;
                     }
                     else
                     {
-                        Ebug("No Transplant, gone default", 4);
+                        Ebug("No Transplant, gone default", LogLevel.MESSAGE);
                     }
                 }
 
@@ -2303,16 +2403,16 @@ partial class Plugin : BaseUnityPlugin
                 Ebug("Voidmelter failed due to nulled roomSettings name");
                 return orig(self, index);
             }
-            if (index == EscortMe)
+            if (index == EscortMeTime)
             {
-                foreach(RoomSettings.RoomEffect effect in self.effects)
+                foreach (RoomSettings.RoomEffect effect in self.effects)
                 {
                     if (effect.type == RoomSettings.RoomEffect.Type.VoidMelt)
                     {
                         effect.amount *= 0.75f;
                         Ebug("Voidmelt effectiveness reduced by 1/4!");
                     }
-                    
+
                 }
             }
         }
@@ -2337,7 +2437,7 @@ partial class Plugin : BaseUnityPlugin
             if (remakeSpears > 0)
             {
                 remakeSpears = 0;
-                Ebug("Why is there a remainder?! CALL DEATHPITS!", 1);
+                Ebug("Why is there a remainder?! CALL DEATHPITS!", LogLevel.WARN);
             }
 
 
@@ -2361,7 +2461,7 @@ partial class Plugin : BaseUnityPlugin
         }
         else
         {
-            Ebug("Failed to find savestate!", 0);
+            Ebug("Failed to find savestate!", LogLevel.WARN);
         }
     }
 }

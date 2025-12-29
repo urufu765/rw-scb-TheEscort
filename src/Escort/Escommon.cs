@@ -24,7 +24,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -71,7 +71,7 @@ namespace TheEscort
                 }
                 if (e.consoleTick == 0)
                 {
-                    Ebug(self, msg, 2);
+                    Ebug(self, msg, LogLevel.DEBUG);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -119,12 +119,14 @@ namespace TheEscort
         /// <summary>
         /// Immitates a wall jump but not really
         /// </summary>
-        public static void Escort_FakeWallJump(Player self, int direction=-2, float boostUp=18f, float yankUp=10f, float boostLR=5f){
+        public static void Escort_FakeWallJump(Player self, int direction = -2, float boostUp = 18f, float yankUp = 10f, float boostLR = 5f)
+        {
             self.bodyChunks[0].vel.y = boostUp;
             self.bodyChunks[1].vel.y = boostUp - 1f;
             self.bodyChunks[0].pos.y += yankUp;
             self.bodyChunks[1].pos.y += yankUp;
-            if (direction != -2){
+            if (direction != -2)
+            {
                 self.bodyChunks[0].vel.x = boostLR * direction;
                 self.bodyChunks[1].vel.x = (boostLR - 1) * direction;
             }
@@ -139,7 +141,7 @@ namespace TheEscort
             orig(self, grasp, eu);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -178,7 +180,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -198,7 +200,7 @@ namespace TheEscort
                     if (e.Gilded) Esclass_GD_Die(ref e);
                     if (self.lavaContactCount > 0)
                     {
-                        self.lavaContactCount = self.aerobicLevel switch 
+                        self.lavaContactCount = self.aerobicLevel switch
                         {
                             > 0.9f => 3,
                             > 0.7f => 2,
@@ -206,7 +208,7 @@ namespace TheEscort
                             _ => 0
                         };
                     }
-                    if (e.acidRepetitionGuard == 0) 
+                    if (e.acidRepetitionGuard == 0)
                     {
                         self.aerobicLevel += e.acidSwim;
                         e.acidRepetitionGuard += 5;
@@ -222,13 +224,13 @@ namespace TheEscort
                         self.room.PlaySound(Escort_SFX_Death, e.SFXChunk);
                         //self.room.PlayCustomSound("escort_failure", self.mainBodyChunk.pos, 0.7f, 1f);
                     }
-                    Ebug(self, "Failure.", 1);
+                    Ebug(self, "Failure.", LogLevel.INFO);
                     return;
                 }
                 else if (e.iFrames > 0)
                 {
                     self.dead = false;
-                    Ebug(self, "Player didn't die? Due to Iframes", 1);
+                    Ebug(self, "Player didn't die? Due to Iframes", LogLevel.DEBUG);
                     e.ParrySuccess = false;
                     return;
                 }
@@ -256,7 +258,7 @@ namespace TheEscort
         {
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;

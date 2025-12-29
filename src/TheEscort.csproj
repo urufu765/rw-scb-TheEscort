@@ -50,8 +50,8 @@
     <Reference Include="..\lib\Newtonsoft.Json.dll">
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="..\lib\Guardian.dll">
-      <HintPath>..\lib\Guardian.dll</HintPath>
+    <Reference Include="..\lib\Rain Meadow.dll">
+      <HintPath>..\lib\Rain Meadow.dll</HintPath>
     </Reference>
     <Reference Include="..\lib\UnityEngine.InputLegacyModule.dll">
       <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>

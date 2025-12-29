@@ -216,9 +216,11 @@ namespace TheEscort
                                 break;
                         }
                         */
-                        e.SpeGain += self.animation switch {
+                        bool nerfSlide = e.CustomKeybindEnabled || !ins.config.cfgDisableSpeedsterSlide.Value;
+                        e.SpeGain += self.animation switch
+                        {
                             var value when value == Player.AnimationIndex.Flip => 1,
-                            var value when value == Player.AnimationIndex.BellySlide => e.CustomKeybindEnabled? 1.3f : 5,
+                            var value when value == Player.AnimationIndex.BellySlide => nerfSlide ? 1.3f : 5,
                             var value when value == Player.AnimationIndex.Roll => 1.1f,
                             var value when value == Player.AnimationIndex.StandOnBeam => 0.7f,
                             var value when value == Player.AnimationIndex.SurfaceSwim => 1.2f,
@@ -415,7 +417,21 @@ namespace TheEscort
             }
             else if (!e.SpeOldSpeed)  // Trigger speed ability
             {
-                bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : (self.animation == Player.AnimationIndex.BellySlide && !e.slideFromSpear && self.rollCounter > 10);
+                bool condition = false;
+                if (e.CustomKeybindEnabled)
+                {
+                    condition = Input.GetKey(e.CustomKeybind);
+                }
+                else
+                {
+                    condition = self.input[0].spec;
+                }
+
+                if (!ins.config.cfgDisableSpeedsterSlide.Value && self.animation == Player.AnimationIndex.BellySlide && !e.slideFromSpear && self.rollCounter > 10)
+                {
+                    condition = true;
+                }
+
                 if (e.SpeCharge > 0 && condition)
                 {
                     e.SpeGear = e.SpeCharge - 1;
@@ -497,7 +513,8 @@ namespace TheEscort
                 }
                 */
 
-                self.jumpBoost += self.animation switch {
+                self.jumpBoost += self.animation switch
+                {
                     var value when value == Player.AnimationIndex.None => 1 * n,
                     var value when value == Player.AnimationIndex.Flip => 4 * n,
                     var value when value == Player.AnimationIndex.Roll => 8 * n,
@@ -533,8 +550,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
-                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 1f : 0.5f));
+                    creature.firstChunk.vel.x = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide ? 1f : 0.5f));
+                    creature.firstChunk.vel.y = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (checkSlide ? 1f : 0.5f));
                     //self.WallJump(-self.flipDirection);
                     if (!checkSlide)
                     {
@@ -570,8 +587,8 @@ namespace TheEscort
                         self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
                         self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
                     }
-                    float velocityX = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide? 0.35f : 0.5f));
-                    float velocityY = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0? 1.25f : 0.5f));
+                    float velocityX = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide ? 0.35f : 0.5f));
+                    float velocityY = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0 ? 1.25f : 0.5f));
                     if (e.isChunko)
                     {
                         velocityX *= self.TotalMass / e.originalMass;
@@ -600,7 +617,7 @@ namespace TheEscort
             orig(self, chunk, direction, speed, firstContact);
             try
             {
-                if (Eshelp_IsMe(self.slugcatStats.name))
+                if (Escort_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -663,12 +680,12 @@ namespace TheEscort
         {
             if (self.room?.game?.session is StoryGameSession storyGameSession)
             {
-                storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore[playerNumber] = success? escort.SpeCharge : 0;
+                storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore[playerNumber] = success ? escort.SpeCharge : 0;
                 storyGameSession.saveState.miscWorldSaveData.Esave().SpeChargeStore.TryGetValue(playerNumber, out int charging);
-                Ebug("Saved successfully to " + playerNumber + ": " + charging);
+                Ebug("Saved successfully to " + playerNumber + ": " + charging, LogLevel.MESSAGE);
                 if (escort.shelterSaveComplete <= 1)
                 {
-                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), 1, true);
+                    Ebug("Misc: " + JsonConvert.SerializeObject(storyGameSession.saveState.miscWorldSaveData.Esave()), ignoreRepetition: true);
                 }
             }
         }
