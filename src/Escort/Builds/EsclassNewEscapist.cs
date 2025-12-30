@@ -113,11 +113,9 @@ namespace TheEscort
             // Check if player has inputted the direction for ability activation
             if (e.NEsAbility == 0 && e.NEsCooldown == 0)  // Doubletap direction checker
             {
-                if (e.CustomKeybindEnabled ||
-                (!ins.config.cfgUseDoubleTap.Value && self.input[0].spec && !self.input[1].spec)
-                )
+                if (e.CustomKeybindEnabled || !ins.config.cfgUseDoubleTap.Value)
                 {
-                    if (Input.GetKey(e.CustomKeybind))
+                    if (Input.GetKey(e.CustomKeybind) || (self.input[0].spec && !self.input[1].spec))
                     {
                         if (self.input[0].x != 0)
                         {

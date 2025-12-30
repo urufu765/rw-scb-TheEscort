@@ -2,9 +2,12 @@ using Menu;
 using Menu.Remix;
 using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
+using RainMeadow;
+using RWCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheEscort.Patches;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
@@ -119,14 +122,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.5.1";
+    private static readonly string VERSION = "0.3.5.2";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- Merry Late Christmas.<LINE>- Speedster boost can now be activated with the SPECIAL button.<LINE>- Long wall Jump option, Guardian compatibility RIP.<LINE>- Logging level disabled for now.<LINE>- Escapist is disabled if Meadow is on. (Will only restrict for meadow mode and not singleplayer eventually)<LINE>- Meadow compatibility patches, other players SHOULD appear as the correct builds.<LINE>- Forced Escort's meadow worldstate to spearmaster's while I figure out how to timeline.<LINE>- HUD can automatically be on the right if Meadow is active (change it in accessibility).<LINE><LINE>- Applied some Timeline fixes, default colours per build now work proper in Meadow.");
+            "- Merry Late Christmas.<LINE>- Speedster boost can now be activated with the SPECIAL button.<LINE>- Long wall Jump option, Guardian compatibility RIP.<LINE>- Logging level disabled for now.<LINE>- Escapist is disabled if Meadow is on. (Will only restrict for meadow mode and not singleplayer eventually)<LINE>- Meadow compatibility patches, other players SHOULD appear as the correct builds.<LINE>- Forced Escort's meadow worldstate to spearmaster's while I figure out how to timeline.<LINE>- HUD can automatically be on the right if Meadow is active (change it in accessibility).<LINE><LINE>- Applied some Timeline fixes.<LINE>- Default colours per build now work proper in Meadow.<LINE><LINE>- Spearmaster timeline applied to Meadow Escort campaign (for now... Can't do anything else about it).<LINE>- Meadow detection is smarter and doesn't force the changes on singleplayer sessions.<LINE>(Escapist on Meadow will be forced to use the old version)<LINE>- Fixed Escapist new special key button not working.");
         }
     }
 
@@ -1146,10 +1149,10 @@ class EscOptions : OptionInterface
             for (int a = 0; a < buildTitle.Length; a++)
             {
                 bool hide = false;
-                if (a == 3 && Plugin.escPatch_meadow)  // (new) Escapist
-                {
-                    hide = true;
-                }
+                // if (a == 3 && Plugin.escPatch_meadow)  // (new) Escapist
+                // {
+                //     hide = true;
+                // }
                 if (a == 7 && true)  // Conqueror
                 {
                     hide = true;
@@ -1461,11 +1464,11 @@ class EscOptions : OptionInterface
         Dictionary<int, string> result = new(Plugin.selectionable ?? []);
 
         // Meadow
-        if (Plugin.escPatch_meadow && result.ContainsKey(-3))
+        if (Plugin.escPatch_meadow && result.ContainsKey(-3) && EPatchMeadow.IsOnline())
         {
-            // result[-3] = "Unstable";
-            result.Remove(-3);
-            result.Add(-8, "Unstable");
+            result[-3] = "Escapist (OLD)";
+            //result.Remove(-3);
+            // result.Add(-8, "Unstable");
         }
 
         // Unstable unlock

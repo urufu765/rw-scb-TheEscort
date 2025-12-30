@@ -14,8 +14,7 @@ Escort's campaign is not 100% finished! The campaign can be completed, however i
 [hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~>[/h2]
 These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3388224007]Rain Meadow[/url]: [b]For the most part, functional[/b]. However, Escort starting room is not respected, and default body colours may be wrong. Food intake may be a bit wonky as well, further testing required. Feedback would be extremely helpful.
-[*] [b]Campaign:[/b] Garbage Waste doesn't work properly (tested before watcher DLC)
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3388224007]Rain Meadow[/url]: [b]For the most part, functional[/b]. However, Escort campaign in meadow is not working correctly (so it is set to Spearmaster for now). Escapist clones also crash the game so in Meadow lobbies you will instead be forced to play the older Escapist. Feedback would be extremely helpful.
 [/list]
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]

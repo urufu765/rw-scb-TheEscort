@@ -7,6 +7,7 @@ using static TheEscort.Eshelp;
 using System.Diagnostics;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
+using TheEscort.Patches;
 
 namespace TheEscort;
 
@@ -79,7 +80,14 @@ public static class EscortHUD
                             string pos = Plugin.ins.config.cfgHudLocation.Value;
                             if (pos == "auto")  // TODO: CHECK MEADOW SESSION not if meadow is present
                             {
-                                pos = Plugin.escPatch_meadow? "" : "botleft";
+                                if (Plugin.escPatch_meadow && EPatchMeadow.IsOnline())
+                                {
+                                    pos = "";
+                                }
+                                else
+                                {
+                                    pos = "botleft";
+                                }
                             }
                             Vector2 o = pos switch
                             {

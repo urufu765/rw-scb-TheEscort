@@ -13,7 +13,7 @@
 		"tunnel_speed": [1.25, 1.15],
 		"climb_speed": [1.6, 1.3],
 		"walk_speed": [1.1, 1.0],
-		"crouch_stealth": [0.3, 0.7],
+		"crouch_stealth": [0.3, 0.5],
 		"throw_skill": [0, 1],
 		"lung_capacity": [2.0, 3.0],
 		"loudness": [2, 1.5],

@@ -27,9 +27,26 @@ public static class EPatchMeadow
         }
     }
 
+    public static bool IsOnline()
+    {
+        try
+        {
+            return OnlineManager.lobby is not null;
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Online check bad!");
+        }
+        return false;
+    }
+
     public static SlugcatStats.Timeline FixTheTimeline(Func<StoryGameMode, RainWorldGame, SlugcatStats.Timeline> orig, StoryGameMode self, RainWorldGame game)
     {
-        throw new NotImplementedException();
+        if (Escort_IsNull(self.currentCampaign, false))
+        {
+            return SlugcatStats.Timeline.Spear;
+        }
+        return orig(self, game);
     }
 
     /// <summary>

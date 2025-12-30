@@ -563,7 +563,7 @@ namespace TheEscort
             EscortUS();
             EscortBB(player);
 
-            if (Plugin.escPatch_meadow)
+            if (Plugin.escPatch_meadow && EPatchMeadow.IsOnline())
             {
                 if (player is null) return;
                 EPatchMeadow.AddOnlineEscortData(player);

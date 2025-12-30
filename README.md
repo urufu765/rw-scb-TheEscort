@@ -15,6 +15,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * *()* Give Railgunner a lasersight
   * *()* Smater Meadow detection
 
+  * **(0.3.5.2)** Better meadow detection, Escapist is now playable only on older version when online, forced Escort Meadow campaign as Spearmaster's, and Escapist's special button key fixed.
+
   * **(0.3.5.1)** Timeline fixes. Default build colours now work in Meadow
 
   * **(0.3.5)** Few abilities activation key is now bound to the special button. Long Wall Jump option is now disabled. Adjusted logger to log more correctly. Guardian support gone. Also disabled New Escapist if trying to play meadow. HUD in bottom left corner option (if meadow detected, just fucking move it there you lazy bum)

@@ -24,7 +24,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.5.1")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.5.2")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -531,7 +531,7 @@ partial class Plugin : BaseUnityPlugin
                 ins.L().Set("Patch: Rain Meadow");
                 Ebug("Found Rain Meadow! Applying patches...", LogLevel.MESSAGE);
                 escPatch_meadow = true;
-                //EPatchMeadow.Initialize();
+                EPatchMeadow.Initialize();
                 EscOptions.shouldUpdate = true;
             }
         }
@@ -977,6 +977,14 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
+    public static bool Esconfig_OldEscapist()
+    {
+        if (ins.config.cfgOldEscapist.Value) return true;
+
+        if (escPatch_meadow && EPatchMeadow.IsOnline()) return true;
+        return false;
+    }
+
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
@@ -1100,13 +1108,16 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Railgunner Build selected!", LogLevel.INFO);
                     break;
                 case -3:  // Escapist build
-                    if (ins.config.cfgOldEscapist.Value)
+                    if (Esconfig_OldEscapist())
                     {
                         e.Escapist = true;
                         e.dualWield = false;
                         self.slugcatStats.runspeedFac += 0.1f;
                         self.slugcatStats.lungsFac += 0.2f;
                         self.slugcatStats.bodyWeightFac -= 0.15f;
+                        self.slugcatStats.generalVisibilityBonus -= 1;
+                        self.slugcatStats.visualStealthInSneakMode += 1.5f;
+                        self.slugcatStats.loudnessFac -= self.Malnourished? 1.95f : 1.45f;
                         Ebug(self, "Old Escapist Build selected!", LogLevel.INFO);
                     }
                     else
@@ -1159,6 +1170,12 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Default Build selected!", LogLevel.INFO);
                     e.isDefault = true;
                     self.slugcatStats.lungsFac -= 0.2f;
+                    // self.slugcatStats.drownThreshold -= 0.3f;
+                    // self.slugcatStats.swimBoostCooldown -= 15;
+                    // self.slugcatStats.swimBoostCost -= 0.1f;
+                    // self.slugcatStats.swimBoostForce += 1f;
+                    // self.slugcatStats.swimBoostMinAir -= 0.25f;
+                    // self.slugcatStats.swimForceFac += 1;
                     break;
             }
 
@@ -1476,7 +1493,7 @@ partial class Plugin : BaseUnityPlugin
                 -6 => ins.config.cfgSectretBuild.Value ? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
-                -3 => ins.config.cfgOldEscapist.Value ? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                -3 => Esconfig_OldEscapist() ? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
                 -2 => new(14, 8),  // Deflector
                 -1 => new(14, 12),  // Brawler
                 _ => new(14, 9)  // Default and unspecified.
@@ -1964,7 +1981,7 @@ partial class Plugin : BaseUnityPlugin
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => ins.config.cfgOldEscapist.Value ? "DM_LEG02" : "SB_B04",  // Escapist
+                -3 => Esconfig_OldEscapist() ? "DM_LEG02" : "SB_B04",  // Escapist
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
