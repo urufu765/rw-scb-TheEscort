@@ -21,6 +21,7 @@ partial class Plugin : BaseUnityPlugin
         EscortSocksTime = new("EscortSocks");
 
         eCon = new();
+        aCon = new();
         sCon = new();
         natrualSpears = [];
 

@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using Menu;
 using MonoMod.Cil;
 using Newtonsoft.Json;
+using RainMeadow;
 using RWCustom;
 using SlugBase;
 using SlugBase.Features;
@@ -24,7 +25,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.5.2")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.5.3")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -267,6 +268,9 @@ partial class Plugin : BaseUnityPlugin
     /// Contains instances of the Escort class for each applicable players. ALL Escort loadouts use the same Escort class to control the loadout specific abilities.
     /// </summary>
     public static ConditionalWeakTable<Player, Escort> eCon;
+
+    public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon;
+
     /// <summary>
     /// Contains instances of the Socks class for each applicable players.
     /// </summary>
@@ -988,19 +992,28 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
-    public static bool Esconfig_Build(Player self, int forceBuild = 1)
+    public static bool Esconfig_Build(Player self, AbstractCreature ac, int forceBuild = 1)
     {
         try
         {
+            Ebug("Setting up build");
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 return false;
             }
+
+            Ebug("Setup Hash: " + e.GetHashCode());
             // Get build ID from configuration
             int pal = ins.config.cfgBuild[self.playerState.playerNumber].Value;
             if (forceBuild != 1)
             {
                 pal = forceBuild;
+            }
+
+            if (escPatch_meadow && EPatchMeadow.IsOnline() && aCon.TryGetValue(ac, out AbstractEscort ae))
+            {
+                pal = ae.buildId;
+                Ebug(self, "Build set from online: " + pal);
             }
 
             // Story campaign expansion skips
@@ -1170,12 +1183,12 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Default Build selected!", LogLevel.INFO);
                     e.isDefault = true;
                     self.slugcatStats.lungsFac -= 0.2f;
-                    // self.slugcatStats.drownThreshold -= 0.3f;
-                    // self.slugcatStats.swimBoostCooldown -= 15;
-                    // self.slugcatStats.swimBoostCost -= 0.1f;
-                    // self.slugcatStats.swimBoostForce += 1f;
-                    // self.slugcatStats.swimBoostMinAir -= 0.25f;
-                    // self.slugcatStats.swimForceFac += 1;
+                    self.slugcatStats.drownThreshold -= 0.3f;
+                    self.slugcatStats.swimBoostCooldown -= 15;
+                    self.slugcatStats.swimBoostCost -= 0.1f;
+                    self.slugcatStats.swimBoostForce += 1f;
+                    self.slugcatStats.swimBoostMinAir -= 0.25f;
+                    self.slugcatStats.swimForceFac += 1;
                     break;
             }
 
@@ -1195,7 +1208,7 @@ partial class Plugin : BaseUnityPlugin
             }
 
             Ebug(self, "Set build complete!", LogLevel.MESSAGE);
-            Ebug(self, new string[]{
+            Ebug(self, [
                 $"Weightfac: {self.slugcatStats.bodyWeightFac}",
                 $"Movespeed: {self.slugcatStats.runspeedFac}",
                 $"Lungcapfc: {self.slugcatStats.lungsFac}",
@@ -1204,8 +1217,17 @@ partial class Plugin : BaseUnityPlugin
                 $"Throwskil: {self.slugcatStats.throwingSkill}",
                 $"Loudnessf: {self.slugcatStats.loudnessFac}",
                 $"Stealthyf: {self.slugcatStats.visualStealthInSneakMode}",
-                $"Visibilit: {self.slugcatStats.generalVisibilityBonus}"
-            }, LogLevel.DEBUG);
+                $"Visibilit: {self.slugcatStats.generalVisibilityBonus}",
+                $"SwimBooCD: {self.slugcatStats.swimBoostCooldown}",
+                $"SwimBCost: {self.slugcatStats.swimBoostCost}",
+                $"SwimBoFrc: {self.slugcatStats.swimBoostForce}",
+                $"SwimBMinA: {self.slugcatStats.swimBoostMinAir}",
+                $"SwimFrcFc: {self.slugcatStats.swimForceFac}",
+                $"DrownThrs: {self.slugcatStats.drownThreshold}",
+                $"Malnouris: {self.slugcatStats.malnourished}",
+                $"MalnoCrit: {self.slugcatStats.malnourishedByCreature}",
+            ], LogLevel.DEBUG, true);
+            Ebug("Setup Hash: " + e.GetHashCode());
             return true;
         }
         catch (Exception err)
@@ -1321,10 +1343,11 @@ partial class Plugin : BaseUnityPlugin
                 }
                 e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
             }
-            Esconfig_Build(self, Challenge_Presetter(self.room, ref e));  // Set build
+            Esconfig_Build(self, abstractCreature, Challenge_Presetter(self.room, ref e));  // Set build
 
-            // if (escPatch_meadow)
+            // if (escPatch_meadow && EPatchMeadow.IsOnline())
             // {
+            //     Ebug("Added Online Escort Data", LogLevel.MESSAGE);
             //     EPatchMeadow.AddOnlineEscortData(self);
             // }
 

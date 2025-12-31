@@ -15,6 +15,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * *()* Give Railgunner a lasersight
   * *()* Smater Meadow detection
 
+  * **(0.3.5.3)** Actually fixed meadow multiplayer for Escort (not campaign), builds appear separately correctly now
+
   * **(0.3.5.2)** Better meadow detection, Escapist is now playable only on older version when online, forced Escort Meadow campaign as Spearmaster's, and Escapist's special button key fixed.
 
   * **(0.3.5.1)** Timeline fixes. Default build colours now work in Meadow
