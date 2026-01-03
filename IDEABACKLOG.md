@@ -81,3 +81,51 @@
 * *(0.2.11)* Fleshed Out Story (Part 2) Update
 * *(0.2.10)* Gilded. (another idea: Blast away the creatures for safety)
 * *(0.2.8.13)* Added option to revert to previous behaviour for those who prefer the old ways
+
+
+# Ideas:
+- #### Not Implemented
+  - Kinder scavs (taking spears don't reduce reputation)
+  - Increase grab radius of spears
+  - Escort shoot out of pipes
+  - Escort turns faster in enclosed spaces
+  - Escort's spear speeds up after arc
+  - Gamr Mode (if I ever finish the damn mod): Double spawns, reduced spear spawns, pipejukes don't work now (lizards can grab you if they pass by you in the pipe), hunted by lizard event occurs always, pursued by a silver ghost lizard (that spawns every 2.5 minutes in the pipe closest to you, despawned by gates, warded off by shelters) that can manuver like a full-speed white (but doesn't have a tongue), but can also pass through walls, cannot be hit, and the sole intent of their movement is to bite you and kill you.
+  - Taming lizards is much more difficult
+  - Escort Combo System
+  - Lizard head helmet with different effects (created when sleeping with dead lizard in shelter, acts like Moon's cloak)
+- #### Implemented
+  - Settings to adjust Escort's abilities (and have different presets that enable and disable bunch of hidden values for different "builds")
+  - Reduce bite lethality
+  - **[Range may need tweaking]** Implement parrying spears with slide (make it less lenient)
+  - Grab thrown objects
+  - **[Added as optional feature]** Escort slide throw doesn't interrupt slide
+  - **[Given to Escapist]** Escort can get out of centipede grasps (but has a steep cooldown)
+  - Escort lizard grabbing noise ("Lizard, Get! Lizard, Get!")
+  - Add more spears to garbage waste
+- #### Cut-content
+  - Exhausion/stamina mechanic where being at full exhausion reduces Escort's power
+  - Actually prioritize spears when doing Stun Slide or Drop Kick
+  - Escort throw spear while sliding causes ricochet effect (like regular tosses) at throw skill 0
+
+
+
+# Roadmap (Subject to change)
+* Version 0: Escort's Beginning
+  * 0.2: Complete art placeholders
+  * 0.3: Stabilize code?
+  * 0.4: Give Escort a unique body feature
+* Version 1: Escort the Arena Slugcat (Goes on an ADVENTURE)
+  * 1.1: Modify behaviour in thicc water and oneway water currents
+* Version 2: Escort armed and ready
+  * 2.1: Centipede armor?
+  * 2.2: Acquire such centipede armor?
+* Version 3: Escort and their special Slugpup
+* Version 4: Escort's Story
+  * 4.1: Starting region
+  * 4.2: Checkpoint 1
+  * 4.3: Checkpoint 2
+  * 4.4: Checkpoint 3
+  * 4.5: Ending 1 (Intended Story)
+  * 4.6: Ending 2 (Asc)
+  * 4.7: Ending 3 (Special super SECRET (somewhere in Outskirts))
