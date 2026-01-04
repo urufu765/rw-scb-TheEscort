@@ -48,6 +48,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Unstable closes eyes during hover state
     * Unstable sprite mechanic where a shadow version of the sprite is offset towards the direction pressed. If no direction is pressed, assume a different colour and offset towards the direction that the stored potential velocity will make them go... or the shadow/sprite shows where Unstable will teleport to, while the stored velocity arrow gets longer the higher the velocity.
     * Unstable teleports up from ground and hovers in the air, or if midair, stops and hovers. Previous velocity is cached. If jump is pressed without direction (or if out of charges), undoes the hover state and applies the cached velocity
+  * **(0.4-dev.4)** Brought alpha up to date with beta
   * **(0.4-dev.3)** Give Railgunner a lasersight, unbandaged Meadow patches to help figure out why it's being a little idiot
   * **(0.4-dev.2)** Gilded charge speed changes depending on situations, as well as horizontal movement nerf. More things synced in Meadow
   * **(0.4-dev.1)** Applied 0.3.5.4 update
