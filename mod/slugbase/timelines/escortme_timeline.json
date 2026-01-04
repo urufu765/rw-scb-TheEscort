@@ -1,5 +1,5 @@
 {
     "id": "EscortMe",
-    "base": ["Spear", "Artificer", "Inv", "Red"],
+    "base": ["Spear", "Red"],
     "insert_after": "Spear"
 }

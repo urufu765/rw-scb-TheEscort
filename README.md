@@ -8,12 +8,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
-  * *()* Add setting to adjust parry sfx
-  * *()* Fix Meadow
-  * *()* When hyped, give extra warmth
-  * *()* Cyan lizard also drops with baby, increased profit lmao
-  * *()* Give Railgunner a lasersight
-  * *()* Smater Meadow detection
+  * **(0.3.5.4)** Fixed timeline issue where some rooms loaded Inv's timeline
 
   * **(0.3.5.3)** Actually fixed meadow multiplayer for Escort (not campaign), builds appear separately correctly now
 
