@@ -31,9 +31,12 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * *(0.4-dev)* Gilded is now slower, has the power charge at 0.25x speed when floating/underwater
   * *(0.4-dev)* When hyped, give extra warmth
   * *(0.4-dev)* Add setting to adjust parry sfx
+  * **(0.4-dev1)** Applied 0.3.5.4 update
+  * **(0.4-dev0)** Some squishing of README
 
 * #### 0.3 - Ending I
 
+  * **(0.3.5.4)** Fixed timeline issue where some rooms loaded Inv's timeline
   * **(0.3.5.3)** Actually fixed meadow multiplayer for Escort (not campaign), builds appear separately correctly now
   * **(0.3.5.2)** Better meadow detection, Escapist is now playable only on older version when online, forced Escort Meadow campaign as Spearmaster's, and Escapist's special button key fixed.
   * **(0.3.5.1)** Timeline fixes. Default build colours now work in Meadow
