@@ -4,9 +4,20 @@ using UnityEngine;
 using R = UnityEngine.Random;
 using static TheEscort.Eshelp;
 using IL.MoreSlugcats;
+using RWCustom;
 
 namespace TheEscort
 {
+    public enum Charger
+    {
+        Normal,
+        Ground,
+        ZeroG,
+        Gate,
+        Shelter,
+        Oracle,
+        VoidSwim
+    }
     public partial class Escort
     {
         public Color GildedColor;  // Color of Gilded
@@ -37,6 +48,31 @@ namespace TheEscort
         public int GildPowerPipsMax;  // Max number of power pip sprites
         public bool GildOverpowered;  // Grants Gilded bonus and enhanced abilities
         public bool GildNeedsToReset;  // Resets relevant Gilded variables (that aren't init-only)
+        /// <summary>
+        /// For even slower charging, 1 full fine = 1 GildPower. Quite janky how it's done, but it's to keep maximum legacy compatibility
+        /// </summary>
+        public float GildFinePower;
+        /// <summary>
+        /// Determines how much Gilded's power meter fills up
+        /// </summary>
+        public Charger GildRechargeMode;
+
+        private int _gildCheckRechargeTypeLater;
+
+        /// <summary>
+        /// Do the expensive room check once every 2 seconds
+        /// </summary>
+        public bool GildExpensiveCheck
+        {
+            get
+            {
+                if (_gildCheckRechargeTypeLater > 80) _gildCheckRechargeTypeLater = 0;
+                return _gildCheckRechargeTypeLater++ == 1;
+            }
+        }
+
+        public string GildLastRoomChecked;
+        public Charger GildRoomCheck;
 
         // Power check
         public const int GildCheckCraftFirebomb = 800;
@@ -48,42 +84,67 @@ namespace TheEscort
         public const int GildUseCraftFirebomb = 10;
         public const int GildUseCraftFirespear = 15;
         public const int GildUseCraftSingularity = 10;
-        
+
         public void EscortGD(Player self)
         {
             Gilded = false;
             GildedColor = new Color(0.122f, 0.176f, 0.28f);
             GildFloatState = false;
             GildLevitateLimit = 120;
-            GildPowerMax = (int)(Plugin.ins.config.cfgGildedMaxPower.Value * (self.Malnourished? 0.625 : 1));
-            GildPowerPipsMax = self.Malnourished? 10: 16;
+            GildPowerMax = (int)(Plugin.ins.config.cfgGildedMaxPower.Value * (self.Malnourished ? 0.625 : 1));
+            GildPowerPipsMax = self.Malnourished ? 10 : 16;
             GildPowerPipsIndex = -1;
+            GildLastRoomChecked = "";
+            GildRechargeMode = Charger.Normal;
+            GildRoomCheck = Charger.Normal;
             Escat_GD_reset_vars();
         }
 
         public void Escat_GD_reset_vars(bool fromDeath = false)
         {
-            GildPower = GildStartPower = fromDeath? 0 : (int)(GildPowerMax * 0.3f);
+            GildPower = GildStartPower = fromDeath ? 0 : (int)(GildPowerMax * 0.3f);
             GildMoonJump = GildReservePower = GildRequiredPower = GildPowerUsage = GildInstaCreate = GildCrushTime = 0;
             GildCancel = GildLockRecharge = GildNeedsToReset = false;
         }
 
-        public void Escat_float_state(Player self, bool status = true){
-            if (status){
+        public void Escat_float_state(Player self, bool status = true)
+        {
+            if (status)
+            {
                 GildFloatState = true;
                 self.wantToJump = 0;
                 self.room?.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Cap_Bump_Vengeance, SFXChunk, false, 0.72f, 6.5f);
-                for (int i = 0; i < 7; i++){
+                for (int i = 0; i < 7; i++)
+                {
                     self.room?.AddObject(new WaterDrip(self.bodyChunks[1].pos, RWCustom.Custom.DegToVec(R.value * 360) * Mathf.Lerp(4, 20, R.value), false));
                 }
             }
-            else{
+            else
+            {
                 self.room?.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Cap_Bump_Vengeance, SFXChunk, loop: false, 0.72f, 5.5f);
                 GildFloatState = false;
             }
         }
 
-        #if false
+        public float Escat_GD_GetRechargeRate()
+        {
+            float percent = (float)GildPower / GildPowerMax;
+            return (GildRechargeMode, percent) switch
+            {
+                (Charger.VoidSwim, _) => 0f,
+                (Charger.Oracle, < 0.3f) => Custom.LerpMap(percent, 0, 0.3f, 2f, 1),
+                (Charger.Oracle, _) => Custom.LerpMap(percent, 0.3f, 0.9f, 1f, 0),
+                (Charger.Shelter, > 0.75f) => 0f,
+                (Charger.Shelter, _) => 0.1f,
+                (Charger.Gate, > 0.9f) => 0f,
+                (Charger.Gate, _) => Custom.LerpMap(percent, 0, 0.7f, 5f, 1),
+                (Charger.ZeroG, _) => Custom.LerpMap(percent, 0, 0.8f, 2f, 0.25f),
+                (Charger.Ground, < 0.3f) => 2f,
+                _ => 1f
+            };
+        }
+
+#if false
         public void Escat_RGB_firespear()
         {
             try
@@ -108,6 +169,6 @@ namespace TheEscort
                 Ebug(err, "Generic exception when doing RGB spears.");
             }
         }
-        #endif
+#endif
     }
 }

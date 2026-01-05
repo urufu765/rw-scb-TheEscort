@@ -16,7 +16,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * *(0.4-dev)* Contact Banba
   * *(0.4-dev)* Guardian new Karma 10 ability, a void guardian type skill except it's for protection. Move cursor to the ally player, then make whatever's grabbing them let go while carrying the player to safety, or select self to bring to an inaccessible area
   * *(0.4-dev)* Cyan lizard also drops with baby, increased profit lmao
-  * *(0.4-dev)* Give Railgunner a lasersight
+  * *(0.4-dev)* Give Railgunner a lasersight and a cyan jump ability
   * *(0.4-dev)* Reimplement the new Lizard Dunk mechanic from ALPHA branch
   * *(0.4-dev)* Redo Unstable, make their dashes stop them in the air, then after the time is up apply the stored velocity
   * *(0.4-dev)* Battlehype overhaul
@@ -31,8 +31,22 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * *(0.4-dev)* Gilded is now slower, has the power charge at 0.25x speed when floating/underwater
   * *(0.4-dev)* When hyped, give extra warmth
   * *(0.4-dev)* Add setting to adjust parry sfx
-  * **(0.4-dev1)** Applied 0.3.5.4 update
-  * **(0.4-dev0)** Some squishing of README
+  * *(0.4-dev)* Unstable stuff
+    * Unstable long jump (crouch and hold jump) will instead teleport them forward and not use up a charge
+    * Unstable, if teleporting out of a roll, will make them spin in the air, and on deactivation will put them in a flipping state.
+    * Unstable, when pressing special while having at least a charge, flies towards direction with kill intent, stopping once (max range reached and use up all charges and hover, hit wall and stun, hit creature and bounce back and only use up one charge and hover). While in this killing intent mode, Unstable is in a parry state
+    * Unstable, while hovering, can go in 8 directions. If using an analogue stick, make it 360 degrees freedom.
+    * Unstable will go through walls, as long as it is within the range. If touching any wall while not holding a direction, Unstable will teleport away from the wall
+    * Unstable hover window is halved if no charges left, and a different sound is used to indicate no more charge. After deactivated, cause head to shake to make deactivate sound wobble
+    * Unstable does a slow slide, that when jump is pressed, shoots the scug forward at funny velocity (like a slidestun)
+    * Unstable thrown spears never stick into wall
+    * Unstable stops if they touch a surface, briefly stunning them
+    * Unstable closes eyes during hover state
+    * Unstable sprite mechanic where a shadow version of the sprite is offset towards the direction pressed. If no direction is pressed, assume a different colour and offset towards the direction that the stored potential velocity will make them go... or the shadow/sprite shows where Unstable will teleport to, while the stored velocity arrow gets longer the higher the velocity.
+    * Unstable teleports up from ground and hovers in the air, or if midair, stops and hovers. Previous velocity is cached. If jump is pressed without direction (or if out of charges), undoes the hover state and applies the cached velocity
+  * **(0.4-dev.2)** Gilded charge speed changes depending on situations, as well as horizontal movement nerf. More things synced in Meadow
+  * **(0.4-dev.1)** Applied 0.3.5.4 update
+  * **(0.4-dev.0)** Some squishing of README
 
 * #### 0.3 - Ending I
 

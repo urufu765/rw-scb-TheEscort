@@ -1080,12 +1080,12 @@ partial class Plugin : BaseUnityPlugin
                 case -6:  // Gilded build
                     e.Gilded = true;
                     if (ins.config.cfgSectretBuild.Value) e.acidSwim = 0.2f;
-                    self.slugcatStats.bodyWeightFac = 1f;
+                    //self.slugcatStats.bodyWeightFac = 1f;
                     self.slugcatStats.lungsFac += 0.3f;
-                    self.slugcatStats.runspeedFac = 0.9f;
-                    self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
+                    self.slugcatStats.runspeedFac -= 0.2f;
+                    self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.7f;
-                    self.slugcatStats.bodyWeightFac -= 0.15f;
+                    self.slugcatStats.bodyWeightFac -= self.Malnourished? 0.17f : 0.45f;
                     Ebug(self, "Gilded Build selected!", LogLevel.INFO);
                     break;
                 case -5:  // Speedstar build

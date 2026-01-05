@@ -86,7 +86,7 @@ namespace TheEscort
         public int challenge03loseFocus;
         public Player SocksAliveAndHappy
         {
-            get 
+            get
             {
                 if (socksAbstract?.realizedCreature is not null && socksAbstract.state is not null && socksAbstract.state.alive)
                 {
@@ -97,12 +97,42 @@ namespace TheEscort
         }
         public AbstractCreature socksAbstract;
 
-        public bool CustomKeybindEnabled {get; private set;}
-        public KeyCode CustomKeybind {get; private set;}
+        public bool CustomKeybindEnabled { get; private set; }
+        public KeyCode CustomKeybind { get; private set; }
         public const int SocksID = 3118;
         public const int DemonSocksID = 4118;
         public const int SpeedSocksID = 765;
         public int PupCampaignID;
+
+        private int _syncValue;
+        /// <summary>
+        /// For synchronizing online values, increments by 1 every time it's read, with the minimum sync timing being 1 second.
+        /// </summary>
+        public bool PleaseSyncMyUnimportantValues
+        {
+            get
+            {
+                if (_syncValue > 40) _syncValue = 0;
+                return _syncValue++ == 1;
+            }
+        }
+
+        private int _syncAppearance;
+        /// <summary>
+        /// For synchronizing player appearance to properly match while in the same room. Delay is 3 seconds to give the tunnel enough time to warm up and sync the build ID.
+        /// </summary>
+        public bool PleaseSyncMyOneTimeValues
+        {
+            get
+            {
+                if (_syncAppearance < 1) return false;
+                return _syncAppearance-- == 1;
+            }
+            set
+            {
+                if (value) _syncAppearance = 120;
+            }
+        }
 
         // Build stuff
 
@@ -230,6 +260,11 @@ namespace TheEscort
         /// Deflector permanent damage multiplier (per player)
         /// </summary>
         private float _deflperma;
+        /// <summary>
+        /// Deflector permanent damage multiplier (synced to host only)
+        /// </summary>
+        private float _deflpermaOnline;
+        public bool DeflPermaHostWantsToShare;
 
         /// <summary>
         /// Gets either the per player perma damage multiplier, or the shared pool
@@ -240,6 +275,7 @@ namespace TheEscort
             {
                 if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
                 {
+                    if (DeflPermaHostWantsToShare) return _deflpermaOnline;
                     return Plugin.DeflSharedPerma;
                 }
                 return _deflperma;
@@ -248,6 +284,7 @@ namespace TheEscort
             {
                 if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
                 {
+                    if (DeflPermaHostWantsToShare) _deflpermaOnline = value;
                     Plugin.DeflSharedPerma = value;
                 }
                 else
@@ -257,12 +294,13 @@ namespace TheEscort
             }
         }
 
+
         /// <summary>
         /// Empowered damage based on level
         /// </summary>
         public float DeflDamageMult
-        { 
-            get 
+        {
+            get
             {
                 return DeflPowah switch
                 {
@@ -391,7 +429,7 @@ namespace TheEscort
         public int RailgunUse;
 
         /// <summary>
-        /// Limit to overcharge (may implement option to change limit)
+        /// Limit to overcharge
         /// </summary>
         public int RailgunLimit;
 
@@ -565,7 +603,12 @@ namespace TheEscort
 
             if (Plugin.escPatch_meadow && EPatchMeadow.IsOnline())
             {
-                if (player is null) return;
+                if (player is null)
+                {
+                    Ebug("HEY! Null player when making an Escort CWT?!", LogLevel.ERR);
+                    return;
+                }
+                PleaseSyncMyOneTimeValues = true;
                 EPatchMeadow.AddOnlineEscortData(player);
             }
         }
@@ -861,7 +904,7 @@ namespace TheEscort
             string hypeSprite = "escort_hud_default";
             if (Brawler)
             {
-                hypeSprite = Plugin.ins.config.cfgSFX.Value? "escort_hud_brawler_alt" : "escort_hud_brawler";
+                hypeSprite = Plugin.ins.config.cfgSFX.Value ? "escort_hud_brawler_alt" : "escort_hud_brawler";
                 floatTrackers.Add(new ETrackrr.BrawlerMeleeTraction(n, 1, self, this));
             }
             if (Deflector)
@@ -891,7 +934,7 @@ namespace TheEscort
                         floatTrackers.Add(new ETrackrr.SpeedsterTraction(n, i, this, i));
                     }
                 }
-                else 
+                else
                 {
                     floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 1, this));
                     floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
@@ -920,11 +963,11 @@ namespace TheEscort
 
         public void Escat_Draw_Ring_Trackers(float timeStacker)
         {
-            foreach(Trackrr<float> t in this.floatTrackers)
+            foreach (Trackrr<float> t in this.floatTrackers)
             {
                 t.DrawTracker(timeStacker);
             }
-            foreach(Trackrr<int> t2 in this.intTrackers)
+            foreach (Trackrr<int> t2 in this.intTrackers)
             {
                 t2.DrawTracker(timeStacker);
             }
@@ -933,11 +976,11 @@ namespace TheEscort
 
         public void Escat_Update_Ring_Trackers()
         {
-            foreach(Trackrr<float> t in this.floatTrackers)
+            foreach (Trackrr<float> t in this.floatTrackers)
             {
                 t.UpdateTracker();
             }
-            foreach(Trackrr<int> t2 in this.intTrackers)
+            foreach (Trackrr<int> t2 in this.intTrackers)
             {
                 t2.UpdateTracker();
             }

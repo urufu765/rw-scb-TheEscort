@@ -122,14 +122,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.5.3";
+    private static readonly string VERSION = "0.3.5.4";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- Merry Late Christmas.<LINE>- Speedster boost can now be activated with the SPECIAL button.<LINE>- Long wall Jump option, Guardian compatibility RIP.<LINE>- Logging level disabled for now.<LINE>- Escapist is disabled if Meadow is on. (Will only restrict for meadow mode and not singleplayer eventually)<LINE>- Meadow compatibility patches, other players SHOULD appear as the correct builds.<LINE>- Forced Escort's meadow worldstate to spearmaster's while I figure out how to timeline.<LINE>- HUD can automatically be on the right if Meadow is active (change it in accessibility).<LINE><LINE>- Applied some Timeline fixes.<LINE>- Default colours per build now work proper in Meadow.<LINE><LINE>- Spearmaster timeline applied to Meadow Escort campaign (for now... Can't do anything else about it).<LINE>- Meadow detection is smarter and doesn't force the changes on singleplayer sessions.<LINE>(Escapist on Meadow will be forced to use the old version)<LINE>- Fixed Escapist new special key button not working.<LINE><LINE>- Fixed multiplayer meadow Escort crashing the game. The builds should now appear separate correctly.");
+            "- .<LINE><LINE>And more! (full patchnotes in workshop/github page)");
         }
     }
 

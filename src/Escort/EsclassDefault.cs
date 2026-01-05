@@ -2136,16 +2136,25 @@ namespace TheEscort
             {
                 return true;
             }
-            if (obj != null && obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown)
+            // if (obj != null && obj is Weapon w && !(ModManager.CoopAvailable && w.thrownBy is Player && !RWCustom.Custom.rainWorld.options.friendlyFire) && w.mode == Weapon.Mode.Thrown)
+            if (obj is Weapon w && self.FreeHand() != -1 && PlayerPressedPickup(self, 10) && w.mode == Weapon.Mode.Thrown)
             {
                 Ebug(self, "Hehe, yoink!");
-                if (self.input[0].pckp && !self.input[1].pckp)
-                {
-                    w.mode = Weapon.Mode.Free;
-                }
+                w.mode = Weapon.Mode.Free;
                 return true;
             }
             return orig(self, obj);
+        }
+
+        private static bool PlayerPressedPickup(Player self, int timeframe)
+        {
+            bool yes = false;
+            for (int i = 0; i <= timeframe && i < self.input.Length; i++)
+            {
+                if (self.input[i].pckp) yes = true;
+                if (i == timeframe && self.input[i].pckp) return false;
+            }
+            return yes;
         }
 
 

@@ -8,6 +8,8 @@ using static TheEscort.Eshelp;
 using static TheEscort.EscortTutorial;
 using RWCustom;
 using MoreSlugcats;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TheEscort
 {
@@ -46,7 +48,7 @@ namespace TheEscort
             {
                 e.GildMoonJump--;
             }
-            
+
             if (e.GildCrushCooldown > 0)
             {
                 e.GildCrushCooldown--;
@@ -72,11 +74,18 @@ namespace TheEscort
                 e.GildInstaCreate--;
             }
 
-            if (!e.GildLockRecharge) 
+            if (!e.GildLockRecharge)
             {
                 e.GildRequiredPower = 0;
                 e.GildPowerUsage = 0;
-                if (!self.Stunned) e.GildPower += e.GildPower < 2000? 2 : 1;
+                if (!self.Stunned) e.GildFinePower += e.Escat_GD_GetRechargeRate();
+
+                if (e.GildFinePower >= 1)
+                {
+                    e.GildPower += Mathf.FloorToInt(e.GildFinePower);
+                    e.GildFinePower %= 1;
+                }
+
                 if (e.GildReservePower == 0) e.GildStartPower = e.GildPower;
             }
 
@@ -125,7 +134,7 @@ namespace TheEscort
         {
             if (
                 !gilded_float.TryGet(self, out float floatingSpd) ||
-                !gilded_lev.TryGet(self, out float levitation) || 
+                !gilded_lev.TryGet(self, out float levitation) ||
                 !gilded_jet.TryGet(self, out float jetSize)
                 ) return;
 
@@ -181,26 +190,26 @@ namespace TheEscort
                 {
                     e.GildLevitateLimit = 120 * (self.room.game.GetStorySession.saveState.deathPersistentSaveData.karmaCap + 1);
                 }
-                else 
+                else
                 {
                     e.GildLevitateLimit = 640;
                 }
             }
-            bool deCondition = e.CustomKeybindEnabled? !Input.GetKey(e.CustomKeybind) : !self.input[0].jmp;
-            bool condition = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) && e.GildLevitateCooldown <= 0 : self.wantToJump > 0 && (
-                    e.GildLevitateCooldown <= 0 || 
+            bool deCondition = e.CustomKeybindEnabled ? !Input.GetKey(e.CustomKeybind) : !self.input[0].jmp;
+            bool condition = e.CustomKeybindEnabled ? Input.GetKey(e.CustomKeybind) && e.GildLevitateCooldown <= 0 : self.wantToJump > 0 && (
+                    e.GildLevitateCooldown <= 0 ||
                     self.input[0].jmp && !self.input[1].jmp
                 );
-            bool condition2 = e.CustomKeybindEnabled? Input.GetKey(e.CustomKeybind) : self.input[0].jmp;
+            bool condition2 = e.CustomKeybindEnabled ? Input.GetKey(e.CustomKeybind) : self.input[0].jmp;
 
             // Deactivate levitation
             if ((
-                deCondition || 
-                self.animation == Player.AnimationIndex.ClimbOnBeam || 
-                self.animation == Player.AnimationIndex.HangFromBeam || 
+                deCondition ||
+                self.animation == Player.AnimationIndex.ClimbOnBeam ||
+                self.animation == Player.AnimationIndex.HangFromBeam ||
                 self.bodyMode == Player.BodyModeIndex.CorridorClimb ||
-                e.GildLevitateLimit == 0 || 
-                self.Stunned || 
+                e.GildLevitateLimit == 0 ||
+                self.Stunned ||
                 self.bodyChunks[1].contactPoint.y == -1 ||
                 e.GildPower <= Escort.GildUseLevitate ||
                 e.GildCrush
@@ -220,13 +229,13 @@ namespace TheEscort
             // Activate levitation
             if (
                 !(
-                    self.animation == Player.AnimationIndex.ClimbOnBeam || 
-                    self.animation == Player.AnimationIndex.HangFromBeam || 
+                    self.animation == Player.AnimationIndex.ClimbOnBeam ||
+                    self.animation == Player.AnimationIndex.HangFromBeam ||
                     self.bodyMode == Player.BodyModeIndex.ZeroG ||
                     self.bodyMode == Player.BodyModeIndex.CorridorClimb
-                ) && 
-                self.canJump == 0 && 
-                !e.GildFloatState && 
+                ) &&
+                self.canJump == 0 &&
+                !e.GildFloatState &&
                 !e.GildCrush &&
                 e.GildPower >= Escort.GildUseLevitate &&
                 e.GildReservePower < 10 &&
@@ -236,7 +245,7 @@ namespace TheEscort
             {
                 e.Escat_float_state(self);
                 self.wantToJump = 0;
-                e.GildRequiredPower = e.GildOverpowered? e.GildStartPower : e.GildLevitateLimit;
+                e.GildRequiredPower = e.GildOverpowered ? e.GildStartPower : e.GildLevitateLimit;
                 e.GildPowerUsage = Escort.GildUseLevitate;
                 e.GildCrushCooldown = 10;
             }
@@ -246,7 +255,7 @@ namespace TheEscort
             if (e.GildLevitateLimit > 0 && e.GildPower > Escort.GildUseLevitate && condition2 && e.GildFloatState)
             {
                 e.GildLockRecharge = true;
-                self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
+                self.mainBodyChunk.vel.y = self.mainBodyChunk.vel.y < 0 ? Mathf.Min(self.mainBodyChunk.vel.y + floatingSpd, 0) : Mathf.Max(self.mainBodyChunk.vel.y - floatingSpd, 0);
                 self.airFriction = 0.8f;
                 self.standing = false;
                 self.buoyancy = 0f;
@@ -259,8 +268,8 @@ namespace TheEscort
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     self.room?.AddObject(new MoreSlugcats.VoidParticle(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(5f * self.input[0].x, (-30f + e.GildJetPackVFX)/5), 20f));
                     */
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
-                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX)/4), jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(-4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX) / 4), jetSize, e.hypeColor, Color.black, 30));
+                    self.room?.AddObject(new Explosion.FlashingSmoke(self.bodyChunks[1].pos + new Vector2(4, 0), new Vector2(-5f * self.input[0].x, (-30f + e.GildJetPackVFX) / 4), jetSize, e.hypeColor, Color.black, 30));
 
                 }
             }
@@ -274,8 +283,8 @@ namespace TheEscort
                 if (!e.GildCrush)
                 {
                     self.bodyChunks[0].vel.y += Mathf.Lerp(
-                        0, 
-                        levitation * (self.animation == Player.AnimationIndex.Flip? 1.5f : 1f), 
+                        0,
+                        levitation * (self.animation == Player.AnimationIndex.Flip ? 1.5f : 1f),
                         Mathf.InverseLerp(0, e.GildMoonJumpMax, e.GildMoonJump)
                     );
                 }
@@ -316,13 +325,53 @@ namespace TheEscort
                     self.bodyChunks[0].vel.x /= 2;
                     self.bodyChunks[1].vel.x /= 2;
                 }
-                else  
+                else
                 {  // Flight downwards
                     self.impactTreshhold = 200f;
                     self.bodyChunks[1].vel.y -= 4f;
                 }
             }
             #endregion
+
+
+            // Do expensive checks
+            if (self.room?.abstractRoom?.name is not null && (e.GildExpensiveCheck || self.room.abstractRoom.name != e.GildLastRoomChecked))
+            {
+                e.GildRoomCheck = Charger.Normal;
+                e.GildLastRoomChecked = self.room.abstractRoom.name;
+                if (self.room.physicalObjects is not null && (from o in self.room.physicalObjects where o.Any(a => a is Oracle) select o).Any())
+                {
+                    e.GildRoomCheck = Charger.Oracle;
+                }
+                else if (self.room.roomSettings?.effects is not null && self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.VoidSea) > 0)
+                {
+                    e.GildRoomCheck = Charger.VoidSwim;
+                }
+            }
+
+            // Recharge type thing
+            e.GildRechargeMode = Charger.Normal;
+            if (self.bodyChunks[0].contactPoint.y == -1 || self.bodyChunks[1].contactPoint.y == -1) e.GildRechargeMode = Charger.Ground;
+            if (self.bodyMode == Player.BodyModeIndex.ZeroG) e.GildRechargeMode = Charger.ZeroG;
+            if (self.room is not null)
+            {
+                if (e.GildRoomCheck is Charger.Oracle)
+                {
+                    e.GildRechargeMode = Charger.Oracle;
+                }
+                else if (self.room.abstractRoom?.shelter == true)
+                {
+                    e.GildRechargeMode = Charger.Shelter;
+                }
+                else if (self.room.abstractRoom?.gate == true && self.room.regionGate?.mode is not null && !(self.room.regionGate.mode == RegionGate.Mode.MiddleClosed || self.room.regionGate.mode == RegionGate.Mode.Closed || self.room.regionGate.mode == RegionGate.Mode.Broken))
+                {
+                    e.GildRechargeMode = Charger.Gate;
+                }
+                else if (self.animation == Player.AnimationIndex.DeepSwim && e.GildRoomCheck is Charger.VoidSwim)
+                {
+                    e.GildRechargeMode = Charger.VoidSwim;
+                }
+            }
         }
 
 
@@ -337,21 +386,21 @@ namespace TheEscort
             }
             else if (e.GildWantToThrow != -1 || e.GildAlsoPop)
             {
-                int grabby = e.GildAlsoPop? 1 : e.GildWantToThrow;
+                int grabby = e.GildAlsoPop ? 1 : e.GildWantToThrow;
                 if (self.grasps[grabby]?.grabbed is null) return;
                 if ((self.grasps[grabby].grabbed is Rock && e.GildStartPower >= Escort.GildCheckCraftFirebomb * 2) || (self.grasps[grabby].grabbed is ScavengerBomb && e.GildStartPower >= Escort.GildCheckCraftFirebomb))
                 {
-                    e.GildRequiredPower = Escort.GildCheckCraftFirebomb * (self.grasps[grabby].grabbed is Rock? 2 : 1);
+                    e.GildRequiredPower = Escort.GildCheckCraftFirebomb * (self.grasps[grabby].grabbed is Rock ? 2 : 1);
                     e.GildPowerUsage = Escort.GildUseCraftFirebomb;
                     try
                     {
                         if (e.GildReservePower >= e.GildRequiredPower)
                         {
                             Vector2 posi = new();
-                            WorldCoordinate wPos = new(); 
+                            WorldCoordinate wPos = new();
                             Rock r = null;
                             ScavengerBomb b = null;
-                            if (self.grasps[grabby].grabbed is Rock) 
+                            if (self.grasps[grabby].grabbed is Rock)
                             {
                                 r = self.grasps[grabby].grabbed as Rock;
                                 posi = r.firstChunk.pos;
@@ -378,21 +427,21 @@ namespace TheEscort
                             self.room?.PlaySound(SoundID.Fire_Spear_Pop, posi, 0.5f, 1.1f);
                             self.room?.AddObject(new Explosion.ExplosionLight(posi, 200f, 0.7f, 7, e.hypeColor));
                             self.room?.AddObject(new ExplosionSpikes(self.room, posi, 8, 15f, 9f, 5f, 90f, e.hypeColor));
-                            if (e.GildInstaCreate > 0) 
+                            if (e.GildInstaCreate > 0)
                             {
                                 self.SlugcatGrab(apo.realizedObject, grabby);
                             }
 
                             if (
-                                e.GildWantToThrow == 0 && 
-                                self.grasps[1]?.grabbed is not null && 
+                                e.GildWantToThrow == 0 &&
+                                self.grasps[1]?.grabbed is not null &&
                                 !e.GildAlsoPop &&
                                 (
                                     self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
-                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
+                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb ||
                                     self.grasps[1].grabbed is Spear sp && !sp.bugSpear && e.GildPower >= Escort.GildCheckCraftFirespear
                                 )
-                            ) 
+                            )
                             {
                                 e.GildAlsoPop = true;
                                 e.GildClearReserve = true;
@@ -405,7 +454,7 @@ namespace TheEscort
                         else
                         {
                             e.GildLockRecharge = true;
-                            if (self.grasps[grabby].grabbed is Rock r) 
+                            if (self.grasps[grabby].grabbed is Rock r)
                             {
                                 r.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
@@ -414,12 +463,13 @@ namespace TheEscort
                                 b.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
                         }
-                    } 
+                    }
                     catch (NullReferenceException nre)
                     {
                         Ebug(self, nre, "Null when charging a rock!");
                     }
-                    catch (Exception err) {
+                    catch (Exception err)
+                    {
                         Ebug(self, err, "Generic exception when charging a rock!");
                     }
                 }
@@ -446,22 +496,22 @@ namespace TheEscort
                             self.SlugcatGrab(apo.realizedObject, grabby);
 
                             // Doesn't work
-                            #if false
+#if false
                             if (e.secretRGB)
                             {
                                 e.GildRainbowFirespear.Add(apo.realizedObject as Spear);
                             }
-                            #endif
+#endif
                             if (
-                                e.GildWantToThrow == 0 && 
-                                self.grasps[1]?.grabbed is not null && 
+                                e.GildWantToThrow == 0 &&
+                                self.grasps[1]?.grabbed is not null &&
                                 !e.GildAlsoPop &&
                                 (
                                     self.grasps[1].grabbed is Rock && e.GildPower >= Escort.GildCheckCraftFirebomb * 2 ||
-                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb || 
+                                    self.grasps[1].grabbed is ScavengerBomb && e.GildPower >= Escort.GildCheckCraftFirebomb ||
                                     self.grasps[1].grabbed is Spear sp && !sp.bugSpear && e.GildPower >= Escort.GildCheckCraftFirespear
                                 )
-                            ) 
+                            )
                             {
                                 e.GildAlsoPop = true;
                                 e.GildClearReserve = true;
@@ -476,12 +526,13 @@ namespace TheEscort
                             e.GildLockRecharge = true;
                             s.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirespear;
                         }
-                    } 
+                    }
                     catch (NullReferenceException nre)
                     {
                         Ebug(self, nre, "Null when charging a spear!");
                     }
-                    catch (Exception err) {
+                    catch (Exception err)
+                    {
                         Ebug(self, err, "Generic exception when charging a spear!");
                     }
 
@@ -495,10 +546,10 @@ namespace TheEscort
                         if (e.GildReservePower >= e.GildRequiredPower)
                         {
                             Vector2 posi = new();
-                            WorldCoordinate wPos = new(); 
+                            WorldCoordinate wPos = new();
                             Spear spear = null;
                             FireEgg fireEgg = null;
-                            if (self.grasps[grabby].grabbed is Spear) 
+                            if (self.grasps[grabby].grabbed is Spear)
                             {
                                 spear = self.grasps[grabby].grabbed as Spear;
                                 posi = spear.firstChunk.pos;
@@ -534,10 +585,10 @@ namespace TheEscort
                         else
                         {
                             e.GildLockRecharge = true;
-                            if (self.grasps[grabby].grabbed is FireEgg fe) 
+                            if (self.grasps[grabby].grabbed is FireEgg fe)
                             {
                                 fe.firstChunk.vel += new Vector2(
-                                    Mathf.Lerp(0, UnityEngine.Random.Range(-3f, 3f), e.GildReservePower / Escort.GildCheckCraftSingularity), 
+                                    Mathf.Lerp(0, UnityEngine.Random.Range(-3f, 3f), e.GildReservePower / Escort.GildCheckCraftSingularity),
                                     Mathf.Lerp(0, UnityEngine.Random.Range(-3f, 3f), e.GildReservePower / Escort.GildCheckCraftSingularity)
                                 );
                             }
@@ -546,12 +597,13 @@ namespace TheEscort
                                 spearie.vibrate = e.GildReservePower * 20 / Escort.GildCheckCraftFirebomb;
                             }
                         }
-                    } 
+                    }
                     catch (NullReferenceException nre)
                     {
                         Ebug(self, nre, "Null when charging a rock!");
                     }
-                    catch (Exception err) {
+                    catch (Exception err)
+                    {
                         Ebug(self, err, "Generic exception when charging a rock!");
                     }
                 }
@@ -579,12 +631,13 @@ namespace TheEscort
         /// </summary>
         public static void Esclass_GD_Collision(Player self, Creature creature, ref Escort e)
         {
-            if (e.GildCrush && e.GildCrushTime == 0){
+            if (e.GildCrush && e.GildCrushTime == 0)
+            {
                 creature.SetKillTag(self.abstractCreature);
                 creature.LoseAllGrasps();
                 float dam = Mathf.Lerp(0, 5, Mathf.InverseLerp(0, 35, Mathf.Abs(self.bodyChunks[0].vel.y)));
                 creature.Violence(
-                    self.bodyChunks[1], 
+                    self.bodyChunks[1],
                     new Vector2(self.bodyChunks[1].vel.x, self.bodyChunks[1].vel.y * -1 * ins.DKMultiplier),
                     creature.mainBodyChunk, null,
                     Creature.DamageType.Blunt,
@@ -629,8 +682,8 @@ namespace TheEscort
             if (self.grasps[grasp]?.grabbed is null) return false;
 
             if (
-                self.grasps[grasp].grabbed is Rock or ScavengerBomb || 
-                self.grasps[grasp].grabbed is Spear spear && (escort.GildOverpowered || !spear.bugSpear) || 
+                self.grasps[grasp].grabbed is Rock or ScavengerBomb ||
+                self.grasps[grasp].grabbed is Spear spear && (escort.GildOverpowered || !spear.bugSpear) ||
                 self.grasps[grasp].grabbed is MoreSlugcats.LillyPuck ||
                 escort.GildOverpowered && self.grasps[grasp].grabbed is MoreSlugcats.FireEgg
             )
@@ -671,7 +724,7 @@ namespace TheEscort
                 self.input[0].x == 0
             )
             {
-                throwDir = new(0, upwardsEnabled? self.input[0].y : -1);
+                throwDir = new(0, upwardsEnabled ? self.input[0].y : -1);
             }
             if (upwardsEnabled && self.bodyMode == Player.BodyModeIndex.ZeroG && self.input[0].y != 0)
             {
@@ -680,7 +733,7 @@ namespace TheEscort
 
 
             if (
-                self.animation == Player.AnimationIndex.BellySlide && 
+                self.animation == Player.AnimationIndex.BellySlide &&
                 self.rollCounter > 8 &&
                 self.rollCounter < 15 &&
                 throwDir.x == -self.rollDirection &&
@@ -794,7 +847,7 @@ namespace TheEscort
                     for (int i = 0; i < escort.GildPowerPipsMax; i++)
                     {
                         // Visibility
-                        float preR = i > 0? division * (float)(i - 1) : 0;
+                        float preR = i > 0 ? division * (float)(i - 1) : 0;
                         float minR = division * (float)i;
                         float maxR = division * (float)(i + 1);
                         s.sprites[escort.GildPowerPipsIndex + i].scale = Mathf.InverseLerp(minR, maxR, escort.GildPower);
@@ -810,7 +863,7 @@ namespace TheEscort
                         {
                             s.sprites[escort.GildPowerPipsIndex + i].color = Color.white;
                         }
-                        else 
+                        else
                         {
                             Color wawa = new(escort.hypeColor.r, escort.hypeColor.g, escort.hypeColor.b, 1f);
                             s.sprites[escort.GildPowerPipsIndex + i].color = wawa;
@@ -846,7 +899,7 @@ namespace TheEscort
         /// </summary>
         public static void Esclass_GD_Die(ref Escort escort)
         {
-            if (escort.GildReservePower > 0 && !escort.GildFloatState) 
+            if (escort.GildReservePower > 0 && !escort.GildFloatState)
             {
                 escort.GildReservePower = escort.GildRequiredPower;
                 escort.GildInstaCreate = 5;
