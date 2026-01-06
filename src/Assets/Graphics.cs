@@ -48,13 +48,14 @@ namespace TheEscort
                     return;
                 }
                 ins.L().Set("Escort/Socks CWT Access");
-                e.Escat_setIndex_sprite_cue(ref e.mainSpriteIndex, s.sprites.Length);
+                Escort.Escat_setIndex_sprite_cue(ref e.mainSpriteIndex, s.sprites.Length);
                 Ebug("Set cue for Escort sprites");
                 Array.Resize(ref s.sprites, s.sprites.Length + e.mainSprites);
                 // Store the end index of the sprites so none are overwritten!
                 s.sprites[e.mainSpriteIndex] = new FSprite("escortHeadT");
                 s.sprites[e.mainSpriteIndex + 1] = new FSprite("escortHipT");
 
+                if (e.Railgunner) Esclass_RG_InitiateSprites(self, s, rCam, ref e);
                 if (e.Gilded) Esclass_GD_InitiateSprites(self, s, rCam, ref e);
 
                 // When builds have custom sprites, do an if condition and add accordingly
@@ -80,11 +81,11 @@ namespace TheEscort
             orig(self, s, rCam, palette);
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Escort_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -122,8 +123,8 @@ namespace TheEscort
                         Color esc = PlayerGraphics.CustomColorSafety(0);
                         Color def = Custom.hexToColor("4169e1");
                         if (
-                            Mathf.Abs(esc.r - def.r) < 0.01f && 
-                            Mathf.Abs(esc.g - def.g) < 0.01f && 
+                            Mathf.Abs(esc.r - def.r) < 0.01f &&
+                            Mathf.Abs(esc.g - def.g) < 0.01f &&
                             Mathf.Abs(esc.b - def.b) < 0.01f
                             )
                         {
@@ -219,11 +220,11 @@ namespace TheEscort
             orig(self, s, rCam, newContainer);
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Escort_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -292,12 +293,12 @@ namespace TheEscort
         {
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     orig(self, s, rCam, t, camP);
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Escort_IsNull(self.player.slugcatStats.name))
                 {
                     orig(self, s, rCam, t, camP);
                     return;
@@ -435,7 +436,7 @@ namespace TheEscort
                         s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
-                if (e.Railgunner) Esclass_RG_DrawHands(self, s, rCam, t, camP, ref e);
+                if (e.Railgunner) Esclass_RG_DrawThings(self, s, rCam, t, camP, ref e);
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 //e.Escat_Draw_Ring_Trackers(t);
@@ -475,12 +476,11 @@ namespace TheEscort
 
         public static void Escort_GFXUpdate(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
         {
-            orig(self);
             try
             {
-                if (self is not null && self.player is not null && eCon.TryGetValue(self.player, out Escort e))
+                if (self?.player is not null && eCon.TryGetValue(self.player, out Escort e))
                 {
-                    //e.Escat_Update_Ring_Trackers();
+                    if (e.Railgunner) Esclass_RG_UpdateGraphics(self, ref e);
                 }
             }
             catch (NullReferenceException nre)
@@ -495,6 +495,7 @@ namespace TheEscort
             {
                 Ebug(err, "Generic exceptoin when updating graphics!");
             }
+            orig(self);
         }
 
 

@@ -17,7 +17,7 @@ partial class Plugin : BaseUnityPlugin
         LR = BepInEx.Logging.Logger.Sources.FirstOrDefault(l => l.SourceName == "EBUGGER") as ManualLogSource ?? BepInEx.Logging.Logger.CreateLogSource("EBUGGER");
         EscortMe = new("EscortMe");
         EscortSocks = new("EscortSocks");
-        EscortMeTime = new("EscortMe");
+        EscortMeTime = new("EscortMeTime");
         EscortSocksTime = new("EscortSocks");
 
         eCon = new();
@@ -105,6 +105,7 @@ partial class Plugin : BaseUnityPlugin
         railgunRecoil = PlayerFloat("theescort/railgunner/recoil_fac");
         railgunRecoilMod = PlayerFloats("theescort/railgunner/recoil_mod");
         railgunRecoilDelay = PlayerInt("theescort/railgunner/recoil_delay");
+        railgunLaserPos = PlayerFloats("theescort/railgunner/laserposition");
 
         CustomShader = PlayerString("theescort/speedster/custom_shader");
         speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");

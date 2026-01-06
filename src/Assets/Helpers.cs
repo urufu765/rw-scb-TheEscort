@@ -442,7 +442,7 @@ public static class Eshelp
         {
             if (theTimeline is null) return nullCheck;
 
-            if (theTimeline.value is "EscortMe") return !nullCheck;
+            if (theTimeline.value == Plugin.EscortMeTime.value) return !nullCheck;
         }
         catch (NullReferenceException nre)
         {

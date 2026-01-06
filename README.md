@@ -10,28 +10,32 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * #### 0.4 - The Refresher Course Update
 
-  * *(0.4-dev)* New sprites
-  * *(0.4-dev)* New DMS
-  * *(0.4-dev)* New promo vid + guide
-  * *(0.4-dev)* Contact Banba
-  * *(0.4-dev)* Guardian new Karma 10 ability, a void guardian type skill except it's for protection. Move cursor to the ally player, then make whatever's grabbing them let go while carrying the player to safety, or select self to bring to an inaccessible area
-  * *(0.4-dev)* Cyan lizard also drops with baby, increased profit lmao
-  * *(0.4-dev)* Give Railgunner a lasersight and a cyan jump ability
-  * *(0.4-dev)* Reimplement the new Lizard Dunk mechanic from ALPHA branch
-  * *(0.4-dev)* Redo Unstable, make their dashes stop them in the air, then after the time is up apply the stored velocity
-  * *(0.4-dev)* Battlehype overhaul
-  * *(0.4-dev)* Starvation overhaul
-  * *(0.4-dev)* Guardian gets more swimming tricks
-  * *(0.4-dev)* Brawler gets an explosive punch
-  * *(0.4-dev)* Deflector gets a midair/swim/float timing parry that has a short window but does the same parry. This is to compensate for situations where Deflector is unable to flip/roll/slide/bounce
-  * *(0.4-dev)* New Escapist doesn't get anything for new years
-  * *(0.4-dev)* Old Escapist gets some pacifying stun power
-  * *(0.4-dev)* Railgunner gets higher limit by default, but cooldown is lot longer... Give 'er more focused mechanics around overcharge. Also damage increase
-  * *(0.4-dev)* Make Speedster more slippery on walls, doing wall jumps makes Speedster slide up a bit while boosting.
-  * *(0.4-dev)* Gilded is now slower, has the power charge at 0.25x speed when floating/underwater
-  * *(0.4-dev)* When hyped, give extra warmth
-  * *(0.4-dev)* Add setting to adjust parry sfx
-  * *(0.4-dev)* Unstable stuff
+  * **(0.4-dev.)* New sprites
+  * **(0.4-dev.)* New DMS
+  * **(0.4-dev.)* New promo vid + guide
+  * **(0.4-dev.)* Contact Banba
+  * **(0.4-dev.)* Guardian new Karma 10 ability, a void guardian type skill except it's for protection. Move cursor to the ally player, then make whatever's grabbing them let go while carrying the player to safety, or select self to bring to an inaccessible area
+  * **(0.4-dev.)* Cyan lizard also drops with baby, increased profit lmao
+  * **(0.4-dev.)* Reimplement the new Lizard Dunk mechanic from ALPHA branch
+  * **(0.4-dev.)* Redo Unstable, make their dashes stop them in the air, then after the time is up apply the stored velocity
+  * **(0.4-dev.)* Battlehype overhaul
+  * **(0.4-dev.)* Starvation overhaul
+  * **(0.4-dev.)* Guardian gets more swimming tricks
+  * **(0.4-dev.)* Brawler gets an explosive punch
+  * **(0.4-dev.)* Give railgunner 8 dir shooting on flips
+  * **(0.4-dev.)* Give railgunner cyan jump
+  * **(0.4-dev.)* Deflector gets a midair/swim/float timing parry that has a short window but does the same parry. This is to compensate for situations where Deflector is unable to flip/roll/slide/bounce
+  * **(0.4-dev.)* New Escapist doesn't get anything for new years
+  * **(0.4-dev.)* Old Escapist gets some pacifying stun power
+  * **(0.4-dev.)* Railgunner gets higher limit by default, but cooldown is lot longer... Give 'er more focused mechanics around overcharge. Also damage increase
+  * **(0.4-dev.)* Make Speedster more slippery on walls, doing wall jumps makes Speedster slide up a bit while boosting.
+  * **(0.4-dev.)* Gilded fix gravity hover velocity so they remain correct vertical height when hovering
+  * **(0.4-dev.)* When hyped, give extra warmth
+  * **(0.4-dev.)* Add setting to adjust parry sfx
+  * **(0.4-dev.)* Fixed Rotund world backfood
+  * **(0.4-dev.)* Make a new friend slot if player refuses to get slugpup (and add respawn mechanics based on that)
+  * **(0.4-dev.)* Add cutscenes to ending + ending song
+  * **(0.4-dev.)* Unstable stuff
     * Unstable long jump (crouch and hold jump) will instead teleport them forward and not use up a charge
     * Unstable, if teleporting out of a roll, will make them spin in the air, and on deactivation will put them in a flipping state.
     * Unstable, when pressing special while having at least a charge, flies towards direction with kill intent, stopping once (max range reached and use up all charges and hover, hit wall and stun, hit creature and bounce back and only use up one charge and hover). While in this killing intent mode, Unstable is in a parry state
@@ -44,6 +48,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Unstable closes eyes during hover state
     * Unstable sprite mechanic where a shadow version of the sprite is offset towards the direction pressed. If no direction is pressed, assume a different colour and offset towards the direction that the stored potential velocity will make them go... or the shadow/sprite shows where Unstable will teleport to, while the stored velocity arrow gets longer the higher the velocity.
     * Unstable teleports up from ground and hovers in the air, or if midair, stops and hovers. Previous velocity is cached. If jump is pressed without direction (or if out of charges), undoes the hover state and applies the cached velocity
+  * **(0.4-dev.3)** Give Railgunner a lasersight, unbandaged Meadow patches to help figure out why it's being a little idiot
   * **(0.4-dev.2)** Gilded charge speed changes depending on situations, as well as horizontal movement nerf. More things synced in Meadow
   * **(0.4-dev.1)** Applied 0.3.5.4 update
   * **(0.4-dev.0)** Some squishing of README

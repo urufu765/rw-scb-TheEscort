@@ -8,6 +8,15 @@ namespace TheEscort.Patches;
 
 public static class EPatchMeadow
 {
+    private static int _clock;
+    public static bool Clock
+    {
+        get
+        {
+            if (_clock > 19) _clock = 0;
+            return _clock++ == 1;
+        }
+    }
     public static void Initialize()
     {
         try
@@ -44,7 +53,12 @@ public static class EPatchMeadow
     {
         if (Escort_IsNull(self.currentCampaign, false))
         {
-            return SlugcatStats.Timeline.Spear;
+            // if (Clock)
+            // {
+            //     Ebug("What's the timeline? " + (game?.TimelinePoint?.value??"I don't know!"));
+            // }
+            // return SlugcatStats.Timeline.Spear;
+            return Plugin.EscortMeTime;
         }
         return orig(self, game);
     }
@@ -61,8 +75,9 @@ public static class EPatchMeadow
         // Ebug("Loaded world state");
         if (Escort_IsNull(self.currentCampaign, false))
         {
-            // Ebug("Wow");
-            return MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear;
+            // Ebug("What's the worldstate? " + (self.currentCampaign.value??"I don't know!"));
+            // return MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear;
+            return Plugin.EscortMe;
         }
         return orig(self, game);
     }

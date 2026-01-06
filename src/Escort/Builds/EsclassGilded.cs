@@ -770,7 +770,7 @@ namespace TheEscort
         {
             try
             {
-                escort.Escat_setIndex_sprite_cue(ref escort.GildPowerPipsIndex, s.sprites.Length);
+                Escort.Escat_setIndex_sprite_cue(ref escort.GildPowerPipsIndex, s.sprites.Length);
                 Ebug("Set cue for Gilded sprites");
                 Array.Resize(ref s.sprites, s.sprites.Length + escort.GildPowerPipsMax);
                 for (int i = 0; i < escort.GildPowerPipsMax; i++)

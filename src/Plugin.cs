@@ -432,6 +432,7 @@ partial class Plugin : BaseUnityPlugin
         On.Player.TerrainImpact += Esclass_SS_Bonk;
         On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
         On.Player.Stun += Esclass_RG_Spasm;
+        On.Player.GetHeldItemDirection += Esclass_RG_PointWeaponAt;
         On.RainWorldGame.Update += Escort_AbsoluteTick;
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
 
@@ -490,8 +491,25 @@ partial class Plugin : BaseUnityPlugin
         On.Menu.SleepAndDeathScreen.AddBkgIllustration += Escort_Add_Slugpup;
 
         On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
-    }
 
+        // Debugging
+        // On.DebugMouse.Update += DebugMouse_Update;
+    }
+    // private static void DebugMouse_Update(On.DebugMouse.orig_Update orig, DebugMouse self, bool eu)
+    // {
+    //     orig(self, eu);
+    //     if (!self.room.readyForAI || !self.room.BeingViewed) return;
+
+    //     string text = self.label.text;
+    //     AItile aiTile = self.room.aimap.getAItile(self.pos);
+
+    //     text += $"\n\n--aiTile--" +
+    //         $"acc: {aiTile.acc}\n" +
+    //         $"floorAltitude: {aiTile.floorAltitude}    smoothed: {aiTile.smoothedFloorAltitude}\n";
+
+    //     self.label.text = text;
+    //     self.label2.text = text;
+    // }
     /// <summary>
     /// Forces temple guardians to ignore the creatures Escort brings to the piss pool if the flag is true
     /// </summary>
@@ -2337,11 +2355,117 @@ partial class Plugin : BaseUnityPlugin
 
     public static bool Escort_Transplant(On.RoomSettings.orig_Load_Name orig, RoomSettings self, SlugcatStats.Name index)
     {
-        if (index == EscortMe)
+        try
         {
-            self.Load(EscortMeTime);
+            if (index is null)
+            {
+                Ebug("L_NAME>Transplant failed due to nulled slugcat name!");
+                return orig(self, index);
+            }
+            ins.L().SetF("Null Check");
+            if (self is null || self.name is null)
+            {
+                Ebug("L_NAME>Transplant failed due to nulled roomSettings name");
+                return orig(self, index);
+            }
+            ins.L().SetF("Roomsetting presence Check");
+            if (index == EscortMe)
+            {
+                ins.L().SetF("Escort Check");
+                Ebug("L_NAME>Roomsetting name: " + self.name);
+                string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
+                string q = WorldLoader.FindRoomFile(self.name, false, "-escortme.txt");
+                if (File.Exists(p))
+                {
+                    Ebug("L_NAME>Escort Transplanted!", LogLevel.DEBUG);
+                    self.filePath = p;
+                }
+                else if (File.Exists(q))
+                {
+                    Ebug("L_NAME>Escort template Transplanted!", LogLevel.DEBUG);
+                    self.filePath = q;
+                }
+                else
+                {
+                    p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
+                    q = WorldLoader.FindRoomFile(self.name, false, "-spear.txt");
+                    if (File.Exists(p))
+                    {
+                        Ebug("L_NAME>Spearmaster Transplanted!", LogLevel.DEBUG);
+                        self.filePath = p;
+                    }
+                    else if (File.Exists(q))
+                    {
+                        Ebug("L_NAME>Spearmaster template Transplated!", LogLevel.DEBUG);
+                        self.filePath = q;
+                    }
+                    else
+                    {
+                        Ebug("L_NAME>No Transplant, gone default.", LogLevel.DEBUG);
+                    }
+                }
+            }
+            if (index == EscortSocks)
+            {
+                ins.L().SetF("Socks Check");
+                Ebug("L_NAME>Roomsetting name: " + self.name);
+                string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
+                if (File.Exists(p))
+                {
+                    Ebug("L_NAME>Socks Transplanted!", LogLevel.MESSAGE);
+                    self.filePath = p;
+                }
+                else
+                {
+                    p = WorldLoader.FindRoomFile(self.name, false, "_settings-artificer.txt");
+                    if (File.Exists(p))
+                    {
+                        Ebug("L_NAME>Artificer Transplanted!", LogLevel.MESSAGE);
+                        self.filePath = p;
+                    }
+                    else
+                    {
+                        Ebug("L_NAME>No Transplant, gone default", LogLevel.MESSAGE);
+                    }
+                }
+
+            }
         }
-        return orig(self, index);
+        catch (Exception err)
+        {
+            Ebug(err, "L_NAME>Something happened while replacing room setting file paths!");
+        }
+        bool theOriginal = orig(self, index);
+        try
+        {
+            if (index is null)
+            {
+                Ebug("L_NAME>Voidmelter failed due to nulled slugcat name!");
+                return orig(self, index);
+            }
+            if (self is null || self.name is null)
+            {
+                Ebug("L_NAME>Voidmelter failed due to nulled roomSettings name");
+                return orig(self, index);
+            }
+            if (index == EscortMe)
+            {
+                foreach (RoomSettings.RoomEffect effect in self.effects)
+                {
+                    if (effect.type == RoomSettings.RoomEffect.Type.VoidMelt)
+                    {
+                        effect.amount *= 0.75f;
+                        Ebug("L_NAME>Voidmelt effectiveness reduced by 1/4!");
+                    }
+
+                }
+            }
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "L_NAME>Something happened while reducing voidmelt effect!");
+        }
+        return theOriginal;
     }
 
     /// <summary>
@@ -2352,96 +2476,61 @@ partial class Plugin : BaseUnityPlugin
         ins.L().SetF();
         try
         {
+            if (self?.name is null)
+            {
+                Ebug("L_TIME>Transplant failed due to nulled roomSettings name");
+                return orig(self, index);
+            }
+            // Ebug("L_TIME>Roomsetting name: " + self.name);
+
+            ins.L().SetF("Roomsetting presence Check");
             if (index is null)
             {
-                Ebug("Transplant failed due to nulled slugcat timeline!");
+                Ebug("L_TIME>Transplant failed due to nulled slugcat timeline!");
                 return orig(self, index);
             }
             ins.L().SetF("Null Check");
-            if (self is null || self.name is null)
-            {
-                Ebug("Transplant failed due to nulled roomSettings name");
-                return orig(self, index);
-            }
-            ins.L().SetF("Roomsetting presence Check");
             if (index == EscortMeTime)
             {
                 ins.L().SetF("Escort Check");
-                Ebug("Roomsetting name: " + self.name);
+                Ebug("L_TIME>Roomsetting name: " + self.name);
                 string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortme.txt");
-                string q = WorldLoader.FindRoomFile(self.name, false, "-escortme.txt");
                 if (File.Exists(p))
                 {
-                    Ebug("Escort Transplanted!", LogLevel.DEBUG);
+                    Ebug("L_TIME>Escort Transplanted!", LogLevel.DEBUG);
                     self.filePath = p;
-                }
-                else if (File.Exists(q))
-                {
-                    Ebug("Escort template Transplanted!", LogLevel.DEBUG);
-                    self.filePath = q;
                 }
                 else
                 {
                     p = WorldLoader.FindRoomFile(self.name, false, "_settings-spear.txt");
-                    q = WorldLoader.FindRoomFile(self.name, false, "-spear.txt");
                     if (File.Exists(p))
                     {
-                        Ebug("Spearmaster Transplanted!", LogLevel.DEBUG);
-                        self.filePath = p;
-                    }
-                    else if (File.Exists(q))
-                    {
-                        Ebug("Spearmaster template Transplated!", LogLevel.DEBUG);
-                        self.filePath = q;
-                    }
-                    else
-                    {
-                        Ebug("No Transplant, gone default.", LogLevel.DEBUG);
-                    }
-                }
-            }
-            if (index == EscortSocksTime)
-            {
-                ins.L().SetF("Socks Check");
-                Ebug("Roomsetting name: " + self.name);
-                string p = WorldLoader.FindRoomFile(self.name, false, "_settings-escortsocks.txt");
-                if (File.Exists(p))
-                {
-                    Ebug("Socks Transplanted!", LogLevel.MESSAGE);
-                    self.filePath = p;
-                }
-                else
-                {
-                    p = WorldLoader.FindRoomFile(self.name, false, "_settings-artificer.txt");
-                    if (File.Exists(p))
-                    {
-                        Ebug("Artificer Transplanted!", LogLevel.MESSAGE);
+                        Ebug("L_TIME>Spearmaster Transplanted!", LogLevel.DEBUG);
                         self.filePath = p;
                     }
                     else
                     {
-                        Ebug("No Transplant, gone default", LogLevel.MESSAGE);
+                        Ebug("L_TIME>No Transplant, gone default.", LogLevel.DEBUG);
                     }
                 }
-
             }
         }
         catch (Exception err)
         {
-            Ebug(err, "Something happened while replacing room setting file paths!");
+            Ebug(err, "L_TIME>Something happened while replacing room setting file paths!");
         }
         bool theOriginal = orig(self, index);
         try
         {
             if (index is null)
             {
-                Ebug("Voidmelter failed due to nulled slugcat name!");
-                return orig(self, index);
+                Ebug("L_TIME>Voidmelter failed due to nulled slugcat timeline!");
+                return theOriginal;
             }
             if (self is null || self.name is null)
             {
-                Ebug("Voidmelter failed due to nulled roomSettings name");
-                return orig(self, index);
+                Ebug("L_TIME>Voidmelter failed due to nulled roomSettings name");
+                return theOriginal;
             }
             if (index == EscortMeTime)
             {
@@ -2450,7 +2539,7 @@ partial class Plugin : BaseUnityPlugin
                     if (effect.type == RoomSettings.RoomEffect.Type.VoidMelt)
                     {
                         effect.amount *= 0.75f;
-                        Ebug("Voidmelt effectiveness reduced by 1/4!");
+                        Ebug("L_TIME>Voidmelt effectiveness reduced by 1/4!");
                     }
 
                 }
@@ -2458,7 +2547,7 @@ partial class Plugin : BaseUnityPlugin
         }
         catch (Exception err)
         {
-            Ebug(err, "Something happened while reducing voidmelt effect!");
+            Ebug(err, "L_TIME>Something happened while reducing voidmelt effect!");
         }
         return theOriginal;
     }

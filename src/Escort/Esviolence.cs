@@ -403,7 +403,7 @@ partial class Plugin : BaseUnityPlugin
             }
             if (thrownBy is Player p)
             {
-                if (p.slugcatStats.name.value != "EscortMe")
+                if (Escort_IsNull(p.slugcatStats.name))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;

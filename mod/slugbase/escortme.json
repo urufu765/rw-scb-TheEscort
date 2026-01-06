@@ -35,7 +35,7 @@
 		},
 		"karma": 2,
 		"karma_cap": 3,
-		"world_state": ["EscortMe", "Spear"],
+		"world_state": ["EscortMeTime", "Spear"],
 		"timeline_after": "Spear",
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Slugcat_End_EscortMe",
@@ -111,6 +111,7 @@
 		"theescort/railgunner/recoil_delay": 3,
 		"theescort/railgunner/recoil_fac": 50,
 		"theescort/railgunner/recoil_mod": [0.7, 1, 0.6, 0.9, 1.5],
+		"theescort/railgunner/laserposition": [10, 10, 0.14],
 
 		"theescort/speedster/custom_shader": "Basic",
 		"theescort/speedster/pole_rise": [0.8, 0.65],

@@ -1,7 +1,10 @@
 using BepInEx;
+using MoreSlugcats;
 using RWCustom;
 using SlugBase.Features;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -24,6 +27,7 @@ namespace TheEscort
         public static readonly PlayerFeature<float> railgunRecoil;
         public static readonly PlayerFeature<float[]> railgunRecoilMod;
         public static readonly PlayerFeature<int> railgunRecoilDelay;
+        public static readonly PlayerFeature<float[]> railgunLaserPos;
 
         public static void Esclass_RG_Tick(Player self, ref Escort e)
         {
@@ -59,15 +63,21 @@ namespace TheEscort
                 e.RailRecoilLag--;
             }
 
-            // 1 second clock
-            // if (e.RailTargetClock > 0)
-            // {
-            //     e.RailTargetClock--;
-            // }
-            // else
-            // {
-            //     e.RailTargetClock = 39;
-            // }
+            if (e.RailLaserBlinkClock > 19)
+            {
+                e.RailLaserBlinkClock = 0;
+                e.RailLaserBlink = !e.RailLaserBlink;
+            }
+            else
+            {
+                e.RailLaserBlinkClock++;
+            }
+
+            // 1 second delay per check
+            if (e.RailTargetClock > 0)
+            {
+                e.RailTargetClock--;
+            }
         }
 
         public static void Esclass_RG_Update(Player self, ref Escort e)
@@ -117,10 +127,10 @@ namespace TheEscort
 
 
             // Creature check every 1 second
-            if (e.RailTargetClock == 0)
-            {
-                e.RailTargetAcquired = Esclass_RG_Spotter(self);
-            }
+            // if (e.RailTargetClock == 0)
+            // {
+            //     e.RailTargetAcquired = Esclass_RG_Spotter(self);
+            // }
 
 
             // Auto-escape out of danger grasp if overcharged
@@ -224,7 +234,7 @@ namespace TheEscort
                 self.canBeHitByWeapons = true;
                 if (thrownBy is Player p)
                 {
-                    if (p.slugcatStats.name.value != "EscortMe")
+                    if (Escort_IsNull(p.slugcatStats.name))
                     {
                         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                         return;
@@ -287,7 +297,7 @@ namespace TheEscort
                 }
                 if (thrownBy is Player p)
                 {
-                    if (p.slugcatStats.name.value != "EscortMe")
+                    if (Escort_IsNull(p.slugcatStats.name))
                     {
                         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                         return;
@@ -342,7 +352,7 @@ namespace TheEscort
             {
                 if (self.thrownBy is Player p)
                 {
-                    if (p.slugcatStats.name.value != "EscortMe")
+                    if (Escort_IsNull(p.slugcatStats.name))
                     {
                         orig(self, inbetweenPos, deflectDir, bounceSpeed);
                         return;
@@ -732,8 +742,96 @@ namespace TheEscort
             }
         }
 
+        public static BodyChunk Esclass_RG_Spotter(PlayerGraphics self, Vector2 origin, Vector2 direction, Vector2 corner, Vector2 camP)
+        {
+            BodyChunk target = null;
+            if (!railgunLaserPos.TryGet(self.player, out float[] lPos))
+            {
+                Ebug("Failed to get slugbase feature for Railgunner laser", LogLevel.WARN);
+            }
+            try
+            {
+                float minX = Mathf.Min(origin.x, corner.x) - lPos[0];
+                float maxX = Mathf.Max(origin.x, corner.x) + lPos[0];
+                float minY = Mathf.Min(origin.y, corner.y) - lPos[1];
+                float maxY = Mathf.Max(origin.y, corner.y) + lPos[1];
+                float minDist = int.MaxValue;
+                // Ebug("Origin: [" + origin.x + ", " + origin.y + "] | Corner: [" + corner.x + ", " + corner.y + "]");
+                // Ebug("Positions xy: " + minX + "-" + maxX + ", " + minY + "-" + maxY);
+                if (self?.player?.room?.physicalObjects is null) return null;
+                // List<BodyChunk> potentials = (
+                //     from po in self.player.room.physicalObjects
+                //     where po.Any(a => a is Creature)
+                //     from co in po
+                //     where co is Creature
+                //     where co != self.player
+                //     from bc in co.bodyChunks
+                //     where bc.pos.y < maxY && bc.pos.y > minY && bc.pos.x < maxX && bc.pos.x > minX
+                //     select bc
+                // ).ToList();
+                List<BodyChunk> potentials = self.player.room.physicalObjects
+                    .SelectMany(a => a)
+                    .OfType<Creature>()
+                    .Where(c => c != self.player)
+                    .SelectMany(c => c.bodyChunks)
+                    .Where(bc => bc.pos.y < maxY && bc.pos.y > minY && bc.pos.x < maxX && bc.pos.x > minX)
+                    .ToList();
+
+                if (direction.x == 0 && direction.y != 0)  // Vertical
+                {
+                    foreach (BodyChunk bc in potentials)
+                    {
+                        if (Mathf.Abs(origin.y - bc.pos.y) < minDist)
+                        {
+                            minDist = Mathf.Abs(origin.y - bc.pos.y);
+                            target = bc;
+                        }
+                    }
+                }
+                else if (direction.x != 0 && direction.y == 0)  // Horizontal
+                {
+                    foreach (BodyChunk bc in potentials)
+                    {
+                        if (Mathf.Abs(origin.x - bc.pos.x) < minDist)
+                        {
+                            minDist = Mathf.Abs(origin.x - bc.pos.x);
+                            target = bc;
+                        }
+                    }
+                }
+                else  // Diagonal
+                {
+                    foreach (BodyChunk bc in potentials)
+                    {
+                        float why = Mathf.Abs(Mathf.Lerp(origin.y, corner.y, Mathf.InverseLerp(origin.x, corner.x, bc.pos.x)));
+                        float compare = Mathf.Abs(bc.pos.y);
+                        // Check if in diagonal line with padding
+                        if (compare < why + 10 && compare > why - 10)
+                        {
+                            float distance = Custom.Dist(origin, bc.pos);
+                            if (distance < minDist)  // Then check distance from player
+                            {
+                                minDist = distance;
+                                target = bc;
+                            }
+                        }
+                    }
+                }
+                if (target is not null)
+                {
+                    Ebug("Target is: " + target.owner.GetType().ToString());
+                }
+
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "FECK something happened with spotting a creature");
+            }
+            return target;
+        }
+
         /// <summary>
-        /// Finds a valid bodychunk when Railgunner is dualwielding to point the crosshair at it (and also point at it)
+        /// Finds a valid bodychunk when Railgunner is dualwielding to point the crosshair at it (and also point at it) DOESN'T FKING WORK
         /// </summary>
         public static BodyChunk Esclass_RG_Spotter(Player self)
         {
@@ -863,17 +961,148 @@ namespace TheEscort
         /// <summary>
         /// Makes Railgunner point to whoever dares to enter her line of sight
         /// </summary>
-        public static void Esclass_RG_DrawHands(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
+        public static void Esclass_RG_DrawThings(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, float t, Vector2 camP, ref Escort e)
+        {
+            try
+            {
+                if (e.RailLaserSightIndex > s.sprites.Length)
+                {
+                    Ebug("Laser sprite index is higher than expected!", LogLevel.ERR);
+                    return;
+                }
+                // Higher charge = brighter laser
+                // Laser blinks if creature is in line of fire
+                // 
+                if (s.sprites[e.RailLaserSightIndex] is CustomFSprite cs)
+                {
+                    if (e.RailDoubled)
+                    {
+                        cs.isVisible = true;
+                        float intensityThickness = Mathf.Lerp(0.6f, 0.8f, (float)e.RailgunUse / e.RailgunLimit);
+                        float intensityAlpha = Mathf.Lerp(0.6f, 0.8f, (float)e.RailgunUse / e.RailgunLimit);
+                        bool targetSpotted = false;
+                        Vector2 headPos = Vector2.Lerp(self.head.lastPos, self.head.pos, t);
+                        Vector2 bodyPos = Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, t);
+                        Vector2 neckPos = Vector2.Lerp(headPos, bodyPos, 0.14f);
+                        // TODO: Give railgunner 8 dir shots
+
+                        Vector2 throwDir = self.player.animation switch
+                        {
+                            var a when a == Player.AnimationIndex.Flip => new(self.player.input[0].y == 0 ? self.player.ThrowDirection : self.player.input[0].x, self.player.input[0].y),
+                            _ => new(self.player.ThrowDirection, 0)
+                        };
+                        Vector2 corner = Custom.RectCollision(neckPos, neckPos + throwDir * 100000f, rCam.room.RoomRect.Grow(200f)).GetCorner(FloatRect.CornerLabel.D);
+                        IntVector2? intVector = SharedPhysics.RayTraceTilesForTerrainReturnFirstSolid(rCam.room, neckPos, corner);
+                        if (intVector is not null)
+                        {
+                            corner = Custom.RectCollision(corner, neckPos, rCam.room.TileRect(intVector.Value)).GetCorner(FloatRect.CornerLabel.D);
+                        }
+
+                        if (e.RailTargetClock == 0)
+                        {
+                            e.RailTargetAcquired = Plugin.Esclass_RG_Spotter(self, neckPos, throwDir, corner, camP);
+                            Ebug("Target checking! Found creature? " + (e.RailTargetAcquired is not null), ignoreRepetition: true);
+                            e.RailTargetClock = 4;
+                        }
+
+                        if (e.RailTargetAcquired is not null)
+                        {
+                            float newX = corner.x;
+                            float newY = corner.y;
+                            if (throwDir.x < 0)
+                            {
+                                newX = Mathf.Max(corner.x, e.RailTargetAcquired.pos.x);
+                            }
+                            else if (throwDir.x > 0)
+                            {
+                                newX = Mathf.Min(corner.x, e.RailTargetAcquired.pos.x);
+                            }
+                            if (throwDir.y < 0)
+                            {
+                                newY = Mathf.Max(corner.y, e.RailTargetAcquired.pos.y);
+                            }
+                            else if (throwDir.y > 0)
+                            {
+                                newY = Mathf.Min(corner.y, e.RailTargetAcquired.pos.y);
+                            }
+                            corner = new(newX, newY);
+
+                            if (e.RailTargetAcquired.owner is Creature cr && !cr.dead)
+                            {
+                                targetSpotted = true;
+                                intensityAlpha = Mathf.Max(0.8f, intensityAlpha);
+                                intensityThickness += 0.2f;
+                            }
+                        }
+
+                        Color c = e.RailLaserBlink && targetSpotted ? Color.Lerp(Color.red, e.RailLaserColor, Mathf.InverseLerp(0, 10, e.RailLaserBlinkClock)) : e.RailgunnerColor;
+                        cs.verticeColors = [.. cs.verticeColors.Select(a => Custom.RGB2RGBA(c, intensityAlpha))];
+
+                        // This does some space magic, based on Vulture laser thing
+                        cs.MoveVertice(0, neckPos + throwDir * 4f + Custom.PerpendicularVector(throwDir) * intensityThickness - camP);
+                        cs.MoveVertice(1, neckPos + throwDir * 4f - Custom.PerpendicularVector(throwDir) * intensityThickness - camP);
+                        cs.MoveVertice(2, corner + Custom.PerpendicularVector(throwDir) * intensityThickness - camP);
+                        cs.MoveVertice(3, corner - Custom.PerpendicularVector(throwDir) * intensityThickness - camP);
+                    }
+                    else
+                    {
+                        cs.isVisible = false;
+                    }
+                }
+                else
+                {
+                    Ebug("Unexpected failure to identify laser sprite!", LogLevel.WARN);
+                    return;
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null reference when drawing Railgunner sprites");
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                Ebug(ioore, "Index out of bounds when drawing Railgunner sprites");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when drawing Railgunner sprites");
+            }
+        }
+
+        public static void Esclass_RG_UpdateGraphics(PlayerGraphics self, ref Escort e)
         {
             // Points the spears at the target when target acquired
-            if (e.RailTargetAcquired is not null && e.RailDoubled)
+            if (e.RailTargetAcquired?.owner is Creature c && !c.dead && e.RailDoubled && self.hands is not null)
             {
                 for (int i = 0; i < self.hands.Length; i++)
                 {
+                    if (self.hands[i].reachingForObject) continue; // Don't override other things
+
                     self.hands[i].reachingForObject = true;
                     self.hands[i].absoluteHuntPos = e.RailTargetAcquired.pos;
                 }
             }
+        }
+
+
+        public static Vector2 Esclass_RG_PointWeaponAt(On.Player.orig_GetHeldItemDirection orig, Player self, int hand)
+        {
+            if (self is null) return orig(self, hand);
+            if (!eCon.TryGetValue(self, out Escort e)) return orig(self, hand);
+
+            if (e.Railgunner && e.RailTargetAcquired?.owner is Creature c && !c.dead)
+            {
+                if (self.grasps[hand].grabbed is Spear s)
+                {
+                    return Custom.DirVec(s.firstChunk.pos, e.RailTargetAcquired.pos);
+                }
+
+                else if (ModManager.MSC && self.grasps[hand].grabbed is MoreSlugcats.LillyPuck l)
+                {
+                    return Custom.DirVec(l.firstChunk.pos, e.RailTargetAcquired.pos);
+                }
+            }
+            return orig(self, hand);
         }
 
 
@@ -884,5 +1113,33 @@ namespace TheEscort
         {
             e.RailFrail = fragility;
         }
+
+        public static void Esclass_RG_InitiateSprites(PlayerGraphics self, RoomCamera.SpriteLeaser s, RoomCamera rCam, ref Escort e)
+        {
+            try
+            {
+                if (self is null || s?.sprites is null || rCam is null) return;
+                Escort.Escat_setIndex_sprite_cue(ref e.RailLaserSightIndex, s.sprites.Length);
+                Ebug("Set cue for Railgunner laser sprite");
+                Array.Resize(ref s.sprites, s.sprites.Length + 1);
+                s.sprites[e.RailLaserSightIndex] = new CustomFSprite("Futile_White")
+                {
+                    shader = rCam.game.rainWorld.Shaders["HologramBehindTerrain"]
+                };
+            }
+            catch (NullReferenceException nre)
+            {
+                Ebug(nre, "Null reference when initiating Railgunner laser!");
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                Ebug(ioore, "Index out of bounds when initiating Railgunner laser!");
+            }
+            catch (Exception err)
+            {
+                Ebug(err, "Generic error when initiating Railgunner laser");
+            }
+        }
+
     }
 }
