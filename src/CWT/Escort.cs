@@ -104,6 +104,38 @@ namespace TheEscort
         public const int SpeedSocksID = 765;
         public int PupCampaignID;
 
+
+        private int _syncValue;
+        /// <summary>
+        /// For synchronizing online values, increments by 1 every time it's read, with the minimum sync timing being 1 second.
+        /// </summary>
+        public bool PleaseSyncMyUnimportantValues
+        {
+            get
+            {
+                if (_syncValue > 40) _syncValue = 0;
+                return _syncValue++ == 1;
+            }
+        }
+
+        private int _syncAppearance;
+        /// <summary>
+        /// For synchronizing player appearance to properly match while in the same room. Delay is 3 seconds to give the tunnel enough time to warm up and sync the build ID.
+        /// </summary>
+        public bool PleaseSyncMyOneTimeValues
+        {
+            get
+            {
+                if (_syncAppearance < 1) return false;
+                return _syncAppearance-- == 1;
+            }
+            set
+            {
+                if (value) _syncAppearance = 120;
+            }
+        }
+
+
         // Build stuff
 
         /// <summary>
@@ -565,7 +597,12 @@ namespace TheEscort
 
             if (Plugin.escPatch_meadow && EPatchMeadow.IsOnline())
             {
-                if (player is null) return;
+                if (player is null)
+                {
+                    Ebug("HEY! Null player when making an Escort CWT?!", LogLevel.ERR);
+                    return;
+                }
+                PleaseSyncMyOneTimeValues = true;
                 EPatchMeadow.AddOnlineEscortData(player);
             }
         }

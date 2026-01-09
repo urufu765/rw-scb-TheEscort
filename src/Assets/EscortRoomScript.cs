@@ -805,10 +805,12 @@ public class EscortRoomScript
                 }
                 if (!missionComplete)
                 {
+                    // room.game.rainWorld.progression.miscProgressionData.Esave().guardianEscortVoidEnding = true;
+                    room.game.GetStorySession.saveState.miscWorldSaveData.Esave().GuardianEscortVoidEnding = true;
                     room.game.GoToRedsGameOver();
                     RainWorldGame.BeatGameMode(room.game, true);
-                    // Later, hook into BeatGameMode for a more authentic experience
                     room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort = true;
+                    // Later, hook into BeatGameMode for a more authentic experience
                     EscOptions.shouldUpdate = true;
                     missionComplete = true;
                 }

@@ -20,6 +20,39 @@ public class EscortOnlineData : OnlineEntity.EntityData
         [OnlineField]
         public int buildId;
 
+        #region Lazy Sync
+        /// <summary>
+        /// For audio purposes idk
+        /// </summary>
+        [OnlineField]
+        public float RollinCount { get; set; }
+        /// <summary>
+        /// Sync global Deflector perma based on host's settings (figure this one out later)
+        /// </summary>
+        // [OnlineField]
+        // public float DeflSharedPerma { get; set; }
+        [OnlineField]
+        public int GildPower { get; set; }
+        #endregion
+
+        #region One-time sync
+        /// <summary>
+        /// Sync railgunner limit based on the value set in the individual's remix settings
+        /// </summary>
+        [OnlineField]
+        public int RailgunLimit { get; set; }
+        [OnlineField]
+        public int SpeMaxGear { get; set; }
+        [OnlineField]
+        public int SpeCharge { get; set; }
+        [OnlineField]
+        public int SpeSpeedin {get;set;} 
+        [OnlineField]
+        public bool SpeOldSpeed {get;set;}
+        [OnlineField]
+        public int GildPowerMax { get; set; }
+        #endregion
+
         [UsedImplicitly]
         public State()
         {
@@ -31,6 +64,27 @@ public class EscortOnlineData : OnlineEntity.EntityData
             if ((oe as OnlinePhysicalObject)?.apo?.realizedObject is not Player player) return;
             if (!Plugin.eCon.TryGetValue(player, out Escort e)) return;
             buildId = FindBuildIndex(e);
+            // if (e.Deflector)
+            // {
+            //     DeflSharedPerma = e.DeflPerma;
+            // }
+            RollinCount = e.RollinCount;
+            if (e.Speedster)
+            {
+                SpeMaxGear = e.SpeMaxGear;
+                SpeCharge = e.SpeCharge;
+                SpeSpeedin = e.SpeSpeedin;
+                SpeOldSpeed = e.SpeOldSpeed;
+            }
+            if (e.Railgunner)
+            {
+                RailgunLimit = e.RailgunLimit;
+            }
+            if (e.Gilded)
+            {
+                GildPower = e.GildPower;
+                GildPowerMax = e.GildPowerMax;
+            }
             // Ebug("Save value " + buildId);
             // if (oe?.owner?.id?.DisplayName is string s)
             // {
@@ -45,10 +99,36 @@ public class EscortOnlineData : OnlineEntity.EntityData
             {
                 return;
             }
-            
+
             if (ac.realizedCreature is Player p && Plugin.eCon.TryGetValue(p, out Escort e))
             {
                 SetBuildFromIndex(ref e, buildId);
+                if (e.PleaseSyncMyUnimportantValues)
+                {
+                    e.RollinCount = RollinCount;
+                    if (e.Gilded)
+                    {
+                        e.GildPower = GildPower;
+                    }
+                }
+                if (e.PleaseSyncMyOneTimeValues)
+                {
+                    if (e.Railgunner)
+                    {
+                        e.RailgunLimit = RailgunLimit;
+                    }
+                    if (e.Speedster)
+                    {
+                        e.SpeMaxGear = SpeMaxGear;
+                        e.SpeCharge = SpeCharge;
+                        e.SpeSpeedin = SpeSpeedin;
+                        e.SpeOldSpeed = SpeOldSpeed;
+                    }
+                    if (e.Gilded)
+                    {
+                        e.GildPowerMax = GildPowerMax;
+                    }
+                }
             }
             else
             {

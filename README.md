@@ -8,6 +8,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * **(0.3.6)**
+    * Added a few more things to sync
+    * Added the ending slideshow + music (dev.1: Flats, dev.2: Reals)
+    * Ending cutscene works more proper now
+
   * **(0.3.5.4)** Fixed timeline issue where some rooms loaded Inv's timeline
 
   * **(0.3.5.3)** Actually fixed meadow multiplayer for Escort (not campaign), builds appear separately correctly now
