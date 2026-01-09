@@ -15,17 +15,9 @@ namespace TheEscort;
 
 public class EscortEndingStuff
 {
-    public static GameFeature<int[]> GuardianTributeDepths;
-    public static GameFeature<int[]> GuardianTributeDepthsC;
-    public static GameFeature<int[]> GuardianTributeKeeper;
-    public static GameFeature<int[]> GuardianTributeKeeperC;
-    public static GameFeature<int[]> GuardianTributeVoid;
-    public static GameFeature<int[]> GuardianTributePurpose;
-    public static GameFeature<int[]> GuardianTributePurposeC1;
-    public static GameFeature<int[]> GuardianTributePurposeC2;
-    public static GameFeature<int[]> GuardianTributePurposeC3;
-    public static GameFeature<int[]> GuardianTributePurposeC4;
-    public static GameFeature<int[]> GuardianTributeEmpty;
+    /// <summary>
+    /// Slideshow enums
+    /// </summary>
     public static class EsclideShow
     {
         /// <summary>
@@ -44,10 +36,18 @@ public class EscortEndingStuff
         /// After 100 cycles, experiencing memories, breaking
         /// </summary>
         public static SlideShowID GuardianFracturedEnd;
+
+        /// <summary>
+        /// Register da values!
+        /// </summary>
         public static void RegisterValues()
         {
             GuardianTributeEnd = new SlideShowID("EscortGuardianTributeEnd", true);
         }
+
+        /// <summary>
+        /// Unregister the values...?
+        /// </summary>
         public static void UnregisterValues()
         {
             GuardianTributeEnd?.Unregister();
@@ -55,12 +55,31 @@ public class EscortEndingStuff
         }
     }
 
+    /// <summary>
+    /// Scene enums(primarily used for slideshow purposes)
+    /// </summary>
     public static class Escene
     {
+        /// <summary>
+        /// Guardian Tribute scene 1
+        /// </summary>
         public static SceneID Outro_Tribute_Depths;
+        /// <summary>
+        /// Guardian Tribute scene 2
+        /// </summary>
         public static SceneID Outro_Tribute_Keeper;
+        /// <summary>
+        /// Guardian Tribute scene 3
+        /// </summary>
         public static SceneID Outro_Tribute_Gold;
+        /// <summary>
+        /// Guardian Tribute scene 4
+        /// </summary>
         public static SceneID Outro_Tribute_Purpose;
+
+        /// <summary>
+        /// Register da values!
+        /// </summary>
         public static void RegisterValues()
         {
             Outro_Tribute_Depths = new SceneID("EscortOutro_GuardianTribute1", true);
@@ -68,6 +87,10 @@ public class EscortEndingStuff
             Outro_Tribute_Gold = new SceneID("EscortOutro_GuardianTribute3", true);
             Outro_Tribute_Purpose = new SceneID("EscortOutro_GuardianTribute4", true);
         }
+
+        /// <summary>
+        /// Unregister the values...?
+        /// </summary>
         public static void UnregisterValues()
         {
             Outro_Tribute_Depths?.Unregister();
@@ -81,6 +104,11 @@ public class EscortEndingStuff
         }
     }
 
+    /// <summary>
+    /// Sets up the slideshow sequence at the void end of the Escort campaign
+    /// </summary>
+    /// <param name="orig">Original method call</param>
+    /// <param name="self">Instance</param>
     public static void Escort_Ending_Setup(On.RainWorldGame.orig_GoToRedsGameOver orig, RainWorldGame self)
     {
         if (self.StoryCharacter == Plugin.EscortMe && self?.GetStorySession?.saveState?.miscWorldSaveData?.Esave().GuardianEscortVoidEnding == true)
@@ -103,12 +131,18 @@ public class EscortEndingStuff
         orig(self);
     }
 
+    /// <summary>
+    /// Inserts the call to slideshow right after the slideShow list has been created.
+    /// </summary>
+    /// <param name="il">Who knows?</param>
+    /// <exception cref="Exception">Matching or emitting exceptions</exception>
     public static void Escort_Slideshow_Abracadabrazam(ILContext il)
     {
         ILCursor wawa = new(il);
 
         try
         {
+            // Find the part where the method creates the playList list and set the cursor right after it
             wawa.GotoNext(MoveType.After,
                 matchThis => matchThis.MatchNewobj<List<Scene>>(),
                 thenMatch => thenMatch.MatchStfld<SlideShow>(nameof(SlideShow.playList))
@@ -123,9 +157,9 @@ public class EscortEndingStuff
 
         try
         {
-            wawa.Emit(OpCodes.Ldarg, 0);
-            wawa.Emit(OpCodes.Ldarg, 1);
-            wawa.Emit(OpCodes.Ldarg, 2);
+            wawa.Emit(OpCodes.Ldarg, 0);  // SlideShow Instance
+            wawa.Emit(OpCodes.Ldarg, 1);  // ProcessManager
+            wawa.Emit(OpCodes.Ldarg, 2);  // SlideShowID
         }
         catch (Exception err)
         {
@@ -136,7 +170,6 @@ public class EscortEndingStuff
         try
         {
             wawa.EmitDelegate(Escort_Slideshow_Bazinga);
-            // wawa.Emit(OpCodes.Call, typeof(EscortEndingStuff).GetMethod(nameof(Escort_Slideshow_Bazinga), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public));
         }
         catch (Exception err)
         {
@@ -145,37 +178,17 @@ public class EscortEndingStuff
         }
     }
 
+    /// <summary>
+    /// Prepares the Escort slideshow!
+    /// </summary>
+    /// <param name="self">Instance</param>
+    /// <param name="manager">Manager</param>
+    /// <param name="slideShowID">Slideshow ID</param>
     public static void Escort_Slideshow_Bazinga(SlideShow self, ProcessManager manager, SlideShowID slideShowID)
     {
-        Ebug("Boop");
-        if (slideShowID == EsclideShow.GuardianTributeEnd)
+        if (slideShowID == EsclideShow.GuardianTributeEnd)  // Void ending
         {
             Ebug("Slideshow let's go!");
-            if (
-                !SlugBaseCharacter.TryGet(Plugin.EscortMe, out SlugBaseCharacter sbc)
-                )
-            {
-                Ebug("Couldn't find Escort!", LogLevel.WARN, true);
-                return;
-            }
-
-            if (
-                !GuardianTributeDepths.TryGet(sbc, out int[] cD) ||
-                !GuardianTributeDepthsC.TryGet(sbc, out int[] cDc) ||
-                !GuardianTributeKeeper.TryGet(sbc, out int[] cK) ||
-                !GuardianTributeKeeperC.TryGet(sbc, out int[] cKc) ||
-                !GuardianTributeVoid.TryGet(sbc, out int[] cV) ||
-                !GuardianTributePurpose.TryGet(sbc, out int[] cP) ||
-                !GuardianTributePurposeC1.TryGet(sbc, out int[] cPc1) ||
-                !GuardianTributePurposeC2.TryGet(sbc, out int[] cPc2) ||
-                !GuardianTributePurposeC3.TryGet(sbc, out int[] cPc3) ||
-                !GuardianTributePurposeC4.TryGet(sbc, out int[] cPc4) ||
-                !GuardianTributeEmpty.TryGet(sbc, out int[] c)
-            )
-            {
-                Ebug("Couldn't find scenes!", LogLevel.WARN, true);
-                return;
-            }
 
             if (manager.musicPlayer is not null)
             {
@@ -187,26 +200,26 @@ public class EscortEndingStuff
 
             try
             {
-                self.playList.Add(new Scene(SceneID.Empty, 0f, 0f, 0f));
+                self.playList.Add(new Scene(SceneID.Empty, 0f, 0f, 0f));  // Blank
 
-                Scene depths = new(Escene.Outro_Tribute_Depths, self.ConvertTime(0, cD[0], cD[1]), self.ConvertTime(0, cD[2], cD[3]), self.ConvertTime(0, cD[4], cD[5]));
-                depths.AddCrossFade(self.ConvertTime(0, cDc[1], cDc[2]), cDc[0]);
+                Scene depths = new(Escene.Outro_Tribute_Depths, self.ConvertTime(0, 0, 30), self.ConvertTime(0, 1, 80), self.ConvertTime(0, 6, 82));
+                depths.AddCrossFade(self.ConvertTime(0, 4, 22), 58);  // The "duration" is in hundredths of a second (or how RW likes to call it: PPS, Platypuses Per Sandals). You're welcome.
                 self.playList.Add(depths);
 
-                Scene keeper = new(Escene.Outro_Tribute_Keeper, self.ConvertTime(0, cK[0], cK[1]), self.ConvertTime(0, cK[2], cK[3]), self.ConvertTime(0, cK[4], cK[5]));
-                keeper.AddCrossFade(self.ConvertTime(0, cKc[1], cKc[2]), cKc[0]);
+                Scene keeper = new(Escene.Outro_Tribute_Keeper, self.ConvertTime(0, 8, 31), self.ConvertTime(0, 9, 97), self.ConvertTime(0, 14, 79));
+                keeper.AddCrossFade(self.ConvertTime(0, 12, 26), 72);
                 self.playList.Add(keeper);
 
-                self.playList.Add(new Scene(Escene.Outro_Tribute_Gold, self.ConvertTime(0, cV[0], cV[1]), self.ConvertTime(0, cV[2], cV[3]), self.ConvertTime(0, cV[4], cV[5])));
+                self.playList.Add(new Scene(Escene.Outro_Tribute_Gold, self.ConvertTime(0, 16, 33), self.ConvertTime(0, 19, 77), self.ConvertTime(0, 22, 84)));
 
-                Scene purpose = new(Escene.Outro_Tribute_Purpose, self.ConvertTime(0, cP[0], cP[1]), self.ConvertTime(0, cP[2], cP[3]), self.ConvertTime(0, cP[4], cP[5]));
-                purpose.AddCrossFade(self.ConvertTime(0, cPc1[1], cPc1[2]), cPc1[0]);
-                purpose.AddCrossFade(self.ConvertTime(0, cPc2[1], cPc2[2]), cPc2[0]);
-                purpose.AddCrossFade(self.ConvertTime(0, cPc3[1], cPc3[2]), cPc3[0]);
-                purpose.AddCrossFade(self.ConvertTime(0, cPc4[1], cPc4[2]), cPc4[0]);
+                Scene purpose = new(Escene.Outro_Tribute_Purpose, self.ConvertTime(0, 24, 34), self.ConvertTime(0, 27, 99), self.ConvertTime(0, 35, 30));
+                purpose.AddCrossFade(self.ConvertTime(0, 27, 99), 249);  // A -> B
+                purpose.AddCrossFade(self.ConvertTime(0, 30, 49), 219);  // B -> C
+                purpose.AddCrossFade(self.ConvertTime(0, 32, 68), 164);  // C -> D
+                purpose.AddCrossFade(self.ConvertTime(0, 34, 33), 96);   // D -> E
                 self.playList.Add(purpose);
 
-                self.playList.Add(new Scene(SceneID.Empty, self.ConvertTime(0, c[0], c[1]), self.ConvertTime(0, c[2], c[3]), self.ConvertTime(0, c[4], c[5])));
+                self.playList.Add(new Scene(SceneID.Empty, self.ConvertTime(0, 35, 30), self.ConvertTime(0, 35, 30), self.ConvertTime(0, 37, 65)));  // Blank... and also buffer to time the second part of the song with the credit scroll
             }
             catch (Exception err)
             {
@@ -214,40 +227,24 @@ public class EscortEndingStuff
                 return;
             }
 
-            // try
-            // {
-            //     for (int i = 1; i < self.playList.Count; i++)
-            //     {
-            //         self.playList[i].startAt -= 1.1f;
-            //         self.playList[i].fadeInDoneAt -= 1.1f;
-            //         self.playList[i].fadeOutStartAt -= 1.1f;
-            //     }
-            // }
-            // catch(Exception err)
-            // {
-            //     Ebug(err, "Failure to adjust timing of playlist scenes!");
-            //     return;
-            // }
-
             self.processAfterSlideShow = ProcessManager.ProcessID.Credits;
-            manager.statsAfterCredits = true;
+            manager.statsAfterCredits = true;  // Just in case someone flipped this to false... I mean why?
             Ebug("Slideshow prepared!");
         }
     }
 
-    internal static void Escort_Meow(On.Menu.SlideShow.orig_ctor orig, SlideShow self, ProcessManager manager, SlideShowID slideShowID)
-    {
-        Ebug("Meowcene!", LogLevel.WARN, true);
-        orig(self, manager, slideShowID);
-        Ebug("Meowcene End!", LogLevel.WARN, true);
-    }
-
+    /// <summary>
+    /// Creates the scenes, but not with SlugBase since SlugBase doesn't support scene transitions
+    /// </summary>
+    /// <param name="il">il for i don't know</param>
+    /// <exception cref="Exception">Matching or emitting failure</exception>
     public static void Escort_SlideScene_Init(ILContext il)
     {
         ILCursor damn = new(il);
 
         try
         {
+            // Find the BuildScene() call and place the cursor right after it. If BuildScene() fails, then this should fail too! Totally 100% safe.
             damn.GotoNext(MoveType.After,
                 matchThis => matchThis.MatchCall<MenuScene>(nameof(MenuScene.BuildScene))
             );
@@ -261,10 +258,9 @@ public class EscortEndingStuff
 
         try
         {
-            damn.Emit(OpCodes.Ldarg, 0);
-            damn.Emit(OpCodes.Ldarg, 1);
-            damn.EmitDelegate(Escort_SceneBuilder);
-            // wawa.Emit(OpCodes.Call, typeof(EscortEndingStuff).GetMethod(nameof(Escort_Slideshow_Bazinga), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public));
+            damn.Emit(OpCodes.Ldarg, 0);  // MenuScene instance
+            damn.Emit(OpCodes.Ldarg, 1);  // Menu.Menu
+            damn.EmitDelegate(Escort_SceneBuilder);  // Call to Escort_SceneBuilder
         }
         catch (Exception err)
         {
@@ -273,73 +269,24 @@ public class EscortEndingStuff
         }
     }
 
+    /// <summary>
+    /// Points to the right method to build the desired scene.
+    /// </summary>
+    /// <param name="self">MenuScene instance</param>
+    /// <param name="menu">Menu menu menu menu</param>
     public static void Escort_SceneBuilder(MenuScene self, Menu.Menu menu)
     {
         switch (self.sceneID)
         {
             case var scene when scene == Escene.Outro_Tribute_Depths:
-                BuildOutro.Guardian.Tribute_Depths(self, menu); return;
+                BuildScenery.Guardian.Tribute_Depths(self, menu); return;
             case var scene when scene == Escene.Outro_Tribute_Keeper:
-                BuildOutro.Guardian.Tribute_Keeper(self, menu); return;
+                BuildScenery.Guardian.Tribute_Keeper(self, menu); return;
             case var scene when scene == Escene.Outro_Tribute_Gold:
-                BuildOutro.Guardian.Tribute_Gold(self, menu); return;
+                BuildScenery.Guardian.Tribute_Gold(self, menu); return;
             case var scene when scene == Escene.Outro_Tribute_Purpose:
-                BuildOutro.Guardian.Tribute_Purpose(self, menu); return;
+                BuildScenery.Guardian.Tribute_Purpose(self, menu); return;
         }
     }
 
-    public static class BuildOutro
-    {
-        private const string Prefix = "outro ";
-        private static string SceneFolder => Plugin.path + Path.DirectorySeparatorChar + "scenes";
-        public static class Guardian
-        {
-            private static string TributeP => Prefix + "guardian tribute ";
-            private static string TributeF => SceneFolder + Path.DirectorySeparatorChar + "outro guardian tribute ";
-            public static void Tribute_Depths(MenuScene self, Menu.Menu menu)
-            {
-                if (self.flatMode)
-                {
-                    self.useFlatCrossfades = true;
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "1 - depths", TributeP + "depths - flat - f0", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "1 - depths", TributeP + "depths - flat - f1", new Vector2(683f, 384f), false, true));
-                    return;
-                }
-            }
-
-            public static void Tribute_Keeper(MenuScene self, Menu.Menu menu)
-            {
-                if (self.flatMode)
-                {
-                    self.useFlatCrossfades = true;
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "2 - keeper", TributeP + "keeper - flat - f0", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "2 - keeper", TributeP + "keeper - flat - f1", new Vector2(683f, 384f), false, true));
-                    return;
-                }
-            }
-
-            public static void Tribute_Gold(MenuScene self, Menu.Menu menu)
-            {
-                if (self.flatMode)
-                {
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "3 - gold", TributeP + "gold - flat - f0", new Vector2(683f, 384f), false, true));
-                    return;
-                }
-            }
-
-            public static void Tribute_Purpose(MenuScene self, Menu.Menu menu)
-            {
-                if (self.flatMode)
-                {
-                    self.useFlatCrossfades = true;
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "4 - purpose", TributeP + "purpose - flat - f0", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "4 - purpose", TributeP + "purpose - flat - f1", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "4 - purpose", TributeP + "purpose - flat - f2", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "4 - purpose", TributeP + "purpose - flat - f3", new Vector2(683f, 384f), false, true));
-                    self.AddIllustration(new MenuIllustration(menu, self, TributeF + "4 - purpose", TributeP + "purpose - flat - f4", new Vector2(683f, 384f), false, true));
-                    return;
-                }
-            }
-        }
-    }
 }

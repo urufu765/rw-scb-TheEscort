@@ -120,18 +120,6 @@ partial class Plugin : BaseUnityPlugin
         };
         escortRGBTick = new float[4];
         escortRGBStore = new Color[4];
-
-        EscortEndingStuff.GuardianTributeDepths = GameInts("guardian_tribute_scene_A");
-        EscortEndingStuff.GuardianTributeDepthsC = GameInts("guardian_tribute_scene_Ac");
-        EscortEndingStuff.GuardianTributeKeeper = GameInts("guardian_tribute_scene_B");
-        EscortEndingStuff.GuardianTributeKeeperC = GameInts("guardian_tribute_scene_Bc");
-        EscortEndingStuff.GuardianTributeVoid = GameInts("guardian_tribute_scene_C");
-        EscortEndingStuff.GuardianTributePurpose = GameInts("guardian_tribute_scene_D");
-        EscortEndingStuff.GuardianTributePurposeC1 = GameInts("guardian_tribute_scene_Dc1");
-        EscortEndingStuff.GuardianTributePurposeC2 = GameInts("guardian_tribute_scene_Dc2");
-        EscortEndingStuff.GuardianTributePurposeC3 = GameInts("guardian_tribute_scene_Dc3");
-        EscortEndingStuff.GuardianTributePurposeC4 = GameInts("guardian_tribute_scene_Dc4");
-        EscortEndingStuff.GuardianTributeEmpty = GameInts("guardian_tribute_scene__");
         Ebug("-> Static fields load complete");
     }
 }

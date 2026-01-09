@@ -42,18 +42,6 @@
 		"alt_sleep_scene": "Sleep_EscortMe",
 		"alt_sleep_scene_together": "Sleep_EscortMeAndSocks",
 		"the_mark": false,
-
-		"guardian_tribute_scene_A": [ 0, 30,    1, 80,    6, 82],
-		"guardian_tribute_scene_Ac":  [  58,    4, 22],
-		"guardian_tribute_scene_B": [ 8, 31,    9, 97,   14, 79],
-		"guardian_tribute_scene_Bc":  [  72,   12, 26],
-		"guardian_tribute_scene_C": [16, 33,   19, 77,   22, 84],
-		"guardian_tribute_scene_D": [24, 34,   27, 99,   35, 30],
-		"guardian_tribute_scene_Dc1": [ 249,   27, 99],
-		"guardian_tribute_scene_Dc2": [ 219,   30, 49],
-		"guardian_tribute_scene_Dc3": [ 164,   32, 68],
-		"guardian_tribute_scene_Dc4": [  96,   34, 33],
-		"guardian_tribute_scene__": [35, 30,   35, 30,   37, 50],
 		
 		"boxbox": [126, -90],
 
