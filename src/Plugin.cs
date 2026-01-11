@@ -25,7 +25,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.1")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -1201,7 +1201,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.swimBoostCost -= 0.1f;
                     self.slugcatStats.swimBoostForce += 1f;
                     self.slugcatStats.swimBoostMinAir -= 0.25f;
-                    self.slugcatStats.swimForceFac += 1;
+                    // self.slugcatStats.swimForceFac += 1;
                     break;
             }
 

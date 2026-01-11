@@ -33,6 +33,20 @@ public class EscortOnlineData : OnlineEntity.EntityData
         // public float DeflSharedPerma { get; set; }
         [OnlineField]
         public int GildPower { get; set; }
+        [OnlineField]
+        public int RailgunUse {get;set;}
+        [OnlineField]
+        public int SpeCharge { get; set; }
+        [OnlineField]
+        public int SpeGear {get;set;}
+        [OnlineField]
+        public int SpeSpeedin {get;set;} 
+        [OnlineField]
+        public bool SpeDashNCrash {get;set;}
+        [OnlineField]
+        public bool SpeSecretSpeed {get;set;}
+        [OnlineField]
+        public int SpeExtraSpe{get;set;}
         #endregion
 
         #region One-time sync
@@ -43,10 +57,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
         public int RailgunLimit { get; set; }
         [OnlineField]
         public int SpeMaxGear { get; set; }
-        [OnlineField]
-        public int SpeCharge { get; set; }
-        [OnlineField]
-        public int SpeSpeedin {get;set;} 
         [OnlineField]
         public bool SpeOldSpeed {get;set;}
         [OnlineField]
@@ -73,11 +83,16 @@ public class EscortOnlineData : OnlineEntity.EntityData
             {
                 SpeMaxGear = e.SpeMaxGear;
                 SpeCharge = e.SpeCharge;
+                SpeGear = e.SpeGear;
                 SpeSpeedin = e.SpeSpeedin;
                 SpeOldSpeed = e.SpeOldSpeed;
+                SpeDashNCrash = e.SpeDashNCrash;
+                SpeSecretSpeed = e.SpeSecretSpeed;
+                SpeExtraSpe = e.SpeExtraSpe;
             }
             if (e.Railgunner)
             {
+                RailgunUse = e.RailgunUse;
                 RailgunLimit = e.RailgunLimit;
             }
             if (e.Gilded)
@@ -106,6 +121,19 @@ public class EscortOnlineData : OnlineEntity.EntityData
                 if (e.PleaseSyncMyUnimportantValues)
                 {
                     e.RollinCount = RollinCount;
+                    if (e.Railgunner)
+                    {
+                        e.RailgunUse = RailgunUse;
+                    }
+                    if (e.Speedster)
+                    {
+                        e.SpeDashNCrash = SpeDashNCrash;
+                        e.SpeSecretSpeed = SpeSecretSpeed;
+                        e.SpeCharge = SpeCharge;
+                        e.SpeExtraSpe = SpeExtraSpe;
+                        e.SpeSpeedin = SpeSpeedin;
+                        e.SpeGear = SpeGear;
+                    }
                     if (e.Gilded)
                     {
                         e.GildPower = GildPower;
@@ -120,8 +148,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
                     if (e.Speedster)
                     {
                         e.SpeMaxGear = SpeMaxGear;
-                        e.SpeCharge = SpeCharge;
-                        e.SpeSpeedin = SpeSpeedin;
                         e.SpeOldSpeed = SpeOldSpeed;
                     }
                     if (e.Gilded)
