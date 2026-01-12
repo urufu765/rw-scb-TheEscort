@@ -468,7 +468,7 @@ partial class Plugin : BaseUnityPlugin
         Ebug(self, "ThrownSpear Triggered!");
         float thrust = 7f;
         bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
-        bool doNotYeet = onPole || !ins.Esconfig_Spears(self) || e.RailDoubleSpear;
+        bool doNotYeet = onPole || !ins.Esconfig_Spears(self) || e.RailDouble is DoubleUp.Spear;
         try
         {
             if (self.slugcatStats.throwingSkill == 0 && !e.Speedster)
@@ -885,7 +885,7 @@ partial class Plugin : BaseUnityPlugin
                         if (e.Railgunner)
                         {
                             baseDamage = 0.2f;
-                            if (e.RailDoubleRock)
+                            if (e.RailDouble is DoubleUp.Rock)
                             {
                                 baseDamage = 0.25f;
                             }
@@ -901,7 +901,7 @@ partial class Plugin : BaseUnityPlugin
                             e.NEsResetCooldown = true;
                             Ebug(p, $"Hit a vulnerable with rock! Damage: {baseDamage}, Stun bonus: {stunBonus}", ignoreRepetition: true);
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDoubleRock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
+                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDouble is DoubleUp.Rock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
                     }
                 }
                 else if (result.chunk != null)

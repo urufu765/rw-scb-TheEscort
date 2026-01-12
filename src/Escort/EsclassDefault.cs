@@ -308,6 +308,15 @@ namespace TheEscort
             if (e.Unstable) Esclass_US_Update(self, ref e);
             //if (e.EsTest) Estest_2_Update(self);
 
+            // Gives warmth based on hype meter
+            if (self.room?.blizzard == true)
+            {
+                float minW = RainWorldGame.DefaultHeatSourceWarmth / 10;
+                float maxW = RainWorldGame.DefaultHeatSourceWarmth / (ins.hypeRequirement < self.aerobicLevel ? 2f : 1f);
+                if (e.Railgunner) maxW /= 2;
+                float warmf = Mathf.Lerp(minW, maxW, self.aerobicLevel);
+                self.Hypothermia -= Mathf.Lerp(warmf, 0f, self.HypothermiaExposure);
+            }
 
             // Secret color tick
             if (e.secretRGB)
@@ -1745,12 +1754,17 @@ namespace TheEscort
             Ebug(player, "Violence Triggered!");
             // connects to the Escort's Parryslide option
             e.ParrySuccess = false;
-            if (e.Railgunner && e.RailIReady && type != null && type == Creature.DamageType.Explosion)
+            if (e.Railgunner && e.RailIFrame > 0 && type != null && (type == Creature.DamageType.Explosion || type == Creature.DamageType.Electric))
             {
                 if (e.iFrames == 0)
                 {
                     e.ParrySuccess = true;
                 }
+                if (type == Creature.DamageType.Electric)
+                {
+                    e.ElectroParry = true;
+                }
+
                 stunBonus = 0;
             }
             if (e.Brawler && e.BrawExPunch && e.BrawMeleeWeapon.Count > 0)
@@ -2057,10 +2071,9 @@ namespace TheEscort
                 if (e.Deflector)
                 {
                     e.iFrames = 9;
-                    stunBonus = 0;
                 }
                 e.parrySlideLean = 0;
-                if (e.Railgunner && e.RailIReady)
+                if (e.Railgunner && e.RailIFrame > 0)
                 {
                     if (e.RailBombJump)
                     {
@@ -2072,17 +2085,12 @@ namespace TheEscort
             }
             else if (e.iFrames > 0)
             {
-                if (e.Railgunner && e.RailIReady)
+                if (e.Railgunner && e.RailIFrame > 0)
                 {
                     self.stun = 0;
                     if (e.RailBombJump)
                     {
                         self.mainBodyChunk.vel.x = 0;
-                    }
-                    if (e.iFrames <= 0)
-                    {
-                        e.RailIReady = false;
-                        e.RailBombJump = false;
                     }
                 }
                 if (e.ElectroParry)
@@ -2094,11 +2102,6 @@ namespace TheEscort
                 }
                 else
                 {
-                    if (e.Railgunner && e.RailIReady)
-                    {
-                        e.RailIReady = false;
-                        e.RailBombJump = false;
-                    }
                     Ebug(player, "Immunity frame tick", LogLevel.DEBUG);
                 }
             }

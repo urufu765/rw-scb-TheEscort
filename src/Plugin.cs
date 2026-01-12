@@ -548,6 +548,7 @@ partial class Plugin : BaseUnityPlugin
             IL.ScavengerBomb.HitSomething += Escort_BombHit;
             IL.Menu.SlideShow.ctor += EscortEndingStuff.Escort_Slideshow_Abracadabrazam;
             IL.Menu.MenuScene.ctor += EscortEndingStuff.Escort_SlideScene_Init;
+            IL.Explosion.Update += Escort_ExplosionKnockbackResist;
             // IL.FirecrackerPlant.Explode;
         }
         catch (Exception err)
@@ -572,6 +573,7 @@ partial class Plugin : BaseUnityPlugin
             Ebug(err, "Failed to apply crossmod compatibility patches on load!");
         }
     }
+
 
 
 
@@ -1114,7 +1116,7 @@ partial class Plugin : BaseUnityPlugin
                     //self.slugcatStats.bodyWeightFac = 1f;
                     self.slugcatStats.lungsFac += 0.3f;
                     self.slugcatStats.runspeedFac -= 0.2f;
-                    self.slugcatStats.corridorClimbSpeedFac -= 0.4f;
+                    self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.7f;
                     self.slugcatStats.bodyWeightFac -= self.Malnourished? 0.17f : 0.45f;
                     Ebug(self, "Gilded Build selected!", LogLevel.INFO);
@@ -1142,7 +1144,8 @@ partial class Plugin : BaseUnityPlugin
                 case -4:  // Railgunner build
                     e.Railgunner = true;
                     e.acidSwim = 0.3f;
-                    e.RailFrail = self.Malnourished || e.escortArena;
+                    // e.RailFrail = self.Malnourished || e.escortArena;
+                    e.RailFrail = self.Malnourished;
                     self.slugcatStats.lungsFac += 0.7f;
                     self.slugcatStats.throwingSkill = 2;
                     self.slugcatStats.loudnessFac += 2f;
@@ -1198,6 +1201,9 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.lungsFac += 0.2f;
                     self.slugcatStats.bodyWeightFac += 0.12f;
                     self.slugcatStats.throwingSkill = 1;
+                    self.slugcatStats.swimBoostCooldown += 60;
+                    self.slugcatStats.swimBoostMinAir -= 0.25f;
+                    self.slugcatStats.swimBoostCost -= 0.17f;
                     Ebug(self, "Deflector Build selected!", LogLevel.INFO);
                     break;
                 case -1:  // Brawler build
@@ -1218,7 +1224,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.swimBoostCooldown -= 15;
                     self.slugcatStats.swimBoostCost -= 0.1f;
                     self.slugcatStats.swimBoostForce += 1f;
-                    self.slugcatStats.swimBoostMinAir -= 0.25f;
+                    self.slugcatStats.swimBoostMinAir -= 0.35f;
                     // self.slugcatStats.swimForceFac += 1;
                     break;
             }

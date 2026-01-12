@@ -359,12 +359,15 @@ public static class ETrackrr
                 yesTrans = true;
             }
 
-            e.overrideSprite = e.RailDoubled;
-            spriteNumber = -1;
-            if(e.RailDoubleBomb) spriteNumber = 0;
-            if(e.RailDoubleLilly) spriteNumber = 1;
-            if(e.RailDoubleRock) spriteNumber = 2;
-            if(e.RailDoubleSpear) spriteNumber = 3;
+            e.overrideSprite = e.RailDouble is not DoubleUp.None;
+            spriteNumber = e.RailDouble switch
+            {
+                DoubleUp.Bomb => 0,
+                DoubleUp.LillyPuck => 1,
+                DoubleUp.Rock => 2,
+                DoubleUp.Spear => 3,
+                _ => -1
+            };
 
             // Smoothly transition the value with an ease out
             this.Value = Mathf.Lerp(PreValue, preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 10)) : Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 10)), timeStacker);

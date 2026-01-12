@@ -8,6 +8,20 @@ using RWCustom;
 
 namespace TheEscort;
 
+
+public enum DoubleUp
+{
+    None,
+    Rock,
+    Bomb,
+    Spear,
+    Firecracker,
+    // MSC
+    LillyPuck,
+    ElectroSpear
+}
+
+
 public partial class Escort
 {
     /// <summary>
@@ -25,36 +39,41 @@ public partial class Escort
     /// </summary>
     public Creature RailThrower;  // (TODO probably make this readonly if it doesn't break anything)
 
-    /// <summary>
-    /// Railgunner dualwields spears!
-    /// </summary>
-    public bool RailDoubleSpear;
+    // /// <summary>
+    // /// Railgunner dualwields spears!
+    // /// </summary>
+    // public bool RailDoubleSpear;
+
+    // /// <summary>
+    // /// Railgunner dualwields rocks!
+    // /// </summary>
+    // public bool RailDoubleRock;
+
+    // /// <summary>
+    // /// Railgunner dualwields spears!
+    // /// </summary>
+    // public bool RailDoubleLilly;
+
+    // /// <summary>
+    // /// Railgunner dualwields spears!
+    // /// </summary>
+    // public bool RailDoubleBomb;
+
+    // /// <summary>
+    // /// Simple combined check to check if Railgunner is dualwielding anything
+    // /// </summary>
+    // public bool RailDoubled
+    // {
+    //     get
+    //     {
+    //         return RailDoubleBomb || RailDoubleSpear || RailDoubleLilly || RailDoubleRock;
+    //     }
+    // }
 
     /// <summary>
-    /// Railgunner dualwields rocks!
+    /// An enum that tells whether Railgunner is holding two weapons
     /// </summary>
-    public bool RailDoubleRock;
-
-    /// <summary>
-    /// Railgunner dualwields spears!
-    /// </summary>
-    public bool RailDoubleLilly;
-
-    /// <summary>
-    /// Railgunner dualwields spears!
-    /// </summary>
-    public bool RailDoubleBomb;
-
-    /// <summary>
-    /// Simple combined check to check if Railgunner is dualwielding anything
-    /// </summary>
-    public bool RailDoubled
-    {
-        get
-        {
-            return RailDoubleBomb || RailDoubleSpear || RailDoubleLilly || RailDoubleRock;
-        }
-    }
+    public DoubleUp RailDouble;
 
     /// <summary>
     /// Indicates whether weapon is the first shot out of the two
@@ -87,9 +106,9 @@ public partial class Escort
     public int RailgunLimit;
 
     /// <summary>
-    /// Indicates Railgunner threw a bomb a particular way and needs to IFrame it to survive
+    /// Indicates Railgunner threw a bomb a particular way and needs to IFrame it to survive or threw electric spear underwater and need to survive
     /// </summary>
-    public bool RailIReady;
+    public int RailIFrame;
 
     /// <summary>
     /// Self explanatory, double bomb + backflip + downthrow
@@ -147,17 +166,18 @@ public partial class Escort
         this.RailgunnerColor = new Color(0.525f, 0.8f, 0.8f);
         this.RailGaussed = 0;
         this.RailThrower = self;
-        this.RailDoubleSpear = false;
-        this.RailDoubleRock = false;
-        this.RailDoubleLilly = false;
-        this.RailDoubleBomb = false;
+        this.RailDouble = DoubleUp.None;
+        // this.RailDoubleSpear = false;
+        // this.RailDoubleRock = false;
+        // this.RailDoubleLilly = false;
+        // this.RailDoubleBomb = false;
         this.RailFirstWeaped = false;
         this.RailFirstWeaper = new Vector2();
         this.RailWeaping = 0;
         this.RailgunCD = 0;
         this.RailgunUse = 0;
         this.RailgunLimit = Plugin.ins.config.cfgRailgunnerLimiter.Value;
-        this.RailIReady = false;
+        this.RailIFrame = 0;
         this.RailBombJump = false;
         this.RailRecoilLag = -1;
         this.RailLastThrowDir = new(0, 0);
@@ -166,6 +186,44 @@ public partial class Escort
         this.RailLaserBlink = false;
         this.RailLaserColor = new Color(1f, 0.7f, 0.0f);
         this.RailLaserSightIndex = -1;
-        
+
+    }
+
+    /// <summary>
+    /// Increases Railgunner overcharge
+    /// </summary>
+    /// <param name="fromWeapon">Whether it's from weapon or from ability</param>
+    public void Escat_RG_Overcharge(bool fromWeapon = true)
+    {
+        int addition = 0;
+
+        if (fromWeapon)
+        {
+            addition += RailDouble switch
+            {
+                DoubleUp.Rock => 1,
+                DoubleUp.Bomb => 3,
+                _ => 2
+            };
+        }
+        if (RailgunCD == 0)
+        {
+            RailgunCD = RailFrail ? 600 : 400;
+        }
+        else
+        {
+            RailgunCD += RailFrail ? 120 : 200;
+        }
+        if (RailgunCD > 800) RailgunCD = 800;
+        RailgunUse += addition;
+    }
+
+    /// <summary>
+    /// Imitates malnourished state entering stuff TODO
+    /// </summary>
+    /// <param name="fragility"></param>
+    public void Escat_RG_SetGlassMode(bool fragility)
+    {
+        RailFrail = fragility;
     }
 }

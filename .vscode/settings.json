@@ -2,8 +2,18 @@
     "cmake.configureOnOpen": true,
     "dotnet.defaultSolution": "TheEscort.sln",
     "cSpell.words": [
+        "cooldown",
+        "Escat",
+        "Esclass",
+        "Gaussed",
+        "Mathf",
+        "Railgun",
+        "Railgunner",
         "Slugcat",
         "slugpup",
-        "theescort"
+        "theescort",
+        "Weaped",
+        "Weaper",
+        "Weaping"
     ]
 }

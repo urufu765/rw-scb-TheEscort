@@ -57,8 +57,8 @@ public static class EPatchMeadow
             // {
             //     Ebug("What's the timeline? " + (game?.TimelinePoint?.value??"I don't know!"));
             // }
-            // return SlugcatStats.Timeline.Spear;
-            return Plugin.EscortMeTime;
+            return SlugcatStats.Timeline.Spear;
+            // return Plugin.EscortMeTime;
         }
         return orig(self, game);
     }
