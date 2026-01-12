@@ -19,6 +19,8 @@ public class EscortOnlineData : OnlineEntity.EntityData
     {
         [OnlineField]
         public int buildId;
+        [OnlineField]
+        public bool imDead;
 
         #region Lazy Sync
         /// <summary>
@@ -73,6 +75,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
             // Ebug("State creation");
             if ((oe as OnlinePhysicalObject)?.apo?.realizedObject is not Player player) return;
             if (!Plugin.eCon.TryGetValue(player, out Escort e)) return;
+            imDead = player.dead;
             buildId = FindBuildIndex(e);
             // if (e.Deflector)
             // {
@@ -118,6 +121,23 @@ public class EscortOnlineData : OnlineEntity.EntityData
             if (ac.realizedCreature is Player p && Plugin.eCon.TryGetValue(p, out Escort e))
             {
                 SetBuildFromIndex(ref e, buildId);
+                if (e.PleaseSyncMyOneTimeValues)
+                {
+                    if (e.Railgunner)
+                    {
+                        e.RailgunLimit = RailgunLimit;
+                    }
+                    if (e.Speedster)
+                    {
+                        e.SpeMaxGear = SpeMaxGear;
+                        e.SpeOldSpeed = SpeOldSpeed;
+                    }
+                    if (e.Gilded)
+                    {
+                        e.GildPowerMax = GildPowerMax;
+                    }
+                }
+                if (imDead || p.dead) return;  // Don't try to sync values if dead
                 if (e.PleaseSyncMyUnimportantValues)
                 {
                     e.RollinCount = RollinCount;
@@ -137,22 +157,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
                     if (e.Gilded)
                     {
                         e.GildPower = GildPower;
-                    }
-                }
-                if (e.PleaseSyncMyOneTimeValues)
-                {
-                    if (e.Railgunner)
-                    {
-                        e.RailgunLimit = RailgunLimit;
-                    }
-                    if (e.Speedster)
-                    {
-                        e.SpeMaxGear = SpeMaxGear;
-                        e.SpeOldSpeed = SpeOldSpeed;
-                    }
-                    if (e.Gilded)
-                    {
-                        e.GildPowerMax = GildPowerMax;
                     }
                 }
             }

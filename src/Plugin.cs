@@ -25,7 +25,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.1")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.2")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -1524,6 +1524,10 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             if (Escort_IsNull(slugcat)) return orig(slugcat);
+            if (escPatch_meadow && EPatchMeadow.IsOnline())
+            {
+                return new(14, 9);
+            }
             IntVector2 foodReq = ins.config.cfgBuild[0].Value switch
             {
                 -8 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable TODO: make random a set thing for better sync

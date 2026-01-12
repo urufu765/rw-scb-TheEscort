@@ -122,14 +122,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.6.1";
+    private static readonly string VERSION = "0.3.6.2";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- New campaign end slideshow + music! (all done)<LINE>- A few more meadow variables are synced.<LINE>- Ending cutscene slight touchup.<LINE><LINE>- Disabled one of the swim speed changes on Guardian<LINE>- Added more things to sync through meadow.<LINE><LINE>Special thanks to Tsunochizu for the lovely ending slideshow art!<LINE>(sorry I had to massacre it a tiny bit to make it compatible with parallax)");
+            "- New campaign end slideshow + music! (all done)<LINE>- A few more meadow variables are synced.<LINE>- Ending cutscene slight touchup.<LINE><LINE>- Disabled one of the swim speed changes on Guardian<LINE>- Added more things to sync through meadow.<LINE><LINE>Special thanks to Tsunochizu for the lovely ending slideshow art!<LINE>(sorry I had to massacre it a tiny bit to make it compatible with scene camera movement)<LINE><LINE>- Fixed some meadow sync issues on dead Escorts.<LINE>- Sets foodpip req/max to Guardian's no matter the build if in meadow lobby, to help with build food pip sync issues.");
         }
     }
 
