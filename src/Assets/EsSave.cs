@@ -22,6 +22,7 @@ namespace TheEscort
         public int EscortPupCampaignID {get; set;} = 0;
         public bool SocksIsAlive {get; set;} = false;
         public int SpearsToRemake {get; set;} = 0;
+        public bool GuardianEscortVoidEnding {get;set;} = false;
 
         // Escort Server Challenge 3
         public bool ESC03_START {get; set;} = false;
@@ -60,6 +61,7 @@ namespace TheEscort
     /// </summary>
     public record EscortSaveDataMiscProgression
     {
+        public bool guardianEscortVoidEnding {get;set;} = false;
         /*ACHIEVEMENTS (POTENTIAL SPOILERS!!)*/
         // Implemented below
         public bool beaten_Escort = false;  // Beat Escort campaign (set to false on release)

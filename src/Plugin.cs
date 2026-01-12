@@ -342,6 +342,11 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static bool escPatch_meadow;
 
+    /// <summary>
+    /// Mod directory
+    /// </summary>
+    public static string path;
+
 
     /// <summary>
     /// Guardian patch: N/A
@@ -489,6 +494,8 @@ partial class Plugin : BaseUnityPlugin
         On.ShelterDoor.DoorClosed += SpawnPupInShelterAtWin;
 
         On.Menu.SleepAndDeathScreen.AddBkgIllustration += Escort_Add_Slugpup;
+        On.RainWorldGame.GoToRedsGameOver += EscortEndingStuff.Escort_Ending_Setup;
+        // On.Menu.SlideShow.ctor += EscortEndingStuff.Escort_Meow;
 
         On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
 
@@ -534,10 +541,13 @@ partial class Plugin : BaseUnityPlugin
             {
                 MachineConnector.SetRegisteredOI("urufudoggo.theescort", ins.config);
             }
+            path = ModManager.ActiveMods.FirstOrDefault(mod => mod.id == MOD_ID).path;
             IL.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
             IL.MoreSlugcats.Bullet.HitSomething += Escort_BulletHit;
             IL.Spear.HitSomething += Escort_SpearHit;
             IL.ScavengerBomb.HitSomething += Escort_BombHit;
+            IL.Menu.SlideShow.ctor += EscortEndingStuff.Escort_Slideshow_Abracadabrazam;
+            IL.Menu.MenuScene.ctor += EscortEndingStuff.Escort_SlideScene_Init;
             // IL.FirecrackerPlant.Explode;
         }
         catch (Exception err)
@@ -618,6 +628,9 @@ partial class Plugin : BaseUnityPlugin
         Escort_SFX_Placeholder = new SoundID("Esplaceholder", true);
         Escort_SFX_Gild_Stomp = new SoundID("Escort_Gild_Stomp", true);
         //Escort_SFX_Spawn = new SoundID("Escort_Spawn", true);
+
+        EscortEndingStuff.EsclideShow.RegisterValues();
+        EscortEndingStuff.Escene.RegisterValues();
 
         // Custom sprites! Includes a checker to check if they loaded correctly and are not null!
         FAtlas aB, aH, hA, hB;
@@ -1148,7 +1161,7 @@ partial class Plugin : BaseUnityPlugin
                         self.slugcatStats.bodyWeightFac -= 0.15f;
                         self.slugcatStats.generalVisibilityBonus -= 1;
                         self.slugcatStats.visualStealthInSneakMode += 1.5f;
-                        self.slugcatStats.loudnessFac -= self.Malnourished? 1.95f : 1.45f;
+                        self.slugcatStats.loudnessFac -= self.Malnourished ? 1.95f : 1.45f;
                         Ebug(self, "Old Escapist Build selected!", LogLevel.INFO);
                     }
                     else
@@ -1206,7 +1219,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.swimBoostCost -= 0.1f;
                     self.slugcatStats.swimBoostForce += 1f;
                     self.slugcatStats.swimBoostMinAir -= 0.25f;
-                    self.slugcatStats.swimForceFac += 1;
+                    // self.slugcatStats.swimForceFac += 1;
                     break;
             }
 
@@ -1345,6 +1358,7 @@ partial class Plugin : BaseUnityPlugin
             // Slugpup code
             if (world?.game?.session is StoryGameSession s)
             {
+                world.game.rainWorld.progression.miscProgressionData.Esave().guardianEscortVoidEnding = false;
                 // Checks if Escort has encountered the pup
                 pupAvailable = s.saveState.miscWorldSaveData.Esave().EscortPupEncountered;
                 Ebug(self, $"Pup available? {pupAvailable}", LogLevel.MESSAGE, true);
@@ -1528,6 +1542,10 @@ partial class Plugin : BaseUnityPlugin
         try
         {
             if (Escort_IsNull(slugcat)) return orig(slugcat);
+            if (escPatch_meadow && EPatchMeadow.IsOnline())
+            {
+                return new(14, 9);
+            }
             IntVector2 foodReq = ins.config.cfgBuild[0].Value switch
             {
                 -8 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable TODO: make random a set thing for better sync

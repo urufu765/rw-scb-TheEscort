@@ -104,6 +104,7 @@ namespace TheEscort
         public const int SpeedSocksID = 765;
         public int PupCampaignID;
 
+
         private int _syncValue;
         /// <summary>
         /// For synchronizing online values, increments by 1 every time it's read, with the minimum sync timing being 1 second.
@@ -133,6 +134,7 @@ namespace TheEscort
                 if (value) _syncAppearance = 120;
             }
         }
+
 
         // Build stuff
 

@@ -719,6 +719,7 @@ public class EscortRoomScript
                     Ebug("Cutscene moving!");
                     movePlayerDone = true;
                 }
+                room.roomSettings.GetEffect(RoomSettings.RoomEffect.Type.VoidMelt).amount = Mathf.Lerp(voidMeltInit, 1, Mathf.InverseLerp(0, 400, cutsceneTimer));
                 if (Playr is not null && Playr.CanRetrieveSlugFromBack)
                 {
                     Playr.slugOnBack.increment = true;
@@ -758,12 +759,21 @@ public class EscortRoomScript
 
                     if (ac.abstractAI?.RealAI is not null)
                     {
-                        ac.abstractAI.RealAI.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
+                        ac.abstractAI.RealAI.SetDestination(MakeWorldCoordinate(new(60, 62), 746));
                     }
                     //ac.abstractAI?.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
                     //ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
                 }
                 room.roomSettings.GetEffect(RoomSettings.RoomEffect.Type.VoidMelt).amount = Mathf.Lerp(voidMeltInit, 1, Mathf.InverseLerp(0, 400, cutsceneTimer));
+                if (Playr is not null)
+                {
+                    Playr.aerobicLevel = Mathf.Lerp(0, Plugin.ins.hypeRequirement, Mathf.InverseLerp(120, 350, cutsceneTimer));
+                    if (Playr.graphicsModule is PlayerGraphics pg)
+                    {
+                        pg.hands[1].reachingForObject = true;
+                        pg.hands[1].absoluteHuntPos = pg.legs.pos + new Vector2(50, 0);
+                    }
+                }
                 if (this.phase == Phase.CreatureMove)
                 {
                     if (!creatureMoveDone)
@@ -805,10 +815,12 @@ public class EscortRoomScript
                 }
                 if (!missionComplete)
                 {
+                    // room.game.rainWorld.progression.miscProgressionData.Esave().guardianEscortVoidEnding = true;
+                    room.game.GetStorySession.saveState.miscWorldSaveData.Esave().GuardianEscortVoidEnding = true;
                     room.game.GoToRedsGameOver();
                     RainWorldGame.BeatGameMode(room.game, true);
-                    // Later, hook into BeatGameMode for a more authentic experience
                     room.game.rainWorld.progression.miscProgressionData.Esave().beaten_Escort = true;
+                    // Later, hook into BeatGameMode for a more authentic experience
                     EscOptions.shouldUpdate = true;
                     missionComplete = true;
                 }

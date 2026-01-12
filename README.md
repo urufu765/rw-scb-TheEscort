@@ -56,6 +56,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * #### 0.3 - Ending I
 
+  * **(0.3.6.2)** Set the food pip req/max to consistent if in meadow lobby, stopped syncs on dead things
+  * **(0.3.6.1)** Added more things to sync, finished ending slideshow (depth map excluded)
+  * **(0.3.6)**
+    * Added a few more things to sync
+    * Added the ending slideshow + music Flats
+    * Ending cutscene works more proper now
+  * **(0.3.5.4)** Fixed timeline issue where some rooms loaded Inv's timeline
   * **(0.3.5.4)** Fixed timeline issue where some rooms loaded Inv's timeline
   * **(0.3.5.3)** Actually fixed meadow multiplayer for Escort (not campaign), builds appear separately correctly now
   * **(0.3.5.2)** Better meadow detection, Escapist is now playable only on older version when online, forced Escort Meadow campaign as Spearmaster's, and Escapist's special button key fixed.

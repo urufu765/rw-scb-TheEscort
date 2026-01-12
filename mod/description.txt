@@ -1,7 +1,10 @@
 A mod that will add The Escort and (eventually) their very special slugpup.
-[i]Thank You SomethingStupid for the Escort headshot![/i]
 
-Currently implements The Escort and some of their abilities and movement tech. 
+[i]Thank you Lur for Escort's select menu scenes![/i]
+[i]Thank you SomethingStupid for the Escort headshots![/i]
+[i]Thank you Tsunochizu for the Escort ending 1 slideshow scenes![/i]
+
+Currently implements The Escort and many of their abilities and movement tech. 
 [i]Should[/i] be fully compatible for playing in other campaigns or arena.
 [h3]COMPATIBLE WITH LATEST WATCHER UPDATE![/h3]
 
@@ -14,7 +17,7 @@ Escort's campaign is not 100% finished! The campaign can be completed, however i
 [hr][/hr][h2]<~CONFLICTING MODS/KNOWN ISSUES~>[/h2]
 These mods may or may not cause issues with the Escort mod, or these are issues that have been found and will be fixed eventually
 [list]
-[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3388224007]Rain Meadow[/url]: [b]For the most part, functional[/b]. However, Escort campaign in meadow is not working correctly (so it is set to Spearmaster for now). Escapist clones also crash the game so in Meadow lobbies you will instead be forced to play the older Escapist. Feedback would be extremely helpful.
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3388224007]Rain Meadow[/url]: [b]For the most part, functional[/b]. However, Escort campaign in meadow is not working correctly for unknown reasons (so it is set to 97% Spearmaster worldstate for now). Escapist clones also crash the game so in Meadow lobbies you will instead be forced to play the older Escapist. Feedback would be extremely helpful.
 [/list]
 [hr][/hr][h2]<~CURRENTLY IMPLEMENTED~>[/h2]
 [list]
@@ -31,16 +34,18 @@ These mods may or may not cause issues with the Escort mod, or these are issues 
 [*] Battle-Hyped: Keep your tired meter above a threshhold by engaging in combat to become stronger and faster. Let that adrenaline PUMP!
 [*] Arc'd Spear (Monk throwing trajectory, Survivor damage (and way more when hyped!), (lesser) Gourmand forward thrust)
 [*] Custom (silly) SFX!
+[*] Ending cutscene + slideshow
 [/list]
 [hr][/hr][h2]<~BUILD STATUSES~>[/h2]
 [list]
-[*] [b]Default:[/b] May need some buffs
+[*] [b]Default:[/b] Will be receiving a moveset in 0.4
 [*] [b]Brawler:[/b] Overpowered, but leaving as is
-[*] [b]Deflector:[/b] In a fine place
-[*] [b]Escapist:[/b] In a fine place
-[*] [b]Railgunner:[/b] Needs a tiny bit of adjustments
-[*] [b]Speedster:[/b] Needs a wee bit of adjustments
-[*] [b]Gilded:[/b] Needs nerfs
+[*] [b]Deflector:[/b] Will be receiving a new skill in 0.4
+[*] [b]Shadow Escapist:[/b] In a fine place
+[*] [b]Escapist:[/b] Will be receiving a brand new skill in 0.4
+[*] [b]Railgunner:[/b] Will be receiving a QoL and mechanic adjustments in 0.4
+[*] [b]Speedster:[/b] Will be receiving minor updates to their moveset in 0.4
+[*] [b]Gilded:[/b] Will be receiving adjustments in 0.4
 [/list]
 [hr][/hr][h3]<~REPOSITORY~>[/h3]
 [url=https://github.com/urufu765/rw-scb-TheEscort]Enjoy! It's on Github! Free for you to do whatever (as long as it follows the original licenses and whatever)[/url]

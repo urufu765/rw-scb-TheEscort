@@ -19,6 +19,8 @@ public class EscortOnlineData : OnlineEntity.EntityData
     {
         [OnlineField]
         public int buildId;
+        [OnlineField]
+        public bool imDead;
 
         #region Lazy Sync
         /// <summary>
@@ -33,6 +35,20 @@ public class EscortOnlineData : OnlineEntity.EntityData
         // public float DeflSharedPerma { get; set; }
         [OnlineField]
         public int GildPower { get; set; }
+        [OnlineField]
+        public int RailgunUse {get;set;}
+        [OnlineField]
+        public int SpeCharge { get; set; }
+        [OnlineField]
+        public int SpeGear {get;set;}
+        [OnlineField]
+        public int SpeSpeedin {get;set;} 
+        [OnlineField]
+        public bool SpeDashNCrash {get;set;}
+        [OnlineField]
+        public bool SpeSecretSpeed {get;set;}
+        [OnlineField]
+        public int SpeExtraSpe{get;set;}
         #endregion
 
         #region One-time sync
@@ -43,10 +59,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
         public int RailgunLimit { get; set; }
         [OnlineField]
         public int SpeMaxGear { get; set; }
-        [OnlineField]
-        public int SpeCharge { get; set; }
-        [OnlineField]
-        public int SpeSpeedin {get;set;} 
         [OnlineField]
         public bool SpeOldSpeed {get;set;}
         [OnlineField]
@@ -63,6 +75,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
             // Ebug("State creation");
             if ((oe as OnlinePhysicalObject)?.apo?.realizedObject is not Player player) return;
             if (!Plugin.eCon.TryGetValue(player, out Escort e)) return;
+            imDead = player.dead;
             buildId = FindBuildIndex(e);
             // if (e.Deflector)
             // {
@@ -73,11 +86,16 @@ public class EscortOnlineData : OnlineEntity.EntityData
             {
                 SpeMaxGear = e.SpeMaxGear;
                 SpeCharge = e.SpeCharge;
+                SpeGear = e.SpeGear;
                 SpeSpeedin = e.SpeSpeedin;
                 SpeOldSpeed = e.SpeOldSpeed;
+                SpeDashNCrash = e.SpeDashNCrash;
+                SpeSecretSpeed = e.SpeSecretSpeed;
+                SpeExtraSpe = e.SpeExtraSpe;
             }
             if (e.Railgunner)
             {
+                RailgunUse = e.RailgunUse;
                 RailgunLimit = e.RailgunLimit;
             }
             if (e.Gilded)
@@ -103,14 +121,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
             if (ac.realizedCreature is Player p && Plugin.eCon.TryGetValue(p, out Escort e))
             {
                 SetBuildFromIndex(ref e, buildId);
-                if (e.PleaseSyncMyUnimportantValues)
-                {
-                    e.RollinCount = RollinCount;
-                    if (e.Gilded)
-                    {
-                        e.GildPower = GildPower;
-                    }
-                }
                 if (e.PleaseSyncMyOneTimeValues)
                 {
                     if (e.Railgunner)
@@ -120,13 +130,33 @@ public class EscortOnlineData : OnlineEntity.EntityData
                     if (e.Speedster)
                     {
                         e.SpeMaxGear = SpeMaxGear;
-                        e.SpeCharge = SpeCharge;
-                        e.SpeSpeedin = SpeSpeedin;
                         e.SpeOldSpeed = SpeOldSpeed;
                     }
                     if (e.Gilded)
                     {
                         e.GildPowerMax = GildPowerMax;
+                    }
+                }
+                if (imDead || p.dead) return;  // Don't try to sync values if dead
+                if (e.PleaseSyncMyUnimportantValues)
+                {
+                    e.RollinCount = RollinCount;
+                    if (e.Railgunner)
+                    {
+                        e.RailgunUse = RailgunUse;
+                    }
+                    if (e.Speedster)
+                    {
+                        e.SpeDashNCrash = SpeDashNCrash;
+                        e.SpeSecretSpeed = SpeSecretSpeed;
+                        e.SpeCharge = SpeCharge;
+                        e.SpeExtraSpe = SpeExtraSpe;
+                        e.SpeSpeedin = SpeSpeedin;
+                        e.SpeGear = SpeGear;
+                    }
+                    if (e.Gilded)
+                    {
+                        e.GildPower = GildPower;
                     }
                 }
             }
