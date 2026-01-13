@@ -405,7 +405,7 @@ partial class Plugin : BaseUnityPlugin
 
     #region Thrown
 
-    public static void Escort_RockThrow(On.Rock.orig_Thrown orig, Rock self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, RWCustom.IntVector2 throwDir, float frc, bool eu)
+    public static void Escort_RockThrow(On.Rock.orig_Thrown orig, Rock self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
         try
         {
@@ -842,7 +842,7 @@ partial class Plugin : BaseUnityPlugin
                 if (result.obj is Creature c)
                 {
                     float stunBonus = 60f;
-                    if (ModManager.MMF && MoreSlugcats.MMF.cfgIncreaseStuns.Value && (c is Cicada || c is LanternMouse || (ModManager.MSC && c is MoreSlugcats.Yeek)))
+                    if (ModManager.MMF && MoreSlugcats.MMF.cfgIncreaseStuns.Value && (c is Cicada || c is LanternMouse || (ModManager.MSC && c is Yeek)))
                     {
                         stunBonus = 105f;
                     }
@@ -1128,6 +1128,89 @@ partial class Plugin : BaseUnityPlugin
         }
         return ending;
     }
+
+    /// <summary>
+    /// A generic hit something that applies to any weapon, so long as the method is not overriden and doesn't call base
+    /// </summary>
+    public static bool Escort_WeaponHitSomething(On.Weapon.orig_HitSomething orig, Weapon self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        bool r = orig(self, result, eu);
+
+        if (r) 
+        {
+            DoubleUp typing = DoubleUp.None;
+
+            // Though I've already hooked Flarebomb.HitSomething, since Flarebomb calls base method, it's better to just deal with the railgunner stun thing here than potentially twice when also placed in the other hook.
+            if (self is FlareBomb) typing = DoubleUp.Flare;
+            
+            Esclass_RG_GenericHit(self, result, typing);
+        }
+
+        return r;
+    }
+
+    /// <summary>
+    /// Does the shock stuff on hit if creature hit. And if it hits anything, activate the railgunned singularity bomb immediately
+    /// </summary>
+    public static bool EscortSingularityHit(On.MoreSlugcats.SingularityBomb.orig_HitSomething orig, SingularityBomb self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        bool r = orig(self, result, eu);
+
+        if (r && self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        {
+            if (result.chunk?.owner is Creature c)
+            {
+                Esclass_RG_ApplyShockingStuff(p, c, self, DoubleUp.Singularity, self.room, ref e);
+            }
+            if (self.activateSingularity && self.moveUp == 0)
+            {
+                self.counter = 100;
+            }
+        }
+
+        return r;
+    }
+
+    /// <summary>
+    /// Activate the singularity bomb immediately on terrain hit (the other one dealt with entity hit)
+    /// </summary>
+    private void EscortSingularityImpact(On.MoreSlugcats.SingularityBomb.orig_TerrainImpact orig, SingularityBomb self, int chunk, IntVector2 direction, float speed, bool firstContact)
+    {
+        orig(self, chunk, direction, speed, firstContact);
+        if (self.ignited && self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        {
+            if (self.activateSingularity && self.moveUp == 0)
+            {
+                self.counter = 100;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Firecrackers does not call base HitSomething
+    /// </summary>
+    public static bool Escort_CrackerHit(On.FirecrackerPlant.orig_HitSomething orig, FirecrackerPlant self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        bool r = orig(self, result, eu);
+
+        if (r) Esclass_RG_GenericHit(self, result, DoubleUp.Firecracker);
+
+        return r;
+    }
+
+    /// <summary>
+    /// Whatever a boomerang is, it doesn't call base hitSomething
+    /// </summary>
+    public static bool Escort_BoomerangHit(On.Boomerang.orig_HitSomething orig, Boomerang self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        bool r = orig(self, result, eu);
+
+        if (r) Esclass_RG_GenericHit(self, result);
+
+        return r;
+    }
+
+
 
     #endregion
 

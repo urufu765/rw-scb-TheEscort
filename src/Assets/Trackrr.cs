@@ -314,13 +314,15 @@ public static class ETrackrr
             this.player = player;
             effectColor = new Color(0.85f, 0.3f, 0.0f);
             this.e = escort;
-            this.Max = 800;
+            this.Max = (float)Escort.RAILGUNNER_CD_MAX * 2 / 3;
         }
 
         public override void DrawTracker(float timeStacker)
         {
             this.Value = Mathf.Lerp(PreValue, e.RailgunCD, timeStacker);
-            this.Limit = player.Malnourished? 0 : 1000;
+            if (Value > Max) Max = Value;
+            else if (Value < 1) Max = (float)Escort.RAILGUNNER_CD_MAX * 2 / 3;
+            this.Limit = player.Malnourished? 0 : Escort.RAILGUNNER_CD_MAX;
         }
     }
 

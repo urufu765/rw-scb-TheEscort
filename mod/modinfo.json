@@ -1,7 +1,7 @@
 ﻿{
 	"id": "urufudoggo.theescort",
 	"name": "[Alpha] The Escort",
-	"version": "0.4-dev.6",
+	"version": "0.4-dev.7",
 	"authors": "Urufudoggo",
 	"description": "A mod that will add The Escort(s) and their very special slugpup.<LINE><LINE>Currently implements The Escort and many of their abilities and movement tech. <LINE><LINE>Implemented 1 of 4 endings<LINE>Fully compatible for playing in other campaigns or arena.<LINE>Partial Meadow compatibility (see workshop description for details)<LINE><LINE>Feedback of any sort is HIGHLY appreciated!",
 	"requirements": [ "slime-cubed.slugbase", "moreslugcats" ],

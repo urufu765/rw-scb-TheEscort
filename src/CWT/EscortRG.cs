@@ -19,9 +19,11 @@ public enum DoubleUp
     Bomb,
     Spear,
     Firecracker,
+    Flare,
     // MSC
     LillyPuck,
-    ElectroSpear
+    ElectroSpear,
+    Singularity
 }
 
 
@@ -175,6 +177,23 @@ public partial class Escort
     /// </summary>
     public Color RailLaserColor;
 
+    /// <summary>
+    /// For bringing out the lightning from thy paws!
+    /// </summary>
+    public MoreSlugcats.LightningMachine RailLightning;
+
+    /// <summary>
+    /// Tracks the address of fired weapon
+    /// </summary>
+    public Weapon RailWeaponFired;
+
+    /// <summary>
+    /// Makes the lightning effect go away no matter the gauss value
+    /// </summary>
+    public int RailLightningGoAway;
+
+    public const int RAILGUNNER_CD_MAX = 1200;
+
     public void EscortRG(Player self)
     {
         this.Railgunner = false;
@@ -208,7 +227,7 @@ public partial class Escort
     /// Increases Railgunner overcharge
     /// </summary>
     /// <param name="fromWeapon">Whether it's from weapon or from ability</param>
-    public void Escat_RG_Overcharge(bool fromWeapon = true)
+    public void Escat_RG_Overcharge(bool fromWeapon = true, bool halveAddition = false)
     {
         int addition = 0;
 
@@ -216,21 +235,17 @@ public partial class Escort
         {
             addition += RailDouble switch
             {
-                DoubleUp.Rock => 1,
+                DoubleUp.Rock or DoubleUp.Firecracker or DoubleUp.Flare => 1,
                 DoubleUp.Bomb => 3,
+                DoubleUp.Singularity => 5,
                 _ => 2
             };
         }
-        if (RailgunCD == 0)
+        if (halveAddition)
         {
-            RailgunCD = RailFrail ? 600 : 400;
+            addition /= 2;
         }
-        else
-        {
-            RailgunCD += RailFrail ? 120 : 200;
-        }
-        if (RailgunCD > 800) RailgunCD = 800;
-        RailgunUse += addition;
+        RailgunUse += Math.Max(1, addition);
     }
 
     public float Escat_RG_SheDoesHowMuch(DoubleUp type)
@@ -238,11 +253,12 @@ public partial class Escort
         float stun = RailgunUse * 5f;
         stun *= type switch
         {
-            DoubleUp.Rock => 0.75f,
+            DoubleUp.Rock or DoubleUp.Flare => 0.75f,
             DoubleUp.Bomb => 0.67f,
             DoubleUp.Firecracker => 0.1f,
             DoubleUp.LillyPuck => 2f,
             DoubleUp.Spear => 1.5f,
+            DoubleUp.Singularity => 5f,
             _ => 1f
         };
         if (RailFrail) stun *= 1.5f;
@@ -269,5 +285,15 @@ public partial class Escort
     public void Escat_RG_SetGlassMode(bool fragility)
     {
         RailFrail = fragility;
+    }
+
+    public void Escat_RG_IncreaseCD(int increase)
+    {
+        if (RailgunCD == 0)
+        {
+            RailgunCD = RailFrail ? 600 : 400;
+        }
+        RailgunCD += RailFrail? increase / 2 : increase;
+        if (RailgunCD > RAILGUNNER_CD_MAX) RailgunCD = RAILGUNNER_CD_MAX;
     }
 }

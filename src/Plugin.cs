@@ -457,10 +457,21 @@ partial class Plugin : BaseUnityPlugin
 
         On.ScavengerBomb.Thrown += Esclass_RG_BombThrow;
 
+        On.FlareBomb.Thrown += Esclass_RG_FlareThrow;
         On.FlareBomb.HitSomething += Escort_FlareHit;
+
+        On.Boomerang.HitSomething += Escort_BoomerangHit;
+
+        On.FirecrackerPlant.Thrown += Esclass_RG_CrackerThrow;
+        On.FirecrackerPlant.HitSomething += Escort_CrackerHit;
+
+        On.MoreSlugcats.SingularityBomb.Thrown += Esclass_RG_SingularThrow;
+        On.MoreSlugcats.SingularityBomb.HitSomething += EscortSingularityHit;
+        On.MoreSlugcats.SingularityBomb.TerrainImpact += EscortSingularityImpact;
 
         On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
 
+        On.Weapon.HitSomething += Escort_WeaponHitSomething;
         On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
 

@@ -122,7 +122,7 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.6.2";
+    private static readonly string VERSION = "0.3.6.3";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {

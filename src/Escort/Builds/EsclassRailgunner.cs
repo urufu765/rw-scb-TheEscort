@@ -39,6 +39,22 @@ partial class Plugin : BaseUnityPlugin
         {
             e.RailGaussed--;
         }
+        else
+        {
+            e.RailLightningGoAway = 0;
+        }
+
+        if (e.RailLightningGoAway > 0)
+        {
+            e.RailLightningGoAway--;
+        }
+        else if (e.RailLightningGoAway == 0)
+        {
+            e.RailLightning?.Destroy();
+            e.RailLightning = null;
+            e.RailWeaponFired = null;
+            e.RailLightningGoAway--;
+        }
 
         if (e.RailIFrame > 0)
         {
@@ -96,7 +112,7 @@ partial class Plugin : BaseUnityPlugin
                 // TODO: reduce amount of sparks
                 for (int i = 0; i < (e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 3 : 1); i++)
                 {
-                    Vector2 v = RWCustom.Custom.RNV() * (r == 0 ? 0.1f : r);
+                    Vector2 v = Custom.RNV() * (r == 0 ? 0.1f : r);
                     self.room.AddObject(new Spark(self.mainBodyChunk.pos + 15f * v, v, Color.Lerp(railgunColor * 0.5f, railgunColor, Mathf.InverseLerp(0, e.RailgunLimit * 0.7f, e.RailgunUse)), null, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 8 : 6, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 16 : 10));
                 }
                 /*
@@ -152,6 +168,31 @@ partial class Plugin : BaseUnityPlugin
                 Esclass_RG_InnerSplosion(self, UnityEngine.Random.value < 0.75f);
             }
         }
+
+        if (ModManager.MSC && e.RailWeaponFired is not null && Custom.rainWorld.options.quality != Options.Quality.LOW)
+        {
+            if (e.RailLightning is null)
+            {
+                if (self.room is not null)
+                {
+                    e.RailLightning = new LightningMachine(new(), e.RailWeaponFired.firstChunk.pos, self.firstChunk.pos, 0f, false, false, 0.3f, 0.7f, 1f)
+                    {
+                        volume = 0.4f,
+                        impactType = 1,
+                        lightningType = 0.5f
+                    };
+                    self.room.AddObject(e.RailLightning);
+                }
+            }
+            else
+            {
+                float strength = Mathf.Lerp(0.8f, 0.1f, Mathf.InverseLerp(20, 1000, Custom.Dist(self.firstChunk.pos, e.RailWeaponFired.firstChunk.pos)));
+                e.RailLightning.startPoint = e.RailWeaponFired.firstChunk.pos;
+                e.RailLightning.endPoint = self.firstChunk.pos;
+                e.RailLightning.chance = strength / 1.5f;
+                e.RailLightning.intensity = Mathf.InverseLerp(0f, strength, (float)e.RailgunUse / e.RailgunLimit);
+            }
+        }
     }
 
 
@@ -200,7 +241,7 @@ partial class Plugin : BaseUnityPlugin
             {
                 Vector2 randomDir = Custom.DegToVec(360f * UnityEngine.Random.value);
                 room?.AddObject(new MouseSpark(
-                    sorce.pos + randomDir * 9f, 
+                    sorce.pos + randomDir * 9f,
                     sorce.pos + randomDir * (28 * UnityEngine.Random.value),
                     16f, new Color(0.56f, 0.75f, 0.8f)));
             }
@@ -561,6 +602,74 @@ partial class Plugin : BaseUnityPlugin
     }
 
     /// <summary>
+    /// Increases velocity of firecrackers and makes them unhittable when railgunned, also gives Railgunner a 7 frame immunity window in case the firecracker pops right in her face
+    /// </summary>
+    public static void Esclass_RG_CrackerThrow(On.FirecrackerPlant.orig_Thrown orig, FirecrackerPlant self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+    {
+        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Firecracker)
+        {
+            if (!e.RailFirstWeaped)
+            {
+                e.RailFirstWeaper = self.firstChunk.vel;
+                e.RailFirstWeaped = true;
+            }
+            else
+            {
+                self.firstChunk.vel = e.RailFirstWeaper;
+            }
+            self.canBeHitByWeapons = false;
+            e.RailIFrame = 7;
+            frc *= 8f;
+        }
+        orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+    }
+
+    /// <summary>
+    /// Increases velocity of flares and makes them unhittable when railgunned
+    /// </summary>
+    public static void Esclass_RG_FlareThrow(On.FlareBomb.orig_Thrown orig, FlareBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+    {
+        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Flare)
+        {
+            if (!e.RailFirstWeaped)
+            {
+                e.RailFirstWeaper = self.firstChunk.vel;
+                e.RailFirstWeaped = true;
+            }
+            else
+            {
+                self.firstChunk.vel = e.RailFirstWeaper;
+            }
+            self.canBeHitByWeapons = false;
+            frc *= 2.5f;
+        }
+        orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+    }
+
+    /// <summary>
+    /// Increases velocity of singularity and makes them unhittable when railgunned
+    /// </summary>
+    public static void Esclass_RG_SingularThrow(On.MoreSlugcats.SingularityBomb.orig_Thrown orig, MoreSlugcats.SingularityBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+    {
+        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Singularity)
+        {
+            if (!e.RailFirstWeaped)
+            {
+                e.RailFirstWeaper = self.firstChunk.vel;
+                e.RailFirstWeaped = true;
+            }
+            else
+            {
+                self.firstChunk.vel = e.RailFirstWeaper;
+            }
+            self.canBeHitByWeapons = false;
+            frc *= 3f;
+        }
+        orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+    }
+
+
+    /// <summary>
     /// Method that allows Railgunner to throw two objects at once.
     /// </summary>
     public static bool Esclass_RG_ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
@@ -572,6 +681,13 @@ partial class Plugin : BaseUnityPlugin
 
         if (e.RailDouble is DoubleUp.None)
         {
+            if (e.RailgunCD > 0 && self.grasps?[grasp]?.grabbed is Weapon weaponry)
+            {
+                e.Escat_RG_IncreaseCD(80);
+                e.RailWeaponFired = weaponry;
+                e.RailLightningGoAway = 40;
+                e.RailGaussed = 30;
+            }
             return false;
         }
         // TODO fix an exception that occurs somewhere here
@@ -586,6 +702,7 @@ partial class Plugin : BaseUnityPlugin
             w = weapon;
         }
 
+        bool misfire = false;
         // Misfire!
         if (UnityEngine.Random.value < (e.RailFrail ? 0.02f : 0.005f) * e.RailgunUse)
         {
@@ -598,15 +715,39 @@ partial class Plugin : BaseUnityPlugin
             self.dontGrabStuff = 15;
             Esclass_RG_InnerSplosion(self);
             self.Stun(120);
+            misfire = true;
         }
         else // normal
         {
-            //Weapon w = self.grasps[grasp].grabbed as Weapon;
-            orig(self, grasp, eu);
+            Weapon w2 = null;
+            // These three weapons need additional processing for railgunning
+            if (e.RailDouble is DoubleUp.Firecracker or DoubleUp.Flare or DoubleUp.Singularity)
+            {
+                w2 = self.grasps[1 - grasp].grabbed as Weapon;
+            }
+
+            orig(self, grasp, eu);  // Throw the first hand
             e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
-            //self.grasps[1].grabbed.firstChunk.vel = v;
-            orig(self, 1 - grasp, eu);
+            orig(self, 1 - grasp, eu);  // Also throw the second hand
+
+            if (w is FirecrackerPlant fp1 && w2 is FirecrackerPlant fp2)
+            {
+                fp1.fuseCounter = fp2.fuseCounter = 3;  // Makes firecrackers immediately pop on fire
+            }
+            if (w is FlareBomb fl1 && w2 is FlareBomb fl2)
+            {
+                // Makes flares activate immediately on use
+                fl1.StartBurn();
+                fl2.StartBurn();
+            }
+            if (ModManager.MSC && w is SingularityBomb sb1 && w2 is SingularityBomb sb2)
+            {
+                // Sets singularity bomb states to activation mode, also skipping over the movement stop command
+                sb1.activateSingularity = sb2.activateSingularity = true;
+                sb1.counter = sb2.counter = 1;  // Skips over the setup
+                sb1.gravity = sb2.gravity = 0;
+            }
         }
         e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
 
@@ -617,27 +758,28 @@ partial class Plugin : BaseUnityPlugin
             self.room.AddObject(s);
             for (int i = 0; i < 6; i++)
             {
-                self.room.AddObject(new Spark(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(2f, 7f, UnityEngine.Random.value) * 6, c, null, 10, 170));
-                s.EmitSmoke(self.bodyChunks[1].pos + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, self.mainBodyChunk.vel + v * UnityEngine.Random.value * -10f, c, 12);
+                self.room.AddObject(new Spark(self.bodyChunks[1].pos + Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(2f, 7f, UnityEngine.Random.value) * 6, c, null, 10, 170));
+                s.EmitSmoke(self.bodyChunks[1].pos + Custom.DegToVec(UnityEngine.Random.value * 360f) * 5f * UnityEngine.Random.value, self.mainBodyChunk.vel + v * UnityEngine.Random.value * -10f, c, 12);
             }
             self.room.AddObject(new Explosion.ExplosionLight(p, 90f, 0.7f, 4, c));
             self.room.PlaySound(e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 0.8f : 0.93f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
-            self.room.InGameNoise(new Noise.InGameNoise(self.mainBodyChunk.pos, 2400, self, 1f));
-            if (Esclass_RG_Death(self, self.room, ref e))
+
+            // Now Railgunner is VERY LOUD
+            self.room.InGameNoise(new Noise.InGameNoise(self.mainBodyChunk.pos, 12000, self, 1f));
+
+            // Railgunner now has a 50% (+5% per additional charge) chance to explode on overuse
+            if (e.RailgunUse >= e.RailgunLimit && UnityEngine.Random.value < 0.5f + (0.05f * (e.RailgunUse - e.RailgunLimit)))
             {
+                Esclass_RG_Death(self, self.room, ref e);
                 if (ins.Esconfig_SFX(self))
                 {
                     self.room.PlaySound(Escort_SFX_Railgunner_Death, e.SFXChunk);
                 }
                 return true;
             }
-
-            // (v * UnityEngine.Random.value * -0.5f + RWCustom.Custom.RNV() * Math.Abs(v.x * w.throwDir.x + v.y * w.throwDir.y)) * -1f
-            // self.room.ScreenMovement(self.mainBodyChunk.pos, self.mainBodyChunk.vel * 0.02f, Mathf.Max(Mathf.Max(self.mainBodyChunk.vel.x, self.mainBodyChunk.vel.y) * 0.05f, 0f));
         }
         if (e.RailFrail)
         {
-            //e.RailgunUse++;
             int stunValue = 10 * e.RailgunUse;
             if (self.room?.game?.session is StoryGameSession sgs)
             {
@@ -645,11 +787,13 @@ partial class Plugin : BaseUnityPlugin
             }
             self.Stun(stunValue);
         }
+        e.RailWeaponFired = w;
         e.RailGaussed = 60;
-        e.Escat_RG_Overcharge();
+        e.RailLightningGoAway = 80;
+        e.Escat_RG_Overcharge(halveAddition: misfire);
+        e.Escat_RG_IncreaseCD(400);
         return true;
     }
-
 
 
     public static void Esclass_RG_GrabUpdate(Player self, ref Escort e)
@@ -679,14 +823,29 @@ partial class Plugin : BaseUnityPlugin
             e.RailDouble = DoubleUp.Rock;
             e.RailWeaping = 4;
         }
+        else if (self.grasps[0].grabbed is ScavengerBomb && self.grasps[1].grabbed is ScavengerBomb)
+        {
+            e.RailDouble = DoubleUp.Bomb;
+            e.RailWeaping = 4;
+        }
+        else if (self.grasps[0].grabbed is FirecrackerPlant && self.grasps[1].grabbed is FirecrackerPlant)
+        {
+            e.RailDouble = DoubleUp.Firecracker;
+            e.RailWeaping = 4;
+        }
+        else if (self.grasps[0].grabbed is FlareBomb && self.grasps[1].grabbed is FlareBomb)
+        {
+            e.RailDouble = DoubleUp.Flare;
+            e.RailWeaping = 4;
+        }
         else if (ModManager.MSC && self.grasps[0].grabbed is LillyPuck && self.grasps[1].grabbed is LillyPuck)
         {
             e.RailDouble = DoubleUp.LillyPuck;
             e.RailWeaping = 4;
         }
-        else if (self.grasps[0].grabbed is ScavengerBomb && self.grasps[1].grabbed is ScavengerBomb)
+        else if (ModManager.MSC && self.grasps[0].grabbed is SingularityBomb && self.grasps[1].grabbed is SingularityBomb)
         {
-            e.RailDouble = DoubleUp.Bomb;
+            e.RailDouble = DoubleUp.Singularity;
             e.RailWeaping = 4;
         }
     }
@@ -707,8 +866,8 @@ partial class Plugin : BaseUnityPlugin
             room.AddObject(new ShockWave(v, 500f, 0.05f, 6));
             for (int i = 0; i < 20; i++)
             {
-                Vector2 v2 = RWCustom.Custom.RNV();
-                room.AddObject(new Spark(v + v2 * Mathf.Lerp(30f, 60f, UnityEngine.Random.value), v2 * Mathf.Lerp(7f, 38f, UnityEngine.Random.value) + RWCustom.Custom.RNV() * 20f * UnityEngine.Random.value, Color.Lerp(Color.white, c, UnityEngine.Random.value), null, 11, 33));
+                Vector2 v2 = Custom.RNV();
+                room.AddObject(new Spark(v + v2 * Mathf.Lerp(30f, 60f, UnityEngine.Random.value), v2 * Mathf.Lerp(7f, 38f, UnityEngine.Random.value) + Custom.RNV() * 20f * UnityEngine.Random.value, Color.Lerp(Color.white, c, UnityEngine.Random.value), null, 11, 33));
                 room.AddObject(new Explosion.FlashingSmoke(v + v2 * 40f * UnityEngine.Random.value, v2 * Mathf.Lerp(4f, 20f, Mathf.Pow(UnityEngine.Random.value, 2f)), 1f + 0.05f * UnityEngine.Random.value, Color.white, c, UnityEngine.Random.Range(3, 11)));
             }
             room.ScreenMovement(v, default, 1.5f);
@@ -734,32 +893,27 @@ partial class Plugin : BaseUnityPlugin
     }
 
 
-    public static bool Esclass_RG_Death(Player self, Room room, ref Escort e)
+    public static void Esclass_RG_Death(Player self, Room room, ref Escort e)
     {
-        if (e.RailgunUse >= e.RailgunLimit)
+        if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
         {
-            if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
+            Esclass_RG_InnerSplosion(self);
+            //self.stun += e.RailFrail ? 320 : 160;
+            int stunDur = e.RailFrail ? 320 : 160;
+            if (self.room?.game?.session is StoryGameSession sgs)
             {
-                Esclass_RG_InnerSplosion(self);
-                //self.stun += e.RailFrail ? 320 : 160;
-                int stunDur = e.RailFrail ? 320 : 160;
-                if (self.room?.game?.session is StoryGameSession sgs)
-                {
-                    stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
-                }
+                stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+            }
 
-                self.Stun(stunDur);
-                //self.SetMalnourished(true);
-                e.Escat_RG_SetGlassMode(true);
-                e.RailgunUse = (int)(e.RailgunLimit * 0.7f);
-            }
-            else
-            {
-                Esclass_RG_InnerSplosion(self, true);
-            }
-            return true;
+            self.Stun(stunDur);
+            //self.SetMalnourished(true);
+            e.Escat_RG_SetGlassMode(true);
+            e.RailgunUse = (int)(e.RailgunLimit * 0.7f);
         }
-        return false;
+        else
+        {
+            Esclass_RG_InnerSplosion(self, true);
+        }
     }
 
 
@@ -1135,6 +1289,21 @@ partial class Plugin : BaseUnityPlugin
         catch (Exception err)
         {
             Ebug(err, "Generic error when initiating Railgunner laser");
+        }
+    }
+
+
+    /// <summary>
+    /// Generic weapon hit a creature
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="result"></param>
+    /// <param name="weaponType"></param>
+    public static void Esclass_RG_GenericHit(Weapon self, SharedPhysics.CollisionResult result, DoubleUp weaponType = DoubleUp.None)
+    {
+        if (self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        {
+            Esclass_RG_ApplyShockingStuff(p, c, self, weaponType, self.room, ref e);
         }
     }
 

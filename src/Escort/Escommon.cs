@@ -474,7 +474,7 @@ partial class Plugin : BaseUnityPlugin
 
             if (e.Deflector && (e.iFrames > 0 || Eshelp_ParryCondition(p)))
             {
-                frc /= 10;
+                frc /= 5;
             }
         }
         return frc;

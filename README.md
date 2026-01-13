@@ -24,6 +24,32 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Unstable sprite mechanic where a shadow version of the sprite is offset towards the direction pressed. If no direction is pressed, assume a different colour and offset towards the direction that the stored potential velocity will make them go... or the shadow/sprite shows where Unstable will teleport to, while the stored velocity arrow gets longer the higher the velocity.
     * Unstable teleports up from ground and hovers in the air, or if midair, stops and hovers. Previous velocity is cached. If jump is pressed without direction (or if out of charges), undoes the hover state and applies the cached velocity
   * **(0.4-dev.)* New sprites
+    * Guardian sprites
+      * Main sprite
+      * HUD guardian mode
+    * Brawler sprites
+      * Main sprite
+      * HUD Explosive punch
+    * Deflector sprites
+      * Main sprite
+    * Shadow Escapist sprites
+      * Main sprite
+    * Escapist sprites
+      * Main sprite
+      * HUD Escape opportunity sprite
+      * HUD Quick escape sprite
+    * Railgunner sprites
+      * Main sprite
+      * HUD generic double up
+      * HUD firecracker double up
+      * HUD flare double up
+      * HUD Singularity double up
+    * Speedster sprites
+      * Main sprite
+    * Gilded sprites
+      * Main sprite
+    * Unstable sprites
+      * Main sprite
   * **(0.4-dev.)* New DMS
   * **(0.4-dev.)* New promo vid + guide
   * **(0.4-dev.)* Contact Banba
@@ -33,7 +59,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Battlehype overhaul
   * **(0.4-dev.)* Starvation overhaul
   * **(0.4-dev.)* Guardian gets more swimming tricks and movement tech
-  * **(0.4-dev.)* Brawler gets an explosive punch
+  * **(0.4-dev.)* Brawler gets an explosive punch (with stun resist)
   * **(0.4-dev.)* New Escapist doesn't get anything for new years
   * **(0.4-dev.)* Old Escapist gets some pacifying stun power, powered by firecrackers which can be used with Special for instant get out of grip or for multiple loud bangs to scare away centipedes
   * **(0.4-dev.)* Old Escapist given the ability to wrap pacifying weapons onto their arms (do sprite first, since the colour of arm wraps change depending on weapon of choice)
@@ -45,9 +71,25 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Spearmaster doodles all over the map. Add them
   * **(0.4-dev.)* Disable mother achievement, add bonus score for creatures escorted
   * **(0.4-dev.)* Deflector gets a midair/swim/float timing parry that has a short window but does the same parry. This is to compensate for situations where Deflector is unable to flip/roll/slide/bounce
+    * Once per midair, reset on touching floor. Also reduces velocity
+    * Every swim boost, but swim boost CD is severely increased
+    * ZeroG, does a flip in zeroG?
   * **(0.4-dev.)* Deflector only gets at most 2 stacks from explosion, not all 3
   * **(0.4-dev.)* Deflector can properly parry bees
-  * **(0.4-dev.)* Railgun firecracker cracker
+  * **(0.4-dev.)* Increase the first two stages of empowered duration
+  * **(0.4-dev.)* Railgunner turn off battlehype
+  * **(0.4-dev.7)**
+    * Railgunner stun on all types of weapons
+    * Reduced Deflector's explosive knockback by a little bit
+    * Railgunner firecracker cracker
+    * Railgunner flarebrrrr
+    * Railgunner singularityyyy
+    * Railgunner max cooldown increased from 20s to 30s
+    * Railgunner starting cooldown increased from 10s to 20s
+    * Railgunner CD gain per railgun shot increased from 2*(overcharge increase) seconds to flat 10s per shot
+    * Railgunner HUD updated to make the max range change depending on the value (so it always starts at 100%, then increases the max limit if it goes beyond that starting max)
+    * Railgunner gains 2s CD per weapon thrown if overcharged
+    * Railgunner now has a 50% of exploding when overcharged beyond limit (instead of it always being the case), with chance increasing by 5% per additional charge
   * **(0.4-dev.6)**
     * Removed useless slugbase json element
     * Railgun overcharge makes all weapons and martial abilities cause slight electric shock on hit (multiplied by 1.5 if frail)
