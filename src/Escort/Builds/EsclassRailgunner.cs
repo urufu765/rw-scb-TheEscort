@@ -27,7 +27,6 @@ partial class Plugin : BaseUnityPlugin
     public static readonly PlayerFeature<float> railgunRecoil;
     public static readonly PlayerFeature<float[]> railgunRecoilMod;
     public static readonly PlayerFeature<int> railgunRecoilDelay;
-    public static readonly PlayerFeature<float[]> railgunLaserPos;
 
     public static void Esclass_RG_Tick(Player self, ref Escort e)
     {
@@ -157,6 +156,100 @@ partial class Plugin : BaseUnityPlugin
 
 
     /// <summary>
+    /// For stunning a creature electrically
+    /// </summary>
+    /// <param name="by">player</param>
+    /// <param name="at">Target</param>
+    /// <param name="sorce">Source</param>
+    /// <param name="amount">Stun duration</param>
+    /// <param name="room">In room</param>
+    public static void Esclass_RG_ApplyShockingStuff(Player by, Creature at, BodyChunk sorce, float amount, Room room, bool intensify = false)
+    {
+        // Do electric immunity check
+        bool immuneToShock = false;
+        if (at is Centipede or BigEel || (ModManager.MSC && at is BigJellyFish or Inspector))
+        {
+            immuneToShock = true;
+        }
+
+
+        float actualAmount = amount;
+        if (at is not Player)
+        {
+            actualAmount *= Mathf.Lerp(at.Template.baseStunResistance, 1, 0.5f);
+        }
+
+        // do a violent stun
+        if (!immuneToShock)
+        {
+            at.Violence(sorce, Custom.DirVec(sorce.pos, at.firstChunk.pos) * 3f, at.firstChunk, null, Creature.DamageType.Electric, 0.1f, actualAmount);
+            room?.AddObject(new CreatureSpasmer(at, false, at.stun));
+        }
+        if (at.Submersion > 0.5f)
+        {
+            room?.AddObject(new UnderwaterShock(room, null, at.firstChunk.pos, 5, 250f, 1f, by, new Color(0.6f, 0.6f, 0.85f)));
+        }
+        Color electro = new Color(0.7f, 1f, 1f);
+        room?.PlaySound(DLCSharedEnums.SharedSoundID.Volt_Shock, sorce.pos, 0.8f, Mathf.Lerp(0.67f, 1.1f, UnityEngine.Random.value));
+        room?.InGameNoise(new Noise.InGameNoise(sorce.pos, amount * 4, sorce.owner ?? at, 0.8f));
+        room?.AddObject(new ShockWave(sorce.pos, Mathf.Lerp(25f, 50f, UnityEngine.Random.value), 0.07f, 5));
+        if (intensify)
+        {
+            room?.AddObject(new ZapCoil.ZapFlash(sorce.pos, 10f));
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 randomDir = Custom.DegToVec(360f * UnityEngine.Random.value);
+                room?.AddObject(new MouseSpark(
+                    sorce.pos + randomDir * 9f, 
+                    sorce.pos + randomDir * (28 * UnityEngine.Random.value),
+                    16f, new Color(0.56f, 0.75f, 0.8f)));
+            }
+        }
+        else
+        {
+            room?.AddObject(new Explosion.ExplosionLight(sorce.pos, 40, 0.8f, 6, electro));
+            for (int i = 0; i < 5; i++)
+            {
+                Vector2 randDir = Custom.RNV();
+                room?.AddObject(new Spark(sorce.pos + randDir * UnityEngine.Random.value * 10,
+                    randDir * Mathf.Lerp(6, 18, UnityEngine.Random.value), electro, null, 4, 18));
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// For stunning a creature electrically using a martial move. Gives a bit of immunity as well
+    /// </summary>
+    /// <param name="by">You</param>
+    /// <param name="at">Target</param>
+    /// <param name="type">Type of move</param>
+    /// <param name="room">The room</param>
+    /// <param name="e">Escort</param>
+    public static void Esclass_RG_ApplyShockingStuff(Player by, Creature at, RailPower type, Room room, ref Escort e)
+    {
+        if (e.RailgunCD == 0) return;
+        e.RailIFrame += 5;
+        Esclass_RG_ApplyShockingStuff(by, at, by.mainBodyChunk, e.Escat_RG_SheDoesHowMuch(type), room);
+    }
+
+    /// <summary>
+    /// For stunning a creature electrically using a doubled weapon. Gives a bit of immunity as well
+    /// </summary>
+    /// <param name="by">You</param>
+    /// <param name="at">Target</param>
+    /// <param name="type">Type of weapon</param>
+    /// <param name="room">The room</param>
+    /// <param name="e">Escort</param>
+    public static void Esclass_RG_ApplyShockingStuff(Player by, Creature at, Weapon with, DoubleUp type, Room room, ref Escort e)
+    {
+        if (e.RailgunCD == 0) return;
+        e.RailIFrame += 2;
+        Esclass_RG_ApplyShockingStuff(by, at, with.firstChunk, e.Escat_RG_SheDoesHowMuch(type), room);
+    }
+
+
+    /// <summary>
     /// For now just gives Railgunner passive movement speed boost upon charge buildup
     /// </summary>
     public static void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
@@ -219,18 +312,18 @@ partial class Plugin : BaseUnityPlugin
                     if (spear.abstractSpear.electricCharge < 3)
                     {
                         spear.abstractSpear.electricCharge++;
-                        self.room?.AddObject(new ZapCoil.ZapFlash(es.sparkPoint, 10f));
-                        self.room?.PlaySound(SoundID.Zapper_Zap, es.firstChunk, false, 0.7f, es.zapPitch == 0 ? (1.5f + UnityEngine.Random.value * 1.5f) : es.zapPitch);
+                        //self.room?.AddObject(new ZapCoil.ZapFlash(es.sparkPoint, 10f));
+                        self.room?.PlaySound(DLCSharedEnums.SharedSoundID.Volt_Shock, es.firstChunk, false, 0.6f, es.zapPitch == 0 ? (1.5f + UnityEngine.Random.value * 1.5f) : es.zapPitch);
                     }
-                    self.room?.PlaySound(SoundID.Jelly_Fish_Tentacle_Stun, position, 0.7f, 0.9f);
-                    self.room?.AddObject(new Explosion.ExplosionLight(position, 25f, 0.3f, 2, new Color(0.7f, 1f, 1f)));
+                    self.room?.PlaySound(SoundID.Death_Lightning_Spark_Object, position, 0.95f, 0.9f);
+                    self.room?.AddObject(new Explosion.ExplosionLight(position, 40f, 0.7f, 7, new Color(0.7f, 1f, 1f)));
                     es.Spark();
                     if (es.Submersion > 0.5)  // Part 2 of Zap
                     {
                         self.room?.AddObject(new UnderwaterShock(self.room, null, es.firstChunk.pos, 10, 400f, 0.5f, self, new Color(0.8f, 0.8f, 1f)));
                         e.RailIFrame = 10;
                     }
-                    self.room?.AddObject(new ZapCoil.ZapFlash(position, 25f));
+                    //self.room?.AddObject(new ZapCoil.ZapFlash(position, 25f));
                 }
             }
             else
@@ -419,6 +512,10 @@ partial class Plugin : BaseUnityPlugin
         {
             if (!e.RailFirstWeaped)
             {
+                if (e.RailTargetAcquired is not null)
+                {
+                    self.firstChunk.vel += Custom.DirVec(self.firstChunk.pos, e.RailTargetAcquired.pos) * 2;
+                }
                 e.RailFirstWeaper = self.firstChunk.vel;
                 //self.canBeHitByWeapons = false;
                 e.RailFirstWeaped = true;
@@ -525,6 +622,7 @@ partial class Plugin : BaseUnityPlugin
             }
             self.room.AddObject(new Explosion.ExplosionLight(p, 90f, 0.7f, 4, c));
             self.room.PlaySound(e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? SoundID.Cyan_Lizard_Powerful_Jump : SoundID.Cyan_Lizard_Medium_Jump, self.mainBodyChunk, false, e.RailgunUse >= (int)(e.RailgunLimit * 0.7f) ? 0.8f : 0.93f, Mathf.Lerp(1.15f, 2f, Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse)));
+            self.room.InGameNoise(new Noise.InGameNoise(self.mainBodyChunk.pos, 2400, self, 1f));
             if (Esclass_RG_Death(self, self.room, ref e))
             {
                 if (ins.Esconfig_SFX(self))
@@ -539,7 +637,7 @@ partial class Plugin : BaseUnityPlugin
         }
         if (e.RailFrail)
         {
-            e.RailgunUse++;
+            //e.RailgunUse++;
             int stunValue = 10 * e.RailgunUse;
             if (self.room?.game?.session is StoryGameSession sgs)
             {
@@ -740,6 +838,11 @@ partial class Plugin : BaseUnityPlugin
             self.bodyChunks[i].vel.x += throwDir.x * -force;
             self.bodyChunks[i].vel.y += throwDir.y * -force;
         }
+
+        if (ModManager.Watcher)
+        {
+            self.room?.PlaySound(Watcher.WatcherEnums.WatcherSoundID.Water_Machinery_Hit, self.mainBodyChunk.pos, 0.3f, Mathf.Lerp(0.5f, 0.8f, UnityEngine.Random.value));
+        }
     }
 
     public static BodyChunk Esclass_RG_Spotter(PlayerGraphics self, Vector2 origin, Vector2 direction, Vector2 corner, Vector2 camP)
@@ -883,7 +986,7 @@ partial class Plugin : BaseUnityPlugin
                     }
                     if (self.player.bodyMode == Player.BodyModeIndex.ZeroG && ModManager.MMF && MMF.cfgUpwardsSpearThrow.Value)
                     {
-                        throwDir = self.player.input[0].y == 0? new(self.player.ThrowDirection, 0) : new(0, self.player.input[0].y);
+                        throwDir = self.player.input[0].y == 0 ? new(self.player.ThrowDirection, 0) : new(0, self.player.input[0].y);
                     }
 
 
@@ -897,8 +1000,14 @@ partial class Plugin : BaseUnityPlugin
                     if (e.RailTargetClock == 0)
                     {
                         e.RailTargetAcquired = Esclass_RG_Spotter(self, neckPos, throwDir, corner, camP);
-                        Ebug("Target checking! Found creature? " + (e.RailTargetAcquired is not null), ignoreRepetition: true);
-                        e.RailTargetClock = 4;
+                        //Ebug("Target checking! Found creature? " + (e.RailTargetAcquired is not null), ignoreRepetition: true);
+                        e.RailTargetClock = Custom.rainWorld.options.quality switch
+                        {
+                            var a when a == Options.Quality.LOW => 29,
+                            var a when a == Options.Quality.MEDIUM => 14,
+                            var a when a == Options.Quality.HIGH => 4,
+                            _ => 4
+                        };
                     }
 
                     if (e.RailTargetAcquired is not null)

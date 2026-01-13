@@ -36,8 +36,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Brawler gets an explosive punch
   * **(0.4-dev.)* New Escapist doesn't get anything for new years
   * **(0.4-dev.)* Old Escapist gets some pacifying stun power, powered by firecrackers which can be used with Special for instant get out of grip or for multiple loud bangs to scare away centipedes
-  * **(0.4-dev.)* Old Escapist loses ability to throw spears, but while in contact with wall, throws it to allow Escapist to actually wallspear.
-  * **(0.4-dev.)* Give old escapist the ability to craft explosive bombs, and make that their primary source of firepower
+  * **(0.4-dev.)* Old Escapist given the ability to wrap pacifying weapons onto their arms (do sprite first, since the colour of arm wraps change depending on weapon of choice)
   * **(0.4-dev.)* Make Speedster more slippery on walls, doing wall jumps makes Speedster slide up a bit while boosting.
   * **(0.4-dev.)* Gilded fix gravity hover velocity so they remain correct vertical height when hovering (or make it go up slightly)
   * **(0.4-dev.)* Add setting to adjust parry sfx
@@ -45,13 +44,20 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Make a new friend slot if player refuses to get slugpup (and add respawn mechanics based on that)
   * **(0.4-dev.)* Spearmaster doodles all over the map. Add them
   * **(0.4-dev.)* Disable mother achievement, add bonus score for creatures escorted
-  * **(0.4-dev.)* Railgunner gets higher limit by default, but cooldown is lot longer... Give 'er more focused mechanics around overcharge. Also damage increase
-  * **(0.4-dev.)* Railgun cyan jump
-  * **(0.4-dev.)* Railgun overcharge makes all weapons cause slight electric shock on hit
-  * **(0.4-dev.)* Railgun firecracker cracker
-  * **(0.4-dev.)* Give railgunner 8 dir shooting on flips
   * **(0.4-dev.)* Deflector gets a midair/swim/float timing parry that has a short window but does the same parry. This is to compensate for situations where Deflector is unable to flip/roll/slide/bounce
-  * **(0.4-dev.)* Deflector only gets 1 stack from explosion, not all 3
+  * **(0.4-dev.)* Deflector only gets at most 2 stacks from explosion, not all 3
+  * **(0.4-dev.)* Deflector can properly parry bees
+  * **(0.4-dev.)* Railgun firecracker cracker
+  * **(0.4-dev.6)**
+    * Removed useless slugbase json element
+    * Railgun overcharge makes all weapons and martial abilities cause slight electric shock on hit (multiplied by 1.5 if frail)
+    * Railgunner rock damage damage boost
+    * Railgun laser target check done less frequently on lower quality for resource save
+    * Reduced flashing effect on electrospear charge
+    * Moved some field initializers to onmodinit
+    * Reduced Railgunner base rock damage from 0.2 to 0.02, but double rock does 0.4 each now (instead of 0.25 each)
+    * Railgunner's rail gun shot now makes ingame noise that alerts other nearby creatures
+    * Removed the faster railgun use on frail mode (they both increase at the same rate now)
   * **(0.4-dev.5)**
     * Railgunner explosion knockback resist, explosion stun negation
     * Railgunner charges fill up a bit slower, but reset slower too

@@ -9,6 +9,9 @@ using RWCustom;
 namespace TheEscort;
 
 
+/// <summary>
+/// Double-handing weapon
+/// </summary>
 public enum DoubleUp
 {
     None,
@@ -19,6 +22,18 @@ public enum DoubleUp
     // MSC
     LillyPuck,
     ElectroSpear
+}
+
+
+/// <summary>
+/// Moveset
+/// </summary>
+public enum RailPower
+{
+    None,
+    Dropkick,
+    Slidestun,
+    Comet
 }
 
 
@@ -216,6 +231,35 @@ public partial class Escort
         }
         if (RailgunCD > 800) RailgunCD = 800;
         RailgunUse += addition;
+    }
+
+    public float Escat_RG_SheDoesHowMuch(DoubleUp type)
+    {
+        float stun = RailgunUse * 5f;
+        stun *= type switch
+        {
+            DoubleUp.Rock => 0.75f,
+            DoubleUp.Bomb => 0.67f,
+            DoubleUp.Firecracker => 0.1f,
+            DoubleUp.LillyPuck => 2f,
+            DoubleUp.Spear => 1.5f,
+            _ => 1f
+        };
+        if (RailFrail) stun *= 1.5f;
+        return stun;
+    }
+    public float Escat_RG_SheDoesHowMuch(RailPower type)
+    {
+        float stun = RailgunUse * 8f;
+        stun *= type switch
+        {
+            RailPower.Slidestun => 2f,
+            RailPower.Dropkick => 0.67f,
+            RailPower.Comet => 0.1f,
+            _ => 1f
+        };
+        if (RailFrail) stun *= 1.5f;
+        return stun;
     }
 
     /// <summary>

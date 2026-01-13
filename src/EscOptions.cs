@@ -129,9 +129,11 @@ class EscOptions : OptionInterface
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- New campaign end slideshow + music! (all done)<LINE>- A few more meadow variables are synced.<LINE>- Ending cutscene slight touchup.<LINE><LINE>- Disabled one of the swim speed changes on Guardian<LINE>- Added more things to sync through meadow.<LINE><LINE>Special thanks to Tsunochizu for the lovely ending slideshow art!<LINE>(sorry I had to massacre it a tiny bit to make it compatible with scene camera movement)<LINE><LINE>- Fixed some meadow sync issues on dead Escorts.<LINE>- Sets foodpip req/max to Guardian's no matter the build if in meadow lobby, to help with build food pip sync issues.");
+            "-... and more!");
         }
     }
+    private readonly Configurable<string> soundMachine;
+    private OpTextBox makeSomeNoise;
 
     // Jolly Coop button stuff don't worry about it
     public OpSimpleButton[] jollyEscortBuilds;
@@ -201,6 +203,7 @@ class EscOptions : OptionInterface
         this.buildEasy = new OpCheckBox[PlayerCount];  // Only the first four are shown. The rest are hidden.
         this.buildPlayer = new OpSliderTick[PlayerCount];
         this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
+        this.soundMachine = this.config.Bind<string>("noise_maker", "");
         this.hudShowOptions = new()
         {
             new ListItem(Translate("hide"), Translate("Hide"), 0),
@@ -309,6 +312,15 @@ class EscOptions : OptionInterface
             maxLength = 5
         };
         this.secretText.OnValueChanged += InputTheSecret;
+
+        makeSomeNoise = new OpTextBox(this.soundMachine, new Vector2(xo + (xp * 4f), yo - (yp * 13)), 300)
+        {
+            description = OptionInterface.Translate("Hmm? What's this?"),
+            colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+            colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+            colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f)
+        };
+        makeSomeNoise.OnValueChanged += NoiseWawa;
 
         //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
         //    color = bTesting * 0.7f
@@ -896,6 +908,8 @@ class EscOptions : OptionInterface
                 description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
             },
 
+            //makeSomeNoise,
+
             secretText
         };
         this.accessibleSet = new UIelement[]{
@@ -1352,6 +1366,17 @@ class EscOptions : OptionInterface
         if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Next_Slugcat != null)
         {
             ConfigContainer.PlaySound(SoundID.MENU_Next_Slugcat, 0, 1, 0.6f);
+        }
+    }
+
+    private void NoiseWawa(UIconfig config, string value, string oldValue)
+    {
+        if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu)
+        {
+            if (ExtEnumBase.TryParse(typeof(SoundID), value, true, out var result) && result is SoundID sesult)
+            {
+                ConfigContainer.PlaySound(sesult, 0, 1, 1);
+            }
         }
     }
 

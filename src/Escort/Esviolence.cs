@@ -169,6 +169,10 @@ partial class Plugin : BaseUnityPlugin
                         creature.firstChunk, null, e.DeflAmpTimer > 0 ? Creature.DamageType.Stab : Creature.DamageType.Blunt,
                         dmg, normSlideStun
                     );
+                    if (e.Railgunner)
+                    {
+                        Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Slidestun, self.room, ref e);
+                    }
                     /*
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
                         self.PickupPressed();
@@ -238,6 +242,7 @@ partial class Plugin : BaseUnityPlugin
 
                         //self.animation = Player.AnimationIndex.None;
                         self.jumpBoost += slideMod[3];
+                        self.whiplashJump = false;
                         self.animation = Player.AnimationIndex.Flip;
                         Ebug(self, "Stunslided!", LogLevel.DEBUG);
                     }
@@ -322,10 +327,14 @@ partial class Plugin : BaseUnityPlugin
                         creature.firstChunk, null, Creature.DamageType.Blunt,
                         normSlamDamage, stunDur
                     );
-                    Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", LogLevel.DEBUG);
+                    //Ebug(self, $"Dunk the lizard: {e.LizardDunk} at {momentum.x:###0.000}|{momentum.y:###0.000}", LogLevel.DEBUG);
                     if (e.DropKickCD == 0)
                     {
                         e.LizardDunk = false;
+                        if (e.Railgunner)
+                        {
+                            Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Dropkick, self.room, ref e);
+                        }
                     }
                     if (e.DeflAmpTimer > 0)
                     {
@@ -377,6 +386,10 @@ partial class Plugin : BaseUnityPlugin
                             self.room.PlaySound(Escort_SFX_Boop, e.SFXChunk);
                         }
                         self.room.PlaySound(SoundID.Slugcat_Floor_Impact_Standard, e.SFXChunk, false, 0.75f, 1.3f);
+                    }
+                    if (e.Railgunner)
+                    {
+                        Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Comet, self.room, ref e);
                     }
                     e.Cometted = true;
                 }
@@ -784,6 +797,11 @@ partial class Plugin : BaseUnityPlugin
                             Ebug(player, $"Escapists hits harder! Damage: {original}", ignoreRepetition: true);
                             e.NEsResetCooldown = true;
                         }
+
+                        if (e.Railgunner)
+                        {
+                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.LillyPuck, self.room, ref e);
+                        }
                     }
                     return original;
                 }
@@ -882,13 +900,9 @@ partial class Plugin : BaseUnityPlugin
                         {
                             baseDamage = 0.1f;
                         }
-                        if (e.Railgunner)
+                        if (e.Railgunner && e.RailDouble is DoubleUp.Rock)
                         {
-                            baseDamage = 0.2f;
-                            if (e.RailDouble is DoubleUp.Rock)
-                            {
-                                baseDamage = 0.25f;
-                            }
+                            baseDamage = 0.4f;
                         }
                         if (e.NewEscapist && e.NEsVulnerable.Contains(c))
                         {
@@ -901,7 +915,15 @@ partial class Plugin : BaseUnityPlugin
                             e.NEsResetCooldown = true;
                             Ebug(p, $"Hit a vulnerable with rock! Damage: {baseDamage}, Stun bonus: {stunBonus}", ignoreRepetition: true);
                         }
-                        c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDouble is DoubleUp.Rock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
+                        if (e.Railgunner)
+                        {
+                            c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDouble is DoubleUp.Rock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
+                            Esclass_RG_ApplyShockingStuff(p, c, self, DoubleUp.Rock, self.room, ref e);
+                        }
+                        else
+                        {
+                            c.Violence(self.firstChunk, self.firstChunk.vel * self.firstChunk.mass, result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
+                        }
                     }
                 }
                 else if (result.chunk != null)
@@ -999,6 +1021,11 @@ partial class Plugin : BaseUnityPlugin
                             e.NEsResetCooldown = true;
                             Ebug(player, $"Direct bomb hit! Damage: {original}, Stun: {stunner}", ignoreRepetition: true);
                         }
+
+                        if (e.Railgunner)
+                        {
+                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.Bomb, self.room, ref e);
+                        }
                     }
                     return original;
                 }
@@ -1068,6 +1095,11 @@ partial class Plugin : BaseUnityPlugin
                             original *= 2;
                             e.NEsResetCooldown = true;
                             Ebug(player, $"Reset from spear! Damage: {original}", ignoreRepetition: true);
+                        }
+
+                        if (e.Railgunner)
+                        {
+                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.Spear, self.room, ref e);
                         }
                     }
                     return original;

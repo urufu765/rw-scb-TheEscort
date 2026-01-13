@@ -180,10 +180,10 @@ partial class Plugin : BaseUnityPlugin
     #endregion
 
     #region Plugin Variable Declarations
-    public static readonly SlugcatStats.Name EscortMe;
-    public static readonly SlugcatStats.Name EscortSocks;
-    public static readonly SlugcatStats.Timeline EscortMeTime;
-    public static readonly SlugcatStats.Timeline EscortSocksTime;
+    public static SlugcatStats.Name EscortMe;
+    public static SlugcatStats.Name EscortSocks;
+    public static SlugcatStats.Timeline EscortMeTime;
+    public static SlugcatStats.Timeline EscortSocksTime;
     //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
     /// <summary>
@@ -537,6 +537,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self);
         try
         {
+            Plugit();
             if (ins.config is null)
             {
                 MachineConnector.SetRegisteredOI("urufudoggo.theescort", ins.config);
@@ -1118,7 +1119,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.runspeedFac -= 0.2f;
                     self.slugcatStats.corridorClimbSpeedFac -= 0.35f;
                     self.slugcatStats.poleClimbSpeedFac -= 0.7f;
-                    self.slugcatStats.bodyWeightFac -= self.Malnourished? 0.17f : 0.45f;
+                    self.slugcatStats.bodyWeightFac -= self.Malnourished ? 0.17f : 0.45f;
                     Ebug(self, "Gilded Build selected!", LogLevel.INFO);
                     break;
                 case -5:  // Speedstar build
