@@ -134,6 +134,10 @@ namespace TheEscort
                 if (value) _syncAppearance = 120;
             }
         }
+        /// <summary>
+        /// Resets roll direction set by spear throw!
+        /// </summary>
+        public int resetRollDirection;
 
 
         // Build stuff
@@ -431,6 +435,7 @@ namespace TheEscort
             this.offendingKTtusk = -1;
             this.offendingRemoval = 0;
             this.tryFindingPup = 80;
+            this.resetRollDirection = -1;
 
             // Build specific
             this.Brawler = false;

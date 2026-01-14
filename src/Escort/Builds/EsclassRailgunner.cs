@@ -1,4 +1,5 @@
 using BepInEx;
+using MonoMod.Cil;
 using MoreSlugcats;
 using RWCustom;
 using SlugBase.Features;
@@ -38,22 +39,6 @@ partial class Plugin : BaseUnityPlugin
         if (e.RailGaussed > 0)
         {
             e.RailGaussed--;
-        }
-        else
-        {
-            e.RailLightningGoAway = 0;
-        }
-
-        if (e.RailLightningGoAway > 0)
-        {
-            e.RailLightningGoAway--;
-        }
-        else if (e.RailLightningGoAway == 0)
-        {
-            e.RailLightning?.Destroy();
-            e.RailLightning = null;
-            e.RailWeaponFired = null;
-            e.RailLightningGoAway--;
         }
 
         if (e.RailIFrame > 0)
@@ -169,29 +154,14 @@ partial class Plugin : BaseUnityPlugin
             }
         }
 
-        if (ModManager.MSC && e.RailWeaponFired is not null && Custom.rainWorld.options.quality != Options.Quality.LOW)
+        if (ModManager.MSC && e.RailZap.Count > 0 && Custom.rainWorld.options.quality != Options.Quality.LOW)
         {
-            if (e.RailLightning is null)
+            float railRatio = (float)e.RailgunUse / e.RailgunLimit;
+            for (int i = 0; i < e.RailZap.Count; i++)
             {
-                if (self.room is not null)
-                {
-                    e.RailLightning = new LightningMachine(new(), e.RailWeaponFired.firstChunk.pos, self.firstChunk.pos, 0f, false, false, 0.3f, 0.7f, 1f)
-                    {
-                        volume = 0.4f,
-                        impactType = 1,
-                        lightningType = 0.5f
-                    };
-                    self.room.AddObject(e.RailLightning);
-                }
+                e.RailZap[i].Update(self, railRatio);
             }
-            else
-            {
-                float strength = Mathf.Lerp(0.8f, 0.1f, Mathf.InverseLerp(20, 1000, Custom.Dist(self.firstChunk.pos, e.RailWeaponFired.firstChunk.pos)));
-                e.RailLightning.startPoint = e.RailWeaponFired.firstChunk.pos;
-                e.RailLightning.endPoint = self.firstChunk.pos;
-                e.RailLightning.chance = strength / 1.5f;
-                e.RailLightning.intensity = Mathf.InverseLerp(0f, strength, (float)e.RailgunUse / e.RailgunLimit);
-            }
+            e.RailZap.RemoveAll(a => a.IsDead());
         }
     }
 
@@ -295,8 +265,11 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static void Esclass_RG_UpdateBodyMode(Player self, ref Escort e)
     {
-        self.dynamicRunSpeed[0] += e.RailgunUse * 0.3f;
-        self.dynamicRunSpeed[1] += e.RailgunUse * 0.3f;
+        if (self.bodyMode != Player.BodyModeIndex.ZeroG && self.animation != Player.AnimationIndex.DeepSwim)
+        {
+            self.dynamicRunSpeed[0] += e.RailgunUse * 0.3f;
+            self.dynamicRunSpeed[1] += e.RailgunUse * 0.3f;
+        }
     }
 
 
@@ -576,6 +549,7 @@ partial class Plugin : BaseUnityPlugin
                 */
                 //e.RailDoubleRock = false;
             }
+            self.canBeHitByWeapons = false;
             frc *= rRockVel;
         }
         else
@@ -668,6 +642,37 @@ partial class Plugin : BaseUnityPlugin
         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
     }
 
+    public static void Escort_RG_SpearThrow(On.Spear.orig_Thrown orig, Spear self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+    {
+        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Spear or DoubleUp.ElectroSpear)
+        {
+            self.canBeHitByWeapons = false;
+            frc *= 1.5f;
+        }
+        orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+    }
+
+    public static void Esclass_RG_WeaponThrow(On.Weapon.orig_Thrown orig, Weapon self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
+    {
+        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is not DoubleUp.None)
+        {
+            throwDir = e.RailLastThrowDir;
+            thrownPos = p.firstChunk.pos + throwDir.ToVector2() * 10f + new Vector2(0f, 4f);
+            firstFrameTraceFromPos = p.mainBodyChunk.pos - throwDir.ToVector2() * 10f;
+
+            orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+
+            if (throwDir.x != 0 && throwDir.y != 0)
+            {
+                self.firstChunk.vel = new(throwDir.x * 40f * frc, throwDir.y * 40f * frc);
+            }
+            return;
+        }
+        orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
+    }
+
+
+
 
     /// <summary>
     /// Method that allows Railgunner to throw two objects at once.
@@ -684,8 +689,7 @@ partial class Plugin : BaseUnityPlugin
             if (e.RailgunCD > 0 && self.grasps?[grasp]?.grabbed is Weapon weaponry)
             {
                 e.Escat_RG_IncreaseCD(80);
-                e.RailWeaponFired = weaponry;
-                e.RailLightningGoAway = 40;
+                e.RailZap.Add(new(weaponry, 20));
                 e.RailGaussed = 30;
             }
             return false;
@@ -695,11 +699,16 @@ partial class Plugin : BaseUnityPlugin
         Vector2 p = new();
         Vector2 v = new();
         Weapon w = null;  // So that the thrown direction can be achieved
+        Weapon w2 = null;
         if (self.grasps[grasp] != null && self.grasps[grasp].grabbed is Weapon weapon)
         {
             p = self.grasps[grasp].grabbed.firstChunk.pos;
             v = self.grasps[grasp].grabbed.firstChunk.vel;
             w = weapon;
+        }
+        if (self.grasps[1 - grasp]?.grabbed is Weapon weapon2)
+        {
+            w2 = weapon2;
         }
 
         bool misfire = false;
@@ -719,15 +728,17 @@ partial class Plugin : BaseUnityPlugin
         }
         else // normal
         {
-            Weapon w2 = null;
-            // These three weapons need additional processing for railgunning
-            if (e.RailDouble is DoubleUp.Firecracker or DoubleUp.Flare or DoubleUp.Singularity)
+            e.RailLastThrowDir = new(self.ThrowDirection, 0);
+            if (
+                self.bodyMode == Player.BodyModeIndex.ZeroG ||
+                self.animation == Player.AnimationIndex.Flip ||
+                self.animation == Player.AnimationIndex.DeepSwim
+                )
             {
-                w2 = self.grasps[1 - grasp].grabbed as Weapon;
+                e.RailLastThrowDir = new(self.input[0].y == 0 ? self.ThrowDirection : self.input[0].x, self.input[0].y);
             }
-
             orig(self, grasp, eu);  // Throw the first hand
-            e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
+            //e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
             orig(self, 1 - grasp, eu);  // Also throw the second hand
 
@@ -787,13 +798,20 @@ partial class Plugin : BaseUnityPlugin
             }
             self.Stun(stunValue);
         }
-        e.RailWeaponFired = w;
+        e.RailZap.Add(new(w, 50));
+        e.RailZap.Add(new(w2, 50));
         e.RailGaussed = 60;
-        e.RailLightningGoAway = 80;
         e.Escat_RG_Overcharge(halveAddition: misfire);
         e.Escat_RG_IncreaseCD(400);
         return true;
     }
+
+
+    public static void Esclass_RG_SpearHitSomething(ref ILCursor c)
+    {
+        throw new NotImplementedException();
+    }
+
 
 
     public static void Esclass_RG_GrabUpdate(Player self, ref Escort e)
@@ -958,40 +976,55 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static void Esclass_RG_Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default, bool glassCannonBonus = false)
     {
+        float xForce = force, yForce = force;
+
+
         // Up/down velocity adjustment (so recoil jumps are a thing (and you don't get stunned when recoiling downwards))
         if (self.bodyMode != Player.BodyModeIndex.ZeroG)
         {
             if (throwDir.y > 0)  // Reduce downwards recoil
             {
-                force *= recoilMod[0];
+                yForce *= recoilMod[0];
             }
             else if (throwDir.y < 0)  // Increase upwards recoil
             {
-                force *= recoilMod[1];
+                yForce *= recoilMod[1];
+            }
+            if (throwDir.x != 0 && throwDir.y != 0)
+            {
+                xForce *= recoilMod[5];
+                yForce *= recoilMod[6];
             }
         }
 
         // Reduce recoil if proned/standing with the power of friction
         if (self.bodyMode == Player.BodyModeIndex.Crawl)
         {
-            force *= recoilMod[2];
+            xForce *= recoilMod[2];
+            yForce *= recoilMod[2];
         }
         else if (self.bodyMode == Player.BodyModeIndex.Stand)
         {
-            force *= recoilMod[3];
+            xForce *= recoilMod[3];
+            yForce *= recoilMod[3];
         }
+
 
         // Malnutrition bonus
         if (glassCannonBonus)
         {
-            force *= recoilMod[4];
+            xForce *= recoilMod[4];
+            yForce *= recoilMod[4];
         }
 
+        self.rollDirection = 0;
         for (int i = 0; i < 2; i++)
         {
-            self.bodyChunks[i].vel.x += throwDir.x * -force;
-            self.bodyChunks[i].vel.y += throwDir.y * -force;
+            self.bodyChunks[i].vel.x += throwDir.x * -xForce;
+            self.bodyChunks[i].vel.y += throwDir.y * -yForce;
         }
+
+        //self.animation = Player.AnimationIndex.None;
 
         if (ModManager.Watcher)
         {
@@ -1108,41 +1141,52 @@ partial class Plugin : BaseUnityPlugin
                 if (e.RailDouble is not DoubleUp.None && self?.player?.dead == false)
                 {
                     cs.isVisible = true;
-                    float intensityThickness = Mathf.Lerp(0.6f, 0.8f, (float)e.RailgunUse / e.RailgunLimit);
-                    float intensityAlpha = Mathf.Lerp(0.6f, 0.8f, (float)e.RailgunUse / e.RailgunLimit);
+                    float intensityThickness = Mathf.Lerp(0.6f, 1f, (float)e.RailgunUse / e.RailgunLimit);
+                    float intensityAlpha = 0.8f;
                     bool targetSpotted = false;
                     Vector2 headPos = Vector2.Lerp(self.head.lastPos, self.head.pos, t);
                     Vector2 bodyPos = Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, t);
                     Vector2 neckPos = Vector2.Lerp(headPos, bodyPos, 0.14f);
                     // TODO: Give railgunner 8 dir shots
 
-                    // 8 direction throw
-                    // Vector2 throwDir = self.player.animation switch
-                    // {
-                    //     var a when a == Player.AnimationIndex.Flip => new(self.player.input[0].y == 0 ? self.player.ThrowDirection : self.player.input[0].x, self.player.input[0].y),
-                    //     _ => new(self.player.ThrowDirection, 0)
-                    // };
 
-                    // How the game does throw direction calculation
+                    // // How the game does throw direction calculation
                     Vector2 throwDir = new(self.player.ThrowDirection, 0);
-                    if (self.player.animation == Player.AnimationIndex.Flip && self.player.input[0].x == 0)
+                    // if (self.player.animation == Player.AnimationIndex.Flip && self.player.input[0].x == 0)
+                    // {
+                    //     if (self.player.input[0].y < 0)
+                    //     {
+                    //         throwDir.x = 0;
+                    //         throwDir.y = -1;
+                    //     }
+                    //     else if (ModManager.MMF && MMF.cfgUpwardsSpearThrow.Value && self.player.input[0].y > 0)
+                    //     {
+                    //         throwDir.x = 0;
+                    //         throwDir.y = 1;
+                    //     }
+                    // }
+
+                    // ZeroG direction handling
+                    // if (self.player.bodyMode == Player.BodyModeIndex.ZeroG && ModManager.MMF && MMF.cfgUpwardsSpearThrow.Value)
+                    // {
+                    //     throwDir = self.player.input[0].y == 0 ? new(self.player.ThrowDirection, 0) : new(0, self.player.input[0].y);
+                    // }
+
+                    // 8 direction throw
+                    if (
+                        self.player.bodyMode == Player.BodyModeIndex.ZeroG ||
+                        self.player.animation == Player.AnimationIndex.Flip ||
+                        self.player.animation == Player.AnimationIndex.DeepSwim
+                        )
                     {
-                        if (self.player.input[0].y < 0)
-                        {
-                            throwDir.x = 0;
-                            throwDir.y = -1;
-                        }
-                        else if (ModManager.MMF && MMF.cfgUpwardsSpearThrow.Value && self.player.input[0].y > 0)
-                        {
-                            throwDir.x = 0;
-                            throwDir.y = 1;
-                        }
-                    }
-                    if (self.player.bodyMode == Player.BodyModeIndex.ZeroG && ModManager.MMF && MMF.cfgUpwardsSpearThrow.Value)
-                    {
-                        throwDir = self.player.input[0].y == 0 ? new(self.player.ThrowDirection, 0) : new(0, self.player.input[0].y);
+                        throwDir = new(self.player.input[0].y == 0 ? self.player.ThrowDirection : self.player.input[0].x, self.player.input[0].y);
                     }
 
+                    // Custom direction for corridors
+                    if (Escort_CorridorThrowDir(self.player, out IntVector2 tDir))
+                    {
+                        throwDir = Custom.IntVector2ToVector2(tDir);
+                    }
 
                     Vector2 corner = Custom.RectCollision(neckPos, neckPos + throwDir * 100000f, rCam.room.RoomRect.Grow(200f)).GetCorner(FloatRect.CornerLabel.D);
                     IntVector2? intVector = SharedPhysics.RayTraceTilesForTerrainReturnFirstSolid(rCam.room, neckPos, corner);
@@ -1189,7 +1233,7 @@ partial class Plugin : BaseUnityPlugin
                         if (e.RailTargetAcquired.owner is Creature cr && !cr.dead)
                         {
                             targetSpotted = true;
-                            intensityAlpha = Mathf.Max(0.8f, intensityAlpha);
+                            intensityAlpha = Mathf.Lerp(0.8f, 1f, (float)e.RailgunUse / e.RailgunLimit);
                             intensityThickness += 0.2f;
                         }
                     }

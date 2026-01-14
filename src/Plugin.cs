@@ -452,6 +452,8 @@ partial class Plugin : BaseUnityPlugin
         On.Player.Jump += Socks_Jump;
         On.Player.GrabUpdate += Socks_Legacy;
 
+        On.Spear.Thrown += Escort_RG_SpearThrow;
+
         On.Rock.HitSomething += Escort_RockHit;
         On.Rock.Thrown += Escort_RockThrow;
 
@@ -474,6 +476,7 @@ partial class Plugin : BaseUnityPlugin
         On.Weapon.HitSomething += Escort_WeaponHitSomething;
         On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
+        On.Weapon.Thrown += Esclass_RG_WeaponThrow;
 
         On.SlugcatStats.SpearSpawnModifier_Name_float += Escort_SpearSpawnMod;
         On.SlugcatStats.SpearSpawnModifier_Timeline_float += Escort_SpearSpawnMod;
@@ -513,6 +516,7 @@ partial class Plugin : BaseUnityPlugin
         // Debugging
         // On.DebugMouse.Update += DebugMouse_Update;
     }
+
     // private static void DebugMouse_Update(On.DebugMouse.orig_Update orig, DebugMouse self, bool eu)
     // {
     //     orig(self, eu);

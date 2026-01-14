@@ -39,6 +39,69 @@ public enum RailPower
 }
 
 
+public class TrackedLightning
+{
+    public Weapon Weapon { get; set; }
+    public MoreSlugcats.LightningMachine Lightning { get; set; }
+    public int Life { get; set; }
+
+    public TrackedLightning(Weapon weapon, int life)
+    {
+        Weapon = weapon;
+        Life = life;
+    }
+
+    public bool IsDead()
+    {
+        if (Life <= 0)
+        {
+            Lightning?.Destroy();
+            Lightning = null;
+            Weapon = null;
+            return true;
+        }
+        return false;
+    }
+
+    public void Update(Player player, float intensity)
+    {
+        Life--;
+        if (Weapon is null)
+        {
+            Life = 0;
+            return;
+        }
+
+
+        if (Lightning is null)
+        {
+            if (Weapon.room is not null)
+            {
+                Lightning = new MoreSlugcats.LightningMachine(new(), Weapon.firstChunk.pos, player.firstChunk.pos, 0f, false, false, 0.3f, 0.7f, Mathf.Lerp(1.5f, 0.15f, R.value))
+                {
+                    volume = 0.4f,
+                    impactType = 1,
+                    lightningType = 0.5f
+                };
+                Weapon.room.AddObject(Lightning);
+            }
+            else
+            {
+                Life = 0;
+            }
+        }
+        else
+        {
+            float strength = Custom.LerpMap(Custom.Dist(player.firstChunk.pos, Weapon.firstChunk.pos), 20, 1000, 0.8f, 0.1f);
+            Lightning.startPoint = Weapon.firstChunk.pos;
+            Lightning.endPoint = player.firstChunk.pos;
+            Lightning.chance = strength / 1.5f;
+            Lightning.intensity = Mathf.InverseLerp(0f, strength, intensity);
+        }
+    }
+}
+
+
 public partial class Escort
 {
     /// <summary>
@@ -178,19 +241,9 @@ public partial class Escort
     public Color RailLaserColor;
 
     /// <summary>
-    /// For bringing out the lightning from thy paws!
+    /// Tracks the address of fired weapons and binds lightning to them so that it brings lightning from the paws!
     /// </summary>
-    public MoreSlugcats.LightningMachine RailLightning;
-
-    /// <summary>
-    /// Tracks the address of fired weapon
-    /// </summary>
-    public Weapon RailWeaponFired;
-
-    /// <summary>
-    /// Makes the lightning effect go away no matter the gauss value
-    /// </summary>
-    public int RailLightningGoAway;
+    public List<TrackedLightning> RailZap;
 
     public const int RAILGUNNER_CD_MAX = 1200;
 
@@ -220,6 +273,7 @@ public partial class Escort
         this.RailLaserBlink = false;
         this.RailLaserColor = new Color(1f, 0.7f, 0.0f);
         this.RailLaserSightIndex = -1;
+        this.RailZap = [];
 
     }
 

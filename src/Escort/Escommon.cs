@@ -4,6 +4,7 @@ using Menu.Remix;
 using Menu.Remix.MixedUI;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using RWCustom;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -478,5 +479,18 @@ partial class Plugin : BaseUnityPlugin
             }
         }
         return frc;
+    }
+
+
+    public static bool Escort_CorridorThrowDir(Player self, out IntVector2 throwDir)
+    {
+        throwDir = new();
+
+        if (self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.IsTileSolid(0, 1, 0) && self.IsTileSolid(0, -1, 0))
+        {
+            throwDir = new IntVector2((int)(self.mainBodyChunk.Rotation.x * 2), (int)(self.mainBodyChunk.Rotation.y * 2));
+            return true;
+        }
+        return false;
     }
 }

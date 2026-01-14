@@ -77,7 +77,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Deflector only gets at most 2 stacks from explosion, not all 3
   * **(0.4-dev.)* Deflector can properly parry bees
   * **(0.4-dev.)* Increase the first two stages of empowered duration
-  * **(0.4-dev.)* Railgunner turn off battlehype
+  * **(0.4-dev.)*
+    * Railgunner turn off battlehype
+    * Railgunner armour penetration
+  * **(0.4-dev.8)**
+    * Railgunner corridor laser aim correction
+    * Railgunner 8 direction spear throw
+    * Railgunner lightning applies to every weapon thrown instead of just one at a time
+    * Slidepounce is finally controllable!
   * **(0.4-dev.7)**
     * Railgunner stun on all types of weapons
     * Reduced Deflector's explosive knockback by a little bit

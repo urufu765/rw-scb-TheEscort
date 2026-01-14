@@ -100,7 +100,7 @@ partial class Plugin : BaseUnityPlugin
                 self.slideCounter = 0;
                 if (self.jumpBoost <= 0)
                 {
-                    self.jumpBoost = (self.animation == Player.AnimationIndex.None ? bounce * 1.5f : bounce);
+                    self.jumpBoost = self.animation == Player.AnimationIndex.None ? bounce * 1.5f : bounce;
                 }
                 if (e.Escapist && self.cantBeGrabbedCounter < esNoGrab[1] && self.animation == Player.AnimationIndex.Flip)
                 {
@@ -242,7 +242,7 @@ partial class Plugin : BaseUnityPlugin
 
                         //self.animation = Player.AnimationIndex.None;
                         self.jumpBoost += slideMod[3];
-                        self.whiplashJump = false;
+                        self.rollDirection = 0;
                         self.animation = Player.AnimationIndex.Flip;
                         Ebug(self, "Stunslided!", LogLevel.DEBUG);
                     }
@@ -340,7 +340,7 @@ partial class Plugin : BaseUnityPlugin
                     {
                         e.DeflAmpTimer = 0;
                     }
-                    e.DropKickCD = (e.easyKick ? 40 : 15);
+                    e.DropKickCD = e.easyKick ? 40 : 15;
                     //self.mainBodyChunk.vel = new Vector2((float) self.flipDirection * 24f, 14f) * num;
                     /*
                     if (self.pickUpCandidate is Spear){
@@ -480,7 +480,7 @@ partial class Plugin : BaseUnityPlugin
 
         Ebug(self, "ThrownSpear Triggered!");
         float thrust = 7f;
-        bool onPole = (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut);
+        bool onPole = self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut;
         bool doNotYeet = onPole || !ins.Esconfig_Spears(self) || e.RailDouble is DoubleUp.Spear;
         try
         {
@@ -609,10 +609,11 @@ partial class Plugin : BaseUnityPlugin
                 if (ins.Esconfig_Spears(self))
                 {
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
+                    e.resetRollDirection = 16;
                 }
-                if (self.bodyMode == Player.BodyModeIndex.CorridorClimb && self.IsTileSolid(0, 1, 0) && self.IsTileSolid(0, -1, 0))
+                if (Escort_CorridorThrowDir(self, out IntVector2 tDir))
                 {
-                    spear.throwDir = new IntVector2((int)(self.mainBodyChunk.Rotation.x * 2), (int)(self.mainBodyChunk.Rotation.y * 2));
+                    spear.throwDir = tDir;
                     if (spear.throwDir.y != 0)
                     {
                         spear.firstChunk.vel.y = Mathf.Abs(spear.firstChunk.vel.x) * spear.throwDir.y;
@@ -1041,6 +1042,10 @@ partial class Plugin : BaseUnityPlugin
     private static void Escort_SpearHit(ILContext il)
     {
         var c = new ILCursor(il);
+        // Penetration bit
+        // Esclass_RG_SpearHitSomething(ref c);
+
+        // Violence bit
         try
         {
             c.GotoNext(MoveType.After,
@@ -1136,13 +1141,13 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r) 
+        if (r)
         {
             DoubleUp typing = DoubleUp.None;
 
             // Though I've already hooked Flarebomb.HitSomething, since Flarebomb calls base method, it's better to just deal with the railgunner stun thing here than potentially twice when also placed in the other hook.
             if (self is FlareBomb) typing = DoubleUp.Flare;
-            
+
             Esclass_RG_GenericHit(self, result, typing);
         }
 

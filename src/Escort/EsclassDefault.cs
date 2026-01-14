@@ -236,6 +236,16 @@ namespace TheEscort
             {
                 e.challenge03loseFocus--;
             }
+
+            if (e.resetRollDirection > 0)
+            {
+                e.resetRollDirection--;
+            }
+            else if (e.resetRollDirection == 0)
+            {
+                self.rollDirection = 0;
+                e.resetRollDirection--;
+            }
         }
 
 
