@@ -238,6 +238,7 @@ partial class Plugin : BaseUnityPlugin
 
                         //self.animation = Player.AnimationIndex.None;
                         self.jumpBoost += slideMod[3];
+                        self.rollDirection = 0;
                         self.animation = Player.AnimationIndex.Flip;
                         Ebug(self, "Stunslided!", LogLevel.DEBUG);
                     }
