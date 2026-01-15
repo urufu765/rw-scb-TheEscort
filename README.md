@@ -82,7 +82,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Railgunner armour penetration
   * **(0.4-dev.8)**
     * Railgunner corridor laser aim correction
-    * Railgunner 8 direction spear throw
+    * Railgunner 8 direction railgun!
     * Railgunner lightning applies to every weapon thrown instead of just one at a time
     * Slidepounce is finally controllable!
   * **(0.4-dev.7)**
