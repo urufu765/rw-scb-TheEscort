@@ -67,7 +67,7 @@ partial class Plugin : BaseUnityPlugin
             e.RailRecoilLag--;
         }
 
-        if (e.RailLaserBlinkClock > 19)
+        if (e.RailLaserBlinkClock > 15)
         {
             e.RailLaserBlinkClock = 0;
             e.RailLaserBlink = !e.RailLaserBlink;
@@ -81,6 +81,11 @@ partial class Plugin : BaseUnityPlugin
         if (e.RailTargetClock > 0)
         {
             e.RailTargetClock--;
+        }
+
+        if (e.RailLaserDimmer < Escort.RailLaserDimmerDuration)
+        {
+            e.RailLaserDimmer++;
         }
     }
 
@@ -737,6 +742,10 @@ partial class Plugin : BaseUnityPlugin
             {
                 e.RailLastThrowDir = new(self.input[0].y == 0 ? self.ThrowDirection : self.input[0].x, self.input[0].y);
             }
+            if (Escort_CorridorThrowDir(self, out IntVector2 throwDir))
+            {
+                e.RailLastThrowDir = throwDir;
+            }
             orig(self, grasp, eu);  // Throw the first hand
             //e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
             self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
@@ -1141,8 +1150,8 @@ partial class Plugin : BaseUnityPlugin
                 if (e.RailDouble is not DoubleUp.None && self?.player?.dead == false)
                 {
                     cs.isVisible = true;
-                    float intensityThickness = Mathf.Lerp(0.6f, 1f, (float)e.RailgunUse / e.RailgunLimit);
-                    float intensityAlpha = 0.8f;
+                    float intensityThickness = Mathf.Lerp(0.7f, 1f, (float)e.RailgunUse / e.RailgunLimit);
+                    float intensityAlpha = Custom.LerpMap(e.RailLaserDimmer, 0, Escort.RailLaserDimmerDuration, 0.9f, 0.6f);
                     bool targetSpotted = false;
                     Vector2 headPos = Vector2.Lerp(self.head.lastPos, self.head.pos, t);
                     Vector2 bodyPos = Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, t);
@@ -1233,12 +1242,17 @@ partial class Plugin : BaseUnityPlugin
                         if (e.RailTargetAcquired.owner is Creature cr && !cr.dead)
                         {
                             targetSpotted = true;
-                            intensityAlpha = Mathf.Lerp(0.8f, 1f, (float)e.RailgunUse / e.RailgunLimit);
-                            intensityThickness += 0.2f;
+                            e.RailLaserDimmer = Escort.RailLaserDimmerHoldDur;
+                            intensityAlpha = 1;
+                            intensityThickness -= 0.2f;
                         }
                     }
 
-                    Color c = e.RailLaserBlink && targetSpotted ? Color.Lerp(Color.red, e.RailLaserColor, Mathf.InverseLerp(0, 10, e.RailLaserBlinkClock)) : e.RailgunnerColor;
+                    Color c = e.RailgunnerColor;
+                    if (targetSpotted)
+                    {
+                        c = Color.Lerp(Color.red, e.RailLaserBlink? e.RailLaserColor : e.RailgunnerColor, Mathf.InverseLerp(0, 10, e.RailLaserBlinkClock));
+                    }
                     cs.verticeColors = [.. cs.verticeColors.Select(a => Custom.RGB2RGBA(c, intensityAlpha))];
 
                     // This does some space magic, based on Vulture laser thing

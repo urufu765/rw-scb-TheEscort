@@ -893,7 +893,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Hypeable: Enables/disable battlehype mechanic
     /// </summary>
-    public bool Esconfig_Hypable(Player self)
+    public bool Esconfig_Hypabler(Player self)
     {
         if (!pRTEdits.TryGet(self, out bool RT) || !HypeSys.TryGet(self, out bool hm))
         {
@@ -1160,6 +1160,7 @@ partial class Plugin : BaseUnityPlugin
                 case -4:  // Railgunner build
                     e.Railgunner = true;
                     e.acidSwim = 0.3f;
+                    e.battleHype = false;
                     // e.RailFrail = self.Malnourished || e.escortArena;
                     e.RailFrail = self.Malnourished;
                     self.slugcatStats.lungsFac += 0.7f;

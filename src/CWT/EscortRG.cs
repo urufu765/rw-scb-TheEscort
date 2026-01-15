@@ -39,6 +39,23 @@ public enum RailPower
 }
 
 
+/// <summary>
+/// Receiving shock from source
+/// </summary>
+public enum RailElectric
+{
+    None,
+    Violence,
+    ZapCoil,
+    Centipede,
+    OhNoCentipede,
+    // MSC
+    BigAssJellyCore,
+    // WATCHER
+    ARZapper,
+}
+
+
 public class TrackedLightning
 {
     public Weapon Weapon { get; set; }
@@ -241,6 +258,21 @@ public partial class Escort
     public Color RailLaserColor;
 
     /// <summary>
+    /// Dims the laser if unused
+    /// </summary>
+    public int RailLaserDimmer;
+
+    /// <summary>
+    /// How long to go from max brightness to minimum
+    /// </summary>
+    public const int RailLaserDimmerDuration = 120;
+
+    /// <summary>
+    /// How long to hold the max brightness before beginning the dimmer
+    /// </summary>
+    public const int RailLaserDimmerHoldDur = -200;
+
+    /// <summary>
     /// Tracks the address of fired weapons and binds lightning to them so that it brings lightning from the paws!
     /// </summary>
     public List<TrackedLightning> RailZap;
@@ -274,7 +306,7 @@ public partial class Escort
         this.RailLaserColor = new Color(1f, 0.7f, 0.0f);
         this.RailLaserSightIndex = -1;
         this.RailZap = [];
-
+        this.RailLaserDimmer = RailLaserDimmerDuration;
     }
 
     /// <summary>
@@ -302,6 +334,22 @@ public partial class Escort
         RailgunUse += Math.Max(1, addition);
     }
 
+    public void Escat_RG_Overcharge(RailElectric type)
+    {
+        RailgunUse += type switch
+        {
+            RailElectric.Violence or RailElectric.Centipede => 5,
+            RailElectric.OhNoCentipede or RailElectric.BigAssJellyCore => 8,
+            RailElectric.ZapCoil or RailElectric.ARZapper => 10,
+            _ => 0
+        };
+    }
+
+    /// <summary>
+    /// Returns how much extra stun Railgunner does
+    /// </summary>
+    /// <param name="type">Type of dual wield</param>
+    /// <returns>How much stun</returns>
     public float Escat_RG_SheDoesHowMuch(DoubleUp type)
     {
         float stun = RailgunUse * 5f;
@@ -313,11 +361,17 @@ public partial class Escort
             DoubleUp.LillyPuck => 2f,
             DoubleUp.Spear => 1.5f,
             DoubleUp.Singularity => 5f,
-            _ => 1f
+            _ => 0.5f
         };
         if (RailFrail) stun *= 1.5f;
         return stun;
     }
+
+    /// <summary>
+    /// Returns how much extra stun Railgunner does
+    /// </summary>
+    /// <param name="type">Type of martial arts</param>
+    /// <returns>How much stun</returns>
     public float Escat_RG_SheDoesHowMuch(RailPower type)
     {
         float stun = RailgunUse * 8f;
@@ -326,7 +380,7 @@ public partial class Escort
             RailPower.Slidestun => 2f,
             RailPower.Dropkick => 0.67f,
             RailPower.Comet => 0.1f,
-            _ => 1f
+            _ => 0f
         };
         if (RailFrail) stun *= 1.5f;
         return stun;

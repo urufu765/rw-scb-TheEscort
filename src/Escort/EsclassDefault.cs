@@ -237,15 +237,6 @@ namespace TheEscort
                 e.challenge03loseFocus--;
             }
 
-            if (e.resetRollDirection > 0)
-            {
-                e.resetRollDirection--;
-            }
-            else if (e.resetRollDirection == 0)
-            {
-                self.rollDirection = 0;
-                e.resetRollDirection--;
-            }
         }
 
 
@@ -263,6 +254,7 @@ namespace TheEscort
                     return;
                 }
                 // ONE OF THESE WILL TELL ME WHY THE FUCK THE SCUG'S CONTROLLER GETS YEETED OUT THE WINDOW I SWEAR TO FUCKING GOD
+                // Hello past me, I figured it out lmao
                 if (false && (bool)!self.room?.game?.paused)
                 {
                     Ebug(new object[]{
@@ -447,7 +439,7 @@ namespace TheEscort
                 ins.Esconfig_HypeReq(self);
 
                 // Battle-hyped visual effect
-                if (ins.config.cfgNoticeHype.Value && ins.Esconfig_Hypable(self) && ins.Esconfig_HypeReq(self) && self.aerobicLevel > ins.hypeRequirement)
+                if (ins.config.cfgNoticeHype.Value && e.battleHype && ins.Esconfig_HypeReq(self) && self.aerobicLevel > ins.hypeRequirement)
                 {
                     Color hypedColor = PlayerGraphics.SlugcatColor((self.State as PlayerState).slugcatCharacter);
                     hypedColor.a = 0.8f;
@@ -1028,8 +1020,6 @@ namespace TheEscort
                 return;
             }
 
-            bool hypedMode = ins.Esconfig_Hypable(self);
-
             float movementSlow = Mathf.Lerp(1, 4, Mathf.InverseLerp(0, 16, self.slowMovementStun));
 
             // Implement bettercrawl
@@ -1042,7 +1032,7 @@ namespace TheEscort
                 }
                 else
                 {
-                    if (!e.Gilded && hypedMode)
+                    if (!e.Gilded && e.battleHype)
                     {
                         self.dynamicRunSpeed[0] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
                         self.dynamicRunSpeed[1] = Mathf.Lerp(crawlSpeed[0], crawlSpeed[1], self.aerobicLevel) * self.slugcatStats.runspeedFac / movementSlow;
@@ -1064,7 +1054,7 @@ namespace TheEscort
             */
             else if (!e.Gilded && self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam)
             {
-                if (hypedMode)
+                if (e.battleHype)
                 {
                     if (self.animation == Player.AnimationIndex.StandOnBeam)
                     {

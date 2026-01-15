@@ -70,8 +70,6 @@ partial class Plugin : BaseUnityPlugin
             Ebug(self, err, "Error when printing collision stuff");
         }
 
-        bool hypedMode = ins.Esconfig_Hypable(self);
-
         // Reimplementing the elevator... the way it was in its glory days
         if (ins.Esconfig_Elevator(self) && otherObject is Creature && self.animation == Player.AnimationIndex.None && self.bodyMode == Player.BodyModeIndex.Default && !(otherObject as Creature).dead)
         {
@@ -140,8 +138,8 @@ partial class Plugin : BaseUnityPlugin
                     }
                     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk);
 
-                    float normSlideStun = hypedMode || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1];
-                    if (hypedMode && self.aerobicLevel > ins.hypeRequirement)
+                    float normSlideStun = e.battleHype || e.Brawler ? bodySlam[1] * 1.5f : bodySlam[1];
+                    if (e.battleHype && self.aerobicLevel > ins.hypeRequirement)
                     {
                         normSlideStun = bodySlam[1] * (e.Brawler ? 2f : 1.75f);
                     }
@@ -269,9 +267,12 @@ partial class Plugin : BaseUnityPlugin
                     if (e.DropKickCD == 0)
                     {
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
-                        normSlamDamage = hypedMode ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f);
+                        normSlamDamage = e.battleHype ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f);
                         creature.LoseAllGrasps();
-                        if (hypedMode && self.aerobicLevel > ins.hypeRequirement) { normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); }
+                        if (e.battleHype && self.aerobicLevel > ins.hypeRequirement) 
+                        { 
+                            normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); 
+                        }
                         if (e.Deflector)
                         {
                             normSlamDamage *= e.DeflDamageMult + e.DeflPerma;
@@ -488,15 +489,12 @@ partial class Plugin : BaseUnityPlugin
             {
                 spear.spearDamageBonus = Mathf.Max(1, spear.spearDamageBonus);
             }
-            if (ins.Esconfig_Hypable(self))
+            if (e.battleHype)
             {
                 if (self.aerobicLevel > ins.hypeRequirement)
                 {
                     spear.throwModeFrames = -1;
-                    if (!e.Railgunner)
-                    {
-                        spear.spearDamageBonus *= spearDmgBonuses[0];
-                    }
+                    spear.spearDamageBonus *= spearDmgBonuses[0];
                     if (self.canJump != 0 && !self.longBellySlide)
                     {
                         if (!doNotYeet)
@@ -609,20 +607,20 @@ partial class Plugin : BaseUnityPlugin
                 if (ins.Esconfig_Spears(self))
                 {
                     self.rollDirection = (int)Mathf.Sign(spear.firstChunk.vel.x);
-                    e.resetRollDirection = 16;
                 }
-                if (Escort_CorridorThrowDir(self, out IntVector2 tDir))
+                if (!e.Railgunner && Escort_CorridorThrowDir(self, out IntVector2 tDir))
                 {
                     spear.throwDir = tDir;
                     if (spear.throwDir.y != 0)
                     {
                         spear.firstChunk.vel.y = Mathf.Abs(spear.firstChunk.vel.x) * spear.throwDir.y;
                         spear.firstChunk.vel.x = 0;
-                        thrust *= 0.25f;
+
+                        thrust *= 0.5f;
                     }
                     else
                     {
-                        thrust *= 0.5f;
+                        thrust *= 0.75f;
                     }
                 }
                 if (self.animation != Player.AnimationIndex.BellySlide)

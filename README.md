@@ -77,9 +77,18 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Deflector only gets at most 2 stacks from explosion, not all 3
   * **(0.4-dev.)* Deflector can properly parry bees
   * **(0.4-dev.)* Increase the first two stages of empowered duration
-  * **(0.4-dev.)*
-    * Railgunner turn off battlehype
+  * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
+  * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
+  * **(0.4-dev.10)*
     * Railgunner armour penetration
+    * Railgunner gains overcharge from touching electricity, and doesn't die
+  * **(0.4-dev.9)**
+    * Meadow sync stuff matched with public beta 0.3.6.3a
+    * Railgunner turn off battlehype
+    * Railgunner laser fades if no entities detected for a while
+    * Railgunner laser effect more existent when target in sight
+    * Railgunner corridor throw fix
+    * Fixed issue where throwing a spear midair while battlehyped made you infinitely "slide" on the floor
   * **(0.4-dev.8)**
     * Railgunner corridor laser aim correction
     * Railgunner 8 direction railgun!

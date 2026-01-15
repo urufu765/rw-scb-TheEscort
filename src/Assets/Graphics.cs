@@ -345,7 +345,7 @@ namespace TheEscort
                     // Hypelevel visual fx
                     try
                     {
-                        if (self.player != null && ins.Esconfig_Hypable(self.player))
+                        if (self.player != null)
                         {
                             // calculation of transparency
                             float alphya = 1f;

@@ -103,6 +103,7 @@ namespace TheEscort
         public const int DemonSocksID = 4118;
         public const int SpeedSocksID = 765;
         public int PupCampaignID;
+        public bool battleHype;
 
 
         private int _syncValue;
@@ -134,10 +135,6 @@ namespace TheEscort
                 if (value) _syncAppearance = 120;
             }
         }
-        /// <summary>
-        /// Resets roll direction set by spear throw!
-        /// </summary>
-        public int resetRollDirection;
 
 
         // Build stuff
@@ -435,7 +432,7 @@ namespace TheEscort
             this.offendingKTtusk = -1;
             this.offendingRemoval = 0;
             this.tryFindingPup = 80;
-            this.resetRollDirection = -1;
+            this.battleHype = Plugin.ins.Esconfig_Hypabler(player);
 
             // Build specific
             this.Brawler = false;
@@ -778,6 +775,8 @@ namespace TheEscort
             {
                 n = self.playerState.playerNumber;
             }
+
+            float limitation = Plugin.ins.config.cfgHypeRequirement.Value; 
             string hypeSprite = "escort_hud_default";
             if (Brawler)
             {
@@ -798,6 +797,7 @@ namespace TheEscort
             if (Railgunner)
             {
                 hypeSprite = "escort_hud_railgunner";
+                limitation = 1;
                 floatTrackers.Add(new ETrackrr.RailgunnerCDTraction(n, 1, self, this));
                 floatTrackers.Add(new ETrackrr.RailgunnerUsageTraction(n, 2, this));
             }
@@ -833,7 +833,7 @@ namespace TheEscort
                 floatTrackers.Add(new ETrackrr.UnstableTraction(n, 1, self, this));
                 //floatTrackers.Add(new ETrackrr.UnstableFrameTraction(n, 1, this));
             }
-            this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, Plugin.ins.config.cfgHypeRequirement.Value, self, this, hypeSprite));
+            this.floatTrackers.Add(new ETrackrr.HypeTraction(n, 0, limitation, self, this, hypeSprite));
             this.floatTrackers.Add(new ETrackrr.DamageProtectionTraction(n, 0, self, this));
             this.floatTrackers.Add(new ETrackrr.SwimTracker(n, 0, self, this));
         }
