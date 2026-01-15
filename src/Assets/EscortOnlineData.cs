@@ -38,6 +38,8 @@ public class EscortOnlineData : OnlineEntity.EntityData
         [OnlineField]
         public int RailgunUse {get;set;}
         [OnlineField]
+        public int RailgunRecoil {get;set;}
+        [OnlineField]
         public int SpeCharge { get; set; }
         [OnlineField]
         public int SpeGear {get;set;}
@@ -97,6 +99,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
             {
                 RailgunUse = e.RailgunUse;
                 RailgunLimit = e.RailgunLimit;
+                RailgunRecoil = e.RailRecoilLag;
             }
             if (e.Gilded)
             {
@@ -138,26 +141,24 @@ public class EscortOnlineData : OnlineEntity.EntityData
                     }
                 }
                 if (imDead || p.dead) return;  // Don't try to sync values if dead
-                if (e.PleaseSyncMyUnimportantValues)
+                e.RollinCount = RollinCount;
+                if (e.Railgunner)
                 {
-                    e.RollinCount = RollinCount;
-                    if (e.Railgunner)
-                    {
-                        e.RailgunUse = RailgunUse;
-                    }
-                    if (e.Speedster)
-                    {
-                        e.SpeDashNCrash = SpeDashNCrash;
-                        e.SpeSecretSpeed = SpeSecretSpeed;
-                        e.SpeCharge = SpeCharge;
-                        e.SpeExtraSpe = SpeExtraSpe;
-                        e.SpeSpeedin = SpeSpeedin;
-                        e.SpeGear = SpeGear;
-                    }
-                    if (e.Gilded)
-                    {
-                        e.GildPower = GildPower;
-                    }
+                    e.RailgunUse = RailgunUse;
+                    e.RailRecoilLag = RailgunRecoil;
+                }
+                if (e.Speedster)
+                {
+                    e.SpeDashNCrash = SpeDashNCrash;
+                    e.SpeSecretSpeed = SpeSecretSpeed;
+                    e.SpeCharge = SpeCharge;
+                    e.SpeExtraSpe = SpeExtraSpe;
+                    e.SpeSpeedin = SpeSpeedin;
+                    e.SpeGear = SpeGear;
+                }
+                if (e.Gilded)
+                {
+                    e.GildPower = GildPower;
                 }
             }
             else

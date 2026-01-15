@@ -43,7 +43,7 @@ These mods may or may not cause issues with the Escort mod, or these are issues 
 [*] [b]Deflector:[/b] Will be receiving a new skill in 0.4
 [*] [b]Shadow Escapist:[/b] In a fine place
 [*] [b]Escapist:[/b] Will be receiving a brand new skill in 0.4
-[*] [b]Railgunner:[/b] Will be receiving a QoL and mechanic adjustments in 0.4
+[*] [b]Railgunner:[/b] Will be receiving an overhaul in 0.4
 [*] [b]Speedster:[/b] Will be receiving minor updates to their moveset in 0.4
 [*] [b]Gilded:[/b] Will be receiving adjustments in 0.4
 [/list]
