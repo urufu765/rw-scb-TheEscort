@@ -11,6 +11,7 @@ using System.Linq;
 using SlugBase.Features;
 using RWCustom;
 using SlugBase;
+using TheEscort.Railgunner;
 
 namespace TheEscort
 {
@@ -55,7 +56,7 @@ namespace TheEscort
                 s.sprites[e.mainSpriteIndex] = new FSprite("escortHeadT");
                 s.sprites[e.mainSpriteIndex + 1] = new FSprite("escortHipT");
 
-                if (e.Railgunner) Esclass_RG_InitiateSprites(self, s, rCam, ref e);
+                if (e.Railgunner) RG_Gfx.InitiateSprites(self, s, rCam, ref e);
                 if (e.Gilded) Esclass_GD_InitiateSprites(self, s, rCam, ref e);
 
                 // When builds have custom sprites, do an if condition and add accordingly
@@ -436,7 +437,7 @@ namespace TheEscort
                         s.sprites[e.mainSpriteIndex + 1].y = s.sprites[1].y + bD[3];
                     }
                 }
-                if (e.Railgunner) Esclass_RG_DrawThings(self, s, rCam, t, camP, ref e);
+                if (e.Railgunner) RG_Gfx.DrawThings(self, s, rCam, t, camP, ref e);
                 if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 //e.Escat_Draw_Ring_Trackers(t);
@@ -480,7 +481,7 @@ namespace TheEscort
             {
                 if (self?.player is not null && eCon.TryGetValue(self.player, out Escort e))
                 {
-                    if (e.Railgunner) Esclass_RG_UpdateGraphics(self, ref e);
+                    if (e.Railgunner) RG_Gfx.UpdateGraphics(self, ref e);
                 }
             }
             catch (NullReferenceException nre)

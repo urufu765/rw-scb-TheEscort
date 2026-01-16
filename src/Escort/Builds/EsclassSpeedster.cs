@@ -614,17 +614,13 @@ namespace TheEscort
 
         public static void Esclass_SS_Bonk(On.Player.orig_TerrainImpact orig, Player self, int chunk, IntVector2 direction, float speed, bool firstContact)
         {
+            // if (speed > 35)
+            // {
+            //     Ebug("Terrain Impact Speed @ " + speed, LogLevel.INFO, ignoreRepetition: true);
+            // }
             orig(self, chunk, direction, speed, firstContact);
-            try
+            if (Escort_IsNull(self.slugcatStats?.name))
             {
-                if (Escort_IsNull(self.slugcatStats.name))
-                {
-                    return;
-                }
-            }
-            catch (Exception err)
-            {
-                Ebug(self, err, "Error in Speester TerrainImpact");
                 return;
             }
             if (!eCon.TryGetValue(self, out Escort e))

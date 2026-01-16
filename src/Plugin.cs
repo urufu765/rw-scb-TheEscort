@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TheEscort.Patches;
+using TheEscort.Railgunner;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -436,8 +437,8 @@ partial class Plugin : BaseUnityPlugin
         On.Player.CanIPickThisUp += Escort_SpearGet;
         On.Player.TerrainImpact += Esclass_SS_Bonk;
         On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
-        On.Player.Stun += Esclass_RG_Spasm;
-        On.Player.GetHeldItemDirection += Esclass_RG_PointWeaponAt;
+        On.Player.Stun += RG_Fx.Spasm;
+        On.Player.GetHeldItemDirection += RG_Gfx.PointWeaponAt;
         On.RainWorldGame.Update += Escort_AbsoluteTick;
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
 
@@ -452,31 +453,31 @@ partial class Plugin : BaseUnityPlugin
         On.Player.Jump += Socks_Jump;
         On.Player.GrabUpdate += Socks_Legacy;
 
-        On.Spear.Thrown += Escort_RG_SpearThrow;
+        On.Spear.Thrown += RG_Weaponry.SpearThrow;
 
         On.Rock.HitSomething += Escort_RockHit;
         On.Rock.Thrown += Escort_RockThrow;
 
-        On.ScavengerBomb.Thrown += Esclass_RG_BombThrow;
+        On.ScavengerBomb.Thrown += RG_Weaponry.BombThrow;
 
-        On.FlareBomb.Thrown += Esclass_RG_FlareThrow;
+        On.FlareBomb.Thrown += RG_Weaponry.FlareThrow;
         On.FlareBomb.HitSomething += Escort_FlareHit;
 
         On.Boomerang.HitSomething += Escort_BoomerangHit;
 
-        On.FirecrackerPlant.Thrown += Esclass_RG_CrackerThrow;
+        On.FirecrackerPlant.Thrown += RG_Weaponry.CrackerThrow;
         On.FirecrackerPlant.HitSomething += Escort_CrackerHit;
 
-        On.MoreSlugcats.SingularityBomb.Thrown += Esclass_RG_SingularThrow;
+        On.MoreSlugcats.SingularityBomb.Thrown += RG_Weaponry.SingularThrow;
         On.MoreSlugcats.SingularityBomb.HitSomething += EscortSingularityHit;
         On.MoreSlugcats.SingularityBomb.TerrainImpact += EscortSingularityImpact;
 
-        On.MoreSlugcats.LillyPuck.Thrown += Esclass_RG_LillyThrow;
+        On.MoreSlugcats.LillyPuck.Thrown += RG_Weaponry.LillyThrow;
 
         On.Weapon.HitSomething += Escort_WeaponHitSomething;
-        On.Weapon.WeaponDeflect += Esclass_RG_AntiDeflect;
+        On.Weapon.WeaponDeflect += RG_Weaponry.Weapon_AntiDeflect;
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
-        On.Weapon.Thrown += Esclass_RG_WeaponThrow;
+        On.Weapon.Thrown += RG_Weaponry.WeaponThrow;
 
         On.SlugcatStats.SpearSpawnModifier_Name_float += Escort_SpearSpawnMod;
         On.SlugcatStats.SpearSpawnModifier_Timeline_float += Escort_SpearSpawnMod;
@@ -557,6 +558,7 @@ partial class Plugin : BaseUnityPlugin
             {
                 MachineConnector.SetRegisteredOI("urufudoggo.theescort", ins.config);
             }
+            RG.Constantise();
             path = ModManager.ActiveMods.FirstOrDefault(mod => mod.id == MOD_ID).path;
             IL.MoreSlugcats.LillyPuck.HitSomething += Escort_LillyHit;
             IL.MoreSlugcats.Bullet.HitSomething += Escort_BulletHit;
@@ -1675,7 +1677,7 @@ partial class Plugin : BaseUnityPlugin
             if (ModManager.CoopAvailable)  // Coop condition
             {
                 List<PhysicalObject> listOfShelterers = (
-                    from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> y) => y)
+                    from x in self.room.physicalObjects.SelectMany(y => y)
                     where x is Player
                     select x).ToList();
 

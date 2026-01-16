@@ -12,6 +12,7 @@ using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using Newtonsoft.Json;
 using static UrufuCutsceneTool.CsInLogger;
+using TheEscort.Railgunner;
 
 namespace TheEscort
 {
@@ -1185,7 +1186,7 @@ namespace TheEscort
                 }
             }
 
-            if (e.Railgunner) Esclass_RG_UpdateBodyMode(self, ref e);
+            if (e.Railgunner) RG_Player.UpdateBodyMode(self, ref e);
             if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
         }
         #endregion
@@ -1227,7 +1228,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (e.Railgunner) Esclass_RG_GrabUpdate(self, ref e);
+                if (e.Railgunner) RG_Player.GrabUpdate(self, ref e);
             }
             catch (Exception err)
             {
@@ -1574,7 +1575,7 @@ namespace TheEscort
                     return;
                 }
                 if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
-                if (e.Railgunner && Esclass_RG_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Railgunner && RG_Player.ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Unstable && Esclass_US_ThrowObject(orig, self, grasp, eu, ref e)) return;
             }
@@ -1603,6 +1604,10 @@ namespace TheEscort
                 if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead)
                 {
                     return Player.ObjectGrabability.TwoHands;
+                }
+                if (obj is PoleMimic)
+                {
+                    return orig(self, obj);
                 }
                 if (!dualWielding.TryGet(self, out bool dW) ||
                     !eCon.TryGetValue(self, out Escort e))
@@ -1876,7 +1881,7 @@ namespace TheEscort
                                     }
                                 }
                             }
-                        getOut:
+                            getOut:
                             if (foundOffender)
                             {
                                 Ebug(player, "Tusk unimpaled!", LogLevel.DEBUG);
@@ -2135,7 +2140,7 @@ namespace TheEscort
             {
                 return orig(self, obj);
             }
-            if (e.Railgunner && Esclass_RG_SpearGet(obj))
+            if (e.Railgunner && RG_Player.SpearGet(obj))
             {
                 return true;
             }

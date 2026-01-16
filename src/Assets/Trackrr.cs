@@ -333,13 +333,15 @@ public static class ETrackrr
         private bool yesTrans;
         private float transitioning;
         private readonly Escort e;
+        private Color emergencyColor;
+        private Color okayColor;
         public RailgunnerUsageTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "railgunnerUse")
         {
             trackerColor = new Color(0.5f, 0.85f, 0.78f);
-            effectColor = new Color(1f, 0.45f, 0.0f);
+            okayColor = Color.Lerp(trackerColor, Color.white, 0.8f);
+            emergencyColor = new Color(1f, 0.45f, 0.0f);
             this.e = escort;
             this.Max = e.RailgunLimit;
-            this.Limit = (int)(e.RailgunLimit * 0.7f);
         }
 
         public override void DrawTracker(float timeStacker)
@@ -350,6 +352,16 @@ public static class ETrackrr
                 preValue = e.RailgunCD == 0? 0 : setValue;
             }
             setValue = Mathf.Min(e.RailgunUse, e.RailgunLimit);
+            if (e.RailgunUse >= e.RailgunLimit)
+            {
+                effectColor = emergencyColor;
+                Limit = 0;
+            }
+            else
+            {
+                effectColor = okayColor;
+                Limit = (int)(e.RailgunLimit * 0.7f);
+            }
 
             // Advance the transition, or reset transition ticker
             if (this.Value == setValue) {
@@ -367,7 +379,7 @@ public static class ETrackrr
                 DoubleUp.Bomb => 0,
                 DoubleUp.LillyPuck => 1,
                 DoubleUp.Rock => 2,
-                DoubleUp.Spear => 3,
+                DoubleUp.Spear or DoubleUp.ElectroSpear => 3,
                 _ => -1
             };
 

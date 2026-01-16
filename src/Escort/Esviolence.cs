@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
+using TheEscort.Railgunner;
 
 namespace TheEscort;
 
@@ -169,7 +170,8 @@ partial class Plugin : BaseUnityPlugin
                     );
                     if (e.Railgunner)
                     {
-                        Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Slidestun, self.room, ref e);
+                        RG_Shocker.ApplyShockingStuff(self, creature, RailPower.Slidestun, self.room, ref e);
+                        e.RailZap.Add(new(otherObject.bodyChunks[otherChunk], 10));
                     }
                     /*
                     if (self.pickUpCandidate is Spear){  // Attempts to pickup spears (may pickup things higher in priority that are nearby)
@@ -269,9 +271,9 @@ partial class Plugin : BaseUnityPlugin
                         self.room.PlaySound(SoundID.Big_Needle_Worm_Impale_Terrain, self.mainBodyChunk, false, 1f, 0.65f);
                         normSlamDamage = e.battleHype ? bodySlam[2] : bodySlam[2] + (e.Brawler ? 0.27f : 0.15f);
                         creature.LoseAllGrasps();
-                        if (e.battleHype && self.aerobicLevel > ins.hypeRequirement) 
-                        { 
-                            normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f); 
+                        if (e.battleHype && self.aerobicLevel > ins.hypeRequirement)
+                        {
+                            normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f);
                         }
                         if (e.Deflector)
                         {
@@ -334,7 +336,8 @@ partial class Plugin : BaseUnityPlugin
                         e.LizardDunk = false;
                         if (e.Railgunner)
                         {
-                            Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Dropkick, self.room, ref e);
+                            e.RailZap.Add(new(otherObject.bodyChunks[otherChunk], 15));
+                            RG_Shocker.ApplyShockingStuff(self, creature, RailPower.Dropkick, self.room, ref e);
                         }
                     }
                     if (e.DeflAmpTimer > 0)
@@ -390,7 +393,7 @@ partial class Plugin : BaseUnityPlugin
                     }
                     if (e.Railgunner)
                     {
-                        Esclass_RG_ApplyShockingStuff(self, creature, RailPower.Comet, self.room, ref e);
+                        RG_Shocker.ApplyShockingStuff(self, creature, RailPower.Comet, self.room, ref e);
                     }
                     e.Cometted = true;
                 }
@@ -439,7 +442,7 @@ partial class Plugin : BaseUnityPlugin
                 {
                     frc *= 0.75f;
                 }
-                if (e.Railgunner) Esclass_RG_RockThrow(self, p, ref frc, ref e);
+                if (e.Railgunner) RG_Weaponry.RockThrow(self, p, ref frc, ref e);
             }
             orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
         }
@@ -589,7 +592,7 @@ partial class Plugin : BaseUnityPlugin
         }
         if (e.Brawler) Esclass_BL_ThrownSpear(self, spear, ref e, ref thrust);
         if (e.Escapist) Esclass_EC_ThrownSpear(self, spear);
-        if (e.Railgunner) Esclass_RG_ThrownSpear(self, spear, onPole, ref e, ref thrust);
+        if (e.Railgunner) RG_Player.ThrownSpear(self, spear, onPole, ref e, ref thrust);
         if (onPole && !e.Railgunner || self.bodyMode == Player.BodyModeIndex.Crawl)
         {
             thrust = 1f;
@@ -799,7 +802,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.LillyPuck, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.LillyPuck, self.room, ref e);
                         }
                     }
                     return original;
@@ -917,7 +920,7 @@ partial class Plugin : BaseUnityPlugin
                         if (e.Railgunner)
                         {
                             c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDouble is DoubleUp.Rock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
-                            Esclass_RG_ApplyShockingStuff(p, c, self, DoubleUp.Rock, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(p, c, self, DoubleUp.Rock, self.room, ref e);
                         }
                         else
                         {
@@ -1023,7 +1026,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.Bomb, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.Bomb, self.room, ref e);
                         }
                     }
                     return original;
@@ -1040,8 +1043,6 @@ partial class Plugin : BaseUnityPlugin
     private static void Escort_SpearHit(ILContext il)
     {
         var c = new ILCursor(il);
-        // Penetration bit
-        // Esclass_RG_SpearHitSomething(ref c);
 
         // Violence bit
         try
@@ -1102,7 +1103,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            Esclass_RG_ApplyShockingStuff(player, creature, self, DoubleUp.Spear, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.Spear, self.room, ref e);
                         }
                     }
                     return original;
@@ -1114,6 +1115,9 @@ partial class Plugin : BaseUnityPlugin
             Ebug(ex, "Spearhit IL emite delegate failed");
             throw new Exception("IL EmitDelegate Failed", ex);
         }
+
+        // Penetration stuff
+        RG_Weaponry.SpearHitSomething(ref c);
     }
 
 
@@ -1146,7 +1150,7 @@ partial class Plugin : BaseUnityPlugin
             // Though I've already hooked Flarebomb.HitSomething, since Flarebomb calls base method, it's better to just deal with the railgunner stun thing here than potentially twice when also placed in the other hook.
             if (self is FlareBomb) typing = DoubleUp.Flare;
 
-            Esclass_RG_GenericHit(self, result, typing);
+            RG_Weaponry.GenericHit(self, result, typing);
         }
 
         return r;
@@ -1163,7 +1167,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (result.chunk?.owner is Creature c)
             {
-                Esclass_RG_ApplyShockingStuff(p, c, self, DoubleUp.Singularity, self.room, ref e);
+                RG_Shocker.ApplyShockingStuff(p, c, self, DoubleUp.Singularity, self.room, ref e);
             }
             if (self.activateSingularity && self.moveUp == 0)
             {
@@ -1196,7 +1200,7 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r) Esclass_RG_GenericHit(self, result, DoubleUp.Firecracker);
+        if (r) RG_Weaponry.GenericHit(self, result, DoubleUp.Firecracker);
 
         return r;
     }
@@ -1208,7 +1212,7 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r) Esclass_RG_GenericHit(self, result);
+        if (r) RG_Weaponry.GenericHit(self, result);
 
         return r;
     }

@@ -79,9 +79,15 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Increase the first two stages of empowered duration
   * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
-  * **(0.4-dev.10)*
+  * **(0.4-dev.10)**
+    * Railgunner code no longer part of a partial giant class
+    * Railgunner terrain impact iFrames when recoiling, to prevent accidental death.
+    * Railgunner reduced spark effect, as well as a better indication when the overcharge is dangerous
+    * Railgunner's charge reduces to 70% when exploding from overusage or misfire
+    * Railgunner applies electric shockwave when exploding from misfire or overusage
     * Railgunner armour penetration
-    * Railgunner gains overcharge from touching electricity, and doesn't die
+    * Railgunner's mini explosion when danger grasped fixed (didn't proc all this time)
+    * Attempted to fix accidental grabbing of the pole plant
   * **(0.4-dev.9)**
     * Meadow sync stuff matched with public beta 0.3.6.3a
     * Railgunner turn off battlehype

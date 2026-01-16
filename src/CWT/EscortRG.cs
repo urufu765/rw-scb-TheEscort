@@ -56,25 +56,48 @@ public enum RailElectric
 }
 
 
+/// <summary>
+/// For the lightning effect between two things
+/// </summary>
 public class TrackedLightning
 {
-    public Weapon Weapon { get; set; }
+    // public Weapon Weapon { get; set; }
+    // public Creature Cretin { get; set; }
+    /// <summary>
+    /// Target bodychunk to track
+    /// </summary>
+    public BodyChunk Chunk {get;set;}
+    /// <summary>
+    /// Lightning instance
+    /// </summary>
     public MoreSlugcats.LightningMachine Lightning { get; set; }
+    /// <summary>
+    /// Ticks before self-destruction
+    /// </summary>
     public int Life { get; set; }
 
-    public TrackedLightning(Weapon weapon, int life)
+    /// <summary>
+    /// Creates a new lightning emitter.
+    /// </summary>
+    /// <param name="chunk">Bodychunk of the one to track</param>
+    /// <param name="life">Life of emitter</param>
+    public TrackedLightning(BodyChunk chunk, int life)
     {
-        Weapon = weapon;
+        Chunk = chunk;
         Life = life;
     }
 
+    /// <summary>
+    /// Checks if lightning ran out of life. If true, destroys existing lightning and sets all references to null for clean garbage.
+    /// </summary>
+    /// <returns></returns>
     public bool IsDead()
     {
         if (Life <= 0)
         {
             Lightning?.Destroy();
             Lightning = null;
-            Weapon = null;
+            Chunk = null;
             return true;
         }
         return false;
@@ -83,7 +106,7 @@ public class TrackedLightning
     public void Update(Player player, float intensity)
     {
         Life--;
-        if (Weapon is null)
+        if (Chunk?.owner is null)
         {
             Life = 0;
             return;
@@ -92,15 +115,15 @@ public class TrackedLightning
 
         if (Lightning is null)
         {
-            if (Weapon.room is not null)
+            if (Chunk.owner.room is not null)
             {
-                Lightning = new MoreSlugcats.LightningMachine(new(), Weapon.firstChunk.pos, player.firstChunk.pos, 0f, false, false, 0.3f, 0.7f, Mathf.Lerp(1.5f, 0.15f, R.value))
+                Lightning = new MoreSlugcats.LightningMachine(new(), Chunk.pos, player.firstChunk.pos, 0f, false, false, 0.3f, 0.7f, Mathf.Lerp(1.5f, 0.15f, R.value))
                 {
                     volume = 0.4f,
                     impactType = 1,
                     lightningType = 0.5f
                 };
-                Weapon.room.AddObject(Lightning);
+                Chunk.owner.room.AddObject(Lightning);
             }
             else
             {
@@ -109,8 +132,8 @@ public class TrackedLightning
         }
         else
         {
-            float strength = Custom.LerpMap(Custom.Dist(player.firstChunk.pos, Weapon.firstChunk.pos), 20, 1000, 0.8f, 0.1f);
-            Lightning.startPoint = Weapon.firstChunk.pos;
+            float strength = Custom.LerpMap(Custom.Dist(player.firstChunk.pos, Chunk.pos), 20, 1000, 0.8f, 0.1f);
+            Lightning.startPoint = Chunk.pos;
             Lightning.endPoint = player.firstChunk.pos;
             Lightning.chance = strength / 1.5f;
             Lightning.intensity = Mathf.InverseLerp(0f, strength, intensity);
@@ -134,7 +157,7 @@ public partial class Escort
     /// <summary>
     /// Used to check if two thrown weapons both belong to Railgunner
     /// </summary>
-    public Creature RailThrower;  // (TODO probably make this readonly if it doesn't break anything)
+    public Player RailThrower;  // (TODO probably make this readonly if it doesn't break anything)
 
     // /// <summary>
     // /// Railgunner dualwields spears!
@@ -277,7 +300,17 @@ public partial class Escort
     /// </summary>
     public List<TrackedLightning> RailZap;
 
+    /// <summary>
+    /// Ticks between each spark effect while overcharged
+    /// </summary>
+    public int RailSparkling;
+
     public const int RAILGUNNER_CD_MAX = 1200;
+
+    /// <summary>
+    /// Reference to the last shot spears
+    /// </summary>
+    public (Spear a, Spear b)? RailLastSpears;
 
     public void EscortRG(Player self)
     {
@@ -358,8 +391,8 @@ public partial class Escort
             DoubleUp.Rock or DoubleUp.Flare => 0.75f,
             DoubleUp.Bomb => 0.67f,
             DoubleUp.Firecracker => 0.1f,
-            DoubleUp.LillyPuck => 2f,
-            DoubleUp.Spear => 1.5f,
+            DoubleUp.LillyPuck => 1.5f,
+            DoubleUp.Spear => 2f,
             DoubleUp.Singularity => 5f,
             _ => 0.5f
         };
@@ -392,6 +425,7 @@ public partial class Escort
     /// <param name="fragility"></param>
     public void Escat_RG_SetGlassMode(bool fragility)
     {
+        Ebug("Railgunner is now fragile HANDLE WITH CARE!");
         RailFrail = fragility;
     }
 
