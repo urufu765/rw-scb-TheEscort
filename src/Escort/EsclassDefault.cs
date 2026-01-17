@@ -13,6 +13,7 @@ using static TheEscort.Eshelp;
 using Newtonsoft.Json;
 using static UrufuCutsceneTool.CsInLogger;
 using TheEscort.Railgunner;
+using TheEscort.Brawler;
 
 namespace TheEscort
 {
@@ -1531,7 +1532,7 @@ namespace TheEscort
                 }
 
 
-                if (e.Brawler && Esclass_BL_HeavyCarry(self, obj))
+                if (e.Brawler && BL_Player.Esclass_BL_HeavyCarry(self, obj))
                 {
                     //return false;
                 }
@@ -1574,7 +1575,7 @@ namespace TheEscort
                     orig(self, grasp, eu);
                     return;
                 }
-                if (e.Brawler && Esclass_BL_ThrowObject(orig, self, grasp, eu, ref e)) return;
+                if (e.Brawler && BL_Melee.MeleeThrow(orig, self, grasp, eu, ref e)) return;
                 if (e.Railgunner && RG_Player.ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Gilded && Esclass_GD_ThrowObject(orig, self, grasp, eu, ref e)) return;
                 if (e.Unstable && Esclass_US_ThrowObject(orig, self, grasp, eu, ref e)) return;
@@ -1619,17 +1620,17 @@ namespace TheEscort
                 {
                     return Player.ObjectGrabability.BigOneHand;
                 }
+                if (e.Brawler && BL_Player.Esclass_BL_Grabability(self, obj, ref e, out var grabby))
+                {
+                    return grabby;
+                }
 
-                if (dW && e.dualWield)
+                if (e.dualWield)
                 {
                     if (obj is Weapon)
                     {
                         // Any weapon is dual-wieldable, including spears
                         return Player.ObjectGrabability.OneHand;
-                    }
-                    if (e.Brawler && Esclass_BL_Grabability(self, obj, ref e))
-                    {
-                        return Player.ObjectGrabability.BigOneHand;
                     }
                     if (obj is Lizard lizzie)
                     {
@@ -1654,7 +1655,7 @@ namespace TheEscort
                     }
                     if (obj is Creature c && c.TotalMass <= self.TotalMass * ins.ratioed && c.dead)
                     {
-                        return Player.ObjectGrabability.BigOneHand;
+                        return Player.ObjectGrabability.OneHand;
                     }
                 }
                 return orig(self, obj);
@@ -1772,12 +1773,14 @@ namespace TheEscort
 
                 stunBonus = 0;
             }
-            if (e.Brawler && e.BrawExPunch && e.BrawMeleeWeapon.Count > 0)
+            if (e.Brawler && ((e.BrawWeaponInAction is Melee.ExPunch && e.BrawMeleeWeapon.Count > 0) || e.BrawExpIFrameReady > 0))
             {
                 if (e.iFrames == 0)
                 {
                     e.ParrySuccess = true;
+                    e.BrawExpIFrames = 8;
                 }
+                e.BrawExpIFrameReady = 0;
                 stunBonus = 0;
             }
             if (!ins.L().Vegetable)
@@ -2076,6 +2079,10 @@ namespace TheEscort
                 if (e.Deflector)
                 {
                     e.iFrames = 9;
+                }
+                if (e.BrawExpIFrames > 0)
+                {
+                    e.iFrames = 8;
                 }
                 e.parrySlideLean = 0;
                 if (e.Railgunner && e.RailIFrame > 0)

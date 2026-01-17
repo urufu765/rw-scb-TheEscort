@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TheEscort.Brawler;
 using TheEscort.Patches;
 using TheEscort.Railgunner;
 using UnityEngine;
@@ -291,7 +292,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Mostly-global heavy carry intensity (stores the setting from json or remix for use)
     /// </summary>
-    float ratioed;
+    public float ratioed;
 
     /// <summary>
     /// Global setting for whether temple guard is friendly or not
@@ -436,7 +437,7 @@ partial class Plugin : BaseUnityPlugin
         On.Player.BiteEdibleObject += Escort_Eated;
         On.Player.CanIPickThisUp += Escort_SpearGet;
         On.Player.TerrainImpact += Esclass_SS_Bonk;
-        On.Player.IsCreatureLegalToHoldWithoutStun += Esclass_BL_Legality;
+        On.Player.IsCreatureLegalToHoldWithoutStun += BL_Melee.CreatureLegality;
         On.Player.Stun += RG_Fx.Spasm;
         On.Player.GetHeldItemDirection += RG_Gfx.PointWeaponAt;
         On.RainWorldGame.Update += Escort_AbsoluteTick;
@@ -1228,6 +1229,7 @@ partial class Plugin : BaseUnityPlugin
                 case -1:  // Brawler build
                     e.Brawler = true;
                     e.tossEscort = false;
+                    e.dualWield = false;
                     self.slugcatStats.runspeedFac -= 0.1f;
                     self.slugcatStats.lungsFac += 0.2f;
                     self.slugcatStats.corridorClimbSpeedFac -= 0.4f;

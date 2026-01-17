@@ -437,7 +437,12 @@ partial class Plugin : BaseUnityPlugin
         if (self?.room?.physicalObjects?[collisionIndex]?[objectIndex] is Player p && 
             eCon.TryGetValue(p, out Escort e))
         {
-            if (e.iFrames > 0 || Eshelp_ParryCondition(p))
+            if (e.Deflector && (e.iFrames > 0 || Eshelp_ParryCondition(p)))
+            {
+                return true;
+            }
+
+            if (e.Brawler && e.BrawExpIFrames > 0)
             {
                 return true;
             }
@@ -477,11 +482,21 @@ partial class Plugin : BaseUnityPlugin
             {
                 frc /= 5;
             }
+
+            if (e.Brawler && e.BrawExpIFrames > 0)
+            {
+                frc /= 100;
+            }
         }
         return frc;
     }
 
-
+    /// <summary>
+    /// Gets the vertical corridor direction if Escort is in a solid vertical corridor
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="throwDir"></param>
+    /// <returns></returns>
     public static bool Escort_CorridorThrowDir(Player self, out IntVector2 throwDir)
     {
         throwDir = new();
@@ -494,5 +509,19 @@ partial class Plugin : BaseUnityPlugin
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Checks if Escort can hurt a player
+    /// </summary>
+    /// <param name="self"></param>
+    /// <returns></returns>
+    public static bool Escort_CanHurtPlayer()
+    {
+        if (ModManager.CoopAvailable && !Custom.rainWorld.options.friendlyFire)
+        {
+            return false;
+        }
+        return true;
     }
 }

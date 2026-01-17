@@ -59,7 +59,6 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Battlehype overhaul
   * **(0.4-dev.)* Starvation overhaul
   * **(0.4-dev.)* Guardian gets more swimming tricks and movement tech
-  * **(0.4-dev.)* Brawler gets an explosive punch (with stun resist)
   * **(0.4-dev.)* New Escapist doesn't get anything for new years
   * **(0.4-dev.)* Old Escapist gets some pacifying stun power, powered by firecrackers which can be used with Special for instant get out of grip or for multiple loud bangs to scare away centipedes
   * **(0.4-dev.)* Old Escapist given the ability to wrap pacifying weapons onto their arms (do sprite first, since the colour of arm wraps change depending on weapon of choice)
@@ -79,6 +78,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Increase the first two stages of empowered duration
   * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
+  * **(0.4-dev.11)**
+    * Brawler can no longer dual wield melee-able weapons (or carry any two of melee-able weapons)
+    * Brawler can no longer supershank tube worms
+    * Brawler explosive punch + explosive spear
+    * Brawler is completely immune to explosions from explosive punches and explosive spears
+    * Brawler doesn't re-grab struck bomb spears
+    * Brawler can safely whiff bombs and bomb spears
+    * Dualwielding dead things is now possible
   * **(0.4-dev.10)**
     * Railgunner code no longer part of a partial giant class
     * Railgunner terrain impact iFrames when recoiling, to prevent accidental death.

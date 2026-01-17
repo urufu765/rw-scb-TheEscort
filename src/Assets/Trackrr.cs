@@ -177,13 +177,13 @@ public static class ETrackrr
             this.Value = Mathf.Lerp(PreValue, Max - player.slowMovementStun, timeStacker);
             this.Limit = player.slowMovementStun > 0? 0 : 1000;
             this.force = player.slowMovementStun > 0;
-            e.overrideSprite = e.BrawLastWeapon != "";
-            spriteNumber = e.BrawLastWeapon switch
+            e.overrideSprite = e.BrawLastWeapon is not Melee.None;
+            spriteNumber = (e.BrawLastWeapon, e.BrawSuperShank) switch
             {
-                "powerpunch" => 3,
-                "punch" => 2,
-                "shank" => 1,
-                "supershank" => 0,
+                (Melee.ExPunch, _) => 3,
+                (Melee.Punch, _) => 2,
+                (Melee.Shank or Melee.ExShank, false) => 1,
+                (Melee.Shank or Melee.ExShank, true) => 0,
                 _ => -1
             };
             this.Max = e.BrawSetCooldown;

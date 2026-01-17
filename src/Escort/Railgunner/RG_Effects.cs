@@ -138,7 +138,7 @@ public static class RG_Fx
         self.immuneToFallDamage = 2;
 
         //self.animation = Player.AnimationIndex.None;
-
+        self.room?.PlaySound(Escort_SFX_Pole_Bounce, self.mainBodyChunk.pos, 0.3f, 0.2f);
         if (ModManager.Watcher)
         {
             self.room?.PlaySound(Watcher.WatcherEnums.WatcherSoundID.Water_Machinery_Hit, self.mainBodyChunk.pos, 0.5f, Mathf.Lerp(0.5f, 0.8f, UnityEngine.Random.value));

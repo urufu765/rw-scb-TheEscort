@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using R = UnityEngine.Random;
 using static TheEscort.Eshelp;
-using IL.MoreSlugcats;
 using RWCustom;
 
 namespace TheEscort;

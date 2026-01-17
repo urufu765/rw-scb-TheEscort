@@ -128,24 +128,32 @@ namespace TheEscort
                     {
                         v = Mathf.Max(v, Mathf.Abs(self.mainBodyChunk.vel.y));
                     }
-                    switch (v)
+                    e.SpeSpeedin += v switch
                     {
-                        case var _ when v > 13f:
-                            e.SpeSpeedin += 10;
-                            break;
-                        case var _ when v > 9f:
-                            e.SpeSpeedin += 4;
-                            break;
-                        case var _ when v > 5.5f:
-                            e.SpeSpeedin++;
-                            break;
-                        default:
-                            if (Mathf.Abs(self.mainBodyChunk.vel.y) <= 4.5f)
-                            {
-                                e.SpeSpeedin--;
-                            }
-                            break;
-                    }
+                        > 13f => 10,
+                        > 9f => 4,
+                        > 5.5f => 1,
+                        var _ when Mathf.Abs(self.mainBodyChunk.vel.y) <= 4.5f => -1,
+                        _ => 0
+                    };
+                    // switch (v)
+                    // {
+                    //     case var _ when v > 13f:
+                    //         e.SpeSpeedin += 10;
+                    //         break;
+                    //     case var _ when v > 9f:
+                    //         e.SpeSpeedin += 4;
+                    //         break;
+                    //     case var _ when v > 5.5f:
+                    //         e.SpeSpeedin++;
+                    //         break;
+                    //     default:
+                    //         if (Mathf.Abs(self.mainBodyChunk.vel.y) <= 4.5f)
+                    //         {
+                    //             e.SpeSpeedin--;
+                    //         }
+                    //         break;
+                    // }
                 }
                 else
                 {

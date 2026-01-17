@@ -11,6 +11,7 @@ using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using TheEscort.Railgunner;
+using TheEscort.Brawler;
 
 namespace TheEscort;
 
@@ -432,10 +433,10 @@ partial class Plugin : BaseUnityPlugin
                 }
                 if (e.Brawler)
                 {
-                    if (e.BrawPunch)
+                    if (e.BrawWeaponInAction is Melee.Punch)
                     {
                         frc *= 0.25f;
-                        Esclass_BL_RockThrow(self, p);
+                        BL_Weaponry.Puncher(self, p);
                     }
                 }
                 if (e.Escapist)
@@ -590,7 +591,7 @@ partial class Plugin : BaseUnityPlugin
         {
             Ebug(self, err, "Error while setting additional spear effects!");
         }
-        if (e.Brawler) Esclass_BL_ThrownSpear(self, spear, ref e, ref thrust);
+        if (e.Brawler) BL_Weaponry.Shanker(self, spear, ref e, ref thrust);
         if (e.Escapist) Esclass_EC_ThrownSpear(self, spear);
         if (e.Railgunner) RG_Player.ThrownSpear(self, spear, onPole, ref e, ref thrust);
         if (onPole && !e.Railgunner || self.bodyMode == Player.BodyModeIndex.Crawl)
@@ -852,7 +853,7 @@ partial class Plugin : BaseUnityPlugin
                     {
                         stunBonus = 105f;
                     }
-                    if (e.Brawler && e.BrawPunch && !(
+                    if (e.Brawler && e.BrawWeaponInAction is Melee.Punch && !(
                         c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
                     )
                     {
