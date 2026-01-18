@@ -117,7 +117,7 @@ namespace TheEscort
             try
             {
                 // Null slugcat check (you never know)
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     Debug.Log("Attempted to access a nulled player when updating!");
                     return;

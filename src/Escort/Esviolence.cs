@@ -12,6 +12,7 @@ using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using TheEscort.Railgunner;
 using TheEscort.Brawler;
+using TheEscort.Deflector;
 
 namespace TheEscort;
 
@@ -23,7 +24,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, otherObject, myChunk, otherChunk);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -80,7 +81,7 @@ partial class Plugin : BaseUnityPlugin
 
 
         if (otherObject is Creature creature &&
-            creature.abstractCreature.creatureTemplate.type != MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
+            creature.abstractCreature.creatureTemplate.type != MoreSlugcatsEnums.CreatureTemplateType.SlugNPC && !(ModManager.CoopAvailable && otherObject is Player && !Custom.rainWorld.options.friendlyFire))
         {
 
             if (e.Escapist && self.aerobicLevel > 0.02f)
@@ -421,7 +422,7 @@ partial class Plugin : BaseUnityPlugin
             }
             if (thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
@@ -464,7 +465,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, spear);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -714,13 +715,11 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, Bullet self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
-                            original *= e.DeflDamageMult + e.DeflPerma;
-                            if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
-                            //e.DeflPowah = 0;
+                            original *= DF_Damage.DamageMultiplier(player, ref e, false);
                             Ebug(player, $"Death upon thee! Sponsored by Raid, Shadow Legs. Damage: {original}", LogLevel.DEBUG, true);
                         }
 
@@ -784,13 +783,11 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, LillyPuck self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
-                            original *= e.DeflDamageMult + e.DeflPerma;
-                            if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
-                            e.DeflPowah = 0;
+                            original *= DF_Damage.DamageMultiplier(player, ref e);
                             Ebug(player, $"Death upon thee! Sponsored by Lillypuck. Damage: {original}", ignoreRepetition: true);
                         }
 
@@ -803,7 +800,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.LillyPuck, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, result, DoubleUp.LillyPuck, self.room, ref e);
                         }
                     }
                     return original;
@@ -826,7 +823,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (self.thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     return orig(self, result, eu);
                 }
@@ -845,7 +842,7 @@ partial class Plugin : BaseUnityPlugin
                 if (result.obj is Creature c)
                 {
                     float stunBonus = 60f;
-                    if (ModManager.MMF && MoreSlugcats.MMF.cfgIncreaseStuns.Value && (c is Cicada || c is LanternMouse || (ModManager.MSC && c is Yeek)))
+                    if (ModManager.MMF && MMF.cfgIncreaseStuns.Value && (c is Cicada || c is LanternMouse || (ModManager.MSC && c is Yeek)))
                     {
                         stunBonus = 105f;
                     }
@@ -854,7 +851,7 @@ partial class Plugin : BaseUnityPlugin
                         stunBonus = 105f;
                     }
                     if (e.Brawler && e.BrawWeaponInAction is Melee.Punch && !(
-                        c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !RWCustom.Custom.rainWorld.options.friendlyFire))
+                        c.dead || c.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.Fly || c.abstractCreature.creatureTemplate.type == MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || (ModManager.CoopAvailable && c is Player && !Custom.rainWorld.options.friendlyFire))
                     )
                     {
                         float dmg = 0.2f;
@@ -895,9 +892,7 @@ partial class Plugin : BaseUnityPlugin
                         }
                         if (e.Deflector && !c.dead)
                         {
-                            baseDamage *= e.DeflDamageMult + e.DeflPerma;
-                            if (e.DeflPowah == 3) Esclass_DF_UltimatePower(p);
-                            e.DeflPowah = 0;
+                            baseDamage *= DF_Damage.DamageMultiplier(p, ref e);
                         }
                         if (e.Escapist)
                         {
@@ -921,7 +916,7 @@ partial class Plugin : BaseUnityPlugin
                         if (e.Railgunner)
                         {
                             c.Violence(self.firstChunk, self.firstChunk.vel * (e.RailDouble is DoubleUp.Rock ? Math.Max(result.chunk.mass * 0.75f, self.firstChunk.mass) : self.firstChunk.mass), result.chunk, result.onAppendagePos, Creature.DamageType.Blunt, baseDamage, stunBonus);
-                            RG_Shocker.ApplyShockingStuff(p, c, self, DoubleUp.Rock, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(p, c, self, result, DoubleUp.Rock, self.room, ref e);
                         }
                         else
                         {
@@ -937,14 +932,14 @@ partial class Plugin : BaseUnityPlugin
                 {
                     (result.obj as PhysicalObject.IHaveAppendages).ApplyForceOnAppendage(result.onAppendagePos, self.firstChunk.vel * self.firstChunk.mass);
                 }
-                self.firstChunk.vel = self.firstChunk.vel * -0.5f + RWCustom.Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(0.1f, 0.4f, UnityEngine.Random.value) * self.firstChunk.vel.magnitude;
+                self.firstChunk.vel = self.firstChunk.vel * -0.5f + Custom.DegToVec(UnityEngine.Random.value * 360f) * Mathf.Lerp(0.1f, 0.4f, UnityEngine.Random.value) * self.firstChunk.vel.magnitude;
                 if (!issaPunch)
                 {
                     self.room.PlaySound(SoundID.Rock_Hit_Creature, self.firstChunk);
                 }
                 if (result.chunk != null)
                 {
-                    self.room.AddObject(new ExplosionSpikes(self.room, result.chunk.pos + RWCustom.Custom.DirVec(result.chunk.pos, result.collisionPoint) * result.chunk.rad, 5, 2f, 4f, 4.5f, 30f, new Color(1f, 1f, 1f, 0.5f)));
+                    self.room.AddObject(new ExplosionSpikes(self.room, result.chunk.pos + Custom.DirVec(result.chunk.pos, result.collisionPoint) * result.chunk.rad, 5, 2f, 4f, 4.5f, 30f, new Color(1f, 1f, 1f, 0.5f)));
                 }
                 self.SetRandomSpin();
                 return true;
@@ -1002,13 +997,11 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, ScavengerBomb self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
-                            original *= e.DeflDamageMult + e.DeflPerma;
-                            if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
-                            e.DeflPowah = 0;
+                            original *= DF_Damage.DamageMultiplier(player, ref e);
                             Ebug(player, $"Death upon thee! Sponsored by Bomb. Damage: {original}", ignoreRepetition: true);
                         }
 
@@ -1027,7 +1020,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.Bomb, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, result, DoubleUp.Bomb, self.room, ref e);
                         }
                     }
                     return original;
@@ -1085,13 +1078,11 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, Spear self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector)
                         {
-                            original *= e.DeflDamageMult + e.DeflPerma;
-                            if (e.DeflPowah == 3) Esclass_DF_UltimatePower(player);
-                            e.DeflPowah = 0;
+                            original *= DF_Damage.DamageMultiplier(player, ref e);
                             Ebug(player, $"Death upon thee! Sponsored by Spear. Damage: {original}", ignoreRepetition: true);
                         }
 
@@ -1104,7 +1095,7 @@ partial class Plugin : BaseUnityPlugin
 
                         if (e.Railgunner)
                         {
-                            RG_Shocker.ApplyShockingStuff(player, creature, self, DoubleUp.Spear, self.room, ref e);
+                            RG_Shocker.ApplyShockingStuff(player, creature, self, result, DoubleUp.Spear, self.room, ref e);
                         }
                     }
                     return original;
@@ -1125,7 +1116,7 @@ partial class Plugin : BaseUnityPlugin
     public static bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
     {
         bool ending = orig(self, result, eu);
-        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
         {
             if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
             {
@@ -1144,14 +1135,22 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r)
+        if (r && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e))
         {
-            DoubleUp typing = DoubleUp.None;
+            if (e.Railgunner)
+            {
+                DoubleUp typing = DoubleUp.None;
 
-            // Though I've already hooked Flarebomb.HitSomething, since Flarebomb calls base method, it's better to just deal with the railgunner stun thing here than potentially twice when also placed in the other hook.
-            if (self is FlareBomb) typing = DoubleUp.Flare;
+                // Though I've already hooked Flarebomb.HitSomething, since Flarebomb calls base method, it's better to just deal with the railgunner stun thing here than potentially twice when also placed in the other hook.
+                if (self is FlareBomb) typing = DoubleUp.Flare;
 
-            RG_Weaponry.GenericHit(self, result, typing);
+                RG_Weaponry.GenericHit(self, result, p, c, ref e, typing);
+            }
+
+            if (e.Deflector)
+            {
+                DF_Damage.MakeHitHurtReallyBad(self, result, p, c, ref e, Creature.DamageType.Blunt);
+            }
         }
 
         return r;
@@ -1164,15 +1163,20 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r && self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        if (r && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e))
         {
-            if (result.chunk?.owner is Creature c)
+            if (e.Railgunner)
             {
-                RG_Shocker.ApplyShockingStuff(p, c, self, DoubleUp.Singularity, self.room, ref e);
+                RG_Shocker.ApplyShockingStuff(p, c, self, result, DoubleUp.Singularity, self.room, ref e);
+                if (self.activateSingularity && self.moveUp == 0)
+                {
+                    self.counter = 100;
+                }
             }
-            if (self.activateSingularity && self.moveUp == 0)
+
+            if (e.Deflector)
             {
-                self.counter = 100;
+                DF_Damage.MakeHitHurtReallyBad(self, result, p, c, ref e, Creature.DamageType.Blunt);
             }
         }
 
@@ -1185,7 +1189,7 @@ partial class Plugin : BaseUnityPlugin
     private void EscortSingularityImpact(On.MoreSlugcats.SingularityBomb.orig_TerrainImpact orig, SingularityBomb self, int chunk, IntVector2 direction, float speed, bool firstContact)
     {
         orig(self, chunk, direction, speed, firstContact);
-        if (self.ignited && self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        if (self.ignited && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
         {
             if (self.activateSingularity && self.moveUp == 0)
             {
@@ -1201,7 +1205,18 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r) RG_Weaponry.GenericHit(self, result, DoubleUp.Firecracker);
+        if (r && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e))
+        {
+            if (e.Railgunner)
+            {
+                RG_Weaponry.GenericHit(self, result, p, c, ref e, DoubleUp.Firecracker);
+            }
+
+            if (e.Deflector)
+            {
+                DF_Damage.MakeHitHurtReallyBad(self, result, p, c, ref e, Creature.DamageType.Blunt);
+            }
+        }
 
         return r;
     }
@@ -1213,8 +1228,18 @@ partial class Plugin : BaseUnityPlugin
     {
         bool r = orig(self, result, eu);
 
-        if (r) RG_Weaponry.GenericHit(self, result);
+        if (r && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e))
+        {
+            if (e.Railgunner)
+            {
+                RG_Weaponry.GenericHit(self, result, p, c, ref e);
+            }
 
+            if (e.Deflector)
+            {
+                DF_Damage.MakeHitHurtReallyBad(self, result, p, c, ref e, Creature.DamageType.Blunt);
+            }
+        }
         return r;
     }
 

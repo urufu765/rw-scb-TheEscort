@@ -26,7 +26,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, eu);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -86,7 +86,7 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 orig(self);
                 return;
@@ -143,7 +143,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, grasp, eu);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -182,7 +182,7 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 orig(self);
                 return;
@@ -194,6 +194,20 @@ partial class Plugin : BaseUnityPlugin
             }
 
             Ebug(self, "Die Triggered!");
+            // if (e.Deflector)
+            // {
+            //     if (ParryCondition(self, e, out _))
+            //     {
+            //         self.Violence(null, null, self.mainBodyChunk, null, Creature.DamageType.Blunt, 0f, 0f);
+            //         Ebug(self, "Deflector parries DEATH!");
+            //         return;
+            //     }
+            //     else if (e.iFrames > 0)
+            //     {
+            //         Ebug(self, "Can't kill Deflector while IMMUNE");
+            //         return;
+            //     }
+            // }
             // Acid water survival
             if (e.Railgunner) e.RailTargetAcquired = null;
 
@@ -262,7 +276,7 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 orig(self, eu);
                 return;
@@ -434,7 +448,7 @@ partial class Plugin : BaseUnityPlugin
     /// <returns>true if negates</returns>
     public static bool Escort_ExplosionStunNegate(Explosion self, int collisionIndex, int objectIndex)
     {
-        if (self?.room?.physicalObjects?[collisionIndex]?[objectIndex] is Player p && 
+        if (self?.room?.physicalObjects?[collisionIndex]?[objectIndex] is Player p &&
             eCon.TryGetValue(p, out Escort e))
         {
             if (e.Deflector && (e.iFrames > 0 || Eshelp_ParryCondition(p)))
@@ -466,7 +480,7 @@ partial class Plugin : BaseUnityPlugin
     public static float Escort_ExplosionKnockbackReduction(Explosion self, float frc, int collisionIndex, int objectIndex)
     {
         if (
-            self?.room?.physicalObjects?[collisionIndex]?[objectIndex] is Player p && 
+            self?.room?.physicalObjects?[collisionIndex]?[objectIndex] is Player p &&
             eCon.TryGetValue(p, out Escort e))
         {
             if (e.Railgunner)

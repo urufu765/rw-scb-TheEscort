@@ -51,7 +51,7 @@ public static class EPatchMeadow
 
     public static SlugcatStats.Timeline FixTheTimeline(Func<StoryGameMode, RainWorldGame, SlugcatStats.Timeline> orig, StoryGameMode self, RainWorldGame game)
     {
-        if (Escort_IsNull(self.currentCampaign, false))
+        if (Eshelp_IsNull(self.currentCampaign, false))
         {
             // if (Clock)
             // {
@@ -73,7 +73,7 @@ public static class EPatchMeadow
     public static SlugcatStats.Name FixTheWorldState(Func<StoryGameMode, RainWorldGame, SlugcatStats.Name> orig, StoryGameMode self, RainWorldGame game)
     {
         // Ebug("Loaded world state");
-        if (Escort_IsNull(self.currentCampaign, false))
+        if (Eshelp_IsNull(self.currentCampaign, false))
         {
             // Ebug("What's the worldstate? " + (self.currentCampaign.value??"I don't know!"));
             // return MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear;

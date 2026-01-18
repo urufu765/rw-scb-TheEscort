@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using static UrufuCutsceneTool.CsInLogger;
 using TheEscort.Railgunner;
 using TheEscort.Brawler;
+using TheEscort.Deflector;
 
 namespace TheEscort
 {
@@ -68,6 +69,13 @@ namespace TheEscort
             if (!eCon.TryGetValue(self, out Escort e))
             {
                 return;
+            }
+
+            if (e.CustomKeybindEnabled)
+            {
+                e.CustomInput[2] = e.CustomInput[1];
+                e.CustomInput[1] = e.CustomInput[0];
+                e.CustomInput[0] = Input.GetKey(e.CustomKeybind);
             }
 
             // Build-specific ticks
@@ -250,7 +258,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     Ebug(self, "Attempted to access a nulled player when updating!", LogLevel.WARN);
                     return;
@@ -509,7 +517,7 @@ namespace TheEscort
             }
 
             // Implement Easy Mode
-            if (e.easyMode && (self.wantToJump > 0 && self.input[0].pckp) && self.input[0].x != 0)
+            if (e.easyMode && self.wantToJump > 0 && self.input[0].pckp && self.input[0].x != 0)
             {
                 self.animation = Player.AnimationIndex.RocketJump;
                 self.wantToPickUp = 0;
@@ -895,7 +903,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -912,7 +920,7 @@ namespace TheEscort
             {
                 return;
             }
-            if (e.Deflector) Esclass_DF_UpdateAnimation(self, ref e);
+            if (e.Deflector) DF_Player.UpdateAnimation(self, ref e);
             if (e.Gilded) Esclass_GD_UpdateAnimation(self);
 
             //Ebug(self, "UpdateAnimation Triggered!");
@@ -997,17 +1005,19 @@ namespace TheEscort
         // Implement Movementthings
         public static void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self)
         {
-            orig(self);
+            
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
+                    orig(self);
                     return;
                 }
             }
             catch (Exception err)
             {
                 Ebug(self, err);
+                orig(self);
                 return;
             }
             if (
@@ -1019,8 +1029,13 @@ namespace TheEscort
                 !eCon.TryGetValue(self, out Escort e)
             )
             {
+                orig(self);
                 return;
             }
+            orig(self);
+
+            if (e.Deflector) DF_Player.UpdateBodyMode(self, ref e);
+
 
             float movementSlow = Mathf.Lerp(1, 4, Mathf.InverseLerp(0, 16, self.slowMovementStun));
 
@@ -1139,7 +1154,7 @@ namespace TheEscort
                                 if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
                                 {
                                     // Nerf to default escort so two guardian escorts don't infinitely sustain each other
-                                    if (Escort_IsNull(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
+                                    if (Eshelp_IsNull(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
                                     {
                                         cp.airInLungs = Mathf.Min(1f, cp.airInLungs + 0.01f);
                                     }
@@ -1199,7 +1214,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;
@@ -1259,7 +1274,7 @@ namespace TheEscort
                 orig(self, f);
                 return;
             }
-            if (Escort_IsNull(self.slugcatStats.name, false))
+            if (Eshelp_IsNull(self.slugcatStats.name, false))
             {
                 if (e.Gilded && !self.slugcatStats.malnourished)
                 {
@@ -1301,7 +1316,7 @@ namespace TheEscort
             // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -1370,7 +1385,7 @@ namespace TheEscort
             }*/
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, direction);
                     return;
@@ -1477,7 +1492,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, source, dmg, chunk, appPos, direction);
                 }
@@ -1497,7 +1512,7 @@ namespace TheEscort
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
             Ebug(self, "Sticky Triggered!");
-            if (e.Deflector) return Esclass_DF_StickySpear(self);
+            if (e.Deflector) return DF_Player.StickySpear(self);
             return !(self.animation == Player.AnimationIndex.BellySlide);
         }
 
@@ -1507,7 +1522,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1564,7 +1579,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, grasp, eu);
                     return;
@@ -1594,7 +1609,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1675,7 +1690,7 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
-                if (Escort_IsNull(self.slugcatStats.name, false))
+                if (Eshelp_IsNull(self.slugcatStats.name, false))
                 {
                     float biteMult = 0.5f;
                     if (e.Brawler)
@@ -1724,7 +1739,7 @@ namespace TheEscort
         {
             try
             {
-                if (self is Player p && Escort_IsNull(p.slugcatStats.name))
+                if (self is Player p && Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                     return;
@@ -1884,7 +1899,7 @@ namespace TheEscort
                                     }
                                 }
                             }
-                            getOut:
+                        getOut:
                             if (foundOffender)
                             {
                                 Ebug(player, "Tusk unimpaled!", LogLevel.DEBUG);
@@ -2026,15 +2041,18 @@ namespace TheEscort
                 }
                 if (e.Deflector)
                 {
-                    player.Jump();
-                    player.animation = Player.AnimationIndex.Flip;
-                    player.mainBodyChunk.vel.y *= 1.5f;
-                    player.mainBodyChunk.vel.x *= 0.15f;
+                    if (player.bodyMode != Player.BodyModeIndex.ZeroG && player.animation != Player.AnimationIndex.DeepSwim)
+                    {
+                        player.Jump();
+                        player.animation = Player.AnimationIndex.Flip;
+                        player.mainBodyChunk.vel.y *= 1.5f;
+                        player.mainBodyChunk.vel.x *= 0.15f;
+                    }
                     if (e.DeflTrampoline)
                     {
                         if (e.DeflPowah < 1)
                         {
-                            e.DeflPowah = 1;
+                            e.DeflPowah++;
                         }
                         if (e.DeflSFXcd == 0)
                         {
@@ -2042,19 +2060,29 @@ namespace TheEscort
                             e.DeflSFXcd = 8;
                         }
                     }
+                    else if (e.DeflParryCD > 0)
+                    {
+                        if (e.DeflPowah < 2)
+                        {
+                            e.DeflPowah++;
+                        }
+                        e.DeflParryCD++;
+                        self.room.PlaySound(Escort_SFX_Parry, e.SFXChunk);
+                    }
                     else
                     {
                         if (e.DeflPowah < 3)
                         {
                             e.DeflPowah++;
                         }
+                        e.DeflParryCD = 2;  // Prevents multiple parry frames in a row to reach instant max empower
                         self.room.PlaySound(SoundID.Spear_Fragment_Bounce, self.mainBodyChunk);
                         self.room.PlaySound(Escort_SFX_Parry, e.SFXChunk);
                     }
                     e.DeflAmpTimer = e.DeflPowah switch
                     {
-                        1 => 200,
-                        2 => 400,
+                        1 => 400,
+                        2 => 600,
                         3 => 800,
                         _ => 0
                     };
@@ -2131,7 +2159,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -2255,7 +2283,7 @@ namespace TheEscort
                             Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
 
                             // Other builds
-                            if (escort.Deflector) Esclass_DF_WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
+                            if (escort.Deflector) DF_Damage.WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
                             if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
                             escort.shelterSaveComplete++;
                         }

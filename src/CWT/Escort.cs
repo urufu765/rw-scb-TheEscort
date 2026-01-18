@@ -8,6 +8,27 @@ using static TheEscort.Eshelp;
 
 namespace TheEscort
 {
+    public enum EsType
+    {
+        None = 3,
+        Generic = 1,
+        Guardian = 0,
+        Brawler = -1,
+        Deflector = -2,
+        ShadowEscapist = -3,
+        Railgunner = -4,
+        Speedster = -5,
+        Gilded = -6,
+        Conqueror = -7,
+        Unstable = -8,
+        Unknown = -9,
+        DreamerEscapist = -10,
+        Gallant = -11,
+        Feral = -12,
+        Test = -99
+    }
+
+
     public partial class Escort
     {
         public string Eskie = "Escort";
@@ -136,103 +157,7 @@ namespace TheEscort
             }
         }
 
-
-        // Build stuff
-        /// <summary>
-        /// IS IT FUCKING DEFLECTOR?!
-        /// </summary>
-        public bool Deflector;
-
-        /// <summary>
-        /// Deflector color when scug color is not custom
-        /// </summary>
-        public Color DeflectorColor;
-
-        /// <summary>
-        /// Deflector empowered timer
-        /// </summary>
-        public int DeflAmpTimer;
-
-        /// <summary>
-        /// Deflector easy parry (backflip onto creature)
-        /// </summary>
-        public bool DeflTrampoline;
-
-        /// <summary>
-        /// Deflector parry sfx cooldown (so it doesn't make the sound like 10 times per parry)
-        /// </summary>
-        public int DeflSFXcd;
-
-        /// <summary>
-        /// Super extended belly slide accumulator
-        /// </summary>
-        public int DeflSlideCom;
-
-        /// <summary>
-        /// Gives a micro boost when slide-pouncing
-        /// </summary>
-        public bool DeflSlideKick;
-
-        /// <summary>
-        /// Level of empowerment
-        /// </summary>
-        public int DeflPowah;
-
-        /// <summary>
-        /// Deflector permanent damage multiplier (per player)
-        /// </summary>
-        private float _deflperma;
-        /// <summary>
-        /// Deflector permanent damage multiplier (synced to host only)
-        /// </summary>
-        private float _deflpermaOnline;
-        public bool DeflPermaHostWantsToShare;
-
-        /// <summary>
-        /// Gets either the per player perma damage multiplier, or the shared pool
-        /// </summary>
-        public float DeflPerma
-        {
-            get
-            {
-                if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
-                {
-                    if (DeflPermaHostWantsToShare) return _deflpermaOnline;
-                    return Plugin.DeflSharedPerma;
-                }
-                return _deflperma;
-            }
-            set
-            {
-                if (Plugin.ins.config.cfgDeflecterSharedPool.Value && !escortArena)
-                {
-                    if (DeflPermaHostWantsToShare) _deflpermaOnline = value;
-                    Plugin.DeflSharedPerma = value;
-                }
-                else
-                {
-                    _deflperma = value;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Empowered damage based on level
-        /// </summary>
-        public float DeflDamageMult
-        {
-            get
-            {
-                return DeflPowah switch
-                {
-                    3 => 1000000f,
-                    2 => 7f,
-                    1 => 3f,
-                    _ => 0.5f
-                };
-            }
-        }
+        public bool[] CustomInput { get; set; }
 
         /// <summary>
         /// IS IT A BORING ASS NUGGET?!
@@ -273,6 +198,12 @@ namespace TheEscort
         /// IS IT REALLY FUCKING BRAWLER?!
         /// </summary>
         public bool Brawler;
+
+        // Build stuff
+        /// <summary>
+        /// IS IT FUCKING DEFLECTOR?!
+        /// </summary>
+        public bool Deflector;
 
         /// <summary>
         /// REVAMP REVAMP REVAMP REVAMP ESCAPIST!
@@ -351,6 +282,7 @@ namespace TheEscort
             if (CustomKeybindEnabled)
             {
                 CustomKeybind = Plugin.ins.config.cfgBindKeys[player.playerState.playerNumber].Value;
+                CustomInput = [false, false, false];
             }
             this.offendingKingTusk = new(1);
             this.offendingKTtusk = -1;
@@ -359,16 +291,6 @@ namespace TheEscort
             this.battleHype = Plugin.ins.Esconfig_Hypabler(player);
 
             // Build specific
-            this.Deflector = false;
-            this.DeflectorColor = new Color(0.23f, 0.24f, 0.573f);
-            this.DeflAmpTimer = 0;
-            this.DeflTrampoline = false;
-            this.DeflSFXcd = 0;
-            this.DeflSlideCom = 0;
-            this.DeflSlideKick = false;
-            this.DeflPowah = 0;
-            this.DeflPerma = 0f;
-
             this.Escapist = false;
             this.EscapistColor = new Color(0.11f, 0.467f, 0.506f);
             this.EscDangerExtend = 0;
@@ -378,6 +300,7 @@ namespace TheEscort
             this.EscUnGraspCD = 0;
 
             EscortBL();
+            EscortDF();
             EscortRG(player);
             EscortSS();
             EscortGD(player);
@@ -686,7 +609,7 @@ namespace TheEscort
                 n = self.playerState.playerNumber;
             }
 
-            float limitation = Plugin.ins.config.cfgHypeRequirement.Value; 
+            float limitation = Plugin.ins.config.cfgHypeRequirement.Value;
             string hypeSprite = "escort_hud_default";
             if (Brawler)
             {
@@ -696,6 +619,7 @@ namespace TheEscort
             if (Deflector)
             {
                 hypeSprite = "escort_hud_deflector";
+                floatTrackers.Add(new ETrackrr.DeflectorParryTraction(n, 1, self, this));
                 floatTrackers.Add(new ETrackrr.DeflectorEmpowerTraction(n, 1, this));
                 floatTrackers.Add(new ETrackrr.DeflectorPermaDamage(n, 2, this));
             }

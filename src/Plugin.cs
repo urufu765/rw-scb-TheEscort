@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TheEscort.Brawler;
+using TheEscort.Deflector;
 using TheEscort.Patches;
 using TheEscort.Railgunner;
 using UnityEngine;
@@ -513,7 +514,7 @@ partial class Plugin : BaseUnityPlugin
         On.RainWorldGame.GoToRedsGameOver += EscortEndingStuff.Escort_Ending_Setup;
         // On.Menu.SlideShow.ctor += EscortEndingStuff.Escort_Meow;
 
-        On.PlayerSessionRecord.AddKill += Esclass_DF_DamageIncrease;
+        On.PlayerSessionRecord.AddKill += DF_Damage.DamageIncrease;
 
         // Debugging
         // On.DebugMouse.Update += DebugMouse_Update;
@@ -539,9 +540,9 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
     {
-        if (templeGuardIsFriendly)
+        if (crit?.representedCreature?.realizedCreature is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && p.KarmaCap >= 9)
         {
-            return 0f;  // Guardian ignores all creatures
+            return 0f;
         }
         return orig(self, crit);  // Default behaviour
     }
@@ -1222,6 +1223,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.bodyWeightFac += 0.12f;
                     self.slugcatStats.throwingSkill = 1;
                     self.slugcatStats.swimBoostCooldown += 60;
+                    self.slugcatStats.swimBoostForce += 2f;
                     self.slugcatStats.swimBoostMinAir -= 0.25f;
                     self.slugcatStats.swimBoostCost -= 0.17f;
                     Ebug(self, "Deflector Build selected!", LogLevel.INFO);
@@ -1367,7 +1369,7 @@ partial class Plugin : BaseUnityPlugin
         Ebug("Timeline: " + world?.game?.TimelinePoint?.value);
 
         // Checks if player is an Escort
-        if (Escort_IsNull(self.slugcatStats.name, false))
+        if (Eshelp_IsNull(self.slugcatStats.name, false))
         {
             ins.L().Set("Escort Check");
 
@@ -1568,7 +1570,7 @@ partial class Plugin : BaseUnityPlugin
     {
         try
         {
-            if (Escort_IsNull(slugcat)) return orig(slugcat);
+            if (Eshelp_IsNull(slugcat)) return orig(slugcat);
             if (escPatch_meadow && EPatchMeadow.IsOnline())
             {
                 return new(14, 9);
@@ -1806,7 +1808,7 @@ partial class Plugin : BaseUnityPlugin
             name = self.manager.rainWorld.progression.PlayingAsSlugcat;
 
         // Check if slugcat is Escort
-        if (Escort_IsNull(name, true))
+        if (Eshelp_IsNull(name, true))
         {
             Ebug("Not an escort!", LogLevel.INFO);
             orig(self);
@@ -1927,37 +1929,33 @@ partial class Plugin : BaseUnityPlugin
         // If not escort, why bother?
         if (!eCon.TryGetValue(self, out Escort e))
         {
+            // TODO: Add condition where for expedition when Escort is turned on, this works
             return false;
         }
 
-        // Deflector extra parry check
-        if (e.Deflector && (self.animation == Player.AnimationIndex.BellySlide || self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.Roll))
+        if (Eshelp.ParryCondition(self, e, out EsType type))
         {
-            Ebug(self, "Parryteched condition!", LogLevel.DEBUG);
+            switch (type)
+            {
+                case EsType.Deflector:
+                    Ebug(self, "Parryteched condition!", LogLevel.DEBUG);
+                    break;
+                case EsType.ShadowEscapist:
+                    Ebug(self, "New Escapist trickz parry condition!", LogLevel.DEBUG);
+                    break;
+                case EsType.Generic:
+                    Ebug(self, "Regular parry condition!", LogLevel.DEBUG);
+                    break;
+                case EsType.None:
+                    Ebug(self, "Lenient parry condition", LogLevel.DEBUG);
+                    Ebug(self, "Parry leniency: " + e.parryAirLean);
+                    break;
+            }
             return true;
         }
-
-        // New Escapist hidden parry tech check
-        if (e.NewEscapist && e.NEsAbility > 0 && (self.animation == Player.AnimationIndex.Flip))
-        {
-            Ebug(self, "New Escapist trickz parry condition!", LogLevel.DEBUG);
-            return true;
-        }
-
-        // Regular parry check
-        else if (self.animation == Player.AnimationIndex.BellySlide && e.parryAirLean > 0)
-        {
-            Ebug(self, "Regular parry condition!", LogLevel.DEBUG);
-            return true;
-        }
-
-        // Not in parry condition
-        else
-        {
-            Ebug(self, "Not in parry condition", LogLevel.DEBUG);
-            Ebug(self, "Parry leniency: " + e.parryAirLean);
-            return e.parrySlideLean > 0;
-        }
+        Ebug(self, "Not in parry condition", LogLevel.DEBUG);
+        Ebug(self, "Parry leniency: " + e.parryAirLean);
+        return false;
     }
 
     /// <summary>

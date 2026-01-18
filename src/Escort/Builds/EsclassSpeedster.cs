@@ -627,7 +627,7 @@ namespace TheEscort
             //     Ebug("Terrain Impact Speed @ " + speed, LogLevel.INFO, ignoreRepetition: true);
             // }
             orig(self, chunk, direction, speed, firstContact);
-            if (Escort_IsNull(self.slugcatStats?.name))
+            if (Eshelp_IsNull(self.slugcatStats?.name))
             {
                 return;
             }

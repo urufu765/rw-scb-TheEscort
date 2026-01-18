@@ -69,21 +69,24 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Make a new friend slot if player refuses to get slugpup (and add respawn mechanics based on that)
   * **(0.4-dev.)* Spearmaster doodles all over the map. Add them
   * **(0.4-dev.)* Disable mother achievement, add bonus score for creatures escorted
-  * **(0.4-dev.)* Deflector gets a midair/swim/float timing parry that has a short window but does the same parry. This is to compensate for situations where Deflector is unable to flip/roll/slide/bounce
-    * Once per midair, reset on touching floor. Also reduces velocity
-    * Every swim boost, but swim boost CD is severely increased
-    * ZeroG, does a flip in zeroG?
-  * **(0.4-dev.)* Deflector only gets at most 2 stacks from explosion, not all 3
-  * **(0.4-dev.)* Deflector can properly parry bees
-  * **(0.4-dev.)* Increase the first two stages of empowered duration
   * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
+  * **(0.4-dev.)* Deflector can properly parry bees
+  * **(0.4-dev.12)**
+    * Now all guardians will not throw things all over the place if karma 10 Escort is in the same room.
+    * Deflector empowered damage applies to all weapons
+    * Deflector's empowered duration for the first two stages slightly lengthened (1: 5s->10s, 2:10s->15s, 3:20s)
+    * Deflector can't instantly get max empowerment from a single attack
+    * Deflector aerial parry (press jump/custom input midair)
+    * Deflector underwater parry
+    * Deflector ZeroG parry
+    * Deflector corridor parry
   * **(0.4-dev.11)**
     * Brawler can no longer dual wield melee-able weapons (or carry any two of melee-able weapons)
     * Brawler can no longer supershank tube worms
     * Brawler explosive punch + explosive spear
     * Brawler is completely immune to explosions from explosive punches and explosive spears
-    * Brawler doesn't re-grab struck bomb spears
+    * Brawler doesn't re-grab struck bomb spears (forgot to test)
     * Brawler can safely whiff bombs and bomb spears
     * Dualwielding dead things is now possible
   * **(0.4-dev.10)**

@@ -25,9 +25,10 @@ public abstract class Trackrr<T>
 
     public virtual T Value
     {
-        get {
+        get
+        {
             return _tracked;
-        } 
+        }
         set
         {
             _tracked = value;
@@ -134,7 +135,7 @@ public static class ETrackrr
     {
         private readonly Player player;
         private readonly Escort e;
-        public HypeTraction(int playerNumber, int trackerNumber, float limiter, Player player, Escort e, string centerSprite) : base( playerNumber, trackerNumber, "hype", centerSprite: centerSprite)
+        public HypeTraction(int playerNumber, int trackerNumber, float limiter, Player player, Escort e, string centerSprite) : base(playerNumber, trackerNumber, "hype", centerSprite: centerSprite)
         {
             this.player = player;
             this.e = e;
@@ -175,7 +176,7 @@ public static class ETrackrr
             };
 #endif
             this.Value = Mathf.Lerp(PreValue, Max - player.slowMovementStun, timeStacker);
-            this.Limit = player.slowMovementStun > 0? 0 : 1000;
+            this.Limit = player.slowMovementStun > 0 ? 0 : 1000;
             this.force = player.slowMovementStun > 0;
             e.overrideSprite = e.BrawLastWeapon is not Melee.None;
             spriteNumber = (e.BrawLastWeapon, e.BrawSuperShank) switch
@@ -203,12 +204,97 @@ public static class ETrackrr
             this.Max = e.DeflPowah switch
             {
                 3 => 800,
-                2 => 400,
-                _ => 200
+                2 => 600,
+                _ => 400
             };
             this.Value = Mathf.Lerp(PreValue, e.DeflAmpTimer, timeStacker);
-            this.Limit = e.DeflPowah == 3? 0 : 200;
+            this.Limit = e.DeflPowah == 3 ? 0 : 800;
             spriteNumber = e.DeflPowah;
+        }
+    }
+
+    public class DeflectorParryTraction : Trackrr<float>
+    {
+        private readonly Player p;
+        private readonly Escort e;
+        private readonly Color parryColor;
+        private readonly Color parryChargingColor;
+        private float transition;
+        private float nextTrans;
+        private float prevTrans;
+        private bool trans;
+        private float maxTrans;
+        public DeflectorParryTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "deflectorParry")
+        {
+            this.p = player;
+            this.e = escort;
+            this.parryColor = new Color(.5f, .45f, .55f);
+            this.parryChargingColor = new Color(.39f, .3f, .42f);
+            Limit = 9999;
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            transition = Mathf.Lerp(prevTrans, nextTrans, timeStacker);
+            trans = false;
+            maxTrans = 1;
+            bool condition = false;
+            bool extraParry = true;
+            if (p.bodyMode == Player.BodyModeIndex.ZeroG && e.DeflZeroGParry < 0)
+            {
+                Value = Mathf.Lerp(PreValue, Escort.DeflZeroGWait + e.DeflZeroGParry, timeStacker);
+                Max = Escort.DeflZeroGWait - 1;
+                condition = e.DeflZeroGParry == -1;
+            }
+            else if (p.animation == Player.AnimationIndex.DeepSwim && e.DeflSwimParry < 0)
+            {
+                Value = Mathf.Lerp(PreValue, Escort.DeflSwimCD + e.DeflSwimParry, timeStacker);
+                Max = Escort.DeflSwimCD - 1;
+                condition = e.DeflSwimParry == -1;
+            }
+            else if (p.bodyMode == Player.BodyModeIndex.CorridorClimb && e.DeflCorridorParry < 0)
+            {
+                Value = Mathf.Lerp(PreValue, Escort.DeflCorridorCD + e.DeflCorridorParry, timeStacker);
+                Max = Escort.DeflCorridorCD - 1;
+                condition = e.DeflCorridorParry == -1;
+            }
+            else if (p.bodyMode == Player.BodyModeIndex.Default && p.animation == Player.AnimationIndex.None && e.DeflAerialParry < 0)
+            {
+                Value = Mathf.Lerp(PreValue, Escort.DeflAerialWait + e.DeflAerialParry, timeStacker);
+                Max = Escort.DeflAerialWait - 1;
+                condition = e.DeflAerialParry == -1;
+            }
+            else
+            {
+                extraParry = false;
+            }
+
+            if (extraParry)
+            {
+                if (condition)
+                {
+                    this.trackerColor = Color.Lerp(Color.black, parryColor, transition);
+                    trans = true;
+                    maxTrans = .6f;
+                }
+                else
+                {
+                    this.trackerColor = Color.Lerp(Color.black, parryChargingColor, Mathf.InverseLerp(0, Max, Value));
+                }
+            }
+            else
+            {
+                trans = Eshelp.ParryCondition(p, e, out _);
+                Value = Max = 1;
+                trackerColor = Color.Lerp(Color.black, parryColor, transition);
+            }
+        }
+
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+            prevTrans = transition;
+            nextTrans = Mathf.Clamp(nextTrans + (trans ? .75f : -.25f), 0, maxTrans);
         }
     }
 
@@ -232,7 +318,7 @@ public static class ETrackrr
             if (e.EscUnGraspCD <= 0)
             {
                 this.Limit = 0;
-                if (e.EscUnGraspLimit != 0) 
+                if (e.EscUnGraspLimit != 0)
                 {
                     prevMax = e.EscUnGraspLimit;
                     e.overrideSprite = true;
@@ -243,10 +329,12 @@ public static class ETrackrr
                 }
                 this.Max = prevMax;
                 this.Value = Mathf.Lerp(PreValue, Mathf.Lerp(0, e.EscUnGraspTime, Mathf.InverseLerp(0, 20, transitioning)), timeStacker);
-                if (e.EscUnGraspLimit == 0 && transitioning > 0) {
+                if (e.EscUnGraspLimit == 0 && transitioning > 0)
+                {
                     this.transitioner = -1;
                 }
-                else if (e.EscUnGraspLimit > 0 && transitioning < 20) {
+                else if (e.EscUnGraspLimit > 0 && transitioning < 20)
+                {
                     this.transitioner = 1;
                 }
                 else
@@ -322,7 +410,7 @@ public static class ETrackrr
             this.Value = Mathf.Lerp(PreValue, e.RailgunCD, timeStacker);
             if (Value > Max) Max = Value;
             else if (Value < 1) Max = (float)Escort.RAILGUNNER_CD_MAX * 2 / 3;
-            this.Limit = player.Malnourished? 0 : Escort.RAILGUNNER_CD_MAX;
+            this.Limit = player.Malnourished ? 0 : Escort.RAILGUNNER_CD_MAX;
         }
     }
 
@@ -349,7 +437,7 @@ public static class ETrackrr
             if (setValue != Mathf.Min(e.RailgunUse, e.RailgunLimit) && (preValue < setValue || e.RailgunCD == 0))
             {
                 transitioning = 0;
-                preValue = e.RailgunCD == 0? 0 : setValue;
+                preValue = e.RailgunCD == 0 ? 0 : setValue;
             }
             setValue = Mathf.Min(e.RailgunUse, e.RailgunLimit);
             if (e.RailgunUse >= e.RailgunLimit)
@@ -364,12 +452,14 @@ public static class ETrackrr
             }
 
             // Advance the transition, or reset transition ticker
-            if (this.Value == setValue) {
+            if (this.Value == setValue)
+            {
                 preValue = setValue;
                 transitioning = 0;
                 yesTrans = false;
             }
-            else {
+            else
+            {
                 yesTrans = true;
             }
 
@@ -384,7 +474,7 @@ public static class ETrackrr
             };
 
             // Smoothly transition the value with an ease out
-            this.Value = Mathf.Lerp(PreValue, preValue < setValue? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 10)) : Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 10)), timeStacker);
+            this.Value = Mathf.Lerp(PreValue, preValue < setValue ? Mathf.Lerp(preValue, setValue, Mathf.Log(transitioning, 10)) : Mathf.Lerp(setValue, preValue, Mathf.Log(transitioning, 10)), timeStacker);
         }
 
         public override void UpdateTracker()
@@ -415,19 +505,20 @@ public static class ETrackrr
             {
                 Max = e.SpeExtraSpe;
                 Limit = 0;
-                if (gear <= e.SpeGear + 1){
+                if (gear <= e.SpeGear + 1)
+                {
                     Value = Mathf.Lerp(PreValue, e.SpeSpeedin, timeStacker);
                     oldValue = Value;
                     yesTrans = false;
                 }
-                else 
+                else
                 {
                     yesTrans = true;
                     Value = Mathf.Lerp(PreValue, Mathf.Lerp(oldValue, 0, Mathf.InverseLerp(0, 20, transitioning)), timeStacker);
                 }
                 spriteNumber = e.SpeGear + 1;
             }
-            else 
+            else
             {
                 this.Max = 240;
                 if (e.SpeCharge == gear - 1)
@@ -440,7 +531,8 @@ public static class ETrackrr
                     Value = Mathf.Lerp(PreValue, Max, timeStacker);
                     Limit = 0;
                 }
-                else {
+                else
+                {
                     Value = Mathf.Lerp(PreValue, 0, timeStacker);
                 }
                 yesTrans = false;
@@ -465,25 +557,25 @@ public static class ETrackrr
         {
             this.escort = escort;
             this.extra = extra;
-            this.trackerColor = extra? new Color(0.86f, 0.65f, 0f) : new Color(0.76f, 0.78f, 0f);
-            this.Max = extra? 480 : 240;
+            this.trackerColor = extra ? new Color(0.86f, 0.65f, 0f) : new Color(0.76f, 0.78f, 0f);
+            this.Max = extra ? 480 : 240;
         }
 
         public override void DrawTracker(float timeStacker)
         {
-            if (extra) 
+            if (extra)
             {
                 this.effectColor = Color.Lerp(trackerColor, Color.white, 0.35f);
-                Limit = escort.SpeSecretSpeed? 0 : Max;
-                Value = Mathf.Lerp(PreValue, escort.SpeSecretSpeed? escort.SpeSpeedin * 2 : escort.SpeExtraSpe, timeStacker);
-                spriteNumber = escort.SpeSecretSpeed? 2 : 0;
+                Limit = escort.SpeSecretSpeed ? 0 : Max;
+                Value = Mathf.Lerp(PreValue, escort.SpeSecretSpeed ? escort.SpeSpeedin * 2 : escort.SpeExtraSpe, timeStacker);
+                spriteNumber = escort.SpeSecretSpeed ? 2 : 0;
             }
-            else 
+            else
             {
-                this.effectColor = escort.SpeSecretSpeed? Color.Lerp(trackerColor, Color.white, 0.35f) : Color.Lerp(trackerColor, Color.black, 0.35f);
-                Limit = escort.SpeDashNCrash? 0 : Max;
+                this.effectColor = escort.SpeSecretSpeed ? Color.Lerp(trackerColor, Color.white, 0.35f) : Color.Lerp(trackerColor, Color.black, 0.35f);
+                Limit = escort.SpeDashNCrash ? 0 : Max;
                 Value = Mathf.Lerp(PreValue, escort.SpeSpeedin, timeStacker);
-                spriteNumber = escort.SpeDashNCrash? 1 : 0;
+                spriteNumber = escort.SpeDashNCrash ? 1 : 0;
             }
         }
     }
@@ -514,11 +606,11 @@ public static class ETrackrr
 
         public override void DrawTracker(float timeStacker)
         {
-            if (transition < 5 && ParryCondition())
+            if (transition < 5 && Eshelp.ParryCondition(player, escort, out _))
             {
                 transitioner = 1;
             }
-            else if (transition > 0 && transitionLim == 0 && !ParryCondition())
+            else if (transition > 0 && transitionLim == 0 && !Eshelp.ParryCondition(player, escort, out _))
             {
                 transitioner = -1;
             }
@@ -607,14 +699,14 @@ public static class ETrackrr
         public override void UpdateTracker()
         {
             base.UpdateTracker();
-            if (crafting > 0) 
+            if (crafting > 0)
             {
                 crafting--;
                 spriteNumber = 3;
             }
             else
             {
-                spriteNumber = animation + (escort.GildFloatState? 4 : 0);
+                spriteNumber = animation + (escort.GildFloatState ? 4 : 0);
             }
             if (changing > 0)
             {
@@ -642,7 +734,7 @@ public static class ETrackrr
         {
             this.e = escort;
             this.Limit = 0;
-            this.spriteNumber = e.escortArena? 1 : 0;
+            this.spriteNumber = e.escortArena ? 1 : 0;
         }
 
         public override void DrawTracker(float timeStacker)
@@ -658,7 +750,7 @@ public static class ETrackrr
             if (this.Limit < e.DeflPerma)
             {
                 if (!firstInit) tickSlowly++;
-                if (sizeIncrease < 30 && tickSlowly >= 4) 
+                if (sizeIncrease < 30 && tickSlowly >= 4)
                 {
                     sizeIncrease++;
                     tickSlowly = 0;
@@ -666,7 +758,7 @@ public static class ETrackrr
                 tickEvenSlowly++;
                 if (firstInit)
                 {
-                    this.Limit += this.Limit < e.DeflPerma - 10? 0.123f : (this.Limit < e.DeflPerma - 0.75f? 0.012f : 0.001f);
+                    this.Limit += this.Limit < e.DeflPerma - 10 ? 0.123f : (this.Limit < e.DeflPerma - 0.75f ? 0.012f : 0.001f);
                     tickExtremelySlowly = 8;
                 }
                 else if (e.escortArena && tickEvenSlowly >= Custom.LerpMap(e.DeflPerma - Limit, 0.01f, 0.25f, 20, 0))
@@ -695,7 +787,8 @@ public static class ETrackrr
             {
                 tickExtremelySlowly--;
             }
-            Max = e.DeflPowah switch {
+            Max = e.DeflPowah switch
+            {
                 3 => 69,
                 2 => 7,
                 1 => 3,
@@ -716,7 +809,7 @@ public static class ETrackrr
         {
             this.player = player;
             this.escort = escort;
-            Max = escort.isDefault? 1 : 0;
+            Max = escort.isDefault ? 1 : 0;
         }
 
         public override void DrawTracker(float timeStacker)
@@ -783,7 +876,7 @@ public static class ETrackrr
             {
                 trackerColor = Color.Lerp(unstableColor, Color.black, 0.35f);
                 Limit = 120;
-                Max = p.Malnourished? 120 : 80;
+                Max = p.Malnourished ? 120 : 80;
                 Value = Mathf.Lerp(PreValue, Max - e.UnsBlinkCD, timeStacker);
             }
             else if (e.UnsBlinkWindow > 0)

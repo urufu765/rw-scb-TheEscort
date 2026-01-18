@@ -52,14 +52,14 @@ public static class RG_Shocker
     /// <param name="sorce">Source</param>
     /// <param name="amount">Stun duration</param>
     /// <param name="room">In room</param>
-    public static void ApplyShockingStuff(Player by, Creature at, BodyChunk sorce, float amount, Room room, bool intensify = false)
+    public static void ApplyShockingStuff(Player by, Creature at, BodyChunk sorce, SharedPhysics.CollisionResult? result, float amount, Room room, bool intensify = false)
     {
         float actualAmount = GetCreatureStunAmount(at, amount);
 
         // do a violent stun
         if (!IsCreatureImmuneToShock(at))
         {
-            at.Violence(sorce, Custom.DirVec(sorce.pos, at.firstChunk.pos) * 3f, at.firstChunk, null, Creature.DamageType.Electric, 0.1f, actualAmount);
+            at.Violence(sorce, Custom.DirVec(sorce.pos, at.firstChunk.pos) * 3f, at.firstChunk, result?.onAppendagePos??null, Creature.DamageType.Electric, 0.1f, actualAmount);
             room?.AddObject(new CreatureSpasmer(at, false, at.stun));
         }
         if (at.Submersion > 0.5f)
@@ -107,7 +107,7 @@ public static class RG_Shocker
     {
         if (e.RailgunCD == 0) return;
         e.RailIFrame += 5;
-        ApplyShockingStuff(by, at, by.mainBodyChunk, e.Escat_RG_SheDoesHowMuch(type), room);
+        ApplyShockingStuff(by, at, by.mainBodyChunk, null, e.Escat_RG_SheDoesHowMuch(type), room);
     }
 
     /// <summary>
@@ -118,11 +118,11 @@ public static class RG_Shocker
     /// <param name="type">Type of weapon</param>
     /// <param name="room">The room</param>
     /// <param name="e">Escort</param>
-    public static void ApplyShockingStuff(Player by, Creature at, Weapon with, DoubleUp type, Room room, ref Escort e)
+    public static void ApplyShockingStuff(Player by, Creature at, Weapon with, SharedPhysics.CollisionResult? result, DoubleUp type, Room room, ref Escort e)
     {
         if (e.RailgunCD == 0) return;
         e.RailIFrame += 2;
-        ApplyShockingStuff(by, at, with.firstChunk, e.Escat_RG_SheDoesHowMuch(type), room);
+        ApplyShockingStuff(by, at, with.firstChunk, result, e.Escat_RG_SheDoesHowMuch(type), room);
     }
 
     /// <summary>

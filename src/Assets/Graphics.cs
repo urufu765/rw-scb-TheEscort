@@ -86,7 +86,7 @@ namespace TheEscort
                 {
                     return;
                 }
-                if (Escort_IsNull(self.player.slugcatStats.name))
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -225,7 +225,7 @@ namespace TheEscort
                 {
                     return;
                 }
-                if (Escort_IsNull(self.player.slugcatStats.name))
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -299,7 +299,7 @@ namespace TheEscort
                     orig(self, s, rCam, t, camP);
                     return;
                 }
-                if (Escort_IsNull(self.player.slugcatStats.name))
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     orig(self, s, rCam, t, camP);
                     return;
@@ -923,7 +923,7 @@ namespace TheEscort
                 {
                     if (ins.config.arenaEscortBuilds[i] is not null)
                     {
-                        if (Escort_IsNull(self.GetArenaSetup?.playerClass?[i]))
+                        if (Eshelp_IsNull(self.GetArenaSetup?.playerClass?[i]))
                         {
                             ins.config.arenaEscortBuilds[i].pos = new(800, 1000);
                             ins.config.arenaEscortBuilds[i].inactive = true;

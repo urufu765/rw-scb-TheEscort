@@ -384,7 +384,7 @@ public static class Eshelp
     /// <param name="theSlugcat">Slugcat's name</param>
     /// <param name="nullCheck">For nullchecks (inverts result)</param>
     /// <returns>Whether the slugcat is not an Escort</returns>
-    public static bool Escort_IsNull(SlugcatStats.Name theSlugcat, bool nullCheck = true)
+    public static bool Eshelp_IsNull(SlugcatStats.Name theSlugcat, bool nullCheck = true)
     {
         try
         {
@@ -474,6 +474,37 @@ public static class Eshelp
             Vector2 vecBody = vec * Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[1].mass, 1f, 0.5f)) * intensity;
             self.bodyChunks[1].pos += vecBody;
             self.bodyChunks[1].vel += vecBody * 0.5f;
+        }
+    }
+
+    public static bool ParryCondition(Player player, in Escort escort, out EsType type)
+    {
+        type = EsType.None;
+        // Deflector extra parry check
+        if (escort.Deflector && (escort.DeflAerialParry > 0 || escort.DeflSwimParry > 0 || escort.DeflZeroGParry > 0 || escort.DeflCorridorParry > 0 || player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
+        {
+            type = EsType.Deflector;
+            return true;
+        }
+
+        // New Escapist hidden parry tech check
+        if (escort.NewEscapist && escort.NEsAbility > 0 && (player.animation == Player.AnimationIndex.Flip))
+        {
+            type = EsType.ShadowEscapist;
+            return true;
+        }
+
+        // Regular parry check
+        else if (player.animation == Player.AnimationIndex.BellySlide && escort.parryAirLean > 0)
+        {
+            type = EsType.Generic;
+            return true;
+        }
+
+        // Not in parry condition
+        else
+        {
+            return escort.parrySlideLean > 0;
         }
     }
 

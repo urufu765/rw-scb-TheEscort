@@ -24,7 +24,7 @@ public static class RG_Weaponry
             self.canBeHitByWeapons = true;
             if (thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
@@ -87,7 +87,7 @@ public static class RG_Weaponry
             }
             if (thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
@@ -143,7 +143,7 @@ public static class RG_Weaponry
         {
             if (self.thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, inbetweenPos, deflectDir, bounceSpeed);
                     return;
@@ -238,7 +238,7 @@ public static class RG_Weaponry
     /// </summary>
     public static void CrackerThrow(On.FirecrackerPlant.orig_Thrown orig, FirecrackerPlant self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
-        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Firecracker)
+        if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Firecracker)
         {
             if (!e.RailFirstWeaped)
             {
@@ -261,7 +261,7 @@ public static class RG_Weaponry
     /// </summary>
     public static void FlareThrow(On.FlareBomb.orig_Thrown orig, FlareBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
-        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Flare)
+        if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Flare)
         {
             if (!e.RailFirstWeaped)
             {
@@ -283,7 +283,7 @@ public static class RG_Weaponry
     /// </summary>
     public static void SingularThrow(On.MoreSlugcats.SingularityBomb.orig_Thrown orig, MoreSlugcats.SingularityBomb self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
-        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Singularity)
+        if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Singularity)
         {
             if (!e.RailFirstWeaped)
             {
@@ -302,7 +302,7 @@ public static class RG_Weaponry
 
     public static void SpearThrow(On.Spear.orig_Thrown orig, Spear self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
-        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Spear or DoubleUp.ElectroSpear)
+        if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Spear or DoubleUp.ElectroSpear)
         {
             self.canBeHitByWeapons = false;
             frc *= 1.5f;
@@ -312,7 +312,7 @@ public static class RG_Weaponry
 
     public static void WeaponThrow(On.Weapon.orig_Thrown orig, Weapon self, Creature thrownBy, Vector2 thrownPos, Vector2? firstFrameTraceFromPos, IntVector2 throwDir, float frc, bool eu)
     {
-        if (thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is not DoubleUp.None)
+        if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is not DoubleUp.None)
         {
             throwDir = e.RailLastThrowDir;
             thrownPos = p.firstChunk.pos + throwDir.ToVector2() * 10f + new Vector2(0f, 4f);
@@ -336,12 +336,12 @@ public static class RG_Weaponry
     /// <param name="self"></param>
     /// <param name="result"></param>
     /// <param name="weaponType"></param>
-    public static void GenericHit(Weapon self, SharedPhysics.CollisionResult result, DoubleUp weaponType = DoubleUp.None)
+    public static void GenericHit(Weapon self, SharedPhysics.CollisionResult result, Player p, Creature c, ref Escort e, DoubleUp weaponType = DoubleUp.None)
     {
-        if (self.thrownBy is Player p && Escort_IsNull(p.slugcatStats?.name, false) && result.chunk?.owner is Creature c && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
-        {
-            RG_Shocker.ApplyShockingStuff(p, c, self, weaponType, self.room, ref e);
-        }
+        // Already handled cases, don't try to do it again bro
+        if (self is Spear or Rock or LillyPuck or ScavengerBomb or SingularityBomb) return;
+
+        RG_Shocker.ApplyShockingStuff(p, c, self, result, weaponType, self.room, ref e);
     }
 
     /// <summary>

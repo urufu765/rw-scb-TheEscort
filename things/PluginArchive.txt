@@ -293,3 +293,25 @@ namespace TheEscort
             if (forceOutOfUpdate){
                 return;
             }
+
+
+    public static float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
+    {
+        if (crit?.representedCreature?.realizedCreature is Player p && Escort_IsNull(p.slugcatStats?.name, false) && p.KarmaCap >= 9)
+        {
+            return 0f;
+        }
+        // if (self.guard is not null && tRel.TryGetValue(self.guard, out GuardianRelationRelation gRizz))
+        // {
+        //     if (gRizz.Friendly)
+        //     {
+        //         return 0f;  // Guardian ignores all creatures
+        //     }
+        //     else if (gRizz.escorts.Any(a => a?.room?.abstractRoom?.name == self.guard?.room?.abstractRoom?.name))
+        //     {
+        //         gRizz.Friendly = true;
+        //         return 0f;
+        //     }
+        // }
+        return orig(self, crit);  // Default behaviour
+    }
