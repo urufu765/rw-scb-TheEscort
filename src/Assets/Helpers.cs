@@ -545,6 +545,7 @@ public static class Eshelp
         text = text.Replace("<BRAWLER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Brawler"));
         text = text.Replace("<DEFLECTOR>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Deflector"));
         text = text.Replace("<ESCAPIST>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Escapist"));
+        text = text.Replace("<EVADER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Evader"));
         text = text.Replace("<RAILGUNNER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Railgunner"));
         text = text.Replace("<SPEEDSTER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Speedster"));
         text = text.Replace("<GILDED>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Gilded"));

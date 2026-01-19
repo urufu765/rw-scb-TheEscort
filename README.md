@@ -72,6 +72,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
   * **(0.4-dev.)* Deflector can properly parry bees
+    * X Deflector's lethal bite percentage is now 100%.
+    * X Deflector gets new empowered animation
+    * Speedster base speed reduced a bit
+  * **(0.4-dev.13)**
+    * New Escapist is now Evader, and old Escapist gets their name back... as well as becoming the 9th playable
+    * Build select button in jolly moves out of the way now, in case another modcat decides to use that space
+    * Arena build select button shrunk slightly
+    * Changed some descriptions and names on the build select
   * **(0.4-dev.12)**
     * Now all guardians will not throw things all over the place if karma 10 Escort is in the same room.
     * Deflector empowered damage applies to all weapons
@@ -86,7 +94,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Brawler can no longer supershank tube worms
     * Brawler explosive punch + explosive spear
     * Brawler is completely immune to explosions from explosive punches and explosive spears
-    * Brawler doesn't re-grab struck bomb spears (forgot to test)
+    * Brawler doesn't re-grab struck bomb spears
     * Brawler can safely whiff bombs and bomb spears
     * Dualwielding dead things is now possible
   * **(0.4-dev.10)**

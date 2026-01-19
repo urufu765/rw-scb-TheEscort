@@ -23,6 +23,18 @@ partial class Plugin : BaseUnityPlugin
         aCon ??= new();
         sCon ??= new();
         natrualSpears ??= [];
+
+        selectionable = new() {
+            {  0, "Guardian" },
+            { -1, "Brawler" },
+            { -2, "Deflector" },
+            { -3, "Evader" },
+            { -4, "Railgunner" },
+            { -5, "Speedster" },
+            { -6, "Gilded" }
+        };
+        escortRGBTick = new float[4];
+        escortRGBStore = new Color[4];
     }
 
     static Plugin()
@@ -112,18 +124,6 @@ partial class Plugin : BaseUnityPlugin
 
         CustomShader = PlayerString("theescort/speedster/custom_shader");
         speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");
-
-        selectionable = new() {
-            {  0, "Guardian" },
-            { -1, "Brawler" },
-            { -2, "Deflector" },
-            { -3, "Escapist" },
-            { -4, "Railgunner" },
-            { -5, "Speedster" },
-            { -6, "Gilded" }
-        };
-        escortRGBTick = new float[4];
-        escortRGBStore = new Color[4];
         Ebug("-> Static fields load complete");
     }
 }

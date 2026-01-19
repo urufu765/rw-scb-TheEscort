@@ -1034,13 +1034,13 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    public static bool Esconfig_OldEscapist()
-    {
-        if (ins.config.cfgOldEscapist.Value) return true;
+    // public static bool Esconfig_OldEscapist()
+    // {
+    //     if (ins.config.cfgOldEscapist.Value) return true;
 
-        if (escPatch_meadow && EPatchMeadow.IsOnline()) return true;
-        return false;
-    }
+    //     if (escPatch_meadow && EPatchMeadow.IsOnline()) return true;
+    //     return false;
+    // }
 
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
@@ -1066,6 +1066,10 @@ partial class Plugin : BaseUnityPlugin
             if (escPatch_meadow && EPatchMeadow.IsOnline() && aCon.TryGetValue(ac, out AbstractEscort ae))
             {
                 pal = ae.buildId;
+                if (pal == -3)
+                {
+                    pal = -9;
+                }
                 Ebug(self, "Build set from online: " + pal);
             }
 
@@ -1106,6 +1110,18 @@ partial class Plugin : BaseUnityPlugin
                 //         goto default;
                 //     }
                 //     break;
+                case -9:
+                    e.Escapist = true;
+                    e.dualWield = false;
+                    e.tossEscort = false;
+                    self.slugcatStats.runspeedFac += 0.1f;
+                    self.slugcatStats.lungsFac += 0.2f;
+                    self.slugcatStats.bodyWeightFac -= 0.15f;
+                    self.slugcatStats.generalVisibilityBonus -= 1;
+                    self.slugcatStats.visualStealthInSneakMode += 1.5f;
+                    self.slugcatStats.loudnessFac -= self.Malnourished ? 1.95f : 1.45f;
+                    Ebug(self, "Escapist Build selected!", LogLevel.INFO);
+                    break;
                 case -8:  // Unstable test build
                     // IF locked, don't let player play as Unstable
                     // if (self?.room?.game is null)
@@ -1175,29 +1191,14 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.bodyWeightFac += 0.3f;
                     Ebug(self, "Railgunner Build selected!", LogLevel.INFO);
                     break;
-                case -3:  // Escapist build
-                    if (Esconfig_OldEscapist())
-                    {
-                        e.Escapist = true;
-                        e.dualWield = false;
-                        self.slugcatStats.runspeedFac += 0.1f;
-                        self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.bodyWeightFac -= 0.15f;
-                        self.slugcatStats.generalVisibilityBonus -= 1;
-                        self.slugcatStats.visualStealthInSneakMode += 1.5f;
-                        self.slugcatStats.loudnessFac -= self.Malnourished ? 1.95f : 1.45f;
-                        Ebug(self, "Old Escapist Build selected!", LogLevel.INFO);
-                    }
-                    else
-                    {
-                        e.NewEscapist = true;
-                        self.slugcatStats.visualStealthInSneakMode += 1;
-                        self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.bodyWeightFac -= 0.15f;
-                        self.slugcatStats.throwingSkill = 1;
-                        self.spearOnBack = new Player.SpearOnBack(self);
-                        Ebug(self, "New Escapist Build selected!", LogLevel.INFO);
-                    }
+                case -3:  // Evader build
+                    e.NewEscapist = true;
+                    self.slugcatStats.visualStealthInSneakMode += 1;
+                    self.slugcatStats.lungsFac += 0.2f;
+                    self.slugcatStats.bodyWeightFac -= 0.15f;
+                    self.slugcatStats.throwingSkill = 1;
+                    self.spearOnBack = new Player.SpearOnBack(self);
+                    Ebug(self, "Evader Build selected!", LogLevel.INFO);
                     break;
                 case -2:  // Deflector build
                     e.Deflector = true;
@@ -1577,11 +1578,12 @@ partial class Plugin : BaseUnityPlugin
             }
             IntVector2 foodReq = ins.config.cfgBuild[0].Value switch
             {
-                -8 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable TODO: make random a set thing for better sync
+                -9 => new(11, 7),  // Escapist
+                -8 => new(14, UnityEngine.Random.Range(1, 14)),
                 -6 => ins.config.cfgSectretBuild.Value ? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
-                -3 => Esconfig_OldEscapist() ? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                -3 => new(10, 9),  // Evader
                 -2 => new(14, 8),  // Deflector
                 -1 => new(14, 12),  // Brawler
                 _ => new(14, 9)  // Default and unspecified.
@@ -2065,11 +2067,12 @@ partial class Plugin : BaseUnityPlugin
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => Esconfig_OldEscapist() ? "DM_LEG02" : "SB_B04",  // Escapist
+                -3 => "SB_B04",  // Escapist
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
                 -8 => "SS_A18",  // Unstable
+                -9 => "DM_LEG02",
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";

@@ -42,6 +42,7 @@
 		"alt_sleep_scene": "Sleep_EscortMe",
 		"alt_sleep_scene_together": "Sleep_EscortMeAndSocks",
 		"the_mark": false,
+		"expedition_description": "With sense of purpose unfulfilled, The Guardian Escort begins their<LINE>Expedition to ease the restless.",
 		
 		"boxbox": [126, -90],
 
@@ -122,5 +123,5 @@
 		"theescort/gilded/pipposition": [0, 0],
 
 		"theescort/barbarian/nooverlug": false
-		}
+	}
 }
