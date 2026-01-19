@@ -1,4 +1,5 @@
 # About
+
 **The Escort.**
 Y'all are free to adapt the code for your own usage as long as the original authors (who developed the Slugbase and Rain World and the DLC) are fine with it.
 
@@ -75,13 +76,17 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * X Deflector's lethal bite percentage is now 100%.
     * X Deflector gets new empowered animation
     * Speedster base speed reduced a bit
-  * **(0.4-dev.13)**
+  * **(0.4-dev.14)**
+    * Fixed one of the scenes being misaligned
+    * Nerfed Escapist's default move speed and buffed underwater breath duration
+    * Easy mode reduces up to 3 pips (leaves at minimum 1 requirement) of required food instead of reducing 3 if there are at least 4 required pips
+  * **(0.4-dev.13)/(0.3.6.4)**
     * New Escapist is now Evader, and old Escapist gets their name back... as well as becoming the 9th playable
     * Build select button in jolly moves out of the way now, in case another modcat decides to use that space
     * Arena build select button shrunk slightly
     * Changed some descriptions and names on the build select
   * **(0.4-dev.12)**
-    * Now all guardians will not throw things all over the place if karma 10 Escort is in the same room.
+    * [0.3.6.4] Now all guardians will not throw things all over the place if karma 10 Escort is in the same room.
     * Deflector empowered damage applies to all weapons
     * Deflector's empowered duration for the first two stages slightly lengthened (1: 5s->10s, 2:10s->15s, 3:20s)
     * Deflector can't instantly get max empowerment from a single attack
@@ -96,7 +101,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Brawler is completely immune to explosions from explosive punches and explosive spears
     * Brawler doesn't re-grab struck bomb spears
     * Brawler can safely whiff bombs and bomb spears
-    * Dualwielding dead things is now possible
+    * [0.3.6.4] Dualwielding dead things is now possible
   * **(0.4-dev.10)**
     * Railgunner code no longer part of a partial giant class
     * Railgunner terrain impact iFrames when recoiling, to prevent accidental death.
@@ -105,19 +110,19 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Railgunner applies electric shockwave when exploding from misfire or overusage
     * Railgunner armour penetration
     * Railgunner's mini explosion when danger grasped fixed (didn't proc all this time)
-    * Attempted to fix accidental grabbing of the pole plant
+    * [0.3.6.4] Attempted to fix accidental grabbing of the pole plant
   * **(0.4-dev.9)**
     * Meadow sync stuff matched with public beta 0.3.6.3a
     * Railgunner turn off battlehype
     * Railgunner laser fades if no entities detected for a while
     * Railgunner laser effect more existent when target in sight
     * Railgunner corridor throw fix
-    * Fixed issue where throwing a spear midair while battlehyped made you infinitely "slide" on the floor
+    * [0.3.6.3] Fixed issue where throwing a spear midair while battlehyped made you infinitely "slide" on the floor
   * **(0.4-dev.8)**
     * Railgunner corridor laser aim correction
     * Railgunner 8 direction railgun!
     * Railgunner lightning applies to every weapon thrown instead of just one at a time
-    * Slidepounce is finally controllable!
+    * [0.3.6.3] Slidepounce is finally controllable!
   * **(0.4-dev.7)**
     * Railgunner stun on all types of weapons
     * Reduced Deflector's explosive knockback by a little bit
@@ -136,7 +141,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Railgunner rock damage damage boost
     * Railgun laser target check done less frequently on lower quality for resource save
     * Reduced flashing effect on electrospear charge
-    * Moved some field initializers to onmodinit
+    * [0.3.6.4] Moved some field initializers to onmodinit
     * Reduced Railgunner base rock damage from 0.2 to 0.02, but double rock does 0.4 each now (instead of 0.25 each)
     * Railgunner's rail gun shot now makes ingame noise that alerts other nearby creatures
     * Removed the faster railgun use on frail mode (they both increase at the same rate now)
@@ -154,6 +159,18 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.0)** Some squishing of README
 
 * #### 0.3 - Ending I
+
+  * **(0.3.6.4)**
+    * Build select button goes away in jolly menu in case someone else wants to use that spot
+    * Arena build select button a bit shorter
+    * Renamed Escapist to Evader
+    * Build select menu name and description changes
+    * Old escapist is now Escapist, and is now the 9th build (accessible by secret code or by trying to play Evader on Meadow lobby)
+    * Expedition description added
+    * Fixed one of the ending scenes being misaligned
+    * All temple guardians are chill now if they are in the same room as an Escort with karma cap 10
+    * Dual wielding dead creatures (not just lizards) under a certain weight is now possible
+    * Attempt at fixing the accidental pole mimic grab issue
 
   * **(0.3.6.3)** Slidestun is no longer uncontrollable, synced one more value to Meadow (and more frequently)
 

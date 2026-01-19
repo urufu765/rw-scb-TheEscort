@@ -298,7 +298,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Global setting for whether temple guard is friendly or not
     /// </summary>
-    public static bool templeGuardIsFriendly;
+    // public static bool templeGuardIsFriendly;
 
     /// <summary>
     /// Enables logging of player input and player position
@@ -1034,14 +1034,6 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    // public static bool Esconfig_OldEscapist()
-    // {
-    //     if (ins.config.cfgOldEscapist.Value) return true;
-
-    //     if (escPatch_meadow && EPatchMeadow.IsOnline()) return true;
-    //     return false;
-    // }
-
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
@@ -1114,8 +1106,7 @@ partial class Plugin : BaseUnityPlugin
                     e.Escapist = true;
                     e.dualWield = false;
                     e.tossEscort = false;
-                    self.slugcatStats.runspeedFac += 0.1f;
-                    self.slugcatStats.lungsFac += 0.2f;
+                    self.slugcatStats.runspeedFac -= 0.1f;
                     self.slugcatStats.bodyWeightFac -= 0.15f;
                     self.slugcatStats.generalVisibilityBonus -= 1;
                     self.slugcatStats.visualStealthInSneakMode += 1.5f;
@@ -1191,7 +1182,7 @@ partial class Plugin : BaseUnityPlugin
                     self.slugcatStats.bodyWeightFac += 0.3f;
                     Ebug(self, "Railgunner Build selected!", LogLevel.INFO);
                     break;
-                case -3:  // Evader build
+                case -3:  // Escapist build
                     e.NewEscapist = true;
                     self.slugcatStats.visualStealthInSneakMode += 1;
                     self.slugcatStats.lungsFac += 0.2f;
@@ -1567,6 +1558,9 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Each build gets different food requirements!
     /// </summary>
+    /// <summary>
+    /// Each build gets different food requirements!
+    /// </summary>
     public static IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
     {
         try
@@ -1588,9 +1582,9 @@ partial class Plugin : BaseUnityPlugin
                 -1 => new(14, 12),  // Brawler
                 _ => new(14, 9)  // Default and unspecified.
             };
-            if (ins.config.cfgEasy[0].Value && foodReq.y > 3)
+            if (ins.config.cfgEasy[0].Value)
             {
-                foodReq.y -= 3;  // Reduce food requirement upon easier mode triggered
+                foodReq.y = Math.Max(1, foodReq.y - 3);  // Reduce food requirement upon easier mode triggered
             }
             return foodReq;
         }
@@ -2067,12 +2061,12 @@ partial class Plugin : BaseUnityPlugin
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => "SB_B04",  // Escapist
+                -3 => "SB_B04",  // Evader
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
                 -8 => "SS_A18",  // Unstable
-                -9 => "DM_LEG02",
+                -9 => "DM_LEG02",  // Escapist
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";

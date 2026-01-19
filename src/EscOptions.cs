@@ -38,7 +38,6 @@ class EscOptions : OptionInterface
     public Configurable<bool> cfgFunnyDeflSlide;  // Give Deflector an unnecessarily long slide
     public Configurable<bool> cfgPoleBounce;  // Allow other builds to bounce on poles like Guardian
     public Configurable<bool> cfgOldSpeedster;  // Switch to old Speedster mechanics
-    //public Configurable<bool> cfgOldEscapist;  // Switch to old Escapist mechanics
     public Configurable<bool> cfgDeveloperMode;
     public Configurable<int> cfgSecret;
     public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod, cfgSectretMagic;
@@ -122,7 +121,7 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.6.3";
+    private static readonly string VERSION = "0.3.6.4";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {

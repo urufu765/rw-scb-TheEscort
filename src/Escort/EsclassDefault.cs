@@ -755,15 +755,15 @@ namespace TheEscort
                 }
             }
 
-            // Make guardian passive
-            if (self.room?.game?.session is StoryGameSession s)
-            {
-                if (s.saveState.deathPersistentSaveData.karmaCap >= 9 && self?.room?.world?.region is not null && self.room.world.region.name == "SB")
-                {
-                    templeGuardIsFriendly = true;
-                    Ebug("Templeguard is friendly!");
-                }
-            }
+            // // Make guardian passive
+            // if (self.room?.game?.session is StoryGameSession s)
+            // {
+            //     if (s.saveState.deathPersistentSaveData.karmaCap >= 9 && self?.room?.world?.region is not null && self.room.world.region.name == "SB")
+            //     {
+            //         templeGuardIsFriendly = true;
+            //         Ebug("Templeguard is friendly!");
+            //     }
+            // }
 
 
             // Currently pup is only supported in story mode

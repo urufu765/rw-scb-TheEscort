@@ -111,7 +111,7 @@ public static class BuildScenery
             // self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - flat - f0", new Vector2(), 2.9f, MenuDepthIllustration.MenuShader.Basic));
             // self.AddIllustration(new MenuDepthIllustration(menu, self, SceneFolder, BLUEFILTER, new Vector2(), 2.8f, MenuDepthIllustration.MenuShader.Basic));
 
-            self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - 6 jalapeno", new Vector2(-117f, -68f), 0.9f, MenuDepthIllustration.MenuShader.Basic));
+            self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - 6 jalapeno", new Vector2(9f, 2f), 0.9f, MenuDepthIllustration.MenuShader.Basic));
             self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - 5 rocks", new Vector2(-117f, -68f), 0.6f, MenuDepthIllustration.MenuShader.Basic));
             self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - 4 scavman", new Vector2(581f, 201f), 0.7f, MenuDepthIllustration.MenuShader.Basic));
             self.AddIllustration(new MenuDepthIllustration(menu, self, self.sceneFolder, TributeP + "gold - 3 woks", new Vector2(-114f, 456f), 0.4f, MenuDepthIllustration.MenuShader.Basic));
