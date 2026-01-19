@@ -12,18 +12,34 @@ namespace TheEscort;
 
 partial class Plugin : BaseUnityPlugin
 {
+    public static void Plugit()
+    {
+        EscortMe ??= new("EscortMe");
+        EscortSocks ??= new("EscortSocks");
+        EscortMeTime ??= new("EscortMeTime");
+        EscortSocksTime ??= new("EscortSocks");
+
+        eCon ??= new();
+        aCon ??= new();
+        sCon ??= new();
+        natrualSpears ??= [];
+
+        selectionable = new() {
+            {  0, "Guardian" },
+            { -1, "Brawler" },
+            { -2, "Deflector" },
+            { -3, "Evader" },
+            { -4, "Railgunner" },
+            { -5, "Speedster" },
+            { -6, "Gilded" }
+        };
+        escortRGBTick = new float[4];
+        escortRGBStore = new Color[4];
+    }
+
     static Plugin()
     {
         LR = BepInEx.Logging.Logger.Sources.FirstOrDefault(l => l.SourceName == "EBUGGER") as ManualLogSource ?? BepInEx.Logging.Logger.CreateLogSource("EBUGGER");
-        EscortMe = new("EscortMe");
-        EscortSocks = new("EscortSocks");
-        EscortMeTime = new("EscortMe");
-        EscortSocksTime = new("EscortSocks");
-
-        eCon = new();
-        aCon = new();
-        sCon = new();
-        natrualSpears = [];
 
         escPatch_revivify = false;
         escPatch_rotundness = false;
@@ -108,18 +124,6 @@ partial class Plugin : BaseUnityPlugin
 
         CustomShader = PlayerString("theescort/speedster/custom_shader");
         speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");
-
-        selectionable = new() {
-            {  0, "Guardian" },
-            { -1, "Brawler" },
-            { -2, "Deflector" },
-            { -3, "Escapist" },
-            { -4, "Railgunner" },
-            { -5, "Speedster" },
-            { -6, "Gilded" }
-        };
-        escortRGBTick = new float[4];
-        escortRGBStore = new Color[4];
         Ebug("-> Static fields load complete");
     }
 }

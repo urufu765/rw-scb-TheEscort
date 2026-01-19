@@ -38,7 +38,6 @@ class EscOptions : OptionInterface
     public Configurable<bool> cfgFunnyDeflSlide;  // Give Deflector an unnecessarily long slide
     public Configurable<bool> cfgPoleBounce;  // Allow other builds to bounce on poles like Guardian
     public Configurable<bool> cfgOldSpeedster;  // Switch to old Speedster mechanics
-    public Configurable<bool> cfgOldEscapist;  // Switch to old Escapist mechanics
     public Configurable<bool> cfgDeveloperMode;
     public Configurable<int> cfgSecret;
     public Configurable<bool> cfgSectret, cfgSectretBuild, cfgSectretGod, cfgSectretMagic;
@@ -114,7 +113,7 @@ class EscOptions : OptionInterface
             // }
             if (sctTestBuild?.Value is true)
             {
-                return -8;
+                return -9;
             }
             return _buildDiv;
         }
@@ -122,14 +121,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.6.3";
+    private static readonly string VERSION = "0.3.6.4";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- New campaign end slideshow + music! (all done)<LINE>- A few more meadow variables are synced.<LINE>- Ending cutscene slight touchup.<LINE><LINE>- Disabled one of the swim speed changes on Guardian<LINE>- Added more things to sync through meadow.<LINE><LINE>Special thanks to Tsunochizu for the lovely ending slideshow art!<LINE>(sorry I had to massacre it a tiny bit to make it compatible with scene camera movement)<LINE><LINE>- Fixed some meadow sync issues on dead Escorts.<LINE>- Sets foodpip req/max to Guardian's no matter the build if in meadow lobby, to help with build food pip sync issues.<LINE><LINE>- Slidestun is no longer uncontrollable<LINE>- Increased frequency of Meadow sync of Escort values, as well as RG recoil value.");
+            "- New campaign end slideshow + music! (all done)<LINE>- A few more meadow variables are synced.<LINE>- Ending cutscene slight touchup.<LINE><LINE>- Disabled one of the swim speed changes on Guardian<LINE>- Added more things to sync through meadow.<LINE><LINE>Special thanks to Tsunochizu for the lovely ending slideshow art!<LINE>(sorry I had to massacre it a tiny bit to make it compatible with scene camera movement)<LINE><LINE>- Fixed some meadow sync issues on dead Escorts.<LINE>- Sets foodpip req/max to Guardian's no matter the build if in meadow lobby, to help with build food pip sync issues.<LINE><LINE>- Slidestun is no longer uncontrollable<LINE>- Increased frequency of Meadow sync of Escort values, as well as RG recoil value.<LINE><LINE>- Build button in Jolly menu disappears when Escort is not selected.<LINE>- Arena build button shrunken.<LINE>- Build select menu name and description changes.<LINE>- Renamed Escapist to Evader.<LINE>- Renamed Old Escapist back to Escapist.<LINE>- Expedition description added.<LINE>- Fixed one of the ending scenes being misaligned.<LINE>- All temple guardians are chill now if Escort with karma cap 10 is in the same room.<LINE>-Dual wielding any dead creatures under carry weight is now possible.");
         }
     }
 
@@ -175,7 +174,7 @@ class EscOptions : OptionInterface
         this.cfgFunnyDeflSlide = this.config.Bind<bool>("cfg_Funny_Deflector_Slide", false);
         this.cfgPoleBounce = this.config.Bind<bool>("cfg_Pole_Bounce", false);
         this.cfgOldSpeedster = this.config.Bind<bool>("cfg_Old_Speedster", false);
-        this.cfgOldEscapist = this.config.Bind<bool>("cfg_Old_Escapist", false);
+        //this.cfgOldEscapist = this.config.Bind<bool>("cfg_Old_Escapist", false);
         this.cfgDeveloperMode = this.config.Bind<bool>("cfg_Dev_Log_Mode", false);
         this.cfgDeflecterSharedPool = this.config.Bind<bool>("cfg_Deflector_Shared_Pool", false);
         this.cfgDeveloperMode.OnChange += LongDevLogChange;
@@ -237,13 +236,13 @@ class EscOptions : OptionInterface
             new ListItem("default", Translate("Guardian"), 0),
             new ListItem("brawler", Translate("Brawler"), -1),
             new ListItem("deflector", Translate("Deflector"), -2),
-            new ListItem("escapist", Translate("Escapist"), -3),
+            new ListItem("evader", Translate("Evader"), -3),
             new ListItem("railgunner", Translate("Railgunner"), -4),
             new ListItem("speedster", Translate("Speedster"), -5),
             new ListItem("gilded", Translate("Gilded"), -6),
             new ListItem("barbarian", Translate("Conqueror"), -7),
             new ListItem("unstable", Translate("Unstable"), -8),
-            new ListItem("power", Translate("Power"), -9)
+            new ListItem("escapist", Translate("Escapist"), -9)
         };
         this.buildSelectHelper = config.Bind("escort_buildselect_helper_ignore_this", buildItems[0].name);
         this.easySelectHelper = config.Bind("escort_easyselect_helper_ignore_this", false);
@@ -284,17 +283,19 @@ class EscOptions : OptionInterface
 
         Color bShadow = new Color(0.1f, 0.1f, 0.1f);
         Color bDefault = new Color(0.75f, 0.75f, 0.75f);
+        Color bGuardian = new Color(.255f, .41f, .88f);
         Color bBrawler = new Color(0.8f, 0.4f, 0.6f);
         Color bDeflector = new Color(0.69f, 0.55f, 0.9f);
-        Color bEscapist = new Color(0.0f, 0.8f, 0.5f);
+        Color bEvader = new Color(0.28f, 0.675f, 0.686f);
         Color bRailgunner = new Color(0.5f, 0.85f, 0.78f);
         Color bSpeedster = new Color(0.76f, 0.78f, 0f);
         Color bGilded = new Color(0.796f, 0.549f, 0.27843f);
-        Color bUnstable = new Color(0.176f, 0.42f, 0.176f);
-        Color bUltKill = new Color(0.7f, 0.2f, 0.2f);
+        Color bUnstable = new Color(0.51f, 0.58f, 0.66f);
+        Color bConqueror = new Color(0.95f, 0.47f, 0.28f);
+        Color bEscapist = new Color(0.0f, 0.8f, 0.5f);
         Color bTesting = new Color(0.9f, 0.0f, 0.9f);
         this.buildColors = new Color[]{
-            bDefault, bBrawler, bDeflector, bEscapist, bRailgunner, bSpeedster, bGilded, bUnstable
+            bGuardian, bBrawler, bDeflector, bEvader, bRailgunner, bSpeedster, bGilded, bConqueror, bUnstable, bEscapist
         };
         // I'm so done with this shit, may we never remotely reach 1.5k
         // future me here, FUCK YOU WE ALMOST REACHED 5K!!!!
@@ -309,6 +310,15 @@ class EscOptions : OptionInterface
             maxLength = 5
         };
         this.secretText.OnValueChanged += InputTheSecret;
+
+        // makeSomeNoise = new OpTextBox(this.soundMachine, new Vector2(xo + (xp * 4f), yo - (yp * 13)), 300)
+        // {
+        //     description = OptionInterface.Translate("Hmm? What's this?"),
+        //     colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+        //     colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+        //     colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f)
+        // };
+        // makeSomeNoise.OnValueChanged += NoiseWawa;
 
         //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
         //    color = bTesting * 0.7f
@@ -522,8 +532,8 @@ class EscOptions : OptionInterface
         };
 
         this.buildTitle = new OpLabel[]{
-            new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), Translate("Default") + " {***__}", true){
-                color = bDefault * 0.7f
+            new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 1.3f), Translate("Guardian") + " {***__}", true){
+                color = bGuardian * 0.7f
             },
             new OpLabel(xo + (xp * 2), yo - (yp * 3.5f) - (tp * 1.3f), Translate("Brawler") + " {*____}", true){
                 color = bBrawler * 0.7f
@@ -531,8 +541,8 @@ class EscOptions : OptionInterface
             new OpLabel(xo + (xp * 2), yo - (yp * 4.5f) - (tp * 1.3f), Translate("Deflector") + " {*****}", true){
                 color = bDeflector * 0.7f
             },
-            new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Escapist") + " {**___}", true){
-                color = bEscapist * 0.7f
+            new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 1.3f), Translate("Evader") + " {**___}", true){
+                color = bEvader * 0.7f
             },
             new OpLabel(xo + (xp * 2), yo - (yp * 6.5f) - (tp * 1.3f), Translate("Railgunner") + " {****_}", true){
                 color = bRailgunner * 0.7f
@@ -544,10 +554,13 @@ class EscOptions : OptionInterface
                 color = bGilded * 0.7f
             },
             new OpLabel(xo + (xp * 2), yo - (yp * 9.5f) - (tp * 1.3f), Translate("Conqueror") + "{?????}", true){
-                color = Color.green
+                color = bConqueror
             },
             new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("Unstable") + "{**??_}", true){
                 color = bUnstable * 0.7f
+            },
+            new OpLabel(xo + (xp * 2), yo - (yp * 11.5f) - (tp * 1.3f), Translate("Escapist") + "{*____}", true){
+                color = bEscapist * .7f
             },
             // new OpLabel(xo + (xp * 2), yo - (yp * 11.5f) - (tp * 1.3f), Translate("Power") + "{?????}", true){
             //     color = Color.green
@@ -557,8 +570,8 @@ class EscOptions : OptionInterface
         const string buildTextPad = "  ";
         this.buildText = new UIelement[]{
             // The intended way of playing Escort.
-            new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), buildTextPad + Translate("default_desc")){
-                color = bDefault
+            new OpLabel(xo + (xp * 2), yo - (yp * 2.5f) - (tp * 2.1f), buildTextPad + Translate("guardian_desc")){
+                color = bGuardian
             },
 
             // More powerful and consistent close-combat, but reduced range efficiency
@@ -572,8 +585,8 @@ class EscOptions : OptionInterface
             },
 
             // -insert new escapist's descriptor
-            new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_new_desc")){
-                color = bEscapist
+            new OpLabel(xo + (xp * 2), yo - (yp * 5.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_new_desc2")){
+                color = bEvader
             },
 
             // Force out of grasps, though don't expect to be fighting much...
@@ -602,9 +615,9 @@ class EscOptions : OptionInterface
             new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 2.1f), buildTextPad + Translate("unstable_desc")){
                 color = bUnstable
             },
-            // new OpLabel(xo + (xp * 2), yo - (yp * 11.5f) - (tp * 2.1f), buildTextPad + Translate("power_desc")){
-            //     color = Color.red
-            // },
+            new OpLabel(xo + (xp * 2), yo - (yp * 11.5f) - (tp * 2.1f), buildTextPad + Translate("escapist_desc2")){
+                color = bEscapist
+            },
         };
         this.buildShadow = new UIelement[this.buildText.Length];
         for (int i = 0; i < this.buildShadow.Length; i++)
@@ -873,28 +886,30 @@ class EscOptions : OptionInterface
                 description = Swapper(Translate("escoptions_deflshared_desc")) + SetDefault(cfgDeflecterSharedPool.defaultValue),
             },
 
-            new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, Swapper(Translate("escoptions_oldescape_text"))){
-                color = tempColor
-            },
-            new OpCheckBox(this.cfgOldEscapist, new Vector2(xo + (xp * 0), yo - (yp * 9))){
-                colorEdge = tempColor,
-                description = Swapper(Translate("escoptions_oldescape_desc")) + SetDefault(cfgOldEscapist.defaultValue),
-            },
+            // new OpLabel(xo + (xp * 1), yo - (yp * 9) + tp/2, Swapper(Translate("escoptions_oldescape_text"))){
+            //     color = tempColor
+            // },
+            // new OpCheckBox(this.cfgOldEscapist, new Vector2(xo + (xp * 0), yo - (yp * 9))){
+            //     colorEdge = tempColor,
+            //     description = Swapper(Translate("escoptions_oldescape_desc")) + SetDefault(cfgOldEscapist.defaultValue),
+            // },
 
-            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Speedster Gear Limit")),
-            new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100){
+            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 9), Translate("Speedster Gear Limit")),
+            new OpUpdown(this.cfgSpeedsterGears, new Vector2(xo + (xp * 0), yo - (yp * 9) - tp), 100){
                 description = Translate("Sets the gear limit for the Speedster build. Handle with care!") + SetDefault(cfgSpeedsterGears.defaultValue)
             },
 
-            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 11), Translate("Railgunner Overcharge Limit")),
-            new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 100){
+            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 10), Translate("Railgunner Overcharge Limit")),
+            new OpUpdown(this.cfgRailgunnerLimiter, new Vector2(xo + (xp * 0), yo - (yp * 10) - tp), 100){
                 description = Translate("Sets the overcharge limit for the Railgunner build.") + SetDefault(cfgRailgunnerLimiter.defaultValue)
             },
 
-            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), Translate("Gilded Max Power")),
-            new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100){
+            new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 11), Translate("Gilded Max Power")),
+            new OpUpdown(this.cfgGildedMaxPower, new Vector2(xo + (xp * 0), yo - (yp * 11) - tp), 100){
                 description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
             },
+
+            //makeSomeNoise,
 
             secretText
         };
@@ -1158,7 +1173,7 @@ class EscOptions : OptionInterface
                     hide = true;
                 }
                 // if (a == 8 && rainworld?.progression?.miscProgressionData?.Esave()?.beaten_Escort is false && !sctTestBuild.Value)  // Unstable
-                if (a == 8 && !sctTestBuild.Value)  // Unstable
+                if ((a == 8 || a == 9) && !sctTestBuild.Value)  // Unstable && Escapist
                 {
                     hide = true;
                 }
@@ -1224,6 +1239,7 @@ class EscOptions : OptionInterface
         // int eschallenge_DontStop = 28182;          // Visit every single region without ever being stunned (4 gear perma while in challenge)
         // int eschallenge_Pacifism = 21856;          // Survive a cycle (find how many cycles user can survive) without ever using Gilded's power
         // int eschallenge_ = 21708;
+        // 9191 red lizard silly
         string[] insult = new string[1];
         Action[] doThing = new Action[1]{
             MakeSomeNoiseEsconfig
@@ -1299,7 +1315,7 @@ class EscOptions : OptionInterface
                 this.sctTestBuild.Value = true;
                 //UpdateSlider();
                 ConfigConnector.CreateDialogBoxMultibutton(
-                    Translate("Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming build!"), insult, doThing
+                    Translate("Congrats! You have the access code (that you definitely got from the developer) and can now test the lastest upcoming builds!"), insult, doThing
                 );
             }
             Ebug("Set secret build testing mode", LogLevel.INFO);
@@ -1466,16 +1482,24 @@ class EscOptions : OptionInterface
         // Meadow
         if (Plugin.escPatch_meadow && result.ContainsKey(-3) && EPatchMeadow.IsOnline())
         {
-            result[-3] = "Escapist (OLD)";
-            //result.Remove(-3);
-            // result.Add(-8, "Unstable");
+            //result[-3] = "Escapist (OLD)";
+            result.Remove(-3);
+            result.Add(-9, "Escapist");
         }
 
         // Unstable unlock
         // if ((rainworld?.progression?.miscProgressionData?.Esave()?.beaten_Escort is true || sctTestBuild.Value) && !result.ContainsValue("Unstable"))
-        if (sctTestBuild.Value && !result.ContainsValue("Unstable"))
+        if (sctTestBuild.Value)
         {
-            result.Add(-8, "Unstable");
+            if (!result.ContainsKey(-8))
+            {
+                result.Add(-8, "Unstable");
+            }
+
+            if (!result.ContainsKey(-9))
+            {
+                result.Add(-9, "Escapist");
+            }
         }
 
         return result;

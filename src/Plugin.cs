@@ -25,7 +25,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.2")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.4")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -180,10 +180,10 @@ partial class Plugin : BaseUnityPlugin
     #endregion
 
     #region Plugin Variable Declarations
-    public static readonly SlugcatStats.Name EscortMe;
-    public static readonly SlugcatStats.Name EscortSocks;
-    public static readonly SlugcatStats.Timeline EscortMeTime;
-    public static readonly SlugcatStats.Timeline EscortSocksTime;
+    public static SlugcatStats.Name EscortMe;
+    public static SlugcatStats.Name EscortSocks;
+    public static SlugcatStats.Timeline EscortMeTime;
+    public static SlugcatStats.Timeline EscortSocksTime;
     //public static readonly SlugcatStats.Name ShadowEscort = new("EscortDummy", true);
 
     /// <summary>
@@ -295,7 +295,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Global setting for whether temple guard is friendly or not
     /// </summary>
-    public static bool templeGuardIsFriendly;
+    // public static bool templeGuardIsFriendly;
 
     /// <summary>
     /// Enables logging of player input and player position
@@ -504,9 +504,9 @@ partial class Plugin : BaseUnityPlugin
     /// </summary>
     public static float Escort_Friendship(On.TempleGuardAI.orig_ThrowOutScore orig, TempleGuardAI self, Tracker.CreatureRepresentation crit)
     {
-        if (templeGuardIsFriendly)
+        if (crit?.representedCreature?.realizedCreature is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && p.KarmaCap >= 9)
         {
-            return 0f;  // Guardian ignores all creatures
+            return 0f;
         }
         return orig(self, crit);  // Default behaviour
     }
@@ -519,6 +519,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self);
         try
         {
+            Plugit();
             if (ins.config is null)
             {
                 MachineConnector.SetRegisteredOI("urufudoggo.theescort", ins.config);
@@ -994,14 +995,6 @@ partial class Plugin : BaseUnityPlugin
         }
     }
 
-    public static bool Esconfig_OldEscapist()
-    {
-        if (ins.config.cfgOldEscapist.Value) return true;
-
-        if (escPatch_meadow && EPatchMeadow.IsOnline()) return true;
-        return false;
-    }
-
     /// <summary>
     /// Applies the configured build based on the option (COMING SOON or based on the campaign ID)
     /// </summary>
@@ -1066,6 +1059,17 @@ partial class Plugin : BaseUnityPlugin
                 //         goto default;
                 //     }
                 //     break;
+                case -9:
+                    e.Escapist = true;
+                    e.dualWield = false;
+                    e.tossEscort = false;
+                    self.slugcatStats.runspeedFac -= 0.1f;
+                    self.slugcatStats.bodyWeightFac -= 0.15f;
+                    self.slugcatStats.generalVisibilityBonus -= 1;
+                    self.slugcatStats.visualStealthInSneakMode += 1.5f;
+                    self.slugcatStats.loudnessFac -= self.Malnourished ? 1.95f : 1.45f;
+                    Ebug(self, "Escapist Build selected!", LogLevel.INFO);
+                    break;
                 case -8:  // Unstable test build
                     // IF locked, don't let player play as Unstable
                     // if (self?.room?.game is null)
@@ -1134,28 +1138,13 @@ partial class Plugin : BaseUnityPlugin
                     Ebug(self, "Railgunner Build selected!", LogLevel.INFO);
                     break;
                 case -3:  // Escapist build
-                    if (Esconfig_OldEscapist())
-                    {
-                        e.Escapist = true;
-                        e.dualWield = false;
-                        self.slugcatStats.runspeedFac += 0.1f;
-                        self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.bodyWeightFac -= 0.15f;
-                        self.slugcatStats.generalVisibilityBonus -= 1;
-                        self.slugcatStats.visualStealthInSneakMode += 1.5f;
-                        self.slugcatStats.loudnessFac -= self.Malnourished ? 1.95f : 1.45f;
-                        Ebug(self, "Old Escapist Build selected!", LogLevel.INFO);
-                    }
-                    else
-                    {
-                        e.NewEscapist = true;
-                        self.slugcatStats.visualStealthInSneakMode += 1;
-                        self.slugcatStats.lungsFac += 0.2f;
-                        self.slugcatStats.bodyWeightFac -= 0.15f;
-                        self.slugcatStats.throwingSkill = 1;
-                        self.spearOnBack = new Player.SpearOnBack(self);
-                        Ebug(self, "New Escapist Build selected!", LogLevel.INFO);
-                    }
+                    e.NewEscapist = true;
+                    self.slugcatStats.visualStealthInSneakMode += 1;
+                    self.slugcatStats.lungsFac += 0.2f;
+                    self.slugcatStats.bodyWeightFac -= 0.15f;
+                    self.slugcatStats.throwingSkill = 1;
+                    self.spearOnBack = new Player.SpearOnBack(self);
+                    Ebug(self, "New Escapist Build selected!", LogLevel.INFO);
                     break;
                 case -2:  // Deflector build
                     e.Deflector = true;
@@ -1322,7 +1311,7 @@ partial class Plugin : BaseUnityPlugin
         Ebug("Timeline: " + world?.game?.TimelinePoint?.value);
 
         // Checks if player is an Escort
-        if (Escort_IsNull(self.slugcatStats.name, false))
+        if (Eshelp_IsNull(self.slugcatStats.name, false))
         {
             ins.L().Set("Escort Check");
 
@@ -1519,29 +1508,33 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Each build gets different food requirements!
     /// </summary>
+    /// <summary>
+    /// Each build gets different food requirements!
+    /// </summary>
     public static IntVector2 Escort_differentBuildsFoodz(On.SlugcatStats.orig_SlugcatFoodMeter orig, SlugcatStats.Name slugcat)
     {
         try
         {
-            if (Escort_IsNull(slugcat)) return orig(slugcat);
+            if (Eshelp_IsNull(slugcat)) return orig(slugcat);
             if (escPatch_meadow && EPatchMeadow.IsOnline())
             {
                 return new(14, 9);
             }
             IntVector2 foodReq = ins.config.cfgBuild[0].Value switch
             {
-                -8 => new(14, UnityEngine.Random.Range(1, 14)),  // Unstable TODO: make random a set thing for better sync
+                -9 => new(11, 7),  // Escapist
+                -8 => new(14, UnityEngine.Random.Range(1, 14)),
                 -6 => ins.config.cfgSectretBuild.Value ? new(10, 6) : new(14, 8),  // Gilded
                 -5 => new(14, 10),  // Speedster
                 -4 => new(14, 7),  // Railgunner
-                -3 => Esconfig_OldEscapist() ? new(11, 7) : new(10, 9),  // Escapist (TODO: Don't forget to flip this!)
+                -3 => new(10, 9),  // Evader
                 -2 => new(14, 8),  // Deflector
                 -1 => new(14, 12),  // Brawler
                 _ => new(14, 9)  // Default and unspecified.
             };
-            if (ins.config.cfgEasy[0].Value && foodReq.y > 3)
+            if (ins.config.cfgEasy[0].Value)
             {
-                foodReq.y -= 3;  // Reduce food requirement upon easier mode triggered
+                foodReq.y = Math.Max(1, foodReq.y - 3);  // Reduce food requirement upon easier mode triggered
             }
             return foodReq;
         }
@@ -1761,7 +1754,7 @@ partial class Plugin : BaseUnityPlugin
             name = self.manager.rainWorld.progression.PlayingAsSlugcat;
 
         // Check if slugcat is Escort
-        if (Escort_IsNull(name, true))
+        if (Eshelp_IsNull(name, true))
         {
             Ebug("Not an escort!", LogLevel.INFO);
             orig(self);
@@ -2022,11 +2015,12 @@ partial class Plugin : BaseUnityPlugin
                 -1 => "SU_A02",  // Brawler
                 //-2 => "SI_C03",  // Deflector
                 -2 => "HI_A14",  // Deflector NEW
-                -3 => Esconfig_OldEscapist() ? "DM_LEG02" : "SB_B04",  // Escapist
+                -3 => "SB_B04",  // Evader
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
                 -8 => "SS_A18",  // Unstable
+                -9 => "DM_LEG02",  // Escapist
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";

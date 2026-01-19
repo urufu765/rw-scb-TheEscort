@@ -25,7 +25,7 @@ public class EscortRoomScript
         orig(room);
         //Ebug("SCRIPTADDER HERE LOL");
         if (room?.game?.session is null) return;
-        if (room.game.session is StoryGameSession storyGameSession && Escort_IsNull(storyGameSession.saveState.saveStateNumber, false))
+        if (room.game.session is StoryGameSession storyGameSession && Eshelp_IsNull(storyGameSession.saveState.saveStateNumber, false))
         {
             string name = room.abstractRoom.name;
             if (name is null) return;

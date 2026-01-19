@@ -8,6 +8,18 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * **(0.3.6.4)**
+    * Build select button goes away in jolly menu in case someone else wants to use that spot
+    * Arena build select button a bit shorter
+    * Renamed Escapist to Evader
+    * Build select menu name and description changes
+    * Old escapist is now Escapist, and is now the 9th build (accessible by secret code or by trying to play Evader on Meadow lobby)
+    * Expedition description added
+    * Fixed one of the ending scenes being misaligned
+    * All temple guardians are chill now if they are in the same room as an Escort with karma cap 10
+    * Dual wielding dead creatures (not just lizards) under a certain weight is now possible
+    * Attempt at fixing the accidental pole mimic grab issue
+
   * **(0.3.6.3)** Slidestun is no longer uncontrollable, synced one more value to Meadow (and more frequently)
 
   * **(0.3.6.2)** Set the food pip req/max to consistent if in meadow lobby, stopped syncs on dead things

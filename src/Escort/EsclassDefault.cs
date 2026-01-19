@@ -247,7 +247,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     Ebug(self, "Attempted to access a nulled player when updating!", LogLevel.WARN);
                     return;
@@ -734,15 +734,15 @@ namespace TheEscort
                 }
             }
 
-            // Make guardian passive
-            if (self.room?.game?.session is StoryGameSession s)
-            {
-                if (s.saveState.deathPersistentSaveData.karmaCap >= 9 && self?.room?.world?.region is not null && self.room.world.region.name == "SB")
-                {
-                    templeGuardIsFriendly = true;
-                    Ebug("Templeguard is friendly!");
-                }
-            }
+            // // Make guardian passive
+            // if (self.room?.game?.session is StoryGameSession s)
+            // {
+            //     if (s.saveState.deathPersistentSaveData.karmaCap >= 9 && self?.room?.world?.region is not null && self.room.world.region.name == "SB")
+            //     {
+            //         templeGuardIsFriendly = true;
+            //         Ebug("Templeguard is friendly!");
+            //     }
+            // }
 
 
             // Currently pup is only supported in story mode
@@ -882,7 +882,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -987,7 +987,7 @@ namespace TheEscort
             orig(self);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -1128,7 +1128,7 @@ namespace TheEscort
                                 if (cc is Player cp && Custom.DistLess(self.bodyChunks[0].pos, cp.mainBodyChunk.pos, 40f))
                                 {
                                     // Nerf to default escort so two guardian escorts don't infinitely sustain each other
-                                    if (Escort_IsNull(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
+                                    if (Eshelp_IsNull(cp.slugcatStats.name, false) && eCon.TryGetValue(cp, out Escort ep) && ep.isDefault)
                                     {
                                         cp.airInLungs = Mathf.Min(1f, cp.airInLungs + 0.01f);
                                     }
@@ -1188,7 +1188,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;
@@ -1248,7 +1248,7 @@ namespace TheEscort
                 orig(self, f);
                 return;
             }
-            if (Escort_IsNull(self.slugcatStats.name, false))
+            if (Eshelp_IsNull(self.slugcatStats.name, false))
             {
                 if (e.Gilded && !self.slugcatStats.malnourished)
                 {
@@ -1290,7 +1290,7 @@ namespace TheEscort
             // TODO: Upon adding in Unstable, it may be necessary to stop calling to orig by having the escort check happen before the orig! This way the jump itself can be skipped entirely which is necessary for Unstable.
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -1359,7 +1359,7 @@ namespace TheEscort
             }*/
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, direction);
                     return;
@@ -1466,7 +1466,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, source, dmg, chunk, appPos, direction);
                 }
@@ -1496,7 +1496,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1553,7 +1553,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, grasp, eu);
                     return;
@@ -1583,7 +1583,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }
@@ -1594,6 +1594,10 @@ namespace TheEscort
                 if (escPatch_revivify && obj is Creature creature && (creature.abstractCreature.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || creature is Player) && creature.dead)
                 {
                     return Player.ObjectGrabability.TwoHands;
+                }
+                if (obj is PoleMimic)
+                {
+                    return orig(self, obj);
                 }
                 if (!dualWielding.TryGet(self, out bool dW) ||
                     !eCon.TryGetValue(self, out Escort e))
@@ -1606,7 +1610,7 @@ namespace TheEscort
                     return Player.ObjectGrabability.BigOneHand;
                 }
 
-                if (dW && e.dualWield)
+                if (e.dualWield)
                 {
                     if (obj is Weapon)
                     {
@@ -1640,7 +1644,7 @@ namespace TheEscort
                     }
                     if (obj is Creature c && c.TotalMass <= self.TotalMass * ins.ratioed && c.dead)
                     {
-                        return Player.ObjectGrabability.BigOneHand;
+                        return Player.ObjectGrabability.OneHand;
                     }
                 }
                 return orig(self, obj);
@@ -1660,7 +1664,7 @@ namespace TheEscort
                 {
                     return orig(self);
                 }
-                if (Escort_IsNull(self.slugcatStats.name, false))
+                if (Eshelp_IsNull(self.slugcatStats.name, false))
                 {
                     float biteMult = 0.5f;
                     if (e.Brawler)
@@ -1709,7 +1713,7 @@ namespace TheEscort
         {
             try
             {
-                if (self is Player p && Escort_IsNull(p.slugcatStats.name))
+                if (self is Player p && Eshelp_IsNull(p.slugcatStats.name))
                 {
                     orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                     return;
@@ -2116,7 +2120,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, obj);
                 }

@@ -24,7 +24,7 @@ namespace TheEscort
             orig(self, eu);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -84,7 +84,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -141,7 +141,7 @@ namespace TheEscort
             orig(self, grasp, eu);
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return;
                 }
@@ -180,7 +180,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self);
                     return;
@@ -258,7 +258,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     orig(self, eu);
                     return;

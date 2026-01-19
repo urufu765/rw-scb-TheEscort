@@ -200,7 +200,7 @@ escoptions_pupsforeveryone_desc|Allow other Escort builds to have the slugpup. W
 ENDING ONE MORE UPDATE|ENDING ONE MORE UPDATE
 escoptions_disableslide_text|Disable <SPEEDSTER> Slide Activation
 escoptions_disableslide_desc|Disables the <SPEEDSTER> boost activation when sliding.
-escoptions_useoldcontrols_text|Use Original <ESCAPIST> Clone Controls
+escoptions_useoldcontrols_text|Use Original <EVADER> Clone Controls
 escoptions_useoldcontrols_desc|Goes back to using double-tap direction to activate shadow clone.
 Guardian|Guardian
 speedster_desc_new|Keep moving to become faster and become impossible to catch
@@ -216,3 +216,11 @@ unstable_tut_e|You can only chain a random number of blinks at a time.
 unstable_tut_f|How you throw things is also random, as well as if you trip for no reason.
 Automatic|Automatic
 Bottom Right|Bottom Right
+REFRESHER COURSE UPDATE|REFRESHER COURSE UPDATE
+escoptions_bindmoretospecial_text|Bind More Abilities To Special
+escoptions_bindmoretospecial_desc|Binds more abilities to the Special button
+Evader|Evader
+escapist_desc2|Just because it's not deadly, doesn't mean it's harmless.
+escapist_new_desc2|Evade out of any situation with skill and style. Make a fool of the predators.
+escapist_new_tut_a2|Tap the Special key to teleport a short distance towards your throwing direction.
+guardian_desc|A durable protector that is not afraid to traverse any land or water.

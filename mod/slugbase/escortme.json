@@ -35,13 +35,14 @@
 		},
 		"karma": 2,
 		"karma_cap": 3,
-		"world_state": ["EscortMe", "Spear"],
+		"world_state": ["EscortMeTime", "Spear"],
 		"timeline_after": "Spear",
 		"select_menu_scene": "Slugcat_EscortMe",
 		"select_menu_scene_ascended": "Slugcat_End_EscortMe",
 		"alt_sleep_scene": "Sleep_EscortMe",
 		"alt_sleep_scene_together": "Sleep_EscortMeAndSocks",
 		"the_mark": false,
+		"expedition_description": "With sense of purpose unfulfilled, The Guardian Escort begins their<LINE>Expedition to ease the restless.",
 		
 		"boxbox": [126, -90],
 
@@ -104,13 +105,13 @@
 		"theescort/railgunner/spear_vel_fac": [2, 0.95],
 		"theescort/railgunner/spear_dmg_fac": [1.2, 2.5],
 		"theescort/railgunner/spear_thrust": [8, 11, 14, 0.75],
-		"theescort/railgunner/rock_vel_fac": 3.3,
+		"theescort/railgunner/rock_vel_fac": 2.3,
 		"theescort/railgunner/rock_thrust": [-4, 2, 0.4, 3],
 		"theescort/railgunner/lilly_vel_fac": 1.8, 
 		"theescort/railgunner/bomb_vel_fac": 3,
 		"theescort/railgunner/recoil_delay": 3,
 		"theescort/railgunner/recoil_fac": 50,
-		"theescort/railgunner/recoil_mod": [0.7, 1, 0.6, 0.9, 1.5],
+		"theescort/railgunner/recoil_mod": [0.7, 1, 0.6, 0.9, 1.5, 0.9, 0.6],
 
 		"theescort/speedster/custom_shader": "Basic",
 		"theescort/speedster/pole_rise": [0.8, 0.65],
@@ -122,5 +123,5 @@
 		"theescort/gilded/pipposition": [0, 0],
 
 		"theescort/barbarian/nooverlug": false
-		}
+	}
 }

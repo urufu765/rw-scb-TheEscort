@@ -384,7 +384,7 @@ public static class Eshelp
     /// <param name="theSlugcat">Slugcat's name</param>
     /// <param name="nullCheck">For nullchecks (inverts result)</param>
     /// <returns>Whether the slugcat is not an Escort</returns>
-    public static bool Escort_IsNull(SlugcatStats.Name theSlugcat, bool nullCheck = true)
+    public static bool Eshelp_IsNull(SlugcatStats.Name theSlugcat, bool nullCheck = true)
     {
         try
         {
@@ -442,7 +442,7 @@ public static class Eshelp
         {
             if (theTimeline is null) return nullCheck;
 
-            if (theTimeline.value is "EscortMe") return !nullCheck;
+            if (theTimeline.value == Plugin.EscortMeTime.value) return !nullCheck;
         }
         catch (NullReferenceException nre)
         {
@@ -474,6 +474,37 @@ public static class Eshelp
             Vector2 vecBody = vec * Mathf.Min(3f, UnityEngine.Random.value * 3f / Mathf.Lerp(self.bodyChunks[1].mass, 1f, 0.5f)) * intensity;
             self.bodyChunks[1].pos += vecBody;
             self.bodyChunks[1].vel += vecBody * 0.5f;
+        }
+    }
+
+    public static bool ParryCondition(Player player, in Escort escort, out EsType type)
+    {
+        type = EsType.None;
+        // Deflector extra parry check
+        if (escort.Deflector && (player.animation == Player.AnimationIndex.BellySlide || player.animation == Player.AnimationIndex.Flip || player.animation == Player.AnimationIndex.Roll))
+        {
+            type = EsType.Deflector;
+            return true;
+        }
+
+        // New Escapist hidden parry tech check
+        if (escort.NewEscapist && escort.NEsAbility > 0 && (player.animation == Player.AnimationIndex.Flip))
+        {
+            type = EsType.ShadowEscapist;
+            return true;
+        }
+
+        // Regular parry check
+        else if (player.animation == Player.AnimationIndex.BellySlide && escort.parryAirLean > 0)
+        {
+            type = EsType.Generic;
+            return true;
+        }
+
+        // Not in parry condition
+        else
+        {
+            return escort.parrySlideLean > 0;
         }
     }
 
@@ -514,6 +545,7 @@ public static class Eshelp
         text = text.Replace("<BRAWLER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Brawler"));
         text = text.Replace("<DEFLECTOR>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Deflector"));
         text = text.Replace("<ESCAPIST>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Escapist"));
+        text = text.Replace("<EVADER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Evader"));
         text = text.Replace("<RAILGUNNER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Railgunner"));
         text = text.Replace("<SPEEDSTER>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Speedster"));
         text = text.Replace("<GILDED>", RWCustom.Custom.rainWorld.inGameTranslator.Translate("Gilded"));

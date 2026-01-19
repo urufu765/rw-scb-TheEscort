@@ -80,11 +80,11 @@ namespace TheEscort
             orig(self, s, rCam, palette);
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -122,8 +122,8 @@ namespace TheEscort
                         Color esc = PlayerGraphics.CustomColorSafety(0);
                         Color def = Custom.hexToColor("4169e1");
                         if (
-                            Mathf.Abs(esc.r - def.r) < 0.01f && 
-                            Mathf.Abs(esc.g - def.g) < 0.01f && 
+                            Mathf.Abs(esc.r - def.r) < 0.01f &&
+                            Mathf.Abs(esc.g - def.g) < 0.01f &&
                             Mathf.Abs(esc.b - def.b) < 0.01f
                             )
                         {
@@ -219,11 +219,11 @@ namespace TheEscort
             orig(self, s, rCam, newContainer);
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     return;
                 }
@@ -292,12 +292,12 @@ namespace TheEscort
         {
             try
             {
-                if (!(self != null && self.player != null))
+                if (self?.player?.slugcatStats is null)
                 {
                     orig(self, s, rCam, t, camP);
                     return;
                 }
-                if (self.player.slugcatStats.name.value != "EscortMe")
+                if (Eshelp_IsNull(self.player.slugcatStats.name))
                 {
                     orig(self, s, rCam, t, camP);
                     return;
@@ -344,7 +344,7 @@ namespace TheEscort
                     // Hypelevel visual fx
                     try
                     {
-                        if (self.player != null && ins.Esconfig_Hypable(self.player))
+                        if (self.player != null)
                         {
                             // calculation of transparency
                             float alphya = 1f;
@@ -593,11 +593,12 @@ namespace TheEscort
             orig(self, menu, owner, pos);
             if (ins.config.PlayerCount > 4) return;  // Just disable the menu for coherency sake
             // I'm not calculating this crap.
-            int num = 100;
-            float num2 = (1024f - num * 4f) / 5f;
-            float num3 = 171f;
-            Vector2 vector = new(num3 + num2, 0f);
-            Vector2 vector2 = vector + new Vector2(0f, menu.manager.rainWorld.screenSize.y * 0.55f) + new Vector2(0f, -106.5f);
+            // int num = 100;
+            // float num2 = (1024f - num * 4f) / 5f;
+            // float num3 = 171f;
+            Vector2 offset = new(224.8f, 0f);
+            Vector2 buildAnchor = new Vector2(0f, menu.manager.rainWorld.screenSize.y * 0.55f) + new Vector2(295.8f, -106.5f);
+            Vector2 easyOffset = new Vector2(105.5f, 0f);
 
             // Creates custom buttons that are independent from Configurables such that they don't have to have conflicts and such. It's janky but it's also flexible and very compatible. The button and the remix option can share a configurable!
             ins.config.jollyEscortBuilds = new OpSimpleButton[4];
@@ -608,7 +609,7 @@ namespace TheEscort
             for (int i = 0; i < 4; i++)
             {
                 ins.config.jollyEscortBuilds[i] = new OpSimpleButton(  // Set up build switching button
-                    vector2, new Vector2(100f, 30f)
+                    buildAnchor, new Vector2(100f, 30f)
                 )
                 {
                     text = rainWorld.inGameTranslator.Translate(ins.config.GetBuildSelectionable()[ins.config.cfgBuild[i].Value]),
@@ -627,7 +628,7 @@ namespace TheEscort
                 };
                 ins.config.jollyEscortBuilds[i].OnClick += Eshelp_Set_Jolly_To_Remix;
                 ins.config.jollyEscortEasies[i] = new OpSimpleButton(  // Set up easier mode toggle button
-                    vector2 + new Vector2(105.5f, 0f), new Vector2(30f, 30f)
+                    buildAnchor + easyOffset, new Vector2(30f, 30f)
                 )
                 {
                     text = ins.config.cfgEasy[i].Value ? "X" : "",
@@ -648,7 +649,7 @@ namespace TheEscort
                 fairlyIllegalWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortEasies[i]);
                 self.subObjects.Add(fairlyIllegalWrapper[i]);
                 hackyWrapper[i] = new UIelementWrapper(menu.tabWrapper, ins.config.jollyEscortBuilds[i]);
-                vector2 += new Vector2(num2 + num, 0f);
+                buildAnchor += offset;
                 self.subObjects.Add(hackyWrapper[i]);
             }
             self.UpdatePlayerSlideSelectable(menu.manager.rainWorld.options.JollyPlayerCount - 1);
@@ -796,13 +797,20 @@ namespace TheEscort
             {
                 if (self.slugName == EscortMe)
                 {
-                    ins.config.jollyEscortBuilds[self.index].Reactivate();
-                    ins.config.jollyEscortEasies[self.index].Reactivate();
+                    Vector2 buildAnchor = new Vector2(0f, self.menu.manager.rainWorld.screenSize.y * 0.55f) + new Vector2(295.8f, -106.5f);
+                    Vector2 offset = new(224.8f, 0f);
+                    Vector2 easyOffset = new(105.5f, 0f);
+                    ins.config.jollyEscortBuilds[self.index].Show();
+                    //ins.config.jollyEscortBuilds[self.index].pos = buildAnchor + (offset * self.index);
+                    ins.config.jollyEscortEasies[self.index].Show();
+                    //ins.config.jollyEscortEasies[self.index].pos = buildAnchor + easyOffset + (offset * self.index);
                 }
                 else
                 {
-                    ins.config.jollyEscortBuilds[self.index].Deactivate();
-                    ins.config.jollyEscortEasies[self.index].Deactivate();
+                    //ins.config.jollyEscortBuilds[self.index].pos = new(800, 1000);
+                    ins.config.jollyEscortBuilds[self.index].Hide();
+                    //ins.config.jollyEscortEasies[self.index].pos = new(800, 1000);
+                    ins.config.jollyEscortEasies[self.index].Hide();
                 }
             }
         }
@@ -840,7 +848,7 @@ namespace TheEscort
                     //     description = "Change Escort's Build, which affects how they play significantly! You can also set these values in the Remix Settings!"
                     // };
                     //ins.config.arenaEscortBuilds[i].OnClick += Eshelp_Set_Arena_To_Remix;
-                    ins.config.arenaEscortBuilds[i] = new SimpleButton(self, self.pages[0], rainWorld.inGameTranslator.Translate(ins.config.GetBuildSelectionable()[ins.config.cfgBuild[i].Value]), "BUILD_CHANGE_" + i, new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f), new Vector2(100f, 30f));
+                    ins.config.arenaEscortBuilds[i] = new SimpleButton(self, self.pages[0], rainWorld.inGameTranslator.Translate(ins.config.GetBuildSelectionable()[ins.config.cfgBuild[i].Value]), "BUILD_CHANGE_" + i, new Vector2(580f + i * 120f, 500f) + new Vector2(126f, -87f), new Vector2(100f, 25f));
                     // wackyWrapper[i] = new RectangularMenuObject(self.);
                     self.pages[0].subObjects.Add(ins.config.arenaEscortBuilds[i]);
                 }
@@ -921,14 +929,14 @@ namespace TheEscort
                 {
                     if (ins.config.arenaEscortBuilds[i] is not null)
                     {
-                        if (Escort_IsNull(self.GetArenaSetup?.playerClass?[i]))
+                        if (Eshelp_IsNull(self.GetArenaSetup?.playerClass?[i]))
                         {
                             ins.config.arenaEscortBuilds[i].pos = new(800, 1000);
                             ins.config.arenaEscortBuilds[i].inactive = true;
                         }
                         else
                         {
-                            ins.config.arenaEscortBuilds[i].pos = new Vector2(580f + i * 120f, 500f) + new Vector2(126, -90f);
+                            ins.config.arenaEscortBuilds[i].pos = new Vector2(580f + i * 120f, 500f) + new Vector2(126f, -87f);
                             ins.config.arenaEscortBuilds[i].inactive = false;
                         }
                     }

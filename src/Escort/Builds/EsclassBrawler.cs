@@ -205,7 +205,7 @@ namespace TheEscort
         {
             try
             {
-                if (Escort_IsNull(self.slugcatStats.name))
+                if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     return orig(self, grabCheck);
                 }

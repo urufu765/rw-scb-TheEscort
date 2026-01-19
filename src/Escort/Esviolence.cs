@@ -21,7 +21,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, otherObject, myChunk, otherChunk);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -447,7 +447,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, spear);
         try
         {
-            if (Escort_IsNull(self.slugcatStats.name))
+            if (Eshelp_IsNull(self.slugcatStats.name))
             {
                 return;
             }
@@ -699,7 +699,7 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, Bullet self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
@@ -769,7 +769,7 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, LillyPuck self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
@@ -806,7 +806,7 @@ partial class Plugin : BaseUnityPlugin
         {
             if (self.thrownBy is Player p)
             {
-                if (Escort_IsNull(p.slugcatStats.name))
+                if (Eshelp_IsNull(p.slugcatStats.name))
                 {
                     return orig(self, result, eu);
                 }
@@ -978,7 +978,7 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, ScavengerBomb self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector && !creature.dead)
                         {
@@ -1054,7 +1054,7 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, Spear self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
                         if (e.Deflector)
                         {
@@ -1086,7 +1086,7 @@ partial class Plugin : BaseUnityPlugin
     public static bool Escort_FlareHit(On.FlareBomb.orig_HitSomething orig, FlareBomb self, SharedPhysics.CollisionResult result, bool eu)
     {
         bool ending = orig(self, result, eu);
-        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Escort_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+        if (ending && self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
         {
             if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
             {
