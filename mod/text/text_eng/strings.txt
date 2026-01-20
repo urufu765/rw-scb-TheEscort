@@ -224,3 +224,5 @@ escapist_desc2|Just because it's not deadly, doesn't mean it's harmless.
 escapist_new_desc2|Evade out of any situation with skill and style. Make a fool of the predators.
 escapist_new_tut_a2|Tap the Special key to teleport a short distance towards your throwing direction.
 guardian_desc|A durable protector that is not afraid to traverse any land or water.
+escoptions_vengefullizards2_text|Vengeful Lizards 2.0 Difficulty
+escoptions_vengefullizards2_desc|Upon killing too many creatures, vengeful lizards may begin hunting Escort down. Difficulty sets how often they spawn.

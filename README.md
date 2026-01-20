@@ -72,10 +72,13 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Disable mother achievement, add bonus score for creatures escorted
   * **(0.4-dev.)* Fix Escort sleep scene (back marking missing)
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
-  * **(0.4-dev.)* Deflector can properly parry bees
-    * X Deflector's lethal bite percentage is now 100%.
-    * X Deflector gets new empowered animation
+    * Deflector can properly parry bees
     * Speedster base speed reduced a bit
+    * Deflector gets new empowered animation
+    * Deflector parries death! (but disabled in meadow for now)
+  * **(0.4-dev.15)**
+    * Deflector's lethal bite multiplier increased to be almost always lethal.
+    * Vengeful Lizards 2!
   * **(0.4-dev.14)**
     * Fixed one of the scenes being misaligned
     * Nerfed Escapist's default move speed and buffed underwater breath duration

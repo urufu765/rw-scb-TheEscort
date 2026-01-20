@@ -96,6 +96,8 @@ class EscOptions : OptionInterface
     private Color tempColor;
     public int PlayerCount { get; private set; } = 4;
     private bool saitBeat;
+    public List<ListItem> vengeanceDifficulty;
+    public Configurable<string> cfgVengeance;
     public static bool shouldUpdate = false;
     private readonly float yoffset = 560f;
     private readonly float xoffset = 30f;
@@ -255,6 +257,14 @@ class EscOptions : OptionInterface
         this.bindKeyHelper = config.Bind("escort_bindkey_helper", KeyCode.None);
 
         this.cfgAllBuildsGetPup = config.Bind("cfg_Let_All_The_Builds_Have_Slugpups", false);
+        this.vengeanceDifficulty = [
+            new("disable", Translate("Off"), 0),
+            new("easy", Translate("Easy"), 0),
+            new("medium", Translate("Medium"), 40),
+            new("hard", Translate("Hard"), 60),
+            new("unfair", Translate("Unfair"), 200)
+        ];
+        this.cfgVengeance = config.Bind("cfg_lizard_vengeance_deluxe", vengeanceDifficulty[2].name);
         shouldUpdate = true;
     }
 
@@ -465,13 +475,13 @@ class EscOptions : OptionInterface
                 colorEdge = tempColor
             },
 
-            new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, Translate("escoptions_vengefullizards_text") + Translate("[Beta]")){
-                color = tempColor
-            },
-            new OpCheckBox(this.cfgVengefulLizards, new Vector2(xo + (xp * 0), yo - (yp * 3))){
-                description = Translate("escoptions_vengefullizards_desc") + SetDefault(cfgVengefulLizards.defaultValue),
-                colorEdge = tempColor
-            },
+            // new OpLabel(xo + (xp * 1), yo - (yp * 3) + tp/2, Translate("escoptions_vengefullizards_text") + Translate("[Beta]")){
+            //     color = tempColor
+            // },
+            // new OpCheckBox(this.cfgVengefulLizards, new Vector2(xo + (xp * 0), yo - (yp * 3))){
+            //     description = Translate("escoptions_vengefullizards_desc") + SetDefault(cfgVengefulLizards.defaultValue),
+            //     colorEdge = tempColor
+            // },
 
             new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 4), Translate("escoptions_carry_text")),
             new OpUpdown(this.cfgHeavyLift, new Vector2(xo + (xp * 0), yo - (yp * 4) - tp), 100, 2){
@@ -516,7 +526,13 @@ class EscOptions : OptionInterface
             new OpCheckBox(this.cfgAllBuildsGetPup, new Vector2(xo + (xp * 0), yo - (yp * 12))){
                 description = Translate("escoptions_pupsforeveryone_desc") + SetDefault(cfgAllBuildsGetPup.defaultValue),
                 colorEdge = tempColor
-            }
+            },
+
+            new OpLabel(xo + (xp * 5) + 7f, yo - (yp * 3), Translate("escoptions_vengefullizards2_text")),
+            new OpComboBox(this.cfgVengeance, new Vector2(xo + (xp * 0), yo - (yp * 3) - tp), 160, vengeanceDifficulty){
+                description = Translate("escoptions_vengefullizards2_desc") + SetDefault(cfgVengeance.defaultValue)
+            },
+
             /*
             new OpLabel(xo + (xp * 3) + 7f, yo - (yp * 12), "Lifting Power Multiplier"),
             new OpUpdown(this.cfgEscLaunchH, new Vector2(xo + (xp * 0), yo - (yp * 12) - tp), 100, 2){

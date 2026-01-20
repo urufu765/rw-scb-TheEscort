@@ -23,6 +23,7 @@ namespace TheEscort
         public bool SocksIsAlive {get; set;} = false;
         public int SpearsToRemake {get; set;} = 0;
         public bool GuardianEscortVoidEnding {get;set;} = false;
+        public int VengeancePoints {get;set;} = 0;
 
         // Escort Server Challenge 3
         public bool ESC03_START {get; set;} = false;

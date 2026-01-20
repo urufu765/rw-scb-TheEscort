@@ -1398,6 +1398,20 @@ partial class Plugin : BaseUnityPlugin
             }
             Esconfig_Build(self, abstractCreature, Challenge_Presetter(self.room, ref e));  // Set build
 
+            
+            AbstractEscort ae = aCon.GetOrCreateValue(abstractCreature);
+            ae.VengefulDifficulty = ins.config.cfgVengeance.Value;
+            // if (escPatch_meadow)
+            // {
+            //     if (EPatchMeadow.IsOnline() && abstractCreature.GetOnlineCreature().owner != OnlineManager.lobby.owner)
+            //     {
+            //         ae.Online = true;   
+            //     }
+            // }
+            // else
+            // {
+            //     ae.VengefulDifficulty = ins.config.cfgVengeance.Value;
+            // }
             // if (escPatch_meadow && EPatchMeadow.IsOnline())
             // {
             //     Ebug("Added Online Escort Data", LogLevel.MESSAGE);
@@ -1515,6 +1529,11 @@ partial class Plugin : BaseUnityPlugin
             {
                 foreach (var x in self.Players)
                 {
+                    if (aCon.TryGetValue(x, out AbstractEscort ascort))
+                    {
+                        ascort.StoryTime = self.IsStorySession;
+                        ascort.UpdateVengeance(x);
+                    }
                     if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
                         // Updates the Escort property trackers outside player update to allow the tracker to continue checking for updates

@@ -21,6 +21,10 @@ public class EscortOnlineData : OnlineEntity.EntityData
         public int buildId;
         [OnlineField]
         public bool imDead;
+        [OnlineField]
+        public string vengefulDifficulty;
+        [OnlineField]
+        public int vengeancePoints;
 
         #region Lazy Sync
         /// <summary>
@@ -79,6 +83,15 @@ public class EscortOnlineData : OnlineEntity.EntityData
             if (!Plugin.eCon.TryGetValue(player, out Escort e)) return;
             imDead = player.dead;
             buildId = FindBuildIndex(e);
+            vengefulDifficulty = "";
+            if (oe.owner == OnlineManager.lobby.owner)
+            {
+                vengefulDifficulty = Plugin.ins.config.cfgVengeance.Value;
+            }
+            if (player?.room?.game?.GetStorySession is StoryGameSession sgs)
+            {
+                vengeancePoints = sgs.saveState.miscWorldSaveData.Esave().VengeancePoints;
+            }
             // if (e.Deflector)
             // {
             //     DeflSharedPerma = e.DeflPerma;
@@ -140,6 +153,19 @@ public class EscortOnlineData : OnlineEntity.EntityData
                         e.GildPowerMax = GildPowerMax;
                     }
                 }
+                if (e.PleaseSyncMyUnimportantValues && Plugin.aCon.TryGetValue(ac, out AbstractEscort ae))
+                {
+                    ae.VengefulDifficulty = this.vengefulDifficulty;
+                    ae.Online = true;
+                    if (p.room?.game?.session is StoryGameSession sgs && RainMeadow.RainMeadow.isStoryMode(out StoryGameMode gameMode) && !gameMode.saveToDisk)
+                    {
+                        int local = sgs.saveState.miscWorldSaveData.Esave().VengeancePoints;
+                        if (local < this.vengeancePoints)
+                        {
+                            sgs.saveState.miscWorldSaveData.Esave().VengeancePoints = vengeancePoints;
+                        }
+                    }
+                }
                 if (imDead || p.dead) return;  // Don't try to sync values if dead
                 e.RollinCount = RollinCount;
                 if (e.Railgunner)
@@ -166,6 +192,8 @@ public class EscortOnlineData : OnlineEntity.EntityData
                 AbstractEscort ae = Plugin.aCon.GetOrCreateValue(ac);
 
                 ae.buildId = this.buildId;
+                ae.VengefulDifficulty = this.vengefulDifficulty;
+                ae.Online = true;
             }
             // Ebug("Set value " + buildId, LogLevel.MESSAGE);
 

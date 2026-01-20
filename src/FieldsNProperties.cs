@@ -44,6 +44,7 @@ partial class Plugin : BaseUnityPlugin
         escPatch_revivify = false;
         escPatch_rotundness = false;
         escPatch_dms = false;
+        escPatch_meadow = false;
 
         AltSleepScene = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene");
         AltSleepSceneDuo = GameExtEnum<MenuScene.SceneID>("alt_sleep_scene_together");
