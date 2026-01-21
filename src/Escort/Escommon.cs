@@ -7,6 +7,7 @@ using MonoMod.Cil;
 using RWCustom;
 using System;
 using System.Collections.Generic;
+using TheEscort.VengefulLizards;
 using UnityEngine;
 using static TheEscort.Eshelp;
 

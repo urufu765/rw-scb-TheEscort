@@ -76,6 +76,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Speedster base speed reduced a bit
     * Deflector gets new empowered animation
     * Deflector parries death! (but disabled in meadow for now)
+  * **(0.4-dev.16)**
+    * Vengeful Lizards 2 fixed for meadow!
   * **(0.4-dev.15)**
     * Deflector's lethal bite multiplier increased to be almost always lethal.
     * Vengeful Lizards 2!

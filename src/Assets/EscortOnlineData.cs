@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using RainMeadow;
+using TheEscort.VengefulLizards;
 using static TheEscort.Eshelp;
 
 namespace TheEscort;
@@ -153,10 +154,10 @@ public class EscortOnlineData : OnlineEntity.EntityData
                         e.GildPowerMax = GildPowerMax;
                     }
                 }
-                if (e.PleaseSyncMyUnimportantValues && Plugin.aCon.TryGetValue(ac, out AbstractEscort ae))
+                if (e.PleaseSyncMyUnimportantValues && Plugin.vCon.TryGetValue(ac, out VengefulLizardManager von))
                 {
-                    ae.VengefulDifficulty = this.vengefulDifficulty;
-                    ae.Online = true;
+                    von.VengefulDifficulty = this.vengefulDifficulty;
+                    von.Online = true;
                     if (p.room?.game?.session is StoryGameSession sgs && RainMeadow.RainMeadow.isStoryMode(out StoryGameMode gameMode) && !gameMode.saveToDisk)
                     {
                         int local = sgs.saveState.miscWorldSaveData.Esave().VengeancePoints;
@@ -192,8 +193,6 @@ public class EscortOnlineData : OnlineEntity.EntityData
                 AbstractEscort ae = Plugin.aCon.GetOrCreateValue(ac);
 
                 ae.buildId = this.buildId;
-                ae.VengefulDifficulty = this.vengefulDifficulty;
-                ae.Online = true;
             }
             // Ebug("Set value " + buildId, LogLevel.MESSAGE);
 

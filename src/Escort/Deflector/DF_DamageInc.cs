@@ -6,6 +6,7 @@ using static TheEscort.Eshelp;
 using System;
 using Menu;
 using Newtonsoft.Json;
+using TheEscort.VengefulLizards;
 
 namespace TheEscort.Deflector;
 
@@ -30,23 +31,23 @@ public static class DF_Damage
         {
             if (victim.killTag?.realizedCreature is Player p)
             {
-                if (aCon.TryGetValue(victim.killTag, out AbstractEscort acort) && p.room?.game?.session is StoryGameSession sg)
+                if (vCon.TryGetValue(victim.killTag, out VengefulLizardManager ven) && p.room?.game?.session is StoryGameSession sg)
                 {
                     int points = TryGetKillscorePoints(victim.Template.type);
                     if (points > 0)
                     {
-                        if (!acort.IsVengeanceLizard(victim.abstractCreature.ID))
+                        if (!ven.IsVengeanceLizard(victim.abstractCreature.ID))
                         {
                             sg.saveState.miscWorldSaveData.Esave().VengeancePoints += points;
                         }
-                        acort.TryVengeance(
+                        ven.TryVengeance(
                             victim.killTag,
                             sg.saveState.deathPersistentSaveData.karma,
                             sg.saveState.deathPersistentSaveData.reinforcedKarma,
                             sg.saveState.deathPersistentSaveData.karmaCap,
                             sg.saveState.miscWorldSaveData.Esave().VengeancePoints,
                             sg.saveState.cycleNumber,
-                            acort.IsVengeanceLizard(victim.abstractCreature.ID)
+                            ven.IsVengeanceLizard(victim.abstractCreature.ID)
                         );
                     }
                 }

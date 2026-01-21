@@ -15,6 +15,8 @@ using static UrufuCutsceneTool.CsInLogger;
 using TheEscort.Railgunner;
 using TheEscort.Brawler;
 using TheEscort.Deflector;
+using TheEscort.Patches;
+using TheEscort.VengefulLizards;
 
 namespace TheEscort
 {
@@ -258,11 +260,20 @@ namespace TheEscort
             orig(self, eu);
             try
             {
+
                 if (Eshelp_IsNull(self.slugcatStats.name))
                 {
                     Ebug(self, "Attempted to access a nulled player when updating!", LogLevel.WARN);
                     return;
                 }
+                // if (aCon.TryGetValue(self.abstractCreature, out AbstractEscort ascort))
+                // {
+                //     if (self?.room?.game?.IsStorySession == true)
+                //     {
+                //         ascort.StoryTime = true;
+                //     }
+                //     ascort.UpdateVengeance(self.abstractCreature);
+                // }
                 // ONE OF THESE WILL TELL ME WHY THE FUCK THE SCUG'S CONTROLLER GETS YEETED OUT THE WINDOW I SWEAR TO FUCKING GOD
                 // Hello past me, I figured it out lmao
                 if (false && (bool)!self.room?.game?.paused)
@@ -2237,9 +2248,9 @@ namespace TheEscort
 
                             if (self.room?.game?.session is StoryGameSession sgs && player.playerState.playerNumber == 0)
                             {
-                                if (escort.shelterSaveComplete == 2 && aCon.TryGetValue(abstractPlayer, out AbstractEscort ae))
+                                if (escort.shelterSaveComplete == 2 && vCon.TryGetValue(abstractPlayer, out VengefulLizardManager ven))
                                 {
-                                    sgs.saveState.miscWorldSaveData.Esave().VengeancePoints /= ae.VengefulDivision();
+                                    sgs.saveState.miscWorldSaveData.Esave().VengeancePoints /= ven.VengefulDivision();
                                 }
                                 bool socksExist = TryFindThePup(self.room, out _);
                                 if (escort.SocksAliveAndHappy is not null && !socksExist)

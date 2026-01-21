@@ -22,6 +22,7 @@ partial class Plugin : BaseUnityPlugin
         eCon ??= new();
         aCon ??= new();
         sCon ??= new();
+        vCon ??= new();
         natrualSpears ??= [];
 
         selectionable = new() {
