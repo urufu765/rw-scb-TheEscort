@@ -8,6 +8,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * **(0.3.7)**
+    * Vengeful Lizards 2.0!
+
   * **(0.3.6.4)**
     * Build select button goes away in jolly menu in case someone else wants to use that spot
     * Arena build select button a bit shorter

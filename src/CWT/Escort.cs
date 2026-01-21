@@ -128,13 +128,13 @@ namespace TheEscort
 
         private int _syncValue;
         /// <summary>
-        /// For synchronizing online values, increments by 1 every time it's read, with the minimum sync timing being 1 second.
+        /// For synchronizing online values, increments by 1 every time it's read, with the minimum sync timing being 1/2 seconds.
         /// </summary>
         public bool PleaseSyncMyUnimportantValues
         {
             get
             {
-                if (_syncValue > 40) _syncValue = 0;
+                if (_syncValue > 20) _syncValue = 0;
                 return _syncValue++ == 1;
             }
         }

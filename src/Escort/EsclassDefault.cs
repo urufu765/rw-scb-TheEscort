@@ -12,6 +12,7 @@ using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
 using Newtonsoft.Json;
 using static UrufuCutsceneTool.CsInLogger;
+using TheEscort.VengefulLizards;
 
 namespace TheEscort
 {
@@ -403,24 +404,24 @@ namespace TheEscort
                 Ebug(self, err, "Caught error when updating and console logging");
             }
 
-            // Vengeful Lizards
-            if (self != null && self.room != null && self.room.game != null && self.room.game.IsStorySession && ins.Esconfig_Vengeful_Lizards())
-            {
-                if (e.playerKillCount < self.SessionRecord.kills.Count)
-                {
-                    int a = 0;
-                    foreach (PlayerSessionRecord.KillRecord killz in self.SessionRecord.kills)
-                    {
-                        if (killz.lizard) a++;
-                    }
-                    if (e.lizzieVengenceCount < a)
-                    {
-                        e.lizzieVengenceCount = a;
-                    }
-                    e.playerKillCount = self.SessionRecord.kills.Count;
-                }
-                e.Escat_ping_lizards(self);
-            }
+            // Vengeful Lizards 1.0
+            // if (self != null && self.room != null && self.room.game != null && self.room.game.IsStorySession && ins.Esconfig_Vengeful_Lizards())
+            // {
+            //     if (e.playerKillCount < self.SessionRecord.kills.Count)
+            //     {
+            //         int a = 0;
+            //         foreach (PlayerSessionRecord.KillRecord killz in self.SessionRecord.kills)
+            //         {
+            //             if (killz.lizard) a++;
+            //         }
+            //         if (e.lizzieVengenceCount < a)
+            //         {
+            //             e.lizzieVengenceCount = a;
+            //         }
+            //         e.playerKillCount = self.SessionRecord.kills.Count;
+            //     }
+            //     e.Escat_ping_lizards(self);
+            // }
 
             // vfx
             if (self != null && self.room != null)
@@ -2189,6 +2190,10 @@ namespace TheEscort
 
                             if (self.room?.game?.session is StoryGameSession sgs && player.playerState.playerNumber == 0)
                             {
+                                if (escort.shelterSaveComplete == 2 && vCon.TryGetValue(abstractPlayer, out VengefulLizardManager ven))
+                                {
+                                    sgs.saveState.miscWorldSaveData.Esave().VengeancePoints /= ven.VengefulDivision();
+                                }
                                 bool socksExist = TryFindThePup(self.room, out _);
                                 if (escort.SocksAliveAndHappy is not null && !socksExist)
                                 {

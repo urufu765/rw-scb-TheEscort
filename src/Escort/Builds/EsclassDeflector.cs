@@ -3,6 +3,7 @@ using Menu;
 using Newtonsoft.Json;
 using SlugBase.Features;
 using System;
+using TheEscort.VengefulLizards;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -155,26 +156,52 @@ namespace TheEscort
 
         }
 
-        public static void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
+    public static int TryGetKillscorePoints(CreatureTemplate.Type type)
+    {
+        int points = StoryGameStatisticsScreen.GetNonSandboxKillscore(type);
+        if (points <= 0)
         {
-            try
+            if (themCreatureScores is null) Expedition.ChallengeTools.GenerateCreatureScores(ref themCreatureScores);
+            if (themCreatureScores.TryGetValue(type.value, out var score))
             {
-                if (victim.killTag?.realizedCreature is Player p && eCon.TryGetValue(p, out Escort escort))
+                points = score;
+            }
+        }
+        return points;
+    }
+    public static void Esclass_DF_DamageIncrease(On.PlayerSessionRecord.orig_AddKill orig, PlayerSessionRecord self, Creature victim)
+    {
+        try
+        {
+            if (victim.killTag?.realizedCreature is Player p)
+            {
+                if (vCon.TryGetValue(victim.killTag, out VengefulLizardManager ven) && p.room?.game?.session is StoryGameSession sg)
+                {
+                    int points = TryGetKillscorePoints(victim.Template.type);
+                    if (points > 0)
+                    {
+                        if (!ven.IsVengeanceLizard(victim.abstractCreature.ID))
+                        {
+                            sg.saveState.miscWorldSaveData.Esave().VengeancePoints += points;
+                        }
+                        ven.TryVengeance(
+                            victim.killTag,
+                            sg.saveState.deathPersistentSaveData.karma,
+                            sg.saveState.deathPersistentSaveData.reinforcedKarma,
+                            sg.saveState.deathPersistentSaveData.karmaCap,
+                            sg.saveState.miscWorldSaveData.Esave().VengeancePoints,
+                            sg.saveState.cycleNumber,
+                            ven.IsVengeanceLizard(victim.abstractCreature.ID)
+                        );
+                    }
+                }
+                if (eCon.TryGetValue(p, out Escort escort))
                 {
                     if (p.room?.game?.session is StoryGameSession sgs)
                     {
                         if (escort.Deflector)
                         {
-                            int points = StoryGameStatisticsScreen.GetNonSandboxKillscore(victim.Template.type);
-                            if (points <= 0)
-                            {
-                                if (themCreatureScores is null) Expedition.ChallengeTools.GenerateCreatureScores(ref themCreatureScores);
-                                if (themCreatureScores.TryGetValue(victim.Template.type.value, out var score))
-                                {
-                                    points = score;
-                                }
-                            }
-                            escort.DeflPerma += points * 0.001f;
+                            escort.DeflPerma += TryGetKillscorePoints(victim.Template.type) * 0.001f;
                             if (p.room?.abstractRoom is not null && p.room.abstractRoom.shelter)
                             {
                                 escort.shelterSaveComplete = 0;
@@ -212,19 +239,20 @@ namespace TheEscort
                     // }
                     Ebug(p, "Damage: " + escort.DeflPerma, ignoreRepetition: true);
                 }
-                orig(self, victim);
             }
-            catch (NullReferenceException nre)
-            {
-                Ebug(nre, "Permadamage increase failed due to null!");
-                orig(self, victim);
-            }
-            catch (Exception err)
-            {
-                Ebug(err, "Permadamage increase failed due to generic error!");
-                orig(self, victim);
-            }
+            orig(self, victim);
         }
+        catch (NullReferenceException nre)
+        {
+            Ebug(nre, "Permadamage increase failed due to null!");
+            orig(self, victim);
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Permadamage increase failed due to generic error!");
+            orig(self, victim);
+        }
+    }
 
         public static void Esclass_DF_WinLoseSave(ShelterDoor self, int playerNumber, bool success, ref Escort escort)
         {

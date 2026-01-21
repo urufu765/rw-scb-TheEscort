@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TheEscort.Patches;
+using TheEscort.VengefulLizards;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -25,7 +26,7 @@ using static UrufuCutsceneTool.CsInLogger;
 /// </summary>
 namespace TheEscort;
 
-[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.6.4")]
+[BepInPlugin(MOD_ID, "[Beta] The Escort", "0.3.7")]
 partial class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -270,11 +271,14 @@ partial class Plugin : BaseUnityPlugin
     public static ConditionalWeakTable<Player, Escort> eCon;
 
     public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon;
+    public static ConditionalWeakTable<AbstractCreature, VengefulLizardManager> vCon;
 
     /// <summary>
     /// Contains instances of the Socks class for each applicable players.
     /// </summary>
     public static ConditionalWeakTable<Player, Socks> sCon;
+
+
     //public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon = new();
 
     /// <summary>
@@ -1346,6 +1350,17 @@ partial class Plugin : BaseUnityPlugin
                 }
                 e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
             }
+            if (escPatch_meadow && EPatchMeadow.IsOnline())
+            {
+                if (self.abstractCreature.GetOnlineCreature().isMine)
+                {
+                    vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value));
+                }
+            }
+            else
+            {
+                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value));
+            }
             Esconfig_Build(self, abstractCreature, Challenge_Presetter(self.room, ref e));  // Set build
 
             // if (escPatch_meadow && EPatchMeadow.IsOnline())
@@ -1465,6 +1480,11 @@ partial class Plugin : BaseUnityPlugin
             {
                 foreach (var x in self.Players)
                 {
+                    if (vCon.TryGetValue(x, out VengefulLizardManager ven))
+                    {
+                        ven.UpdateVengeance(x);
+                    }
+
                     if (x.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
                     {
                         // Updates the Escort property trackers outside player update to allow the tracker to continue checking for updates
