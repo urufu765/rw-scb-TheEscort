@@ -40,6 +40,19 @@ public static class EPatchMeadow
         return false;
     }
 
+    public static bool IsHost(AbstractCreature abstractCreature)
+    {
+        try
+        {
+            return abstractCreature.GetOnlineCreature()?.isMine == true;
+        }
+        catch (Exception err)
+        {
+            Ebug(err, "Online check bad!");
+        }
+        return false;
+    }
+
     public static SlugcatStats.Timeline FixTheTimeline(Func<StoryGameMode, RainWorldGame, SlugcatStats.Timeline> orig, StoryGameMode self, RainWorldGame game)
     {
         if (Eshelp_IsNull(self.currentCampaign, false))

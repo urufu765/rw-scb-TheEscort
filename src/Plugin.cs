@@ -1352,14 +1352,14 @@ partial class Plugin : BaseUnityPlugin
             }
             if (escPatch_meadow && EPatchMeadow.IsOnline())
             {
-                if (self.abstractCreature.GetOnlineCreature().isMine)
+                if (EPatchMeadow.IsHost(abstractCreature))
                 {
                     vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value));
                 }
             }
             else
             {
-                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value));
+                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, false, ins.config.cfgVengeance.Value));
             }
             Esconfig_Build(self, abstractCreature, Challenge_Presetter(self.room, ref e));  // Set build
 

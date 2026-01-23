@@ -8,6 +8,8 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
 
 * ### 0.3 - Ending I
 
+  * **(0.3.7.1)** Fixed issue where not having Meadow caused the mod to fail to load into campaign.
+
   * **(0.3.7)**
     * Vengeful Lizards 2.0!
 

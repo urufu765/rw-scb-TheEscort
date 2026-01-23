@@ -123,14 +123,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.7";
+    private static readonly string VERSION = "0.3.7.1";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- Vengeful Lizards 2.0!<LINE><LINE>For every creature you kill, there's a chance that<LINE>it will trigger the vengeful.<LINE>Beware, for they can be relentless.<LINE><LINE>You can select the difficulty of this feature, where the higher<LINE>the difficulty, the higher probability the creatures will spawn,<LINE>and the more frequently they get to do their tracking actions.");
+            "- Vengeful Lizards 2.0!<LINE><LINE>For every creature you kill, there's a chance that<LINE>it will trigger the vengeful.<LINE>Beware, for they can be relentless.<LINE><LINE>You can select the difficulty of this feature, where the higher<LINE>the difficulty, the higher probability the creatures will spawn,<LINE>and the more frequently they get to do their tracking actions.<LINE><LINE>- Fixed crash issue that happens if you don't have Meadow installed and enabled. Whoops.");
         }
     }
 
