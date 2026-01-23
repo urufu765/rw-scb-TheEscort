@@ -76,6 +76,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Speedster base speed reduced a bit
     * Deflector gets new empowered animation
     * Deflector parries death! (but disabled in meadow for now)
+  * **(0.4-dev.17)/(0.3.7.1)**
+    * Matched 0.3.7.1 patch
+    * Brought in sfx when vengeance activates
   * **(0.4-dev.16)**
     * Vengeful Lizards 2 fixed for meadow!
   * **(0.4-dev.15)**
@@ -164,6 +167,11 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.0)** Some squishing of README
 
 * #### 0.3 - Ending I
+
+  * **(0.3.7.1)** Fixed issue where not having Meadow caused the mod to fail to load into campaign.
+
+  * **(0.3.7)**
+    * Vengeful Lizards 2.0!
 
   * **(0.3.6.4)**
     * Build select button goes away in jolly menu in case someone else wants to use that spot

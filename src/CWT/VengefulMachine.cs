@@ -54,17 +54,9 @@ public class VengefulLizardManager
 
             if (DeadCount > 80)
             {
-                foreach(VengefulLizardTracker vlt in Vengefuls)
-                {
-                    if (vlt?.Lizor?.room is not null)
-                    {
-                        vlt.DieAnimation(vlt.Lizor.room);    
-                    }
-                    vlt.Destroy();
-                }
                 for (int i = 0; i < Vengefuls.Count; i++)
                 {
-                    if (Vengefuls[i].iWantDie)
+                    if (Vengefuls[i].iWantDie && Vengefuls[i]?.Lizor is null)
                     {
                         Vengefuls.RemoveAt(i);
                         continue;
@@ -115,7 +107,8 @@ public class VengefulLizardManager
                     }
                     if (!(Vengefuls[i].iWantToRespawn || Vengefuls[i].iAmReadyToBeAdded) && Vengefuls[i]?.Lizor is not null && Vengefuls[i].Lizor.dead)
                     {
-                        Vengefuls[i].KillAndRespawn();
+                        Vengefuls[i].KillAndRespawn(VengefulDifficulty != "unfair");
+                        // Vengefuls[i].KillAndRespawn();
                         continue;
                     }
                     if (Vengefuls[i].iWantDie)
@@ -431,6 +424,11 @@ public class VengefulLizardTracker
                         lizardAI.agressionTracker.SetAnger(tracked, 10, 10);
                     }
                 }
+                if (abstractLizard.pos.room == abstractPlayer.pos.room && abstractLizard.realizedCreature is Lizard lizor && abstractPlayer.realizedCreature is Player p && lizor?.grasps?[0]?.grabbed is Creature c && c != p)
+                {
+                    lizor.ReleaseGrasp(0);
+                    // Make lizard drop everything and chase after player
+                }
             }
         }
         catch (Exception err)
@@ -576,7 +574,7 @@ public class VengefulLizardTracker
         }
     }
 
-    public void KillAndRespawn()
+    public void KillAndRespawn(bool dontTakeMySpearsLmao = true)
     {
         if (Lizor?.room is not null)
         {
@@ -585,11 +583,18 @@ public class VengefulLizardTracker
         if (Lizor is not null)
         {
             Lizor.AllGraspsLetGoOfThisObject(true);
+            if (dontTakeMySpearsLmao)
+            {
+                Me.LoseAllStuckObjects();
+            }
             if (Lizor.grasps is not null)
             {
                 for (int i = 0; i < Lizor.grasps.Length; i++)
                 {
-                    Lizor.grasps[i]?.grabbed?.AllGraspsLetGoOfThisObject(false);
+                    if (Lizor.grasps[i]?.grabbed is not null)
+                    {
+                        Lizor.ReleaseGrasp(i);
+                    }
                 }
             }
         }
