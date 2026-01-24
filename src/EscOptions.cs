@@ -324,18 +324,19 @@ class EscOptions : OptionInterface
         };
         this.secretText.OnValueChanged += InputTheSecret;
 
-        // makeSomeNoise = new OpTextBox(this.soundMachine, new Vector2(xo + (xp * 4f), yo - (yp * 13)), 300)
-        // {
-        //     description = OptionInterface.Translate("Hmm? What's this?"),
-        //     colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
-        //     colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
-        //     colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f)
-        // };
-        // makeSomeNoise.OnValueChanged += NoiseWawa;
+        makeSomeNoise = new OpTextBox(this.soundMachine, new Vector2(xo + (xp * 4f), yo - (yp * 13)), 300)
+        {
+            description = OptionInterface.Translate("Hmm? What's this?"),
+            colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+            colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+            colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+            mute = true
+        };
+        makeSomeNoise.OnValueChanged += NoiseWawa;
 
-        //this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
+        // this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
         //    color = bTesting * 0.7f
-        //};
+        // };
 
         this.hypeableBox = new OpCheckBox(this.cfgHypable, new Vector2(xo + (xp * 0), yo - (yp * 7) + tp / 2))
         {
@@ -928,7 +929,7 @@ class EscOptions : OptionInterface
                 description = Translate("Sets the maximum power capacity for the Gilded build.") + SetDefault(cfgGildedMaxPower.defaultValue)
             },
 
-            //makeSomeNoise,
+            makeSomeNoise,
 
             secretText
         };

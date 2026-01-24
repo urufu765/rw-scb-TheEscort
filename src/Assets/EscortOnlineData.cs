@@ -41,21 +41,21 @@ public class EscortOnlineData : OnlineEntity.EntityData
         [OnlineField]
         public int GildPower { get; set; }
         [OnlineField]
-        public int RailgunUse {get;set;}
+        public int RailgunUse { get; set; }
         [OnlineField]
-        public int RailgunRecoil {get;set;}
+        public int RailgunRecoil { get; set; }
         [OnlineField]
         public int SpeCharge { get; set; }
         [OnlineField]
-        public int SpeGear {get;set;}
+        public int SpeGear { get; set; }
         [OnlineField]
-        public int SpeSpeedin {get;set;} 
+        public int SpeSpeedin { get; set; }
         [OnlineField]
-        public bool SpeDashNCrash {get;set;}
+        public bool SpeDashNCrash { get; set; }
         [OnlineField]
-        public bool SpeSecretSpeed {get;set;}
+        public bool SpeSecretSpeed { get; set; }
         [OnlineField]
-        public int SpeExtraSpe{get;set;}
+        public int SpeExtraSpe { get; set; }
         #endregion
 
         #region One-time sync
@@ -67,7 +67,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
         [OnlineField]
         public int SpeMaxGear { get; set; }
         [OnlineField]
-        public bool SpeOldSpeed {get;set;}
+        public bool SpeOldSpeed { get; set; }
         [OnlineField]
         public int GildPowerMax { get; set; }
         #endregion
@@ -154,7 +154,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
                         e.GildPowerMax = GildPowerMax;
                     }
                 }
-                if (e.PleaseSyncMyUnimportantValues && Plugin.vCon.TryGetValue(ac, out VengefulLizardManager von))
+                if (e.PleaseSyncMyUnimportantValues && Plugin.vCon.TryGetValue(ac, out VengefulMachine von))
                 {
                     von.VengefulDifficulty = this.vengefulDifficulty;
                     von.Online = true;

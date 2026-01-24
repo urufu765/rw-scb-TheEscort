@@ -274,7 +274,7 @@ partial class Plugin : BaseUnityPlugin
     public static ConditionalWeakTable<Player, Escort> eCon;
 
     public static ConditionalWeakTable<AbstractCreature, AbstractEscort> aCon;
-    public static ConditionalWeakTable<AbstractCreature, VengefulLizardManager> vCon;
+    public static ConditionalWeakTable<AbstractCreature, VengefulMachine> vCon;
 
     /// <summary>
     /// Contains instances of the Socks class for each applicable players.
@@ -446,6 +446,8 @@ partial class Plugin : BaseUnityPlugin
         On.RainWorldGame.Update += Escort_AbsoluteTick;
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
 
+        On.AbstractCreature.IsVoided += LetsVoidTrainLizards;
+        
         // Socks stuff
         On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
         On.Player.Update += Socks_Update;
@@ -520,6 +522,15 @@ partial class Plugin : BaseUnityPlugin
 
         // Debugging
         // On.DebugMouse.Update += DebugMouse_Update;
+    }
+
+    public static bool LetsVoidTrainLizards(On.AbstractCreature.orig_IsVoided orig, AbstractCreature self)
+    {
+        if (ModManager.MSC && self.voidCreature && self?.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.TrainLizard)
+        {
+            return true;
+        }
+        return orig(self);
     }
 
     // private static void DebugMouse_Update(On.DebugMouse.orig_Update orig, DebugMouse self, bool eu)
@@ -1362,6 +1373,21 @@ partial class Plugin : BaseUnityPlugin
         Ebug("StoryChar: " + world?.game?.StoryCharacter?.value);
         Ebug("Timeline: " + world?.game?.TimelinePoint?.value);
 
+        if (Eshelp_IsNull(world?.game?.TimelinePoint, false) && !self.isNPC && world?.game?.Players?.Any(p => p == abstractCreature) == true && world?.game?.GetStorySession is StoryGameSession sgs)
+        {
+            if (escPatch_meadow && EPatchMeadow.IsOnline())
+            {
+                if (EPatchMeadow.IsHost(abstractCreature))
+                {
+                    vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value, sgs.saveState.cycleNumber));
+                }
+            }
+            else
+            {
+                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, false, ins.config.cfgVengeance.Value, sgs.saveState.cycleNumber));
+            }
+        }
+
         // Checks if player is an Escort
         if (Eshelp_IsNull(self.slugcatStats.name, false))
         {
@@ -1397,17 +1423,7 @@ partial class Plugin : BaseUnityPlugin
                     };
                 }
                 e.PupCampaignID = s.saveState.miscWorldSaveData.Esave().EscortPupCampaignID;
-            }
-            if (escPatch_meadow && EPatchMeadow.IsOnline())
-            {
-                if (EPatchMeadow.IsHost(abstractCreature))
-                {
-                    vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value));
-                }
-            }
-            else
-            {
-                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, false, ins.config.cfgVengeance.Value));
+
             }
             Esconfig_Build(self, abstractCreature, Challenge_Presetter(self.room, ref e));  // Set build
             // if (escPatch_meadow)
@@ -1538,7 +1554,7 @@ partial class Plugin : BaseUnityPlugin
             {
                 foreach (var x in self.Players)
                 {
-                    if (vCon.TryGetValue(x, out VengefulLizardManager ven))
+                    if (vCon.TryGetValue(x, out VengefulMachine ven))
                     {
                         ven.UpdateVengeance(x);
                     }

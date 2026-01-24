@@ -1016,7 +1016,7 @@ namespace TheEscort
         // Implement Movementthings
         public static void Escort_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self)
         {
-            
+
             try
             {
                 if (Eshelp_IsNull(self.slugcatStats.name))
@@ -2222,91 +2222,97 @@ namespace TheEscort
                 List<AbstractCreature> shelterPlayers = (from x in self.room.physicalObjects.SelectMany((List<PhysicalObject> x) => x).OfType<Player>() select x.abstractCreature).ToList<AbstractCreature>();
                 foreach (AbstractCreature abstractPlayer in playersInThisGame)
                 {
-                    if (abstractPlayer.realizedCreature is Player player && eCon.TryGetValue(player, out Escort escort))
+                    if (abstractPlayer.realizedCreature is Player player && self.room?.game?.session is StoryGameSession sgs)
                     {
-                        if (escort.shelterSaveComplete < 4)
+                        if (player.playerState.playerNumber == 0 && vCon.TryGetValue(abstractPlayer, out VengefulMachine ven) && !ven.TrySaved)
                         {
-                            int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
-                            bool inShelter = shelterPlayers.Contains(abstractPlayer);
-                            bool isWinner = playersToProgressOrWin.Contains(abstractPlayer);
-                            bool notDead = !player.dead;
-
-                            // I was gonna use this for something...
-                            if (inShelter && notDead && isWinner)
-                            {
-                                //Ebug(player, "Is successful!", ignoreRepetition: true);
-                                // do things when successful
-                            }
-                            else
-                            {
-                                //Ebug(player, "Is failure!", ignoreRepetition: true);
-                                // do things when failure
-                            }
-
-
-
-
-                            if (self.room?.game?.session is StoryGameSession sgs && player.playerState.playerNumber == 0)
-                            {
-                                if (escort.shelterSaveComplete == 2 && vCon.TryGetValue(abstractPlayer, out VengefulLizardManager ven))
-                                {
-                                    sgs.saveState.miscWorldSaveData.Esave().VengeancePoints /= ven.VengefulDivision();
-                                }
-                                bool socksExist = TryFindThePup(self.room, out _);
-                                if (escort.SocksAliveAndHappy is not null && !socksExist)
-                                {
-                                    escort.socksAbstract.Destroy();
-                                }
-
-                                // check for karma flower to set revival replacement
-                                if (sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady)
-                                {
-                                    foreach (UpdatableAndDeletable uad in self.room.updateList)
-                                    {
-                                        if (uad is KarmaFlower kf && kf.room.abstractRoom is not null && kf.room.abstractRoom.shelter)
-                                        {
-                                            Ebug("Socks revive using karma flower instead!");
-                                            sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = false;
-                                            sgs.saveState.miscWorldSaveData.Esave().AltRespawnReady = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-
-                                // Get Sock's relationship and store it so it can be applied on revival
-                                if (escort.socksAbstract is not null)
-                                {
-                                    float alike, tlike;
-                                    alike = tlike = -1;
-                                    try
-                                    {
-                                        alike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).like;
-                                        tlike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).tempLike;
-                                    }
-                                    catch (Exception err)
-                                    {
-                                        Ebug(err, "Error when trying to get social memory to store!");
-                                    }
-                                    sgs.saveState.miscWorldSaveData.Esave().EscortPupLike = alike;
-                                    sgs.saveState.miscWorldSaveData.Esave().EscortPupTempLike = tlike;
-                                }
-
-                            }
-
-
-                            Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
-
-                            // Other builds
-                            if (escort.Deflector) DF_Damage.WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
-                            if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
-                            escort.shelterSaveComplete++;
+                            sgs.saveState.miscWorldSaveData.Esave().VengeancePoints /= ven.VengeSetDivision;
+                            ven.TrySaved = true;
                         }
 
-                        if (escort.NewEscapist)
+                        if (eCon.TryGetValue(player, out Escort escort))
                         {
-                            escort.NEsShadowPlayer?.GoAwayShadow();
-                            escort.NEsShelterCloseTime = true;
+                            
+                            if (escort.shelterSaveComplete < 4)
+                            {
+                                int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;
+                                bool inShelter = shelterPlayers.Contains(abstractPlayer);
+                                bool isWinner = playersToProgressOrWin.Contains(abstractPlayer);
+                                bool notDead = !player.dead;
+
+                                // I was gonna use this for something...
+                                if (inShelter && notDead && isWinner)
+                                {
+                                    //Ebug(player, "Is successful!", ignoreRepetition: true);
+                                    // do things when successful
+                                }
+                                else
+                                {
+                                    //Ebug(player, "Is failure!", ignoreRepetition: true);
+                                    // do things when failure
+                                }
+
+
+
+
+                                if (player.playerState.playerNumber == 0)
+                                {
+                                    bool socksExist = TryFindThePup(self.room, out _);
+                                    if (escort.SocksAliveAndHappy is not null && !socksExist)
+                                    {
+                                        escort.socksAbstract.Destroy();
+                                    }
+
+                                    // check for karma flower to set revival replacement
+                                    if (sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady)
+                                    {
+                                        foreach (UpdatableAndDeletable uad in self.room.updateList)
+                                        {
+                                            if (uad is KarmaFlower kf && kf.room.abstractRoom is not null && kf.room.abstractRoom.shelter)
+                                            {
+                                                Ebug("Socks revive using karma flower instead!");
+                                                sgs.saveState.miscWorldSaveData.Esave().RespawnPupReady = false;
+                                                sgs.saveState.miscWorldSaveData.Esave().AltRespawnReady = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+
+                                    // Get Sock's relationship and store it so it can be applied on revival
+                                    if (escort.socksAbstract is not null)
+                                    {
+                                        float alike, tlike;
+                                        alike = tlike = -1;
+                                        try
+                                        {
+                                            alike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).like;
+                                            tlike = escort.socksAbstract.state.socialMemory.GetRelationship(player.abstractCreature.ID).tempLike;
+                                        }
+                                        catch (Exception err)
+                                        {
+                                            Ebug(err, "Error when trying to get social memory to store!");
+                                        }
+                                        sgs.saveState.miscWorldSaveData.Esave().EscortPupLike = alike;
+                                        sgs.saveState.miscWorldSaveData.Esave().EscortPupTempLike = tlike;
+                                    }
+
+                                }
+
+
+                                Ebug(player, $"Shelter: {inShelter} | Winner: {isWinner} | Dead: {!notDead}", ignoreRepetition: true);
+
+                                // Other builds
+                                if (escort.Deflector) DF_Damage.WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
+                                if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
+                                escort.shelterSaveComplete++;
+                            }
+
+                            if (escort.NewEscapist)
+                            {
+                                escort.NEsShadowPlayer?.GoAwayShadow();
+                                escort.NEsShelterCloseTime = true;
+                            }
                         }
                     }
                 }

@@ -8,40 +8,66 @@ using UnityEngine;
 using static TheEscort.Eshelp;
 
 namespace TheEscort.VengefulLizards;
-public class VengefulLizardManager
-{
-    public List<VengefulLizardTracker> Vengefuls{get;set;}
-    public int VengefulHerd{get;set;}
-    public int VengefulUpdate{get;set;}
-    public string VengefulDifficulty{get;set;}
-    public int vengefulHunted;
-    public bool Online{get;set;}
-    public bool StoryTime{get;set;}
-    public string LastRegion {get;set;}
-    public int VengefulWait {get;set;}
-    public int DeadCount {get;set;}
 
-    public VengefulLizardManager(bool storyMode, bool online, string difficulty)
+public class VengefulMachine
+{
+    public List<VengefulCreatureManager> Vengefuls { get; set; }
+    public int VengefulHerd { get; set; }
+    public int VengefulHerdBase { get; }
+    public int VengefulUpdate { get; set; }
+    public int pauseUpdate;
+    public int VengefulSpawn { get; set; }
+    public string VengefulDifficulty { get; set; }
+    public int vengefulHunted;
+    public bool Online { get; set; }
+    public bool StoryTime { get; set; }
+    public string LastRegion { get; set; }
+    public int VengefulWait { get; set; }
+    public int DeadCount { get; set; }
+    public bool SurpriseMe {get;set;}
+    public bool TrySaved {get;set;}
+
+    public VengefulMachine(bool storyMode, bool online, string difficulty, int cycleCount)
     {
         Vengefuls = [];
         VengefulDifficulty = difficulty;
         Online = online;
         StoryTime = storyMode;
-        VengefulHerd = 0;
+        VengefulHerdBase = VengefulHerd = (difficulty, cycleCount) switch
+        {
+            (string dif, int cyc) when dif is "hard" => Mathf.FloorToInt(cyc / 100f),
+            ("medium", > 99) => UnityEngine.Random.Range(1, 4),
+            _ => 0
+        };
         VengefulUpdate = 0;
         vengefulHunted = 0;
         LastRegion = "";
-        VengefulWait = 600;
+        VengefulWait = 1200;
         DeadCount = 0;
+        SurpriseMe = false;
+        TrySaved = false;
+        pauseUpdate = 0;
     }
 
     public void UpdateVengeance(AbstractCreature self)
     {
         if (StoryTime && self?.Room?.world?.game?.paused == false)
         {
+            if (Vengefuls is not null)
+            {
+                foreach(VengefulCyan cyan in Vengefuls.OfType<VengefulCyan>())
+                {
+                    if (cyan.RealMe is Lizard lizard)
+                    {
+                        lizard.biteDelay = 0;
+                        lizard.stun = 0;
+                    }
+                }
+            }
             VengefulUpdate++;
+            if (pauseUpdate > 0) pauseUpdate--;
             if (VengefulWait > 0) VengefulWait--;
-            if (VengefulUpdate >= 20) VengefulUpdate = 0;
+            if (VengefulUpdate >= VengeSetTack) VengefulUpdate = 0;
 
             if (self?.state?.dead == true)
             {
@@ -52,16 +78,17 @@ public class VengefulLizardManager
                 DeadCount = 0;
             }
 
+            // Make them disappear if target dead
             if (DeadCount > 80)
             {
                 for (int i = 0; i < Vengefuls.Count; i++)
                 {
-                    if (Vengefuls[i].iWantDie && Vengefuls[i]?.Lizor is null)
+                    if (Vengefuls[i].iWantDie && Vengefuls[i]?.RealMe is null)
                     {
                         Vengefuls.RemoveAt(i);
                         continue;
                     }
-                    if (Vengefuls[i]?.Lizor?.room is Room r)
+                    if (Vengefuls[i]?.RealMe?.room is Room r)
                     {
                         Vengefuls[i].DieAnimation(r);
                     }
@@ -71,61 +98,95 @@ public class VengefulLizardManager
                 {
                     Ebug($"Vengeful clear due to dead player! {DeadCount}");
                 }
-                VengefulWait = 400;
+                pauseUpdate = VengefulWait = 400;
             }
 
+            // Make them disappear if target is in an oracle room
+            if (VengefulUpdate == 0 && self?.realizedCreature?.room?.physicalObjects is not null && self.realizedCreature.room.physicalObjects.SelectMany(a => a).OfType<Oracle>().Any())
+            {
+                for (int i = 0; i < Vengefuls.Count; i++)
+                {
+                    if (Vengefuls[i].iWantDie && Vengefuls[i]?.RealMe is null)
+                    {
+                        Vengefuls.RemoveAt(i);
+                        continue;
+                    }
+                    if (Vengefuls[i]?.RealMe?.room is Room r)
+                    {
+                        Vengefuls[i].DieAnimation(r);
+                    }
+                    Vengefuls[i].Destroy();
+                }
+                pauseUpdate = 400;
+            }
+
+            // Make them untracked if target switched regions
             if (self?.Room?.world?.region?.name != LastRegion)
             {
                 LastRegion = self.Room.world.region.name;
-                foreach(VengefulLizardTracker vlt in Vengefuls)
+                foreach (VengefulCreatureManager vcm in Vengefuls)
                 {
-                    if (vlt?.Lizor?.room is not null)
+                    if (vcm?.RealMe?.room is not null)
                     {
-                        vlt.DieAnimation(vlt.Lizor.room);    
+                        vcm.DieAnimation(vcm.RealMe.room);
                     }
-                    vlt.Destroy();
+                    vcm.Destroy();
                 }
                 Vengefuls.Clear();
                 Ebug($"Vengeful clear due to region change!");
+                pauseUpdate = 400;
                 VengefulWait = 1200;
             }
 
-            if (VengefulWait > 0) return;
-
-            if (VengefulUpdate == 0 && Vengefuls.Count < VengefulHerd && self?.realizedCreature?.room?.game?.world is not null)
+            if (VengefulWait == 0 && VengefulUpdate == 0 && Vengefuls.Count < VengefulHerd && self?.realizedCreature?.room?.game?.world is not null)
             {
-                Vengefuls.Add(new(self, self.realizedCreature.room.game, Online));
-                Ebug($"Spawned {Vengefuls.Count}/{VengefulHerd} Vengeance Lizors!");
-            }
-            for (int i = 0; i < Vengefuls.Count; i++)
-            {
-                if (VengefulUpdate == i % 20)
+                if (SurpriseMe)
                 {
-                    if (Vengefuls[i].iAmReadyToBeAdded)
+                    Vengefuls.Add(UnityEngine.Random.value switch
                     {
-                        Vengefuls[i].Spawn();
-                    }
-                    if (!(Vengefuls[i].iWantToRespawn || Vengefuls[i].iAmReadyToBeAdded) && Vengefuls[i]?.Lizor is not null && Vengefuls[i].Lizor.dead)
-                    {
-                        Vengefuls[i].KillAndRespawn(VengefulDifficulty != "unfair");
-                        // Vengefuls[i].KillAndRespawn();
-                        continue;
-                    }
-                    if (Vengefuls[i].iWantDie)
-                    {
-                        Vengefuls.RemoveAt(i);
-                        VengefulHerd--;
-                        continue;
-                    }
-                    Vengefuls[i]?.Tick(VengefulDifficulty switch
-                    {
-                        "unfair" => 200,
-                        "hard" => 40,
-                        "medium" => 20,
-                        "easy" => 10,
-                        _ => 1
+                        float x when x < .3f && ModManager.MSC => new VengefulTrain(self, self.realizedCreature.room.game, Online),
+                        < .8f => new VengefulRed(self, self.realizedCreature.room.game, Online),
+                        _ => new VengefulRedipede(self, self.realizedCreature.room.game, Online)
                     });
-                    Vengefuls[i]?.UpdateLizor();
+                    SurpriseMe = false;
+                }
+                else
+                {
+                    // Vengefuls.Add(new VengefulCyan(self, self.realizedCreature.room.game, Online));
+                    Vengefuls.Add(new VengefulCyan(self, self.realizedCreature.room.game, Online));
+                }
+                VengefulWait = VengeSetNextSpawn;
+                Ebug($"Spawned {Vengefuls.Count}/{VengefulHerd} Vengeance creature!");
+            }
+
+            if (pauseUpdate > 0) return;
+
+            for (int i = VengefulUpdate; i < Vengefuls.Count; i += VengeSetTack)
+            {
+                if (Vengefuls[i].iAmReadyToBeAdded)
+                {
+                    Vengefuls[i].Spawn();
+                }
+                if (!(Vengefuls[i].iWantToRespawn || Vengefuls[i].iAmReadyToBeAdded) && Vengefuls[i]?.RealMe is not null && Vengefuls[i].RealMe.dead)
+                {
+                    Vengefuls[i].KillAndRespawn(VengeSetRespawn, VengefulDifficulty != "unfair");
+                    continue;
+                }
+                if (Vengefuls[i].iWantDie)
+                {
+                    Vengefuls.RemoveAt(i);
+                    VengefulHerd--;
+                    continue;
+                }
+                Vengefuls[i]?.Tick(VengeSetAdvance);
+                Vengefuls[i]?.Update();
+                if (VengefulDifficulty is "hard" or "unfair")
+                {
+                    Vengefuls[i]?.GetSomeHealing(.005f);
+                    if (Vengefuls[i]?.RealMe is Creature c)
+                    {
+                        c.stun = 0;
+                    }
                 }
             }
         }
@@ -134,7 +195,7 @@ public class VengefulLizardManager
     public void TryVengeance(AbstractCreature self, int karma, bool enforced, int karmaCap, int points, int cycles, bool vengefulKill)
     {
         //Ebug($"Venging: {VengefulDifficulty}");
-        int maxLizards = Custom.rainWorld.options.quality switch
+        int maxVengeful = Custom.rainWorld.options.quality switch
         {
             var a when a == Options.Quality.LOW => 60,
             var a when a == Options.Quality.MEDIUM => 120,
@@ -143,21 +204,21 @@ public class VengefulLizardManager
         };
         if (Online)
         {
-            maxLizards = 40;
+            maxVengeful = 40;
         }
         else
         {
-            maxLizards /= self.realizedCreature?.room?.game?.Players?.Count??1;
+            maxVengeful /= self.realizedCreature?.room?.game?.Players?.Count ?? 1;
         }
-        if (VengefulHerd >= maxLizards)
+        if (VengefulHerd >= maxVengeful)
         {
             if (self.realizedCreature is Player p)
             {
-                Ebug(p, $"Max vengeful lizards reached! {maxLizards}", LogLevel.WARN);
+                Ebug(p, $"Max vengeful creatures reached! {maxVengeful}", LogLevel.WARN);
             }
             else
             {
-                Ebug($"Max vengeful lizards reached! {maxLizards}", LogLevel.WARN);
+                Ebug($"Max vengeful creatures reached! {maxVengeful}", LogLevel.WARN);
             }
             return;
         }
@@ -166,20 +227,35 @@ public class VengefulLizardManager
         {
             VengefulHerd++;
             vengefulHunted++;
+            if (vengefulHunted > UnityEngine.Random.Range(3, 100))
+            {
+                SurpriseMe = true;
+                if (self.realizedCreature?.room is Room r && self.realizedCreature?.bodyChunks is not null)
+                {
+                    r.PlaySound(SoundID.MENU_Endgame_Meter_Fullfilled, 0, 1.7f, .5f);
+                }
+            }
             if (self.realizedCreature is Player p)
             {
-                Ebug(p, $"Killed a vengeful lizard! Count: {VengefulHerd}");
+                Ebug(p, $"Killed a vengeful creature! Count: {VengefulHerd}");
             }
             else
             {
-                Ebug($"Killed a vengeful lizard! Count: {VengefulHerd}");
+                Ebug($"Killed a vengeful creature! Count: {VengefulHerd}");
             }
 
             return;
         }
         if (VengefulDifficulty == "unfair")
         {
-            if (VengefulHerd == 0) VengefulHerd = 8;
+            if (VengefulHerd <= VengefulHerdBase) 
+            {
+                if (self.realizedCreature?.room is Room r && self.realizedCreature?.bodyChunks is not null)
+                {
+                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.1f, .6f);
+                }
+                VengefulHerd = VengeSetStart;
+            }
             VengefulHerd++;
             if (self.realizedCreature is Player p)
             {
@@ -209,7 +285,15 @@ public class VengefulLizardManager
         }
         if (UnityEngine.Random.value < probability)
         {
-            if (VengefulHerd == 0) VengefulHerd = 2;
+            if (VengefulHerd <= VengefulHerdBase)             
+            {
+                if (self.realizedCreature?.room is Room r && self.realizedCreature?.bodyChunks is not null)
+                {
+                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.1f, .6f);
+                }
+                VengefulHerd = VengeSetStart;
+            }
+
             VengefulHerd++;
             if (self.realizedCreature is Player p)
             {
@@ -222,392 +306,78 @@ public class VengefulLizardManager
         }
     }
 
-    public bool IsVengeanceLizard(EntityID id)
+    /// <summary>
+    /// Checks whether creature is a vengeful entity
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public bool IsVengefulEntity(EntityID id)
     {
         return Vengefuls.Any(a => a.Me.ID == id);
     }
 
-    public int VengefulDivision()
+    /// <summary>
+    /// How much to divide the creature score by
+    /// </summary>
+    public int VengeSetDivision => VengefulDifficulty switch
     {
-        return VengefulDifficulty switch
-        {
-            "medium" => 4,
-            "hard" => 2,
-            _ => 1
-        };
-    }
+        "medium" => 4,
+        "hard" => 2,
+        _ => 1
+    };
+
+    /// <summary>
+    /// How many ticks to advance the action script by
+    /// </summary>
+    public int VengeSetAdvance => VengefulDifficulty switch
+    {
+        "unfair" => 200,
+        "hard" or "medium" => 40,
+        "easy" => 10,
+        _ => 1
+    };
+
+    /// <summary>
+    /// How many lizards to add to hoard if value is at base
+    /// </summary>
+    public int VengeSetStart => VengefulDifficulty switch
+    {
+        "unfair" => 7,
+        "hard" => 3,
+        "medium" => 2,
+        _ => 0
+    };
+
+    /// <summary>
+    /// How many ticks before Vengeful gets to update
+    /// </summary>
+    public int VengeSetTack => VengefulDifficulty switch
+    {
+        "unfair" => 2,
+        "hard" => 20,
+        _ => 40
+    };
+
+    /// <summary>
+    /// Respawn timer for vengeful creature. Uses (Advance/Tack)tps instead of RW 40tps
+    /// </summary>
+    public int VengeSetRespawn => VengefulDifficulty switch
+    {
+        "hard" => UnityEngine.Random.Range(320, 801),// 80 per second hard
+        "medium" => UnityEngine.Random.Range(200, 801),  // 40 per second medium
+        "easy" => UnityEngine.Random.Range(300, 601), // 10 per second easy
+        _ => 400
+    };
+
+    /// <summary>
+    /// How far apart to separate each spawn so they don't spawn all at once
+    /// </summary>
+    public int VengeSetNextSpawn => VengefulDifficulty switch
+    {
+        "hard" => 120,
+        "medium" => 400,
+        "easy" => 1200,
+        _ => 0
+    };
 }
 
-
-public class VengefulLizardTracker
-{
-    public AbstractCreature Me {get;set;}
-    public AbstractCreature Target {get;set;}
-    public Lizard Lizor => Me?.realizedCreature as Lizard;
-    public Player Playr => Target?.realizedCreature as Player;
-    public AbstractRoom StartingRoom {get;set;}
-    public RainWorldGame Game {get; set;}
-    public bool iAmReadyToBeAdded;
-    public bool iAmStuck;
-    public int iAmStuckCount;
-    public int checkItOutClock;
-    public int teleportClock;
-    public int iAmWaitingToRespawn;
-    public bool iWantToRespawn;
-    public readonly bool iAmOnline;
-    public int respawns;
-    public bool iWantToTeleport;
-    public bool iWantDie;
-    public VengefulLizardTracker(AbstractCreature target, RainWorldGame game, bool online)
-    {
-        iAmReadyToBeAdded = false;
-        Game = game;
-        WorldCoordinate coord = GetCornerableRoom(target);
-        StartingRoom = target.world.GetAbstractRoom(coord.room);
-        Target = target;
-        Me = new AbstractCreature(game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, coord, game.GetNewID());
-        Me.saveCreature = false;
-        Me.ignoreCycle = true;
-        if (ModManager.MSC) Me.voidCreature = true;
-        // if (ModManager.Watcher)
-        // {
-        //     Me.rippleCreature = true;
-        //     Me.rippleBothSides = true;
-        // }
-        Me.state?.socialMemory?.GetOrInitiateRelationship(target.ID).InfluenceLike(-1);
-        Me.state?.socialMemory?.GetOrInitiateRelationship(target.ID).InfluenceTempLike(-1);
-        Me.state?.socialMemory?.GetOrInitiateRelationship(target.ID).InfluenceFear(-1);
-        Me.state?.socialMemory?.GetOrInitiateRelationship(target.ID).InfluenceTempFear(-1);
-        iAmStuckCount = 0;
-        checkItOutClock = 0;
-        iAmWaitingToRespawn = 0;
-        iAmStuck = false;
-        iAmOnline = online;
-        respawns = 0;
-        teleportClock = 0;
-        iWantToTeleport = false;
-        iWantDie = false;
-        iAmReadyToBeAdded = true;
-        iWantToRespawn = false;
-    }
-
-    public void Tick(int by)
-    {
-        if (iAmStuck)
-        {
-            iAmStuckCount+=by;
-        }
-        else if (iAmStuckCount > 0)
-        {
-            iAmStuckCount-=by;
-        }
-
-        if (checkItOutClock > 0)
-        {
-            checkItOutClock-=by;
-        }
-        if (teleportClock > 0)
-        {
-            teleportClock-=by;
-        }
-
-        if (iAmWaitingToRespawn > 0)
-        {
-            iAmWaitingToRespawn-=by;
-        }
-
-        if (iAmStuckCount < 0) iAmStuckCount = 0;
-        if (checkItOutClock < 0) checkItOutClock = 0;
-        if (teleportClock < 0) teleportClock = 0;
-        if (iAmWaitingToRespawn < 0) iAmWaitingToRespawn = 0;
-    }
-
-    public void UpdateLizor()
-    {
-        if (iWantDie) return;
-
-
-        // // Respawn lizard
-        if (iWantToRespawn && iAmWaitingToRespawn == 0)
-        {
-            if (Respawn())
-            {
-                respawns++;
-                iAmWaitingToRespawn = -1;
-                iWantToRespawn = false;
-                iAmReadyToBeAdded = true;
-            }
-            else
-            {
-                iAmWaitingToRespawn = 80;
-            }
-        }
-        if (Me?.abstractAI is null) return;
-
-        // Teleports lizard
-        iAmStuck = Me.abstractAI?.path is null || Me.abstractAI?.path?.Count == 0;
-        // iWantToTeleport = Me.pos.room != Target.pos.room && Me.abstractAI is not null && Me.abstractAI.RealAI is null;
-        if (
-            teleportClock == 0 &&
-            (
-                iAmStuckCount > 120 ||
-                // iWantToTeleport ||
-                (Me.abstractAI is not null && Me.abstractAI.strandedInRoom != -1) ||
-                (Me.abstractAI?.RealAI is not null && Me.abstractAI.RealAI.stranded)
-            ) &&
-            Me.pos.room != Target.pos.room
-        )
-        {
-            teleportClock = 40;
-            if (TeleportMeNearPlayer(Me, Playr))
-            {
-                iAmStuckCount = 0;
-                teleportClock = 200;
-            }
-        }
-
-        // Prevents lizard from seeking player in shelter/gate
-        if (Target.Room.shelter || Target.Room.gate) return;
-
-        // Does destination update every 8 seconds while not in same room, or every second if in same room.
-        if (checkItOutClock == 0 || Me.pos.room == Target.pos.room)
-        {
-            checkItOutClock = 160;
-        }
-        else return;
-
-        // Track player
-        GetMeToPlayerPos(Me, Playr);
-
-        // Be aggressive to player
-        BeVeryAngryAtPlayerAndNothingElse(Me, Target);
-    }
-
-    /// <summary>
-    /// Sets destination of lizard to player
-    /// </summary>
-    /// <param name="abstractLizard"></param>
-    /// <param name="player"></param>
-    public static void GetMeToPlayerPos(AbstractCreature abstractLizard, Player player)
-    {
-        if (player is not null && !player.dead && abstractLizard.abstractAI?.destination.room != player.abstractCreature.pos.room)
-        {
-            Ebug(player, $"Vengeful lizard destination changed! From: {abstractLizard.abstractAI.destination.ResolveRoomName()} to {player.abstractCreature.pos.ResolveRoomName()}");
-            abstractLizard.abstractAI.SetDestination(player.abstractCreature.pos);
-        }
-    }
-
-    /// <summary>
-    /// Sets anger towards player and ignores everything else
-    /// </summary>
-    /// <param name="abstractLizard"></param>
-    /// <param name="abstractPlayer"></param>
-    public static void BeVeryAngryAtPlayerAndNothingElse(AbstractCreature abstractLizard, AbstractCreature abstractPlayer)
-    {
-        try
-        {
-            if (abstractLizard.abstractAI?.RealAI is LizardAI lizardAI && lizardAI.tracker?.creatures is not null && lizardAI.agressionTracker is not null)
-            {
-                lizardAI.friendTracker.tamingDifficlty = 99;
-                lizardAI.fear = 0;
-                lizardAI.usedToVultureMask = 3000;
-                lizardAI.tracker.SeeCreature(abstractPlayer);
-                foreach (Tracker.CreatureRepresentation tracked in lizardAI.tracker.creatures)
-                {
-                    if (tracked?.representedCreature is null) continue;
-                    if (tracked.representedCreature != abstractPlayer)
-                    {
-                        lizardAI.tracker.ForgetCreature(tracked.representedCreature);
-                    }
-                    else
-                    {
-                        lizardAI.agressionTracker.SetAnger(tracked, 10, 10);
-                    }
-                }
-                if (abstractLizard.pos.room == abstractPlayer.pos.room && abstractLizard.realizedCreature is Lizard lizor && abstractPlayer.realizedCreature is Player p && lizor?.grasps?[0]?.grabbed is Creature c && c != p)
-                {
-                    lizor.ReleaseGrasp(0);
-                    // Make lizard drop everything and chase after player
-                }
-            }
-        }
-        catch (Exception err)
-        {
-            Ebug(err, "Failed to anger!!");
-        }
-    }
-
-    /// <summary>
-    /// Teleports lizard to a nearby room if lost
-    /// </summary>
-    /// <param name="abstractLizard"></param>
-    /// <param name="player"></param>
-    /// <returns></returns>
-    public static bool TeleportMeNearPlayer(AbstractCreature abstractLizard, Player player)
-    {
-        if (abstractLizard.realizedCreature is not null) return false;
-        try
-        {
-            if (abstractLizard is not null && player?.room is not null)
-            {
-                IntVector2 exit = player.room.exitAndDenIndex[UnityEngine.Random.Range(0, player.room.exitAndDenIndex.Length)];
-                if (player.room.WhichRoomDoesThisExitLeadTo(exit) is AbstractRoom vroom && !vroom.shelter && !vroom.gate)
-                {
-                    abstractLizard.Move(vroom.RandomNodeInRoom());
-                    Ebug(player, $"Vengeful lizard is teleporting to {vroom.name}!");
-                    return true;
-                }
-            }
-        }
-        catch (Exception err)
-        {
-            Ebug(err, "Failed to teleport vengeance lizor!");
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Respawns the lizor
-    /// </summary>
-    /// <returns>Whether it was successful or not</returns>
-    public bool Respawn()
-    {
-        if (Game?.world is not null)
-        {
-            WorldCoordinate coord = GetCornerableRoom(Target);
-            StartingRoom = Target.world.GetAbstractRoom(coord.room);
-            Me = new AbstractCreature(Game.world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard), null, GetCornerableRoom(Target), Game.GetNewID());
-            iAmStuckCount = 0;
-            Me.saveCreature = false;
-            Me.ignoreCycle = true;
-            if (ModManager.MSC) Me.voidCreature = true;
-            // if (ModManager.Watcher)
-            // {
-            //     Me.rippleCreature = true;
-            //     Me.rippleBothSides = true;
-            // }
-            Me.state?.socialMemory?.GetOrInitiateRelationship(Target.ID).InfluenceLike(-1);
-            Me.state?.socialMemory?.GetOrInitiateRelationship(Target.ID).InfluenceTempLike(-1);
-            Me.state?.socialMemory?.GetOrInitiateRelationship(Target.ID).InfluenceFear(-1);
-            Me.state?.socialMemory?.GetOrInitiateRelationship(Target.ID).InfluenceTempFear(-1);
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Gets nearby room to spawn in
-    /// </summary>
-    /// <param name="abstractPlayer"></param>
-    /// <returns></returns>
-    public static WorldCoordinate GetCornerableRoom(AbstractCreature abstractPlayer)
-    {
-        List<int> l = [];
-
-        for (int i = 0; i < abstractPlayer.world.NumberOfRooms; i++)
-        {
-            if (
-                abstractPlayer.world.GetAbstractRoom(abstractPlayer.world.firstRoomIndex + i) is AbstractRoom ar && 
-                !ar.shelter && 
-                !ar.gate && 
-                ar.name != abstractPlayer.Room.name &&
-                ar.NodesRelevantToCreature(StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.CyanLizard)) > 0)
-            {
-                l.Add(i);
-            }
-        }
-
-        if (l.Count > 0)
-        {
-            return abstractPlayer.world.GetAbstractRoom(abstractPlayer.world.firstRoomIndex + l[UnityEngine.Random.Range(0, l.Count)]).RandomNodeInRoom();
-        }
-        return abstractPlayer.Room.RandomNodeInRoom();
-    }
-
-    /// <summary>
-    /// Cleans up mess
-    /// </summary>
-    public void Destroy()
-    {
-        iWantDie = true;
-        if (Lizor is not null)
-        {
-            Lizor.AllGraspsLetGoOfThisObject(true);
-            if (Lizor.grasps is not null)
-            {
-                for (int i = 0; i < Lizor.grasps.Length; i++)
-                {
-                    Lizor.grasps[i]?.grabbed?.AllGraspsLetGoOfThisObject(false);
-                }
-            }
-        }
-        Me?.realizedCreature?.Destroy();
-    }
-
-    public void DieAnimation(Room room = null)
-    {
-        if (room is not null && Lizor?.bodyChunks is not null)
-        {
-            room.PlaySound(SoundID.Puffball_Eplode, Lizor.firstChunk);
-            room.AddObject(new ShockWave(Lizor.firstChunk.pos, Mathf.Lerp(25f, 50f, UnityEngine.Random.value), 0.07f, 20));
-            for (int i = 0; i < Lizor.bodyChunks.Length; i++)
-            {
-                room.AddObject(new Explosion.ExplosionSmoke(Lizor.bodyChunks[i].pos, Custom.RNV() * (2f * UnityEngine.Random.value), 1f)
-                {
-                    colorA = new Color(0.796f, 0.549f, 0.27843f),
-                    colorB = Color.black
-                });
-            }
-        }
-        // Me.destroyOnAbstraction = true;
-        // Me.state?.Die();
-        // Me.abstractAI?.Die();
-    }
-
-    public void Spawn()
-    {
-        if (iAmReadyToBeAdded)
-        {
-            StartingRoom.AddEntity(Me);
-            Ebug("I have spawned!! Get ready!", ignoreRepetition: true);
-            iAmReadyToBeAdded = false;
-        }
-    }
-
-    public void KillAndRespawn(bool dontTakeMySpearsLmao = true)
-    {
-        if (Lizor?.room is not null)
-        {
-            DieAnimation(Lizor.room);
-        }
-        if (Lizor is not null)
-        {
-            Lizor.AllGraspsLetGoOfThisObject(true);
-            if (dontTakeMySpearsLmao)
-            {
-                Me.LoseAllStuckObjects();
-            }
-            if (Lizor.grasps is not null)
-            {
-                for (int i = 0; i < Lizor.grasps.Length; i++)
-                {
-                    if (Lizor.grasps[i]?.grabbed is not null)
-                    {
-                        Lizor.ReleaseGrasp(i);
-                    }
-                }
-            }
-        }
-
-        Lizor?.Destroy();
-        if (respawns > 2)
-        {
-            Ebug("I ran out of respawns! Doh!", ignoreRepetition: true);
-            iWantDie = true;
-            return;
-        }
-        iAmWaitingToRespawn = 200 + (int)(600 * UnityEngine.Random.value);
-        iWantToRespawn = true;
-        Ebug($"I am getting ready to respawn! {iAmWaitingToRespawn}", ignoreRepetition: true);
-    }
-}

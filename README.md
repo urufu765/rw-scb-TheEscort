@@ -76,6 +76,33 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Speedster base speed reduced a bit
     * Deflector gets new empowered animation
     * Deflector parries death! (but disabled in meadow for now)
+    * Make an option to allow vengeance lizards to appear in other campaigns specifically for Escort
+    * Brawler remove melee priority
+    * Deflector longer parry duration for karma 10 skill
+    * Add "Still Here Or" to play after spending 5 cycles in the Gutters
+    * Railgunner penetration deals regular violence to deal correct damage
+  * **(0.4-dev.18)**
+    * Vengeance changes
+      * Vengeful is now applied on any player slugcat in Escort's campaign rather than every Escort slugcat in any campaign
+      * Slightly optimised code
+      * Starting amount is now dependent on difficulty
+        * Easy: +1
+        * Medium: +3
+        * Hard: +4
+        * Unfair: +9
+      * Time between respawns increased
+      * Added spawn leniency (frequency of spawn, longer for lower difficulty)...
+      * Aggressive code runs more frequently even if not in the same room
+      * Unfair ticks 20 times a second instead of 2 times for regular difficulties
+      * On hard and unfair, the vengeful heals back their health (2% per second on hard, 20% on unfair)
+      * Vengeful ignores echo sleep on hard/unfair
+      * Karma reinforcement causes vengeful to spawn on cycle start
+        * Medium: 1 if in cycle >100
+        * Hard: 1 per 100 cycles
+        * Unfair: Doesn't spawn any
+      * On hard and unfair, vengeful will not get stunned
+      * On hard and unfair, killing too many vengefuls has a chance of greater threat being mixed into the hoard
+      * Despawns upon entering an iterator room
   * **(0.4-dev.17)/(0.3.7.1)**
     * Matched 0.3.7.1 patch
     * Brought in sfx when vengeance activates
