@@ -1388,6 +1388,21 @@ partial class Plugin : BaseUnityPlugin
             }
         }
 
+        if (Eshelp_IsNull(world?.game?.TimelinePoint, false) && !self.isNPC && world?.game?.Players?.Any(p => p == abstractCreature) == true && world?.game?.GetStorySession is StoryGameSession sgs)
+        {
+            if (escPatch_meadow && EPatchMeadow.IsOnline())
+            {
+                if (EPatchMeadow.IsHost(abstractCreature))
+                {
+                    vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, escPatch_meadow && EPatchMeadow.IsOnline(), ins.config.cfgVengeance.Value, sgs.saveState.cycleNumber));
+                }
+            }
+            else
+            {
+                vCon.Add(abstractCreature, new(world?.game?.IsStorySession == true, false, ins.config.cfgVengeance.Value, sgs.saveState.cycleNumber));
+            }
+        }
+
         // Checks if player is an Escort
         if (Eshelp_IsNull(self.slugcatStats.name, false))
         {

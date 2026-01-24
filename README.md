@@ -89,7 +89,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
         * Easy: +1
         * Medium: +3
         * Hard: +4
-        * Unfair: +9
+        * Unfair: +8
       * Time between respawns increased
       * Added spawn leniency (frequency of spawn, longer for lower difficulty)...
       * Aggressive code runs more frequently even if not in the same room
@@ -194,6 +194,29 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.0)** Some squishing of README
 
 * #### 0.3 - Ending I
+
+  * **(0.3.7.2)**
+    * Vengeance changes
+      * Vengeful is now applied on any player slugcat in Escort's campaign rather than every Escort slugcat in any campaign
+      * Slightly optimised code
+      * Starting amount is now dependent on difficulty
+        * Easy: +1
+        * Medium: +3
+        * Hard: +4
+        * Unfair: +8
+      * Time between respawns increased
+      * Added spawn leniency (frequency of spawn, longer for lower difficulty)...
+      * Aggressive code runs more frequently even if not in the same room
+      * Unfair ticks 20 times a second instead of 2 times for regular difficulties
+      * On hard and unfair, the vengeful heals back their health (2% per second on hard, 20% on unfair)
+      * Vengeful ignores echo sleep on hard/unfair
+      * Karma reinforcement causes vengeful to spawn on cycle start
+        * Medium: 1 if in cycle >100
+        * Hard: 1 per 100 cycles
+        * Unfair: Doesn't spawn any
+      * On hard and unfair, vengeful will not get stunned
+      * On hard and unfair, killing too many vengefuls has a chance of greater threat being mixed into the hoard
+      * Despawns upon entering an iterator room
 
   * **(0.3.7.1)** Fixed issue where not having Meadow caused the mod to fail to load into campaign.
 

@@ -53,7 +53,7 @@ public class VengefulMachine
     {
         if (StoryTime && self?.Room?.world?.game?.paused == false)
         {
-            if (Vengefuls is not null)
+            if (Vengefuls is not null && VengefulDifficulty is "hard" or "unfair")
             {
                 foreach(VengefulCyan cyan in Vengefuls.OfType<VengefulCyan>())
                 {
