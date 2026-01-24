@@ -154,7 +154,7 @@ public class EscortOnlineData : OnlineEntity.EntityData
                         e.GildPowerMax = GildPowerMax;
                     }
                 }
-                if (e.PleaseSyncMyUnimportantValues && Plugin.vCon.TryGetValue(ac, out VengefulLizardManager von))
+                if (e.PleaseSyncMyUnimportantValues && Plugin.vCon.TryGetValue(ac, out VengefulMachine von))
                 {
                     von.VengefulDifficulty = this.vengefulDifficulty;
                     von.Online = true;

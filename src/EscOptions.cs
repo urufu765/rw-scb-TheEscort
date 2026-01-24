@@ -123,14 +123,14 @@ class EscOptions : OptionInterface
     private int _buildDiv = -6;
 
     public readonly Color easyColor = new(0.42f, 0.75f, 0.5f);
-    private static readonly string VERSION = "0.3.7.1";
+    private static readonly string VERSION = "0.3.7.2";
     private readonly Configurable<string> cfgVersion;
     private static string HelloWorld
     {
         get
         {
             return Swapper("New in version " + VERSION + ":<LINE><LINE>" +
-            "- Vengeful Lizards 2.0!<LINE><LINE>For every creature you kill, there's a chance that<LINE>it will trigger the vengeful.<LINE>Beware, for they can be relentless.<LINE><LINE>You can select the difficulty of this feature, where the higher<LINE>the difficulty, the higher probability the creatures will spawn,<LINE>and the more frequently they get to do their tracking actions.<LINE><LINE>- Fixed crash issue that happens if you don't have Meadow installed and enabled. Whoops.");
+            "- Vengeful Lizards 2.0!<LINE><LINE>For every creature you kill, there's a chance that<LINE>it will trigger the vengeful.<LINE>Beware, for they can be relentless.<LINE><LINE>You can select the difficulty of this feature, where the higher<LINE>the difficulty, the higher probability the creatures will spawn,<LINE>and the more frequently they get to do their tracking actions.<LINE><LINE>- Fixed crash issue that happens if you don't have Meadow installed and enabled. Whoops.<LINE><LINE>- Vengeful is now applied on any player slugcat in Escort's campaign rather than every Escort slugcat in any campaign.<LINE>- Starting amount differs by difficulty<LINE>- Time between respawns now dependent on difficulty<LINE>- Aggressive code runs more frequently<LINE>- Unfair ticks much more often<LINE>- On hard and unfair, the Vengeful heals back their health<LINE>- Vengeful ignores stun on hard/unfair<LINE>- On hard/unfair, killing too many vengeful has a chance of greater threat being mixed into the hoard.<LINE>- Entering an active iterator room despawns vengeful creatures.<LINE>- New SFX for indicating when the horror begins and when a surprise is in tow.");
         }
     }
 

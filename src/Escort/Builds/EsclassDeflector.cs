@@ -175,12 +175,12 @@ namespace TheEscort
         {
             if (victim.killTag?.realizedCreature is Player p)
             {
-                if (vCon.TryGetValue(victim.killTag, out VengefulLizardManager ven) && p.room?.game?.session is StoryGameSession sg)
+                if (vCon.TryGetValue(victim.killTag, out VengefulMachine ven) && p.room?.game?.session is StoryGameSession sg)
                 {
                     int points = TryGetKillscorePoints(victim.Template.type);
                     if (points > 0)
                     {
-                        if (!ven.IsVengeanceLizard(victim.abstractCreature.ID))
+                        if (!ven.IsVengefulEntity(victim.abstractCreature.ID))
                         {
                             sg.saveState.miscWorldSaveData.Esave().VengeancePoints += points;
                         }
@@ -191,7 +191,7 @@ namespace TheEscort
                             sg.saveState.deathPersistentSaveData.karmaCap,
                             sg.saveState.miscWorldSaveData.Esave().VengeancePoints,
                             sg.saveState.cycleNumber,
-                            ven.IsVengeanceLizard(victim.abstractCreature.ID)
+                            ven.IsVengefulEntity(victim.abstractCreature.ID)
                         );
                     }
                 }
