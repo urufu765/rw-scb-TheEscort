@@ -81,7 +81,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Deflector longer parry duration for karma 10 skill
     * Add "Still Here Or" to play after spending 5 cycles in the Gutters
     * Railgunner penetration deals regular violence to deal correct damage
-  * **(0.4-dev.18)**
+  * **(0.4-dev.18a)/(0.3.7.2)**
     * Vengeance changes
       * Vengeful is now applied on any player slugcat in Escort's campaign rather than every Escort slugcat in any campaign
       * Slightly optimised code
@@ -103,6 +103,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * On hard and unfair, vengeful will not get stunned
       * On hard and unfair, killing too many vengefuls has a chance of greater threat being mixed into the hoard
       * Despawns upon entering an iterator room
+      * SFX on initial spawn, and whenever you get the surprise
   * **(0.4-dev.17)/(0.3.7.1)**
     * Matched 0.3.7.1 patch
     * Brought in sfx when vengeance activates
