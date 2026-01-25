@@ -252,7 +252,7 @@ public class VengefulMachine
             {
                 if (self.realizedCreature?.room is Room r && self.realizedCreature?.bodyChunks is not null)
                 {
-                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.1f, .6f);
+                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.4f, .4f);
                 }
                 VengefulHerd = VengeSetStart;
             }
@@ -289,7 +289,7 @@ public class VengefulMachine
             {
                 if (self.realizedCreature?.room is Room r && self.realizedCreature?.bodyChunks is not null)
                 {
-                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.1f, .6f);
+                    r.PlaySound(SoundID.MENU_Endgame_Notch_Meter_Start_Animation, 0, 1.2f, .6f);
                 }
                 VengefulHerd = VengeSetStart;
             }

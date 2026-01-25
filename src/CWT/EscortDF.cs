@@ -112,6 +112,15 @@ public partial class Escort
     public const int DeflCorridorWindow = 10;
     public const int DeflCorridorCD = 30;
 
+    public int DeflBonusWindow
+    {
+        get
+        {
+            if (karmaTen) return 40;
+            return 0;
+        }
+    }
+
     /// <summary>
     /// Deflector midair parry
     /// </summary>
@@ -143,6 +152,11 @@ public partial class Escort
     public int DeflCorridorParry;
 
     /// <summary>
+    /// Deflector bonus parry
+    /// </summary>
+    public int DeflBonusParry;
+
+    /// <summary>
     /// Direction the player is going in corridor
     /// </summary>
     public Vector2 DeflCorridorDir;
@@ -166,5 +180,6 @@ public partial class Escort
         this.DeflCorridorParry = -1;
         this.DeflZeroGDir = Vector2.zero;
         this.DeflCorridorDir = Vector2.zero;
+        this.DeflBonusParry = 0;
     }
 }

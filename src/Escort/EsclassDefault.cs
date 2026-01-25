@@ -1523,8 +1523,7 @@ namespace TheEscort
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
             Ebug(self, "Sticky Triggered!");
-            if (e.Deflector) return DF_Player.StickySpear(self);
-            return !(self.animation == Player.AnimationIndex.BellySlide);
+            return ParryCondition(self, e, out _);
         }
 
 

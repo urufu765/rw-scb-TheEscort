@@ -66,6 +66,10 @@ public static class DF_Player
         if (e.DeflZeroGParry > 0)
         {
             float adapt = Mathf.InverseLerp(0, Escort.DeflZeroGWindow, e.DeflZeroGParry) * 2f - 1f;
+            if (e.DeflBonusParry > 0 && e.DeflBonusParry < e.DeflBonusWindow)
+            {
+                adapt = 0;
+            }
             Vector2 boostVec = e.DeflZeroGDir * 2 * adapt;
             self.bodyChunks[0].vel += boostVec;
             self.bodyChunks[1].vel += boostVec;
@@ -74,7 +78,12 @@ public static class DF_Player
         if (e.DeflSwimParry > 0)
         {
             float adapt = Mathf.InverseLerp(0, Escort.DeflSwimWindow, e.DeflSwimParry);
-            Vector2 boostVec = Custom.DirVec(self.bodyChunks[1].pos, self.bodyChunks[0].pos) * 4f * adapt;
+            Vector2 boostVec = Custom.DirVec(self.bodyChunks[1].pos, self.bodyChunks[0].pos);
+            if (e.DeflBonusParry > 0 && e.DeflBonusParry < e.DeflBonusWindow)
+            {
+                boostVec = e.DeflZeroGDir;
+            }
+            boostVec *= 4 * adapt;
             self.bodyChunks[0].vel += boostVec;
             self.bodyChunks[1].vel += boostVec;
         }
@@ -82,6 +91,7 @@ public static class DF_Player
         if (e.DeflCorridorParry > 0)
         {
             float adapt = Mathf.InverseLerp(0, Escort.DeflZeroGWindow, e.DeflZeroGParry) * 2f - 1f;
+            
             Vector2 boostVec = (e.DeflCorridorDir + new Vector2(0, self.gravity)) * adapt;
             self.bodyChunks[0].vel += boostVec;
             self.bodyChunks[1].vel += boostVec;
@@ -104,6 +114,7 @@ public static class DF_Player
             self.bodyChunks[0].vel *= 0.1f;
             self.bodyChunks[1].vel *= 0.1f;
             e.DeflAerialParry = Escort.DeflAerialWindow;
+            e.DeflBonusParry = e.DeflBonusWindow;
             e.DeflAerialWasStanding = self.standing;
             Ebug(self, "AerialParry!");
         }
@@ -118,6 +129,7 @@ public static class DF_Player
             if ((self.animation == Player.AnimationIndex.ZeroGSwim || self.animation == Player.AnimationIndex.ZeroGPoleGrab) && inputCondition && e.DeflZeroGParry == -1)
             {
                 e.DeflZeroGParry = Escort.DeflZeroGWindow;
+                e.DeflBonusParry = e.DeflBonusWindow;
                 if (self.input[0].x == 0 && self.input[0].y == 0)
                 {
                     e.DeflZeroGDir = Custom.DirVec(self.bodyChunks[1].pos, self.bodyChunks[0].pos);
@@ -138,7 +150,16 @@ public static class DF_Player
             }
             if (self.animation == Player.AnimationIndex.DeepSwim && inputCondition && e.DeflSwimParry == -1)
             {
+                if (self.input[0].x == 0 && self.input[0].y == 0)
+                {
+                    e.DeflZeroGDir = Custom.DirVec(self.bodyChunks[1].pos, self.bodyChunks[0].pos);
+                }
+                else
+                {
+                    e.DeflZeroGDir = new Vector2(self.input[0].x, self.input[0].y).normalized;
+                }
                 e.DeflSwimParry = Escort.DeflSwimWindow;
+                e.DeflBonusParry = e.DeflBonusWindow;
                 Ebug(self, "SwimParry!");
             }
         }
@@ -162,15 +183,5 @@ public static class DF_Player
                 Ebug(self, "CorridorParry!");
             }
         }
-    }
-
-
-    public static bool StickySpear(Player self)
-    {
-        return !(
-            self.animation == Player.AnimationIndex.BellySlide ||
-            self.animation == Player.AnimationIndex.Roll ||
-            self.animation == Player.AnimationIndex.Flip
-        );
     }
 }

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TheEscort.Brawler;
 using TheEscort.Deflector;
+using TheEscort.Escapist;
 using TheEscort.Patches;
 using TheEscort.Railgunner;
 using TheEscort.VengefulLizards;
@@ -443,6 +444,7 @@ partial class Plugin : BaseUnityPlugin
         On.Player.IsCreatureLegalToHoldWithoutStun += BL_Melee.CreatureLegality;
         On.Player.Stun += RG_Fx.Spasm;
         On.Player.GetHeldItemDirection += RG_Gfx.PointWeaponAt;
+        On.Player.CanBeSwallowed += EC_Player.ICantSwallowThisButICanDoSomethingElse;
         On.RainWorldGame.Update += Escort_AbsoluteTick;
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
 
@@ -1076,6 +1078,11 @@ partial class Plugin : BaseUnityPlugin
                     pal = -9;
                 }
                 Ebug(self, "Build set from online: " + pal);
+            }
+
+            if (self.room?.game?.session is StoryGameSession stog)
+            {
+                e.karmaTen = stog.saveState.deathPersistentSaveData.karmaCap >= 9;
             }
 
             // Story campaign expansion skips
@@ -2103,14 +2110,14 @@ partial class Plugin : BaseUnityPlugin
             {
                 0 => "CC_SUMP02",  // Default
                 -1 => "SU_A02",  // Brawler
-                //-2 => "SI_C03",  // Deflector
-                -2 => "HI_A14",  // Deflector NEW
+                -2 => "SI_C03",  // Deflector
                 -3 => "SB_B04",  // Evader
                 -4 => "GW_C02_PAST",  // Railgunner
                 -5 => "LF_E03",  // Speedster
                 -6 => ins.config.cfgSectretBuild.Value ? "HR_C01" : "CC_A10",  // Gilded
                 -8 => "SS_A18",  // Unstable
-                -9 => "DM_LEG02",  // Escapist
+                -9 => "HI_A14",  // Escapist NEW
+                //-9 => "DM_LEG02",  // Escapist
                 _ => "SB_C09"  // Unspecified
             };
             if (SChallengeMachine.SC03_Starter) self.denPosition = "CC_S05";

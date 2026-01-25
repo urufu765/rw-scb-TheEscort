@@ -125,6 +125,7 @@ namespace TheEscort
         public const int SpeedSocksID = 765;
         public int PupCampaignID;
         public bool battleHype;
+        public bool karmaTen;
 
 
         private int _syncValue;
@@ -163,36 +164,6 @@ namespace TheEscort
         /// IS IT A BORING ASS NUGGET?!
         /// </summary>
         public bool Escapist;
-
-        /// <summary>
-        /// The bodycolor of Escapist when colors are not custom
-        /// </summary>
-        public Color EscapistColor;
-
-        /// <summary>
-        /// Extends self.dangerGraspTime so the player has much more time to grab a weapon and free themselves while they're being carried away
-        /// </summary>
-        public int EscDangerExtend;
-
-        /// <summary>
-        /// Special grasp store that stores the creature that is grabbing onto Escapist, so when they press the emergency eject ability button, they pop out of whatever they're being grabbed by... even includes your friends and famil- no not the last one.
-        /// </summary>
-        public Creature.Grasp EscDangerGrasp;
-
-        /// <summary>
-        /// How long the player has to hold the special eject ability button for before they can pop out of any grasp
-        /// </summary>
-        public int EscUnGraspTime;
-
-        /// <summary>
-        /// The max time the player has to hold the special eject ability button for. Is used to slowly reset the EscUnGraspTime timer until it reaches this max.
-        /// </summary>
-        public int EscUnGraspLimit;
-
-        /// <summary>
-        /// Cooldown for this boring ability.
-        /// </summary>
-        public int EscUnGraspCD;
 
         /// <summary>
         /// IS IT REALLY FUCKING BRAWLER?!
@@ -289,18 +260,13 @@ namespace TheEscort
             this.offendingRemoval = 0;
             this.tryFindingPup = 80;
             this.battleHype = Plugin.ins.Esconfig_Hypabler(player);
+            this.karmaTen = false;
 
             // Build specific
-            this.Escapist = false;
-            this.EscapistColor = new Color(0.11f, 0.467f, 0.506f);
-            this.EscDangerExtend = 0;
-            this.EscDangerGrasp = null;
-            this.EscUnGraspTime = 0;
-            this.EscUnGraspLimit = 0;
-            this.EscUnGraspCD = 0;
 
             EscortBL();
             EscortDF();
+            EscortEC();
             EscortRG(player);
             EscortSS();
             EscortGD(player);

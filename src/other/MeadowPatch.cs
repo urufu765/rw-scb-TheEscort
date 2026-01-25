@@ -27,7 +27,11 @@ public static class EPatchMeadow
             );
             _ = new Hook(
                 typeof(StoryGameMode).GetMethod(nameof(StoryGameMode.LoadWorldIn), BindingFlags.Instance | BindingFlags.Public),
-                typeof(EPatchMeadow).GetMethod(nameof(FixTheTimeline), BindingFlags.Static | BindingFlags.Public)
+                typeof(EPatchMeadow).GetMethod(nameof(FixTheTimelineForStory), BindingFlags.Static | BindingFlags.Public)
+            );
+            _ = new Hook(
+                typeof(MeadowGameMode).GetMethod(nameof(MeadowGameMode.LoadWorldIn), BindingFlags.Instance | BindingFlags.Public),
+                typeof(EPatchMeadow).GetMethod(nameof(FixTheTimelineForMeadow), BindingFlags.Static | BindingFlags.Public)
             );
         }
         catch (Exception err)
@@ -62,9 +66,22 @@ public static class EPatchMeadow
         return false;
     }
 
-    public static SlugcatStats.Timeline FixTheTimeline(Func<StoryGameMode, RainWorldGame, SlugcatStats.Timeline> orig, StoryGameMode self, RainWorldGame game)
+    public static SlugcatStats.Timeline FixTheTimelineForStory(Func<StoryGameMode, RainWorldGame, SlugcatStats.Timeline> orig, StoryGameMode self, RainWorldGame game)
     {
         if (Eshelp_IsNull(self.currentCampaign, false))
+        {
+            // if (Clock)
+            // {
+            //     Ebug("What's the timeline? " + (game?.TimelinePoint?.value??"I don't know!"));
+            // }
+            return SlugcatStats.Timeline.Spear;
+            // return Plugin.EscortMeTime;
+        }
+        return orig(self, game);
+    }
+    public static SlugcatStats.Timeline FixTheTimelineForMeadow(Func<MeadowGameMode, RainWorldGame, SlugcatStats.Timeline> orig, MeadowGameMode self, RainWorldGame game)
+    {
+        if (OnlineManager.lobby.meadowTimeline is "EscortMeTime")
         {
             // if (Clock)
             // {

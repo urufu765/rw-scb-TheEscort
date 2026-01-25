@@ -63,8 +63,22 @@ namespace TheEscort
                 e.DeflParryCD--;
             }
 
+            bool holding = e.DeflBonusParry > 0 && (e.CustomKeybindEnabled? e.CustomInput[0] : self.input[0].jmp);
+
             if (e.DeflAerialParry > 0)
             {
+                if (e.DeflAerialParry < 10)
+                {
+                    if (holding)
+                    {
+                        e.DeflBonusParry--;
+                        e.DeflAerialParry++;
+                    }
+                    else
+                    {
+                        e.DeflBonusParry = 0;
+                    }
+                }
                 e.DeflAerialParry--;
             }
             else if (e.DeflAerialParry < -1)
@@ -74,11 +88,23 @@ namespace TheEscort
 
             if (e.DeflSwimParry > 0)
             {
+                if (e.DeflSwimParry < 10)
+                {
+                    if (holding)
+                    {
+                        e.DeflBonusParry--;
+                        e.DeflSwimParry++;
+                    }
+                    else
+                    {
+                        e.DeflBonusParry = 0;
+                    }
+                }
                 e.DeflSwimParry--;
             }
             else if (e.DeflSwimParry == 0)
             {
-                e.DeflSwimParry -= Escort.DeflSwimCD - Escort.DeflSwimWindow;
+                e.DeflSwimParry -= Escort.DeflSwimCD - Escort.DeflSwimWindow - e.DeflBonusWindow;
             }
             else if (e.DeflSwimParry < -1)
             {
@@ -114,6 +140,18 @@ namespace TheEscort
 
             if (e.DeflZeroGParry > 0)
             {
+                if (e.DeflZeroGParry < 10)
+                {
+                    if (holding)
+                    {
+                        e.DeflBonusParry--;
+                        e.DeflZeroGParry++;
+                    }
+                    else
+                    {
+                        e.DeflBonusParry = 0;
+                    }
+                }
                 e.DeflZeroGParry--;
             }
             else if (e.DeflZeroGParry == 0)

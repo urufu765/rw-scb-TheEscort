@@ -81,6 +81,14 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Deflector longer parry duration for karma 10 skill
     * Add "Still Here Or" to play after spending 5 cycles in the Gutters
     * Railgunner penetration deals regular violence to deal correct damage
+    * Railgunner laser ignores leeches that are in close proximity of Railgunner
+    * Fix super wall flip
+    * Make transition between set direction swim parry and body direction swim parry smooth
+  * **(0.4-dev.19)**
+    * Deflector spawns in sky islands again
+    * Escapist spawns in Industrial Complex
+    * Deflector karma 10 ability! At karma 10 cap, special parry duration increased by 3x while holding jump/rebound!
+    * Spear stick corrected to use all the parry conditions
   * **(0.4-dev.18a)/(0.3.7.2)**
     * Vengeance changes
       * Vengeful is now applied on any player slugcat in Escort's campaign rather than every Escort slugcat in any campaign

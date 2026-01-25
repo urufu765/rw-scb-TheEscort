@@ -105,6 +105,7 @@ public partial class Escort
         this.NewEscapist = false;
         this.NewEscapistColor = new Color(0.28f, 0.675f, 0.686f);
         this.NEsShadowColor = new Color(0.1f, 0.157f, 0.165f);
+        //this.NEsShadowColor = new Color(0.11f, 0.467f, 0.506f);
         this.NEsLastInput = new IntVector2(0, 0);
         this.NEsSetCooldown = 0;
         this.NEsCooldown = 0;

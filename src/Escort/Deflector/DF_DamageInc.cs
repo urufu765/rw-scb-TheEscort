@@ -142,7 +142,7 @@ public static class DF_Damage
         float multiplier = e.DeflDamageMult + e.DeflPerma;
 
         if (e.DeflPowah >= 3) DF_FX.UltimateShake(player);
-        if (spendEmpower) e.DeflPowah = 0;
+        if (spendEmpower) e.DeflAmpTimer = 0;
 
         return multiplier;
     }
