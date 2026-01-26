@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using Menu;
 using SlugBase;
 using SlugBase.Features;
+using TheEscort.Railgunner;
 using UnityEngine;
 using static SlugBase.Features.FeatureTypes;
 using static TheEscort.Eshelp;
@@ -112,17 +113,6 @@ partial class Plugin : BaseUnityPlugin
         gilded_jet = PlayerFloat("theescort/gilded/jetplane");
         gilded_radius = PlayerFloat("theescort/gilded/pipradius");
         gilded_position = PlayerFloats("theescort/gilded/pipposition");
-
-        railgunSpearVelFac = PlayerFloats("theescort/railgunner/spear_vel_fac");
-        railgunSpearDmgFac = PlayerFloats("theescort/railgunner/spear_dmg_fac");
-        railgunSpearThrust = PlayerFloats("theescort/railgunner/spear_thrust");
-        railgunRockVelFac = PlayerFloat("theescort/railgunner/rock_vel_fac");
-        railgunLillyVelFac = PlayerFloat("theescort/railgunner/lilly_vel_fac");
-        railgunBombVelFac = PlayerFloat("theescort/railgunner/bomb_vel_fac");
-        railgunRockThrust = PlayerFloats("theescort/railgunner/rock_thrust");
-        railgunRecoil = PlayerFloat("theescort/railgunner/recoil_fac");
-        railgunRecoilMod = PlayerFloats("theescort/railgunner/recoil_mod");
-        railgunRecoilDelay = PlayerInt("theescort/railgunner/recoil_delay");
 
         CustomShader = PlayerString("theescort/speedster/custom_shader");
         speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");

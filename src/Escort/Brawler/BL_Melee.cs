@@ -42,7 +42,7 @@ public static class BL_Melee
         {
             return false;
         }
-        if (GetMeleeWeaponIndexable(self) is (Weapon w, int wi))
+        if (GetMeleeWeaponIndexable(self) is (Weapon w, int wi) && (wi == grasp || GetShankableCreature(self) is not null))
         {
             if (w is Spear)
             {

@@ -462,6 +462,7 @@ partial class Plugin : BaseUnityPlugin
         On.Player.GrabUpdate += Socks_Legacy;
 
         On.Spear.Thrown += RG_Weaponry.SpearThrow;
+        On.Spear.LodgeInCreature_CollisionResult_bool += RG_Weaponry.WhatIfRailgunSpearsDidntLodgeOwO;
 
         On.Rock.HitSomething += Escort_RockHit;
         On.Rock.Thrown += Escort_RockThrow;

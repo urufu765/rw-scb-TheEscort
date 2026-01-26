@@ -81,7 +81,7 @@ public static class RG_Fx
     /// <summary>
     /// Applies recoil on the player
     /// </summary>
-    public static void Recoil(Player self, IntVector2 throwDir, float force = 20f, float[] recoilMod = default, bool glassCannonBonus = false)
+    public static void Recoil(Player self, IntVector2 throwDir, float force = 20f, bool glassCannonBonus = false)
     {
         float xForce = force, yForce = force;
 
@@ -91,37 +91,37 @@ public static class RG_Fx
         {
             if (throwDir.y > 0)  // Reduce downwards recoil
             {
-                yForce *= recoilMod[0];
+                yForce *= .7f;
             }
             else if (throwDir.y < 0)  // Increase upwards recoil
             {
-                yForce *= recoilMod[1];
+                yForce *= 1;
             }
             if (throwDir.x != 0 && throwDir.y != 0)
             {
-                xForce *= recoilMod[5];
-                yForce *= recoilMod[6];
+                xForce *= .9f;
+                yForce *= .6f;
             }
         }
 
         // Reduce recoil if proned/standing with the power of friction
         if (self.bodyMode == Player.BodyModeIndex.Crawl)
         {
-            xForce *= recoilMod[2];
-            yForce *= recoilMod[2];
+            xForce *= .6f;
+            yForce *= .6f;
         }
         else if (self.bodyMode == Player.BodyModeIndex.Stand)
         {
-            xForce *= recoilMod[3];
-            yForce *= recoilMod[3];
+            xForce *= .9f;
+            yForce *= .9f;
         }
 
 
         // Malnutrition bonus
         if (glassCannonBonus)
         {
-            xForce *= recoilMod[4];
-            yForce *= recoilMod[4];
+            xForce *= 1.5f;
+            yForce *= 1.5f;
         }
 
         self.rollDirection = 0;
@@ -143,6 +143,15 @@ public static class RG_Fx
         {
             self.room?.PlaySound(Watcher.WatcherEnums.WatcherSoundID.Water_Machinery_Hit, self.mainBodyChunk.pos, 0.5f, Mathf.Lerp(0.5f, 0.8f, UnityEngine.Random.value));
         }
+        if (self.Submersion > 0.5f)
+        {
+            self.room?.PlaySound(SoundID.Leviathan_Bite, self.mainBodyChunk.pos, .74f, Mathf.Lerp(.5f, .8f, UnityEngine.Random.value));
+        }
+        else
+        {
+            self.room?.PlaySound(SoundID.Gate_Pillows_In_Place, self.mainBodyChunk.pos, 1.06f, Mathf.Lerp(.6f, .7f, UnityEngine.Random.value));
+        }
+        self.room?.PlaySound(SoundID.Coral_Circuit_Break, self.mainBodyChunk.pos, .55f, Mathf.Lerp(.6f, .75f, UnityEngine.Random.value));
     }
 
 

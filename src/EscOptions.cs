@@ -134,7 +134,13 @@ class EscOptions : OptionInterface
         }
     }
     private readonly Configurable<string> soundMachine;
+    private readonly Configurable<float> soundMachineVol;
+    private readonly Configurable<float> soundMachinePit;
     private OpTextBox makeSomeNoise;
+    private OpSimpleButton noiseButton;
+    private OpSimpleButton loudNoiseButton;
+    private OpUpdown volumeBox;
+    private OpUpdown pitchBox;
 
     // Jolly Coop button stuff don't worry about it
     public OpSimpleButton[] jollyEscortBuilds;
@@ -205,6 +211,8 @@ class EscOptions : OptionInterface
         this.buildPlayer = new OpSliderTick[PlayerCount];
         this.cfgVersion = this.config.Bind<string>("cfg_Escort_Version", VERSION);
         this.soundMachine = this.config.Bind<string>("noise_maker", "");
+        this.soundMachineVol = this.config.Bind<float>("noise_maker_vol", 10, new ConfigAcceptableRange<float>(0.01f, 999f));
+        this.soundMachinePit = this.config.Bind<float>("noise_maker_pitch", 10, new ConfigAcceptableRange<float>(0.1f, 100f));
         this.hudShowOptions = new()
         {
             new ListItem(Translate("hide"), Translate("Hide"), 0),
@@ -326,13 +334,53 @@ class EscOptions : OptionInterface
 
         makeSomeNoise = new OpTextBox(this.soundMachine, new Vector2(xo + (xp * 4f), yo - (yp * 13)), 300)
         {
-            description = OptionInterface.Translate("Hmm? What's this?"),
+            description = "Plays the SoundID (tool for finding the perfect ingame sfx, please ignore)",
             colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
             colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
             colorText = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+            mute = true,
+        };
+
+        noiseButton = new OpSimpleButton(new(xo + (xp * 2), yo - (yp * 13f)), new(60, 20), "MAOW")
+        {
+            description = "Make noise at original volume/pitch",
+            colorEdge = new Color(0.9294f, 0.898f, 0.98f, 0.55f),
+            colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
             mute = true
         };
+        loudNoiseButton = new OpSimpleButton(new(xo, yo - (yp * 13f)), new(60, 20), "BORK")
+        {
+            description = "Make noise at specified volume/pitch",
+            colorEdge = new Color(0.9294f, 0.498f, 0.58f, 0.65f),
+            colorFill = new Color(0.7843f, 0.1843f, 0.1843f, 0.35f),
+            mute = true
+        };
+        volumeBox = new OpUpdown(soundMachineVol, new Vector2(xo, yo - (yp * 13.7f)), 50, 0)
+        {
+            description = "Volume/10",
+            colorEdge = new Color(0.4294f, 0.898f, 0.18f, 0.55f),
+            colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+            colorText = new Color(0.4294f, 0.898f, 0.18f, 0.55f),
+            maxLength = 3,
+            accept = OpTextBox.Accept.Float,
+            mute = true
+        };
+        pitchBox = new OpUpdown(soundMachinePit, new Vector2(xo + (xp * 1.5f), yo - (yp * 13.7f)), 50, 0)
+        {
+            description = "Pitch/10",
+            colorEdge = new Color(0.9294f, 0.598f, 0.28f, 0.55f),
+            colorFill = new Color(0.1843f, 0.1843f, 0.1843f, 0.55f),
+            colorText = new Color(0.9294f, 0.598f, 0.28f, 0.55f),
+            maxLength = 3,
+            accept = OpTextBox.Accept.Float,
+            mute = true
+        };
+
         makeSomeNoise.OnValueChanged += NoiseWawa;
+        volumeBox.OnValueChanged += NoiseVol;
+        pitchBox.OnValueChanged += NoisePit;
+        noiseButton.OnClick += NoiseMe;
+        loudNoiseButton.OnClick += NoiseMeLouder;
 
         // this.sctTestBuildText = new OpLabel(xo + (xp * 2), yo - (yp * 10.5f) - (tp * 1.3f), Translate("ALPHATESTING") + "[Unstable] {?????}", true){
         //    color = bTesting * 0.7f
@@ -930,6 +978,10 @@ class EscOptions : OptionInterface
             },
 
             makeSomeNoise,
+            noiseButton,
+            loudNoiseButton,
+            volumeBox,
+            pitchBox,
 
             secretText
         };
@@ -1397,10 +1449,49 @@ class EscOptions : OptionInterface
         {
             if (ExtEnumBase.TryParse(typeof(SoundID), value, true, out var result) && result is SoundID sesult)
             {
+                soundMachine.Value = value;
                 ConfigContainer.PlaySound(sesult, 0, 1, 1);
             }
         }
     }
+    private void NoiseVol(UIconfig config, string value, string oldValue)
+    {
+        if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu)
+        {
+            if (float.TryParse(value, out float fesult) && ExtEnumBase.TryParse(typeof(SoundID), soundMachine.Value, true, out var result) && result is SoundID sesult)
+            {
+                soundMachineVol.Value = fesult;
+                ConfigContainer.PlaySound(sesult, 0, fesult/10, soundMachinePit.Value/10);
+            }
+        }
+    }
+    private void NoisePit(UIconfig config, string value, string oldValue)
+    {
+        if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu)
+        {
+            if (float.TryParse(value, out float fesult) && ExtEnumBase.TryParse(typeof(SoundID), soundMachine.Value, true, out var result) && result is SoundID sesult)
+            {
+                soundMachinePit.Value = fesult;
+                ConfigContainer.PlaySound(sesult, 0, soundMachineVol.Value/10, fesult/10);
+            }
+        }
+    }
+
+    private void NoiseMe(UIfocusable trigger)
+    {
+        if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && ExtEnumBase.TryParse(typeof(SoundID), soundMachine.Value, true, out var result) && result is SoundID sesult)
+        {
+            ConfigContainer.PlaySound(sesult);
+        }
+    }
+    private void NoiseMeLouder(UIfocusable trigger)
+    {
+        if (rainworld.processManager.currentMainLoop is Menu.ModdingMenu && ExtEnumBase.TryParse(typeof(SoundID), soundMachine.Value, true, out var result) && result is SoundID sesult)
+        {
+            ConfigContainer.PlaySound(sesult, 0, soundMachineVol.Value/10, soundMachinePit.Value/10);
+        }
+    }
+
 
     private void ToggleDisableHyped(UIconfig config, string value, string oldValue)
     {

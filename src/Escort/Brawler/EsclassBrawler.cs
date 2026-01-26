@@ -86,7 +86,7 @@ namespace TheEscort
                         }
                         else if (e.BrawMeleeWeapon.Peek() is Rock)
                         {
-                            self.slowMovementStun += 25;
+                            self.slowMovementStun += 15;
                             e.BrawLastWeapon = Melee.None;
                         }
                         else if (e.BrawMeleeWeapon.Peek() is ExplosiveSpear es && !(es.mode == Weapon.Mode.StuckInWall || es.exploded || es.slatedForDeletetion))

@@ -84,6 +84,15 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Railgunner laser ignores leeches that are in close proximity of Railgunner
     * Fix super wall flip
     * Make transition between set direction swim parry and body direction swim parry smooth
+  * **(0.4-dev.20)**
+    * Spear stick was opposite, fixed
+    * Added more sfx to Railgunner to make shots even more satisfying
+    * WIP Escapist continues
+    * Brawler remove melee priority, reduced punch cooldown
+    * Removed some of slugbase json stuff to attempt to increase performance.
+    * Railgunned spears may actually penetrate (go through creature) though it's a wee unreliable
+    * Railgun spear trajectory goes almost perfectly straight instead of having a falloff
+    * Railgunner railgun per-spear damage reduced from (1.2~2.8) to (1 + 0.1 per charge)
   * **(0.4-dev.19)**
     * Deflector spawns in sky islands again
     * Escapist spawns in Industrial Complex

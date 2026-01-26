@@ -29,8 +29,7 @@ public static class RG_Weaponry
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
                 }
-                if (!eCon.TryGetValue(p, out Escort e) ||
-                    !railgunLillyVelFac.TryGet(p, out float rLillyVel))
+                if (!eCon.TryGetValue(p, out Escort e))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
@@ -58,7 +57,7 @@ public static class RG_Weaponry
                         }
                         self.canBeHitByWeapons = false;
                         //self.doNotTumbleAtLowSpeed = true;
-                        frc *= rLillyVel;
+                        frc *= 1.8f;
                     }
                     else
                     {
@@ -92,8 +91,7 @@ public static class RG_Weaponry
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
                 }
-                if (!eCon.TryGetValue(p, out Escort e) ||
-                    !railgunBombVelFac.TryGet(p, out float rBombVel))
+                if (!eCon.TryGetValue(p, out Escort e))
                 {
                     orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
                     return;
@@ -121,7 +119,7 @@ public static class RG_Weaponry
                             self.floorBounceFrames += 20;
                         }
                         e.RailIFrame = 20;
-                        frc *= rBombVel;
+                        frc *= 3;
                     }
                 }
 
@@ -172,13 +170,6 @@ public static class RG_Weaponry
 
     public static void RockThrow(Rock self, Player p, ref float frc, ref Escort e)
     {
-        if (
-            !railgunRockVelFac.TryGet(p, out float rRockVel)
-            // || !railgunRockThrust.TryGet(p, out float[] rRockThr)
-            )
-        {
-            return;
-        }
         //float thruster = 5f;
         if (e.RailDouble is DoubleUp.Rock)
         {
@@ -208,7 +199,7 @@ public static class RG_Weaponry
                 //e.RailDoubleRock = false;
             }
             self.canBeHitByWeapons = false;
-            frc *= rRockVel;
+            frc *= 2.3f;
         }
         else
         {
@@ -305,7 +296,11 @@ public static class RG_Weaponry
         if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Spear or DoubleUp.ElectroSpear)
         {
             self.canBeHitByWeapons = false;
-            frc *= 1.5f;
+            frc *= 2f;
+            if (p.animation == Player.AnimationIndex.DeepSwim)
+            {
+                frc *= Mathf.Lerp(2, 5, e.viscoDance);
+            }
         }
         orig(self, thrownBy, thrownPos, firstFrameTraceFromPos, throwDir, frc, eu);
     }
@@ -379,9 +374,48 @@ public static class RG_Weaponry
     {
         if (!original && result.chunk is not null && self?.thrownBy is Player p && eCon.TryGetValue(p, out Escort e) && e.Railgunner && (e.RailLastSpears?.a == self || e.RailLastSpears?.b == self))
         {
-            Ebug("RAILGUNNER PENETRATION: " + result.obj.ToString());
+            Ebug(p, "RAILGUNNER PENETRATION: " + result.obj.ToString());
             return true;
         }
         return original;
+    }
+
+    public static void WhatIfRailgunSpearsDidntLodgeOwO(On.Spear.orig_LodgeInCreature_CollisionResult_bool orig, Spear self, SharedPhysics.CollisionResult result, bool eu)
+    {
+        if (self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
+        {
+            if (e.RailLastSpears?.a == self || e.RailLastSpears?.b == self)
+            {
+                Ebug(p, "What if spear not lodge?");
+                return;
+            }
+            else
+            {
+                Ebug(p, "What if spear lodge?");
+            }
+        }
+        orig(self, result, eu);
+    }
+
+    public static void ResetSpearValues(ref Escort e, bool applyA = true, bool applyB = true)
+    {
+        if (e.RailLastSpears is (Spear a, Spear b))
+        {
+            if (e.RailLastDontTumble is (bool ta, bool tb))
+            {
+                if (applyA) a.doNotTumbleAtLowSpeed = ta;
+                if (applyB) b.doNotTumbleAtLowSpeed = tb;
+            }
+            if (e.RailLastGravity is (float ga, float gb))
+            {
+                if (applyA) a.gravity = ga;
+                if (applyB) b.gravity = gb;
+            }
+            if (e.RailLastAlwaysStick is (bool sa, bool sb))
+            {
+                if (applyA) a.alwaysStickInWalls = sa;
+                if (applyB) b.alwaysStickInWalls = sb;
+            }
+        }
     }
 }

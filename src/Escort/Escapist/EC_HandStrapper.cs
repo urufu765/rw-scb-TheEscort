@@ -6,6 +6,7 @@ using static TheEscort.Eshelp;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using TheEscort.Escapist.Strappable;
 
 namespace TheEscort.Escapist;
 

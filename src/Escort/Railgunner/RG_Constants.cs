@@ -4,6 +4,7 @@ using UnityEngine;
 using static TheEscort.Plugin;
 using static TheEscort.Eshelp;
 using System;
+using SlugBase.Features;
 
 namespace TheEscort.Railgunner;
 

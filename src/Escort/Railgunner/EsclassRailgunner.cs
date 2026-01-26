@@ -19,16 +19,6 @@ partial class Plugin : BaseUnityPlugin
     // public static readonly PlayerFeature<> railgun = Player("theescort/railgunner/");
     // public static readonly PlayerFeature<float> railgun = PlayerFloat("theescort/railgunner/");
     // public static readonly PlayerFeature<float[]> railgun = PlayerFloats("theescort/railgunner/");
-    public static readonly PlayerFeature<float[]> railgunSpearVelFac;
-    public static readonly PlayerFeature<float[]> railgunSpearDmgFac;
-    public static readonly PlayerFeature<float[]> railgunSpearThrust;
-    public static readonly PlayerFeature<float> railgunRockVelFac;
-    public static readonly PlayerFeature<float> railgunLillyVelFac;
-    public static readonly PlayerFeature<float> railgunBombVelFac;
-    public static readonly PlayerFeature<float[]> railgunRockThrust;
-    public static readonly PlayerFeature<float> railgunRecoil;
-    public static readonly PlayerFeature<float[]> railgunRecoilMod;
-    public static readonly PlayerFeature<int> railgunRecoilDelay;
 
     public static void Esclass_RG_Tick(Player self, ref Escort e)
     {
@@ -97,6 +87,20 @@ partial class Plugin : BaseUnityPlugin
         {
             e.RailSparkling--;
         }
+
+        if (e.RailLastReset > 0)
+        {
+            e.RailLastReset--;
+        }
+        else if (e.RailLastReset == 0)
+        {
+            RG_Weaponry.ResetSpearValues(ref e);
+            e.RailLastGravity = null;
+            e.RailLastDontTumble = null;
+            e.RailLastSpears = null;
+            e.RailLastAlwaysStick = null;
+            e.RailLastReset = -1;
+        }
     }
 
     public static void Esclass_RG_Update(Player self, ref Escort e)
@@ -146,19 +150,12 @@ partial class Plugin : BaseUnityPlugin
 
         }
 
-        if (
-            !railgunRecoil.TryGet(self, out float rRecoil) ||
-            !railgunRecoilMod.TryGet(self, out float[] rRecoilMod)
-        )
-        {
-            return;
-        }
         // Do recoil
         if (e.RailRecoilLag == 0)
         {
             e.RailRecoilLag = -1;
             // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
-            RG_Fx.Recoil(self, e.RailLastThrowDir, rRecoil, rRecoilMod, e.RailFrail);
+            RG_Fx.Recoil(self, e.RailLastThrowDir, 50, e.RailFrail);
         }
 
 
@@ -198,6 +195,11 @@ partial class Plugin : BaseUnityPlugin
                 e.RailZap[i].Update(self, railRatio);
             }
             e.RailZap.RemoveAll(a => a.IsDead());
+        }
+
+        if (e.RailLastSpears is (Spear a, Spear b))
+        {
+            RG_Weaponry.ResetSpearValues(ref e, a.mode != Weapon.Mode.Thrown, b.mode != Weapon.Mode.Thrown);
         }
     }
 }

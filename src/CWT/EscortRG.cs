@@ -310,6 +310,10 @@ public partial class Escort
     /// Reference to the last shot spears
     /// </summary>
     public (Spear a, Spear b)? RailLastSpears;
+    public (bool a, bool b)? RailLastDontTumble;
+    public (bool a, bool b)? RailLastAlwaysStick;
+    public (float a, float b)? RailLastGravity;
+    public int RailLastReset;
 
     public void EscortRG(Player self)
     {
@@ -339,6 +343,7 @@ public partial class Escort
         this.RailLaserSightIndex = -1;
         this.RailZap = [];
         this.RailLaserDimmer = RailLaserDimmerDuration;
+        this.RailLastReset = 0;
     }
 
     /// <summary>

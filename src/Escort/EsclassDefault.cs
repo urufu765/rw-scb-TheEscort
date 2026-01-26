@@ -1389,11 +1389,6 @@ namespace TheEscort
         /// </summary>
         public static void Escort_WallJump(On.Player.orig_WallJump orig, Player self, int direction)
         {
-            /*
-            if (self.bodyMode != Player.BodyModeIndex.WallClimb){
-                orig(self, direction);
-                return;
-            }*/
             try
             {
                 if (Eshelp_IsNull(self.slugcatStats.name))
@@ -1523,7 +1518,12 @@ namespace TheEscort
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
             Ebug(self, "Sticky Triggered!");
-            return ParryCondition(self, e, out _);
+            if (e.Railgunner && source is Spear s && (e.RailLastSpears?.a == s || e.RailLastSpears?.b == s))
+            {
+                Ebug(self, "Hey, don't let Railgunner railgun thyself lmao");
+                return false;
+            }
+            return !ParryCondition(self, e, out _);
         }
 
 
@@ -1783,6 +1783,13 @@ namespace TheEscort
 
 
             Ebug(player, "Violence Triggered!");
+
+            if (e.Railgunner && source is not null && source.owner is Spear spar && spar.thrownBy is Player par && par == player)
+            {
+                Ebug(player, "Railgunner can't railgun herself lmao");
+                return;
+            }
+
             // connects to the Escort's Parryslide option
             e.ParrySuccess = false;
             if (e.Railgunner && e.RailIFrame > 0 && type != null && (type == Creature.DamageType.Explosion || type == Creature.DamageType.Electric))

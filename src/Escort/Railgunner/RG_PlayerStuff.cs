@@ -24,14 +24,6 @@ public static class RG_Player
 
     public static void ThrownSpear(Player self, Spear spear, in bool onPole, ref Escort e, ref float thrust)
     {
-        if (
-            !railgunSpearVelFac.TryGet(self, out float[] rSpearVel) ||
-            !railgunSpearDmgFac.TryGet(self, out float[] rSpearDmg) ||
-            !railgunSpearThrust.TryGet(self, out float[] rSpearThr)
-        )
-        {
-            return;
-        }
         try
         {
             thrust = 2f;  // Inverted the negatives so recoil isn't achieved here
@@ -40,7 +32,7 @@ public static class RG_Player
             {
                 if (!e.RailFirstWeaped)
                 {
-                    spear.firstChunk.vel *= rSpearVel[0];
+                    spear.firstChunk.vel *= new Vector2(Math.Abs(e.RailLastThrowDir.x), Math.Abs(e.RailLastThrowDir.y));
                     e.RailFirstWeaper = spear.firstChunk.vel;
                     e.RailFirstWeaped = true;
                 }
@@ -51,19 +43,19 @@ public static class RG_Player
                     //e.BarbDoubleSpear = false;
                     if (self.bodyMode == Player.BodyModeIndex.Crawl)
                     {
-                        thrust *= rSpearThr[0] + (e.RailFrail ? 1f : 0f);
+                        thrust *= 8 + (e.RailFrail ? 1f : 0f);
                     }
                     else if (self.bodyMode == Player.BodyModeIndex.Stand)
                     {
-                        thrust *= rSpearThr[1] + (e.RailFrail ? 3.25f : 0f);
+                        thrust *= 11 + (e.RailFrail ? 3.25f : 0f);
                     }
                     else
                     {
-                        thrust *= rSpearThr[2] + (e.RailFrail ? 5f : 0f);
+                        thrust *= 14 + (e.RailFrail ? 5f : 0f);
                     }
                 }
-                spear.spearDamageBonus *= Mathf.Lerp(rSpearDmg[0], rSpearDmg[1], Mathf.InverseLerp(0, e.RailgunLimit, e.RailgunUse));
-                spear.alwaysStickInWalls = true;
+                spear.spearDamageBonus = 1 + (0.1f * e.RailgunUse);
+                //spear.alwaysStickInWalls = true;
                 if (!onPole)
                 {
                     self.standing = false;
@@ -91,8 +83,8 @@ public static class RG_Player
             }
             else
             {
-                thrust *= rSpearThr[3];
-                spear.firstChunk.vel *= rSpearVel[1];
+                thrust *= .75f;
+                spear.firstChunk.vel *= .95f;
             }
         }
         catch (Exception err)
@@ -111,11 +103,6 @@ public static class RG_Player
     /// </summary>
     public static bool ThrowObject(On.Player.orig_ThrowObject orig, Player self, int grasp, bool eu, ref Escort e)
     {
-        if (!railgunRecoilDelay.TryGet(self, out int rRecoilDelay))
-        {
-            return false;
-        }
-
         if (e.RailDouble is DoubleUp.None)
         {
             if (e.RailgunCD > 0 && self.grasps?[grasp]?.grabbed is Weapon weaponry)
@@ -175,9 +162,21 @@ public static class RG_Player
             {
                 e.RailLastThrowDir = throwDir;
             }
+            else
+            {
+                if (e.RailLastThrowDir.y != 0)
+                {
+                    self.grasps[0].grabbed.firstChunk.pos.x -= 1.5f;
+                    self.grasps[1].grabbed.firstChunk.pos.x += 1.5f;
+                }
+                if (e.RailLastThrowDir.x != 0)
+                {
+                    self.grasps[1 - grasp].grabbed.firstChunk.pos.y += self.animation == Player.AnimationIndex.DownOnFours? 3 : -3;
+                }
+            }
             orig(self, grasp, eu);  // Throw the first hand
             //e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
-            self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
+            //self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
             orig(self, 1 - grasp, eu);  // Also throw the second hand
 
             if (w is FirecrackerPlant fp1 && w2 is FirecrackerPlant fp2)
@@ -198,7 +197,7 @@ public static class RG_Player
                 sb1.gravity = sb2.gravity = 0;
             }
         }
-        e.RailRecoilLag = rRecoilDelay;  // Get ready to recoil
+        e.RailRecoilLag = 3;  // Get ready to recoil
 
         if (self.room != null)
         {
@@ -238,9 +237,21 @@ public static class RG_Player
         }
         e.RailZap.Add(new(w.firstChunk, 40));
         e.RailZap.Add(new(w2.firstChunk, 40));
+        if (e.RailLastSpears is not null) RG_Weaponry.ResetSpearValues(ref e);
         if (w is Spear s1 && w2 is Spear s2)
         {
             e.RailLastSpears = (s1, s2);
+            e.RailLastDontTumble = (s1.doNotTumbleAtLowSpeed, s2.doNotTumbleAtLowSpeed);
+            e.RailLastAlwaysStick = (s1.alwaysStickInWalls, s2.alwaysStickInWalls);
+            s1.doNotTumbleAtLowSpeed = s2.doNotTumbleAtLowSpeed = true;
+            if (self.bodyMode != Player.BodyModeIndex.ZeroG && self.animation != Player.AnimationIndex.DeepSwim)
+            {
+                e.RailLastGravity = (s1.gravity, s2.gravity);
+                s1.gravity = s2.gravity = 0.4f;
+            }
+            s1.alwaysStickInWalls = s2.alwaysStickInWalls = true;
+            e.RailLastReset = 80;
+            self.noGrabCounter += 30;
         }
         e.RailGaussed = 80;
         e.Escat_RG_Overcharge(halveAddition: misfire);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using RWCustom;
 using TheEscort.Escapist;
+using TheEscort.Escapist.Strappable;
 using TheEscort.Patches;
 using UnityEngine;
 using static TheEscort.Eshelp;
@@ -20,6 +21,8 @@ public enum StrammableType
     Rock,  // Movement tech
     WaterNut,  // Deflect Weapons
     Bees,  // SporePlant
+    Jelly,  // Jellyfish stun
+    Flower,  // Karma 10 ability
     // Watcher
     Graffiti  // Graffiti boom
 }
