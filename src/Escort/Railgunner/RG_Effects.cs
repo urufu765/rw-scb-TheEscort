@@ -33,7 +33,7 @@ public static class RG_Fx
 
             if (lethal)
             {
-                room.AddObject(new Explosion(room, self, v, 10, range / 10, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
+                room.AddObject(new Explosion(room, self, v, 3, range / 5, 60f, 10f, 10f, 0.4f, self, 0.7f, 2f, 0f));
                 room.AddObject(new Explosion(room, self, v, 8, range, 60f, 0.5f, 600f, 0.4f, self, 0.01f, 200f, 0f));
                 room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.93f, 0.28f);
                 self.Die();
@@ -41,7 +41,7 @@ public static class RG_Fx
             else
             {
                 room.PlaySound(SoundID.Bomb_Explode, self.mainBodyChunk, false, 0.86f, 0.4f);
-                room.AddObject(new Explosion(room, self, v, 8, range, 60f, 0.02f, 360f, 0.4f, self, 0.01f, 120f, 0f));
+                room.AddObject(new Explosion(room, self, v, 5, range, 60f, 1f, range, 0.4f, self, 0.01f, range / 4, 0.8f));
             }
         }
         catch (Exception err)
@@ -166,14 +166,14 @@ public static class RG_Fx
         if (UnityEngine.Random.value > (e.RailFrail ? 0.75f : 0.25f))
         {
             int railGun = e.RailgunUse;
-            e.RailgunUse = (int)(e.RailgunLimit * 0.7);
+            e.RailgunUse = e.RailgunCD = 0;
             InnerSplosion(self, 600);
             e.Escat_RG_SetGlassMode(true);
             //self.stun += e.RailFrail ? 320 : 160;
-            int stunDur = e.RailFrail ? 320 : 160;
+            int stunDur = e.RailFrail ? 160 : 0;
             if (self.room?.game?.session is StoryGameSession sgs)
             {
-                stunDur *= 10 - sgs.saveState.deathPersistentSaveData.karmaCap;
+                stunDur += 30 * (12 - sgs.saveState.deathPersistentSaveData.karma);
             }
 
             RG_Shocker.StunWave(self, 60 * railGun, Mathf.Lerp(0.01f, 0.6f, (float)railGun / e.RailgunLimit), 10 * railGun, 0.05f * railGun);
@@ -183,6 +183,7 @@ public static class RG_Fx
         else
         {
             RG_Shocker.StunWave(self, 100 * e.RailgunUse, 0.15f * e.RailgunUse, 16 * e.RailgunUse);
+            e.RailgunUse = e.RailgunCD = 0;
             InnerSplosion(self, 1000, true);
         }
     }

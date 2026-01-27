@@ -54,7 +54,8 @@ public static class RG_Player
                         thrust *= 14 + (e.RailFrail ? 5f : 0f);
                     }
                 }
-                spear.spearDamageBonus = 1 + (0.1f * e.RailgunUse);
+                spear.spearDamageBonus = .7f + (.05f * e.RailgunUse);
+                spear.throwModeFrames = 400;
                 //spear.alwaysStickInWalls = true;
                 if (!onPole)
                 {
@@ -143,7 +144,7 @@ public static class RG_Player
             self.dontGrabStuff = 15;
             RG_Shocker.StunWave(self, 20 * e.RailgunUse, 0.01f * e.RailgunUse, 8 * e.RailgunUse, 0.05f * e.RailgunUse);
             RG_Fx.InnerSplosion(self, 400);
-            if (e.RailgunUse > e.RailgunLimit / 0.7) e.RailgunUse = (int)(e.RailgunLimit / 0.7);
+            e.RailgunUse = e.RailgunCD = 0;
             self.Stun(120);
             misfire = true;
         }
@@ -162,18 +163,18 @@ public static class RG_Player
             {
                 e.RailLastThrowDir = throwDir;
             }
-            else
-            {
-                if (e.RailLastThrowDir.y != 0)
-                {
-                    self.grasps[0].grabbed.firstChunk.pos.x -= 1.5f;
-                    self.grasps[1].grabbed.firstChunk.pos.x += 1.5f;
-                }
-                if (e.RailLastThrowDir.x != 0)
-                {
-                    self.grasps[1 - grasp].grabbed.firstChunk.pos.y += self.animation == Player.AnimationIndex.DownOnFours? 3 : -3;
-                }
-            }
+            // else
+            // {
+            //     if (e.RailLastThrowDir.y != 0)
+            //     {
+            //         self.grasps[0].grabbed.firstChunk.pos.x -= 1.5f;
+            //         self.grasps[1].grabbed.firstChunk.pos.x += 1.5f;
+            //     }
+            //     if (e.RailLastThrowDir.x != 0)
+            //     {
+            //         self.grasps[1 - grasp].grabbed.firstChunk.pos.y += self.animation == Player.AnimationIndex.DownOnFours? 3 : -3;
+            //     }
+            // }
             orig(self, grasp, eu);  // Throw the first hand
             //e.RailLastThrowDir = w.throwDir;  // Save last throw direction (may not be used)
             //self.grasps[1 - grasp].grabbed.firstChunk.pos = p;
@@ -237,22 +238,33 @@ public static class RG_Player
         }
         e.RailZap.Add(new(w.firstChunk, 40));
         e.RailZap.Add(new(w2.firstChunk, 40));
-        if (e.RailLastSpears is not null) RG_Weaponry.ResetSpearValues(ref e);
         if (w is Spear s1 && w2 is Spear s2)
         {
-            e.RailLastSpears = (s1, s2);
-            e.RailLastDontTumble = (s1.doNotTumbleAtLowSpeed, s2.doNotTumbleAtLowSpeed);
-            e.RailLastAlwaysStick = (s1.alwaysStickInWalls, s2.alwaysStickInWalls);
-            s1.doNotTumbleAtLowSpeed = s2.doNotTumbleAtLowSpeed = true;
+            e.Escat_RG_ResetSpearValues();
+            (float? a, float? b) gravoty = (null, null);
             if (self.bodyMode != Player.BodyModeIndex.ZeroG && self.animation != Player.AnimationIndex.DeepSwim)
             {
-                e.RailLastGravity = (s1.gravity, s2.gravity);
-                s1.gravity = s2.gravity = 0.4f;
+                gravoty = (s1.g, s2.g);
+                s1.gravity = s2.gravity = .42f;
             }
+            e.RailLastSpear[0] = (
+                s1,
+                s1.doNotTumbleAtLowSpeed,
+                s1.alwaysStickInWalls,
+                gravoty.a
+            );
+            e.RailLastSpear[1] = (
+                s2,
+                s2.doNotTumbleAtLowSpeed,
+                s2.alwaysStickInWalls,
+                gravoty.b
+            );
+            s1.doNotTumbleAtLowSpeed = s2.doNotTumbleAtLowSpeed = true;
             s1.alwaysStickInWalls = s2.alwaysStickInWalls = true;
-            e.RailLastReset = 80;
-            self.noGrabCounter += 30;
+            e.RailLastReset = 400;
+            e.RailLetNextPass = false;
         }
+        self.noGrabCounter += 30;
         e.RailGaussed = 80;
         e.Escat_RG_Overcharge(halveAddition: misfire);
         e.Escat_RG_IncreaseCD(400);

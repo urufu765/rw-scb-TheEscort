@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using Menu;
+using Microsoft.SqlServer.Server;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using RainMeadow;
@@ -525,6 +526,7 @@ partial class Plugin : BaseUnityPlugin
 
         // Debugging
         // On.DebugMouse.Update += DebugMouse_Update;
+        //On.Lizard.Violence += CheckLizardViolence;
     }
 
     public static bool LetsVoidTrainLizards(On.AbstractCreature.orig_IsVoided orig, AbstractCreature self)
@@ -1571,6 +1573,11 @@ partial class Plugin : BaseUnityPlugin
                     {
                         // Updates the Escort property trackers outside player update to allow the tracker to continue checking for updates
                         escort.Escat_Update_Ring_Trackers();
+
+                        if (escort.Railgunner)
+                        {
+                            escort.Escat_RG_TryResetRailgunValuesFromAT(player);
+                        }
 
                         // Speedster's afterimage
                         if (escort.Speedster)

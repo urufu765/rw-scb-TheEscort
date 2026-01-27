@@ -84,6 +84,16 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Railgunner laser ignores leeches that are in close proximity of Railgunner
     * Fix super wall flip
     * Make transition between set direction swim parry and body direction swim parry smooth
+    * Vengeful lizard spawns prioritize on rolling the dice on cycle start than per creature killed
+  * **(0.4-dev.21)**
+    * Railgunner damage nerf from (1 + 0.1 per charge) to (0.7 + 0.05 per charge)
+    * Railgunner spear penetrates fully
+    * Railgunner explosions clear overcharge state
+    * Railgunner explosion on danger grasp is now guaranteed while not in weakened state. If weakened state, has an increasing chance of explosion, which kills Railgunner
+    * Railgunner near-death explosion is now based on karma level and not karma cap, and is comparably less punishing than before (min 4s/8s stun -> min 2s/6s)(max 40s/80s stun -> max 9s/13s)
+    * Vengeful Lizards reduced healing speed Unfair: 10% => 3% per second
+    * Vengeful Lizards teleport delay increased
+    * Vengeful Lizards initial spawn reduced across the board (except Unfair)
   * **(0.4-dev.20)**
     * Spear stick was opposite, fixed
     * Added more sfx to Railgunner to make shots even more satisfying

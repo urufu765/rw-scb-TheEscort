@@ -24,6 +24,7 @@ public class StramRock : Strammable<AbstractPhysicalObject>
             {
                 wristPos = Vector2.Lerp(sch.pos, pg.head.pos, .1f);
             }
+            //TODO: use scavengerbomb fragments instead
             r.AddObject(new ExplosiveSpear.SpearFragment(wristPos, Custom.RNV() * Mathf.Lerp(2, 4, UnityEngine.Random.value)));
             // r.PlaySound(SoundID.Slugcat_Lay_Down_Object, owner.mainBodyChunk);
             useAvail = false;

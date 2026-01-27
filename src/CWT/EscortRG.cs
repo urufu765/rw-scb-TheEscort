@@ -4,6 +4,7 @@ using UnityEngine;
 using R = UnityEngine.Random;
 using static TheEscort.Eshelp;
 using RWCustom;
+using System.Linq;
 
 namespace TheEscort;
 
@@ -307,12 +308,26 @@ public partial class Escort
     public const int RAILGUNNER_CD_MAX = 1200;
 
     /// <summary>
-    /// Reference to the last shot spears
+    /// Reference to the last shot spears  TODO: Turn this into a stackable list thing so shooting consecutive spears doesn't reset the other spear's values
     /// </summary>
-    public (Spear a, Spear b)? RailLastSpears;
-    public (bool a, bool b)? RailLastDontTumble;
-    public (bool a, bool b)? RailLastAlwaysStick;
-    public (float a, float b)? RailLastGravity;
+    // public (Spear a, Spear b)? RailLastSpears;
+    public (Spear spear, bool noTumble, bool alwaysStick, float? grav)?[] RailLastSpear;
+    /// <summary>
+    /// Stores the last tumble values to restore later
+    /// </summary>
+    // public (bool a, bool b)? RailLastDontTumble;
+    /// <summary>
+    /// Stores the last always stick value to restore later
+    /// </summary>
+    // public (bool a, bool b)? RailLastAlwaysStick;
+    /// <summary>
+    /// Stores the last gravity value to restore later
+    /// </summary>
+    // public (float a, float b)? RailLastGravity;
+    /// <summary>
+    /// Flags whether the first of the two spears has hit something, so the second spear can continue going
+    /// </summary>
+    public bool RailLetNextPass;
     public int RailLastReset;
 
     public void EscortRG(Player self)
@@ -343,7 +358,9 @@ public partial class Escort
         this.RailLaserSightIndex = -1;
         this.RailZap = [];
         this.RailLaserDimmer = RailLaserDimmerDuration;
-        this.RailLastReset = 0;
+        this.RailLastReset = -1;
+        this.RailLetNextPass = false;
+        this.RailLastSpear = new (Spear spear, bool noTumble, bool alwaysStick, float? grav)?[2];
     }
 
     /// <summary>
@@ -441,5 +458,71 @@ public partial class Escort
         }
         RailgunCD += RailFrail? increase / 2 : increase;
         if (RailgunCD > RAILGUNNER_CD_MAX) RailgunCD = RAILGUNNER_CD_MAX;
+    }
+
+    public void Escat_RG_TryResetRailgunValuesFromAT(Player player)
+    {
+        if (RailLastSpear is null) return;
+
+        for (int i = 0; i < RailLastSpear.Length; i++)
+        {
+            if (RailLastSpear[i] is {} last)
+            {
+                if (last.spear?.mode == Weapon.Mode.Thrown && Escat_RG_SpearGoingTheRightWayLmao(last.spear))
+                {
+                    last.spear.thrownBy ??= player;
+                }
+                else
+                {
+                    Escat_RG_ResetSingleSpear(last);
+                    RailLastSpear[i] = null;
+                }
+            }
+        }
+    }
+
+    public bool Escat_RG_SpearGoingTheRightWayLmao(Spear spear)
+    {
+        if (spear.firstChunk.vel.magnitude < 3)
+        {
+            return false;
+        }
+        Vector2 spearDir = spear.firstChunk.vel.normalized;
+        Vector2 comparison = Custom.IntVector2ToVector2(RailLastThrowDir);
+
+        if (Mathf.Abs(spearDir.x + comparison.x) < .85f && Mathf.Abs(spearDir.y + comparison.y) < .85f)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Resets all spear values
+    /// </summary>
+    public void Escat_RG_ResetSpearValues()
+    {
+        if (RailLastSpear is null) return;
+
+        for (int i = 0; i < RailLastSpear.Length; i++)
+        {
+            if (RailLastSpear[i] is {} last)
+            {
+                Escat_RG_ResetSingleSpear(last);
+            }
+            RailLastSpear[i] = null;
+        }
+    }
+
+    /// <summary>
+    /// Rsets a single spear value
+    /// </summary>
+    /// <param name="single"></param>
+    public static void Escat_RG_ResetSingleSpear((Spear spear, bool noTumble, bool alwaysStick, float? grav) single)
+    {
+        if (single.spear is null) return;
+        single.spear.doNotTumbleAtLowSpeed = single.noTumble;
+        if (single.grav is not null) single.spear.gravity = single.grav.Value;
+        single.spear.alwaysStickInWalls = single.alwaysStick;
     }
 }

@@ -182,7 +182,7 @@ public class VengefulMachine
                 Vengefuls[i]?.Update();
                 if (VengefulDifficulty is "hard" or "unfair")
                 {
-                    Vengefuls[i]?.GetSomeHealing(.005f);
+                    Vengefuls[i]?.GetSomeHealing(VengeSetHeal);
                     if (Vengefuls[i]?.RealMe is Creature c)
                     {
                         c.stun = 0;
@@ -343,8 +343,8 @@ public class VengefulMachine
     public int VengeSetStart => VengefulDifficulty switch
     {
         "unfair" => 7,
-        "hard" => 3,
-        "medium" => 2,
+        "hard" => 2,
+        "medium" => 1,
         _ => 0
     };
 
@@ -378,6 +378,12 @@ public class VengefulMachine
         "medium" => 400,
         "easy" => 1200,
         _ => 0
+    };
+
+    public float VengeSetHeal => VengefulDifficulty switch
+    {
+        "unfair" => .0015f,
+        _ => .005f
     };
 }
 

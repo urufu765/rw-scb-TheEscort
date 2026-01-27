@@ -31,10 +31,6 @@ partial class Plugin : BaseUnityPlugin
         {
             e.RailGaussed--;
         }
-        else
-        {
-            e.RailLastSpears = null;
-        }
 
         if (e.RailIFrame > 0)
         {
@@ -94,11 +90,7 @@ partial class Plugin : BaseUnityPlugin
         }
         else if (e.RailLastReset == 0)
         {
-            RG_Weaponry.ResetSpearValues(ref e);
-            e.RailLastGravity = null;
-            e.RailLastDontTumble = null;
-            e.RailLastSpears = null;
-            e.RailLastAlwaysStick = null;
+            e.Escat_RG_ResetSpearValues();
             e.RailLastReset = -1;
         }
     }
@@ -167,7 +159,7 @@ partial class Plugin : BaseUnityPlugin
 
 
         // Auto-escape out of danger grasp if overcharged
-        if (self.dangerGraspTime == 29 && UnityEngine.Random.value <= ((float)e.RailgunUse / e.RailgunLimit))
+        if (self.dangerGraspTime == 29 && (!e.RailFrail || UnityEngine.Random.value <= ((float)e.RailgunUse / e.RailgunLimit)))
         {
             self.dangerGrasp.grabber.LoseAllGrasps();
             self.cantBeGrabbedCounter = 40;
@@ -176,14 +168,13 @@ partial class Plugin : BaseUnityPlugin
                 e.Escat_RG_SetGlassMode(true);
                 RG_Fx.InnerSplosion(self, 40 * e.RailgunUse);
                 RG_Shocker.StunWave(self, 30 * e.RailgunUse, 0.4f, 120);
-                if ((float)e.RailgunUse / e.RailgunLimit > 0.7f) e.RailgunUse = (int)(e.RailgunLimit * 0.7f);
+                e.RailgunUse = e.RailgunCD = 0;
             }
             else
             {
-                bool death = UnityEngine.Random.value < 0.75f;
-                RG_Shocker.StunWave(self, 360, 0.6f, 120);
-                RG_Fx.InnerSplosion(self, 400, death);
-                if (!death && (float)e.RailgunUse / e.RailgunLimit > 0.7f) e.RailgunUse = (int)(e.RailgunLimit * 0.7f);
+                RG_Shocker.StunWave(self, 40 * e.RailgunUse, 0.6f, 120);
+                RG_Fx.InnerSplosion(self, 50 * e.RailgunUse, true);
+                e.RailgunUse = e.RailgunCD = 0;
             }
         }
 
@@ -195,11 +186,6 @@ partial class Plugin : BaseUnityPlugin
                 e.RailZap[i].Update(self, railRatio);
             }
             e.RailZap.RemoveAll(a => a.IsDead());
-        }
-
-        if (e.RailLastSpears is (Spear a, Spear b))
-        {
-            RG_Weaponry.ResetSpearValues(ref e, a.mode != Weapon.Mode.Thrown, b.mode != Weapon.Mode.Thrown);
         }
     }
 }

@@ -12,7 +12,6 @@ public static class RG
 {
     public static Color ColorRG { get; private set; }
     public static Color ColorElectric { get; private set; }
-
     public static void Constantise()
     {
         ColorRG = new Color(0.5f, 0.85f, 0.78f);

@@ -1412,8 +1412,8 @@ namespace TheEscort
 
             Ebug(self, "Walljump Triggered!");
             bool wallJumper = ins.Esconfig_WallJumps(self);
-            bool longWallJump = (self.superLaunchJump > 19 && wallJumper);
-            bool superWall = (ins.Esconfig_Pouncing(self) && e.superWallFlip > (int)WJV[4]);
+            bool longWallJump = self.superLaunchJump > 19 && wallJumper;
+            bool superWall = ins.Esconfig_Pouncing(self) && e.superWallFlip > (int)WJV[4];
             bool superFlip = self.allowRoll == 15 && ins.Esconfig_Pouncing(self);
 
             // If charge wall jump is enabled and is able to walljump, or if charge wall jump is disabled
@@ -1424,7 +1424,7 @@ namespace TheEscort
                 float m = 1f;
                 if (e.Speedster && e.SpeDashNCrash)
                 {
-                    m = (e.SpeSecretSpeed ? 2f : 0.66f);
+                    m = e.SpeSecretSpeed ? 2f : 0.66f;
                 }
                 String[] toPrint = new String[3];
                 toPrint.SetValue("Walls the Jump", 0);
@@ -1457,7 +1457,7 @@ namespace TheEscort
                     self.jumpStun = 8 * direction;
                     if (superWall)
                     {
-                        self.room.PlaySound((self.superLaunchJump > 19 ? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump), e.SFXChunk, false, 1f, 0.7f);
+                        self.room.PlaySound(self.superLaunchJump > 19 ? SoundID.Slugcat_Super_Jump : SoundID.Slugcat_Wall_Jump, e.SFXChunk, false, 1f, 0.7f);
                     }
                     toPrint.SetValue("Not Water", 1);
                     Ebug(self, "Y Velocity" + self.bodyChunks[0].vel.y);
@@ -1470,7 +1470,7 @@ namespace TheEscort
                 if (superFlip && superWall)
                 {
                     self.animation = Player.AnimationIndex.Flip;
-                    self.room.PlaySound((ins.Esconfig_SFX(self) ? ins.Eshelp_SFX_Flip() : SoundID.Slugcat_Sectret_Super_Wall_Jump), e.SFXChunk, false, (ins.Esconfig_SFX(self) ? 1f : 1.4f), 0.9f);
+                    self.room.PlaySound(ins.Esconfig_SFX(self) ? ins.Eshelp_SFX_Flip() : SoundID.Slugcat_Sectret_Super_Wall_Jump, e.SFXChunk, false, ins.Esconfig_SFX(self) ? 1f : 1.4f, 0.9f);
                     self.jumpBoost += Mathf.Lerp(WJV[6], WJV[7], Mathf.InverseLerp(WJV[4], WJV[5], e.superWallFlip));
                     toPrint.SetValue("SUPERFLIP", 2);
                 }
@@ -1518,7 +1518,7 @@ namespace TheEscort
                 return orig(self, source, dmg, chunk, appPos, direction);
             }
             Ebug(self, "Sticky Triggered!");
-            if (e.Railgunner && source is Spear s && (e.RailLastSpears?.a == s || e.RailLastSpears?.b == s))
+            if (e.Railgunner && source is Spear s && e.RailLastSpear.Any(a => a is not null))
             {
                 Ebug(self, "Hey, don't let Railgunner railgun thyself lmao");
                 return false;
@@ -1744,6 +1744,28 @@ namespace TheEscort
         }
 
 
+        public static void Violence_CanYouCheckHowMuchDamageIDid(Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
+        {
+            Ebug($"{self}: Is there a source? {source?.owner}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there a direction & Momentum? {directionAndMomentum}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there a hitChunk? {hitChunk?.index}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there a hitAppendage? {hitAppendage?.appendage?.appIndex}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there a type? {type}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there damage? {damage > 0f} | {damage}", LogLevel.DEBUG);
+            Ebug($"{self}: Is there stunBonus? {stunBonus > 0f} | {stunBonus}", LogLevel.DEBUG);
+        }
+        public static void Violence_CanYouCheckHowMuchDamageIDid(Player self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
+        {
+            Ebug(self, $"Is there a source? {source?.owner}", LogLevel.DEBUG);
+            Ebug(self, $"Is there a direction & Momentum? {directionAndMomentum}", LogLevel.DEBUG);
+            Ebug(self, $"Is there a hitChunk? {hitChunk?.index}", LogLevel.DEBUG);
+            Ebug(self, $"Is there a hitAppendage? {hitAppendage?.appendage?.appIndex}", LogLevel.DEBUG);
+            Ebug(self, $"Is there a type? {type}", LogLevel.DEBUG);
+            Ebug(self, $"Is there damage? {damage > 0f} | {damage}", LogLevel.DEBUG);
+            Ebug(self, $"Is there stunBonus? {stunBonus > 0f} | {stunBonus}", LogLevel.DEBUG);
+        }
+
+
         // Implement Parryslide
         public static void Escort_Violence(On.Creature.orig_Violence orig, Creature self, BodyChunk source, Vector2? directionAndMomentum, BodyChunk hitChunk, PhysicalObject.Appendage.Pos hitAppendage, Creature.DamageType type, float damage, float stunBonus)
         {
@@ -1757,7 +1779,7 @@ namespace TheEscort
             }
             catch (Exception err)
             {
-                Ebug((self as Player), err);
+                Ebug(self as Player, err);
                 orig(self, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                 return;
             }
@@ -1826,14 +1848,7 @@ namespace TheEscort
                 int direction;
                 direction = player.slideDirection;
 
-                Ebug(player, "Is there a source? " + (source != null), LogLevel.DEBUG);
-                Ebug(player, "Is there a direction & Momentum? " + (directionAndMomentum != null), LogLevel.DEBUG);
-                Ebug(player, "Is there a hitChunk? " + (hitChunk != null), LogLevel.DEBUG);
-                Ebug(player, "Is there a hitAppendage? " + (hitAppendage != null), LogLevel.DEBUG);
-                Ebug(player, "Is there a type? " + (type != null), LogLevel.DEBUG);
-                Ebug(player, $"Is there damage? {damage > 0f} | {damage}", LogLevel.DEBUG);
-                Ebug(player, $"Is there stunBonus? {stunBonus > 0f} | {stunBonus}", LogLevel.DEBUG);
-
+                Violence_CanYouCheckHowMuchDamageIDid(player, source, directionAndMomentum, hitChunk, hitAppendage, type, damage, stunBonus);
                 if (source != null)
                 {
                     Ebug(player, "Escort is being assaulted by: " + source.owner.GetType(), LogLevel.DEBUG);

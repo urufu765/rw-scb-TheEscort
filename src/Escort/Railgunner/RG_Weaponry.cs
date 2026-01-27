@@ -6,6 +6,7 @@ using static TheEscort.Eshelp;
 using System;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
+using System.Linq;
 
 namespace TheEscort.Railgunner;
 
@@ -296,7 +297,7 @@ public static class RG_Weaponry
         if (thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailDouble is DoubleUp.Spear or DoubleUp.ElectroSpear)
         {
             self.canBeHitByWeapons = false;
-            frc *= 2f;
+            frc *= 1.75f;
             if (p.animation == Player.AnimationIndex.DeepSwim)
             {
                 frc *= Mathf.Lerp(2, 5, e.viscoDance);
@@ -372,7 +373,7 @@ public static class RG_Weaponry
 
     public static bool RailsPenetratesAllArmor(bool original, Spear self, SharedPhysics.CollisionResult result)
     {
-        if (!original && result.chunk is not null && self?.thrownBy is Player p && eCon.TryGetValue(p, out Escort e) && e.Railgunner && (e.RailLastSpears?.a == self || e.RailLastSpears?.b == self))
+        if (!original && result.chunk is not null && self?.thrownBy is Player p && eCon.TryGetValue(p, out Escort e) && e.Railgunner && e.RailLastSpear.Any(a => a is {} t && t.spear == self))
         {
             Ebug(p, "RAILGUNNER PENETRATION: " + result.obj.ToString());
             return true;
@@ -384,38 +385,29 @@ public static class RG_Weaponry
     {
         if (self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
         {
-            if (e.RailLastSpears?.a == self || e.RailLastSpears?.b == self)
+            for (int i = 0; i < e.RailLastSpear.Length; i++)
             {
-                Ebug(p, "What if spear not lodge?");
-                return;
-            }
-            else
-            {
-                Ebug(p, "What if spear lodge?");
+                if (e.RailLastSpear[i] is {} last && last.spear == self)
+                {
+                    Ebug(p, $"What if spear {i} not lodge? {e.RailLetNextPass}");
+                    self.firstChunk.vel *= new Vector2(Math.Abs(e.RailLastThrowDir.x), Math.Abs(e.RailLastThrowDir.y)) * 1.1f;
+                    return;
+                    // if (!e.RailLetNextPass)
+                    // {
+                    //     self.firstChunk.vel *= slow;
+                    //     Escort.Escat_RG_ResetSingleSpear(last);
+                    //     e.RailLastSpear[i] = null;
+                    //     e.RailLetNextPass = true;
+                    //     break;
+                    // }
+                    // else
+                    // {
+                    //     e.RailLetNextPass = false;
+                    //     return;
+                    // }
+                }
             }
         }
         orig(self, result, eu);
-    }
-
-    public static void ResetSpearValues(ref Escort e, bool applyA = true, bool applyB = true)
-    {
-        if (e.RailLastSpears is (Spear a, Spear b))
-        {
-            if (e.RailLastDontTumble is (bool ta, bool tb))
-            {
-                if (applyA) a.doNotTumbleAtLowSpeed = ta;
-                if (applyB) b.doNotTumbleAtLowSpeed = tb;
-            }
-            if (e.RailLastGravity is (float ga, float gb))
-            {
-                if (applyA) a.gravity = ga;
-                if (applyB) b.gravity = gb;
-            }
-            if (e.RailLastAlwaysStick is (bool sa, bool sb))
-            {
-                if (applyA) a.alwaysStickInWalls = sa;
-                if (applyB) b.alwaysStickInWalls = sb;
-            }
-        }
     }
 }

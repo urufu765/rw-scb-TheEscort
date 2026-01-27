@@ -110,7 +110,7 @@ public abstract class VengefulCreatureManager
         if (
             teleportClock == 0 &&
             (
-                iAmStuckCount > 120 ||
+                iAmStuckCount > 240 ||
                 // iWantToTeleport ||
                 (Me.abstractAI is not null && Me.abstractAI.strandedInRoom != -1) ||
                 (Me.abstractAI?.RealAI is not null && Me.abstractAI.RealAI.stranded)
