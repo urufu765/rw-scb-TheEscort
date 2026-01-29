@@ -54,7 +54,7 @@ public static class RG_Player
                         thrust *= 14 + (e.RailFrail ? 5f : 0f);
                     }
                 }
-                spear.spearDamageBonus = .7f + (.05f * e.RailgunUse);
+                spear.spearDamageBonus = .8f + (.05f * e.RailgunUse);
                 spear.throwModeFrames = 400;
                 //spear.alwaysStickInWalls = true;
                 if (!onPole)

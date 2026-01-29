@@ -85,6 +85,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Fix super wall flip
     * Make transition between set direction swim parry and body direction swim parry smooth
     * Vengeful lizard spawns prioritize on rolling the dice on cycle start than per creature killed
+  * **(0.4-dev.21a)**
+    * Railgunner damage slight buff (0.8 + .05 per charge)
+    * Meadow vengeful lizards fix
   * **(0.4-dev.21)**
     * Railgunner damage nerf from (1 + 0.1 per charge) to (0.7 + 0.05 per charge)
     * Railgunner spear penetrates fully

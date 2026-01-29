@@ -1383,7 +1383,7 @@ partial class Plugin : BaseUnityPlugin
         Ebug("StoryChar: " + world?.game?.StoryCharacter?.value);
         Ebug("Timeline: " + world?.game?.TimelinePoint?.value);
 
-        if (Eshelp_IsNull(world?.game?.TimelinePoint, false) && !self.isNPC && world?.game?.Players?.Any(p => p == abstractCreature) == true && world?.game?.GetStorySession is StoryGameSession sgs)
+        if (Eshelp_IsNull(world?.game?.StoryCharacter, false) && !self.isNPC && world?.game?.Players?.Any(p => p == abstractCreature) == true && world?.game?.GetStorySession is StoryGameSession sgs)
         {
             if (escPatch_meadow && EPatchMeadow.IsOnline())
             {
