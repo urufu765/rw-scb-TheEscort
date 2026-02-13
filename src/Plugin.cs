@@ -292,7 +292,7 @@ partial class Plugin : BaseUnityPlugin
     /// <summary>
     /// Semi-global dropkick knockback intensity setting (stores the setting from json or remix for use)
     /// </summary>
-    private float DKMultiplier;
+    public float DKMultiplier;
 
     /// <summary>
     /// Mostly-global heavy carry intensity (stores the setting from json or remix for use)
@@ -450,7 +450,7 @@ partial class Plugin : BaseUnityPlugin
         On.Creature.SetKillTag += Esclass_NE_CheckKiller;
 
         On.AbstractCreature.IsVoided += LetsVoidTrainLizards;
-        
+
         // Socks stuff
         On.PlayerGraphics.PlayerObjectLooker.HowInterestingIsThisObject += Socks_Stop_Having_An_Aneurysm;
         On.Player.Update += Socks_Update;
@@ -488,6 +488,7 @@ partial class Plugin : BaseUnityPlugin
         On.Weapon.WeaponDeflect += RG_Weaponry.Weapon_AntiDeflect;
         On.Weapon.HitThisObject += Esclass_NE_HitShadowscort;
         On.Weapon.Thrown += RG_Weaponry.WeaponThrow;
+        On.PhysicalObject.HitByWeapon += BL_Weaponry.SetUpExplosionParry;
 
         On.SlugcatStats.SpearSpawnModifier_Name_float += Escort_SpearSpawnMod;
         On.SlugcatStats.SpearSpawnModifier_Timeline_float += Escort_SpearSpawnMod;
@@ -1195,7 +1196,7 @@ partial class Plugin : BaseUnityPlugin
                     e.Railgunner = true;
                     e.acidSwim = 0.3f;
                     e.battleHype = false;
-                    // e.RailFrail = self.Malnourished || e.escortArena;
+                    //e.RailFrail = self.Malnourished || e.escortArena;
                     e.RailFrail = self.Malnourished;
                     self.slugcatStats.lungsFac += 0.7f;
                     self.slugcatStats.throwingSkill = 2;
@@ -1992,6 +1993,9 @@ partial class Plugin : BaseUnityPlugin
         {
             switch (type)
             {
+                case EsType.Brawler:
+                    Ebug(self, "Brawler melee attack condition!", LogLevel.DEBUG);
+                    break;
                 case EsType.Deflector:
                     Ebug(self, "Parryteched condition!", LogLevel.DEBUG);
                     break;

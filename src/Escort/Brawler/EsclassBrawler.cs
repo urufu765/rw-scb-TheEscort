@@ -11,19 +11,6 @@ namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        // Brawler tweak values
-        // public static readonly PlayerFeature<> brawler = Player("theescort/brawler/");
-        // public static readonly PlayerFeature<float> brawler = PlayerFloat("theescort/brawler/");
-        // public static readonly PlayerFeature<float[]> brawler = PlayerFloats("theescort/brawler/");
-        public static readonly PlayerFeature<float> brawlerSlideLaunchFac;
-        public static readonly PlayerFeature<float> brawlerDKHypeDmg;
-        public static readonly PlayerFeature<float[]> brawlerSpearVelFac;
-        public static readonly PlayerFeature<float[]> brawlerSpearDmgFac;
-        public static readonly PlayerFeature<float> brawlerSpearThrust;
-        public static readonly PlayerFeature<float[]> brawlerSpearShankY;
-        public static readonly PlayerFeature<float> brawlerRockHeight;
-
-
         public static void Esclass_BL_Tick(Player self, ref Escort e)
         {
             if (e.BrawRevertWall > 0)
@@ -35,14 +22,19 @@ namespace TheEscort
                 e.BrawThrowGrab--;
             }
 
-            if (e.BrawExpIFrameReady > 0)
+            if (e.BrawPFrame > 0)
             {
-                e.BrawExpIFrameReady--;
+                e.BrawPFrame--;
             }
 
-            if (e.BrawExpIFrames > 0)
+            if (e.BrawExpPFrame > 0)
             {
-                e.BrawExpIFrames--;
+                e.BrawExpPFrame--;
+            }
+
+            if (e.BrawExtendedIFrames > 0)
+            {
+                e.BrawExtendedIFrames--;
             }
         }
 
@@ -149,8 +141,8 @@ namespace TheEscort
                         //     }
                         // }
                         if (
-                            self.room != null && 
-                            e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall && 
+                            self.room != null &&
+                            e.BrawMeleeWeapon.Peek().mode != Weapon.Mode.StuckInWall &&
                             !(e.BrawWeaponInAction is Melee.ExPunch or Melee.ExShank && !retrieveExplosive))
                         {
                             e.BrawMeleeWeapon.Peek().ChangeMode(Weapon.Mode.Free);

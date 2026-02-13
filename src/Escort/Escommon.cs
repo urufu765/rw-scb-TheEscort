@@ -7,6 +7,7 @@ using MonoMod.Cil;
 using RWCustom;
 using System;
 using System.Collections.Generic;
+using TheEscort.Railgunner;
 using TheEscort.VengefulLizards;
 using UnityEngine;
 using static TheEscort.Eshelp;
@@ -42,6 +43,7 @@ partial class Plugin : BaseUnityPlugin
             return;
         }
         if (e.Unstable) Esclass_US_MovementUpdate(self, ref e);
+        if (e.Speedster) Esclass_SS_MovementUpdate(self, ref e);
         if (!ins.Esconfig_WallJumps(self))
         {
             return;
@@ -210,7 +212,6 @@ partial class Plugin : BaseUnityPlugin
             //     }
             // }
             // Acid water survival
-            if (e.Railgunner) e.RailTargetAcquired = null;
 
             if (self.Submersion > 0.2f && self.room?.waterObject is not null && self.room.waterObject.WaterIsLethal && self.aerobicLevel < 1f)
             {
@@ -233,6 +234,25 @@ partial class Plugin : BaseUnityPlugin
                     e.acidRepetitionGuard += 5;
                 }
                 return;
+            }
+
+            if (e.Railgunner)
+            {
+                e.RailTargetAcquired = null;
+                if (e.RailgunUse > 0 && e.RailgunCD > 0)
+                {
+                    if (e.RailFrail)
+                    {
+                        RG_Exploder.InnerSplosion(self, 100 + 60 * e.RailgunUse, true);
+                        RG_Shocker.StunWave(self, 150 + 50 * e.RailgunUse, 1f, 70 + (30 * e.RailgunUse));
+                    }
+                    else
+                    {
+                        RG_Exploder.InnerSplosion(self, 140 + 50 * e.RailgunUse, true);
+                        RG_Shocker.StunWave(self, 160 + 40 * e.RailgunUse, .5f, 100 + (10 * e.RailgunUse));
+                    }
+                    e.RailgunUse = e.RailgunCD = 0;
+                }
             }
 
             if (!e.ParrySuccess && e.iFrames == 0 && !self.dead)
@@ -457,7 +477,7 @@ partial class Plugin : BaseUnityPlugin
                 return true;
             }
 
-            if (e.Brawler && e.BrawExpIFrames > 0)
+            if (e.Brawler && e.iFrames > 0)
             {
                 return true;
             }
@@ -498,7 +518,7 @@ partial class Plugin : BaseUnityPlugin
                 frc /= 5;
             }
 
-            if (e.Brawler && e.BrawExpIFrames > 0)
+            if (e.Brawler && e.iFrames > 0)
             {
                 frc /= 100;
             }

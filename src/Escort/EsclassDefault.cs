@@ -1827,14 +1827,15 @@ namespace TheEscort
 
                 stunBonus = 0;
             }
-            if (e.Brawler && ((e.BrawWeaponInAction is Melee.ExPunch && e.BrawMeleeWeapon.Count > 0) || e.BrawExpIFrameReady > 0))
+            if (e.Brawler && ((e.BrawWeaponInAction is not Melee.None && e.BrawMeleeWeapon.Count > 0) || e.BrawPFrame > 0 || (type != null && type == Creature.DamageType.Explosion && e.BrawExpPFrame > 0)))
             {
                 if (e.iFrames == 0)
                 {
                     e.ParrySuccess = true;
-                    e.BrawExpIFrames = 8;
+                    e.BrawExtendedIFrames = 8;
                 }
-                e.BrawExpIFrameReady = 0;
+                e.BrawPFrame = 0;
+                e.BrawExpPFrame = 0;
                 stunBonus = 0;
             }
             if (!ins.L().Vegetable)
@@ -2140,7 +2141,7 @@ namespace TheEscort
                 {
                     e.iFrames = 9;
                 }
-                if (e.BrawExpIFrames > 0)
+                if (e.BrawExtendedIFrames > 0)
                 {
                     e.iFrames = 8;
                 }
@@ -2253,7 +2254,7 @@ namespace TheEscort
 
                         if (eCon.TryGetValue(player, out Escort escort))
                         {
-                            
+
                             if (escort.shelterSaveComplete < 4)
                             {
                                 int playerNumber = (abstractPlayer.state as PlayerState).playerNumber;

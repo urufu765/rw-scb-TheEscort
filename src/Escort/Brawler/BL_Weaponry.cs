@@ -11,15 +11,6 @@ public static class BL_Weaponry
 {
     public static void Shanker(Player self, Spear spear, ref Escort e, ref float thrust)
     {
-        if (
-            !brawlerSpearVelFac.TryGet(self, out float[] bSpearVel) ||
-            !brawlerSpearDmgFac.TryGet(self, out float[] bSpearDmg) ||
-            //!brawlerSpearThrust.TryGet(self, out float bSpearThr) ||
-            !brawlerSpearShankY.TryGet(self, out float[] bSpearY)
-        )
-        {
-            return;
-        }
         try
         {
             if (self.animation == Player.AnimationIndex.BellySlide && self.slideDirection == self.ThrowDirection)
@@ -28,18 +19,18 @@ public static class BL_Weaponry
             }
             else
             {
-                spear.spearDamageBonus *= bSpearDmg[0];
+                spear.spearDamageBonus *= .75f;
                 if (self.bodyMode == Player.BodyModeIndex.Crawl)
                 {
-                    spear.firstChunk.vel.x *= bSpearVel[0];
+                    spear.firstChunk.vel.x *= .73f;
                 }
                 else if (self.bodyMode == Player.BodyModeIndex.Stand)
                 {
-                    spear.firstChunk.vel.x *= bSpearVel[1];
+                    spear.firstChunk.vel.x *= .72f;
                 }
                 else
                 {
-                    spear.firstChunk.vel.x *= bSpearVel[2];
+                    spear.firstChunk.vel.x *= .71f;
                 }
             }
             if (self.animation == Player.AnimationIndex.Flip || self.animation == Player.AnimationIndex.RocketJump)
@@ -53,14 +44,13 @@ public static class BL_Weaponry
             if (e.BrawSuperShank)
             {
                 //spear.throwDir = new RWCustom.IntVector2(0, -1);
-                spear.firstChunk.pos = e.BrawShankDir;
                 //spear.firstChunk.vel.y = -(Math.Abs(spear.firstChunk.vel.y)) * bSpearY[0];
                 //spear.firstChunk.pos += new Vector2(0f, bSpearY[1]);
-                spear.firstChunk.vel *= bSpearY[0];
-                //spear.doNotTumbleAtLowSpeed = true;
+                spear.firstChunk.pos = e.BrawShankDir;
+                spear.firstChunk.vel *= .1f;
                 spear.firstChunk.vel.x *= 0.15f;
                 spear.doNotTumbleAtLowSpeed = true;
-                spear.spearDamageBonus = bSpearDmg[1];
+                spear.spearDamageBonus = 7;
                 spear.spearDamageBonus *= Mathf.Max(0.15f, Mathf.InverseLerp(0, 20, 20 - self.slowMovementStun));
             }
             else if (e.BrawWeaponInAction is Melee.Shank or Melee.ExShank)
@@ -83,10 +73,16 @@ public static class BL_Weaponry
 
     public static void Puncher(Rock self, Player p)
     {
-        if (!brawlerRockHeight.TryGet(p, out float roH))
+        self.firstChunk.vel.y *= 0;
+    }
+
+    public static void SetUpExplosionParry(On.PhysicalObject.orig_HitByWeapon orig, PhysicalObject self, Weapon weapon)
+    {
+        orig(self, weapon);
+        if (weapon.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats.name, false) && eCon.TryGetValue(p, out Escort e) && e.Brawler && e.BrawPFrame > 0)
         {
-            return;
+            Ebug(p, $"Brawler hit an object! {self}");
+            e.BrawExpPFrame = 100;
         }
-        self.firstChunk.vel.y *= roH;
     }
 }

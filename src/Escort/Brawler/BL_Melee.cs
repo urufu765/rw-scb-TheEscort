@@ -78,12 +78,12 @@ public static class BL_Melee
                 e.BrawShankSpearTumbler = w.doNotTumbleAtLowSpeed;
                 e.BrawWeaponInAction = Melee.Shank;
                 e.BrawThrowGrab = 5;
+                e.BrawPFrame = 8;
                 if (w is ExplosiveSpear es)
                 {
                     e.BrawExpspearAt = es.explodeAt;
                     es.explodeAt = 12;
                     es.igniteCounter = 1;
-                    e.BrawExpIFrameReady = 8;
                     e.BrawWeaponInAction = Melee.ExShank;
                 }
             }
@@ -100,6 +100,7 @@ public static class BL_Melee
                 Ebug(self, "PUNCH!");
                 e.BrawWeaponInAction = Melee.Punch;
                 e.BrawThrowGrab = 4;
+                e.BrawPFrame = 7;
             }
             else if (w is ScavengerBomb)
             {
@@ -113,7 +114,7 @@ public static class BL_Melee
                 }
                 e.BrawWeaponInAction = Melee.ExPunch;
                 e.BrawThrowGrab = 4;
-                e.BrawExpIFrameReady = 7;
+                e.BrawPFrame = 7;
             }
             if (e.BrawMeleeWeapon.Count > 0)
             {

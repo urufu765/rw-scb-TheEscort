@@ -24,7 +24,16 @@ namespace TheEscort
         public bool SpeOldSpeed;
         public int SpeRollCounter;
         public int SpeMaxGear;
-        public int SpeNitros;
+        public int SpeNitrosX;
+        public int SpeNitrosY;
+        /// <summary>
+        /// Makes Speedster slide on walls
+        /// </summary>
+        public Vector2? SpeMomentumJump;
+        /// <summary>
+        /// Speedster residual momentum counter
+        /// </summary>
+        public int SpeResimo;
 
         public void EscortSS(bool useOld = false, int maxGear = 4)
         {
@@ -45,6 +54,10 @@ namespace TheEscort
             this.SpeGain = -1f;
             this.SpeOldSpeed = useOld;
             this.SpeMaxGear = maxGear;
+            this.SpeNitrosX = 0;
+            this.SpeNitrosY = 0;
+            this.SpeResimo = 0;
+            this.SpeMomentumJump = null;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)

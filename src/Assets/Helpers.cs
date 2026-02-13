@@ -494,6 +494,16 @@ public static class Eshelp
             return true;
         }
 
+        else if (escort.Brawler)
+        {
+            if (escort.BrawPFrame > 0)
+            {
+                type = EsType.Brawler;
+                return true;
+            }
+            return false;
+        }
+
         // Regular parry check
         else if (player.animation == Player.AnimationIndex.BellySlide && escort.parryAirLean > 0)
         {

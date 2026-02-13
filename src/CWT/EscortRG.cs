@@ -5,6 +5,7 @@ using R = UnityEngine.Random;
 using static TheEscort.Eshelp;
 using RWCustom;
 using System.Linq;
+using MoreSlugcats;
 
 namespace TheEscort;
 
@@ -66,7 +67,7 @@ public class TrackedLightning
     /// <summary>
     /// Target bodychunk to track
     /// </summary>
-    public BodyChunk Chunk {get;set;}
+    public BodyChunk Chunk { get; set; }
     /// <summary>
     /// Lightning instance
     /// </summary>
@@ -312,6 +313,7 @@ public partial class Escort
     /// </summary>
     // public (Spear a, Spear b)? RailLastSpears;
     public (Spear spear, bool noTumble, bool alwaysStick, float? grav)?[] RailLastSpear;
+    public HashSet<SingularityBomb> RailLastDoubleuarity;
     /// <summary>
     /// Stores the last tumble values to restore later
     /// </summary>
@@ -361,6 +363,7 @@ public partial class Escort
         this.RailLastReset = -1;
         this.RailLetNextPass = false;
         this.RailLastSpear = new (Spear spear, bool noTumble, bool alwaysStick, float? grav)?[2];
+        this.RailLastDoubleuarity = [null];
     }
 
     /// <summary>
@@ -456,7 +459,7 @@ public partial class Escort
         {
             RailgunCD = RailFrail ? 600 : 400;
         }
-        RailgunCD += RailFrail? increase / 2 : increase;
+        RailgunCD += RailFrail ? increase / 2 : increase;
         if (RailgunCD > RAILGUNNER_CD_MAX) RailgunCD = RAILGUNNER_CD_MAX;
     }
 
@@ -466,7 +469,7 @@ public partial class Escort
 
         for (int i = 0; i < RailLastSpear.Length; i++)
         {
-            if (RailLastSpear[i] is {} last)
+            if (RailLastSpear[i] is { } last)
             {
                 if (last.spear?.mode == Weapon.Mode.Thrown && Escat_RG_SpearGoingTheRightWayLmao(last.spear))
                 {
@@ -506,7 +509,7 @@ public partial class Escort
 
         for (int i = 0; i < RailLastSpear.Length; i++)
         {
-            if (RailLastSpear[i] is {} last)
+            if (RailLastSpear[i] is { } last)
             {
                 Escat_RG_ResetSingleSpear(last);
             }

@@ -147,7 +147,7 @@ partial class Plugin : BaseUnityPlugin
         {
             e.RailRecoilLag = -1;
             // 0.7f, 1.5f, 0.4f, 0.75f, 1.5f
-            RG_Fx.Recoil(self, e.RailLastThrowDir, 50, e.RailFrail);
+            RG_Exploder.Recoil(self, e.RailLastThrowDir, 50, e.RailFrail);
         }
 
 
@@ -159,22 +159,23 @@ partial class Plugin : BaseUnityPlugin
 
 
         // Auto-escape out of danger grasp if overcharged
-        if (self.dangerGraspTime == 29 && (!e.RailFrail || UnityEngine.Random.value <= ((float)e.RailgunUse / e.RailgunLimit)))
+        if (self.dangerGraspTime == 29 && !self.dead)
         {
             self.dangerGrasp.grabber.LoseAllGrasps();
             self.cantBeGrabbedCounter = 40;
-            if (!e.RailFrail)
+            if (!e.RailFrail || UnityEngine.Random.value >= ((float)e.RailgunUse / e.RailgunLimit))
             {
                 e.Escat_RG_SetGlassMode(true);
-                RG_Fx.InnerSplosion(self, 40 * e.RailgunUse);
-                RG_Shocker.StunWave(self, 30 * e.RailgunUse, 0.4f, 120);
+                RG_Exploder.InnerSplosion(self, 200 + 40 * e.RailgunUse);
+                RG_Shocker.StunWave(self, 200 + 30 * e.RailgunUse, 0.4f, 120);
                 e.RailgunUse = e.RailgunCD = 0;
             }
             else
             {
-                RG_Shocker.StunWave(self, 40 * e.RailgunUse, 0.6f, 120);
-                RG_Fx.InnerSplosion(self, 50 * e.RailgunUse, true);
+                RG_Shocker.StunWave(self, 400 + 40 * e.RailgunUse, 0.6f, 120);
+                RG_Exploder.InnerSplosion(self, 400 + 50 * e.RailgunUse, true);
                 e.RailgunUse = e.RailgunCD = 0;
+                self.Die();
             }
         }
 

@@ -400,7 +400,7 @@ public static class ETrackrr
         public RailgunnerCDTraction(int playerNumber, int trackerNumber, Player player, Escort escort) : base(playerNumber, trackerNumber, "RailgunnerCD", new Color(0.35f, 0.7f, 0.63f))
         {
             this.player = player;
-            effectColor = new Color(0.85f, 0.3f, 0.0f);
+            effectColor = Color.Lerp(trackerColor, new Color(0.85f, 0.3f, .0f), .35f);
             this.e = escort;
             this.Max = (float)Escort.RAILGUNNER_CD_MAX * 2 / 3;
         }
@@ -410,7 +410,7 @@ public static class ETrackrr
             this.Value = Mathf.Lerp(PreValue, e.RailgunCD, timeStacker);
             if (Value > Max) Max = Value;
             else if (Value < 1) Max = (float)Escort.RAILGUNNER_CD_MAX * 2 / 3;
-            this.Limit = player.Malnourished ? 0 : Escort.RAILGUNNER_CD_MAX;
+            this.Limit = e.RailFrail ? 0 : Escort.RAILGUNNER_CD_MAX;
         }
     }
 
@@ -423,10 +423,12 @@ public static class ETrackrr
         private readonly Escort e;
         private Color emergencyColor;
         private Color okayColor;
+        private Color notOkayColor;
         public RailgunnerUsageTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "railgunnerUse")
         {
             trackerColor = new Color(0.5f, 0.85f, 0.78f);
             okayColor = Color.Lerp(trackerColor, Color.white, 0.8f);
+            notOkayColor = Color.Lerp(trackerColor, Color.red, .15f);
             emergencyColor = new Color(1f, 0.45f, 0.0f);
             this.e = escort;
             this.Max = e.RailgunLimit;
@@ -447,7 +449,7 @@ public static class ETrackrr
             }
             else
             {
-                effectColor = okayColor;
+                effectColor = e.RailFrail? notOkayColor : okayColor;
                 Limit = (int)(e.RailgunLimit * 0.7f);
             }
 

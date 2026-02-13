@@ -85,14 +85,6 @@ partial class Plugin : BaseUnityPlugin
 
         barbarianDisallowOversizedLuggage = PlayerBool("theescort/barbarian/nooverlug");
 
-        brawlerSlideLaunchFac = PlayerFloat("theescort/brawler/slide_launch_fac");
-        brawlerDKHypeDmg = PlayerFloat("theescort/brawler/dk_h_dmg");
-        brawlerSpearVelFac = PlayerFloats("theescort/brawler/spear_vel_fac");
-        brawlerSpearDmgFac = PlayerFloats("theescort/brawler/spear_dmg_fac");
-        brawlerSpearThrust = PlayerFloat("theescort/brawler/spear_thrust");
-        brawlerSpearShankY = PlayerFloats("theescort/brawler/spear_shank");
-        brawlerRockHeight = PlayerFloat("theescort/brawler/rock_height");
-
         deflectorSlideDmg = PlayerFloat("theescort/deflector/slide_dmg");
         deflectorSlideLaunchFac = PlayerFloat("theescort/deflector/slide_launch_fac");
         deflectorSlideLaunchMod = PlayerFloat("theescort/deflector/slide_launch_mod");
@@ -113,9 +105,6 @@ partial class Plugin : BaseUnityPlugin
         gilded_jet = PlayerFloat("theescort/gilded/jetplane");
         gilded_radius = PlayerFloat("theescort/gilded/pipradius");
         gilded_position = PlayerFloats("theescort/gilded/pipposition");
-
-        CustomShader = PlayerString("theescort/speedster/custom_shader");
-        speedsterPolewow = PlayerFloats("theescort/speedster/pole_rise");
         Ebug("-> Static fields load complete");
     }
 }

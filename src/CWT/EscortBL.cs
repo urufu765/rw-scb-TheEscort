@@ -123,12 +123,17 @@ public partial class Escort
     /// <summary>
     /// IFrames for self-induced explosions
     /// </summary>
-    public int BrawExpIFrames;
+    public int BrawExtendedIFrames;
 
     /// <summary>
     /// Alternative check for when the InAction expires and the explosion happens a few frames later
     /// </summary>
-    public int BrawExpIFrameReady;
+    public int BrawExpPFrame;
+
+    /// <summary>
+    /// Protection Frames, that gets converted to IFrames.
+    /// </summary>
+    public int BrawPFrame;
 
     // /// <summary>
     // /// Explosive punch state

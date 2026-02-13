@@ -74,6 +74,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
   * **(0.4-dev.)* Fix Escort title scene (Reduce blur)
     * Deflector can properly parry bees
     * Speedster base speed reduced a bit
+    * Speedster's speed boost lasts twice as long while battlehyped
     * Deflector gets new empowered animation
     * Deflector parries death! (but disabled in meadow for now)
     * Make an option to allow vengeance lizards to appear in other campaigns specifically for Escort
@@ -85,9 +86,49 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Fix super wall flip
     * Make transition between set direction swim parry and body direction swim parry smooth
     * Vengeful lizard spawns prioritize on rolling the dice on cycle start than per creature killed
+    * Vengeful 2.1
+      * Significantly reduced spawn chance on killing creatures
+      * More emphasis on random chance of spawning from cycle start, dependent on:
+        * Cycle count
+        * Karma cap (most significant)
+        * Current karma
+        * Dynamic difficulty/regions explored
+        * Karma protection
+    * Gilded power unrestrained by karma cap if not host of meadow (copy value from host rather than get stuck with karma 1)... same goes with other builds I guess
+    * Make each sfx and vfx for each build have a hollow version and send sfx/vfx requests online to basically play those sfx/vfx even if the client player copy is not ready for it.
+    * Railgunner tap/hold map to show a small ray-traced version of the room using the laser
+    * Redo speedster from scratch
+      * Speedster boost is now bound to special or custom keybind
+      * Single tap uses one boost, hold the button to use all at same time
+      * Single boost lasts very long, all lasts a bit longer
+      * Moving will slowly deplete the boost. Standing still will quickly deplete the boost
+      * Collision off of creatures to basically use them as bounce pads, giving velocity in a fixed 8 direction opposite from the creature depending on how you land
+      * single boost doesn't stun Speedster, but all at same time will cause a sudden tiny explosion that stuns Speedster (that lasts longer the higher gear they are)
+      * Karma 10 mode allows Speedster to gain even more speed by pressing and holding jump before collision, giving them stronger opposite boost
+      * XSpeedster wall jump schenanigans
+      * XSpeedster is no longer vertically challenged when trying to swim down while boosted
+      * XSpeedster stun duration from creature impact reduced by half
+      * XSpeedster wall pounce more prominent
+      * XSpeedster rolls and flip animations get faster the faster they move
+      * XSpeedster boost applies to corridors
+      * XSpeedster can just ignore rot if running in boost mode
+  * **(0.4-dev.22)**
+    * Railgunner death explosion deals proper lethal damage
+    * Railgunner misfire is less punishing and has a lesser chance of occuring
+    * Railgunner explosion from failed freed attempt is guaranteed on frail mode, instead there's now an increasing chance that the explosion will be lethal
+    * Railgunner death explosion happens immediately upon death
+    * Railgunner warning shot volume tuned down
+    * Railgunner no longer instantly activates singularity if it's not railgunned
+    * Railgunner frail doesn't launch as hard
+    * Railgunner spear damage change (normal) from MAX 1.1 to throwingSkill2 (1.25)
+    * Fixed Railgunner weird spearthrow slide perma storage
+    * Fixed potential crash in the ending cutscene
+    * Fixed Speedster's nitro booster just never being in effect
+    * Brawler is in a parry state when attacking with weapon, but loses the ability to parry with a slide
+    * Removed Brawler slugbase json stuff
   * **(0.4-dev.21a)**
     * Railgunner damage slight buff (0.8 + .05 per charge)
-    * Meadow vengeful lizards fix
+    * Meadow vengefuls fix (Vengefuls didn't spawn in Escort meadow campaign)
   * **(0.4-dev.21)**
     * Railgunner damage nerf from (1 + 0.1 per charge) to (0.7 + 0.05 per charge)
     * Railgunner spear penetrates fully

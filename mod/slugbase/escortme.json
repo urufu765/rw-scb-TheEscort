@@ -79,14 +79,6 @@
 		"theescort/bodything": [1, 0, 0, 0],
 		"theescort/rollfly": [20, 5, 10, 11],
 
-		"theescort/brawler/slide_launch_fac": 0.25,
-		"theescort/brawler/dk_h_dmg": 2,
-		"theescort/brawler/spear_vel_fac": [0.73, 0.72, 0.71],
-		"theescort/brawler/spear_dmg_fac": [0.75, 7],
-		"theescort/brawler/spear_thrust": 0.5,
-		"theescort/brawler/spear_shank": [0.1, 120],
-		"theescort/brawler/rock_height": 0,
-
 		"theescort/deflector/slide_dmg": 0.4,
 		"theescort/deflector/dk_h_dmg": [3, 0.5],
 		"theescort/deflector/slide_launch_fac": 0.5,
@@ -101,9 +93,6 @@
 		"theescort/escapist/no_grab": [30, 80],
 		"theescort/escapist/cd" : 480,
 		"theescort/escapist/color": 2,
-
-		"theescort/speedster/custom_shader": "Basic",
-		"theescort/speedster/pole_rise": [0.8, 0.65],
 
 		"theescort/gilded/float_speed": 2,
 		"theescort/gilded/levitation": 1.40,

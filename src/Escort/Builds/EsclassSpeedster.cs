@@ -12,9 +12,6 @@ namespace TheEscort
 {
     partial class Plugin : BaseUnityPlugin
     {
-        public static readonly PlayerFeature<string> CustomShader;
-        public static readonly PlayerFeature<float[]> speedsterPolewow;
-
         public static void Esclass_SS_Tick(Player self, ref Escort e)
         {
             if (e.SpeTrailTick > 0)
@@ -28,18 +25,18 @@ namespace TheEscort
             if ((e.SpeSpeedin > 0 || e.SpeDashNCrash) && !e.SpeOldSpeed)
             {
                 e.SpeSpeedin--;
-                if (self.input[0].x != 0 && e.SpeNitros > 0)
+                if (self.input[0].x != 0 && e.SpeNitrosX > 0)
                 {
-                    e.SpeNitros--;
+                    e.SpeNitrosX--;
                 }
-                else if (self.input[0].x == 0 && e.SpeNitros < e.SpeGear * 2)
+                else if (self.input[0].x == 0 && e.SpeNitrosX < e.SpeGear * 2)
                 {
-                    e.SpeNitros += 2;
+                    e.SpeNitrosX += 2;
                 }
             }
             else
             {
-                e.SpeNitros = 0;
+                e.SpeNitrosX = 0;
             }
         }
 
@@ -321,7 +318,6 @@ namespace TheEscort
 
         public static void Esclass_SS_UpdateAnimation(Player self, ref Escort e)
         {
-            if (!speedsterPolewow.TryGet(self, out float[] poleR)) return;
             float n = 0.8f;
             if (e.SpeOldSpeed)
             {
@@ -408,11 +404,11 @@ namespace TheEscort
                 {
                     if (self.input[0].y > 0)
                     {
-                        self.bodyChunks[0].vel.y += poleR[0] * self.input[0].y * n * 1.3f;
+                        self.bodyChunks[0].vel.y += .8f * self.input[0].y * n * 1.3f;
                     }
                     else
                     {
-                        self.bodyChunks[1].vel.y += poleR[1] * self.input[0].y * n * 1.3f;
+                        self.bodyChunks[1].vel.y += .65f * self.input[0].y * n * 1.3f;
                     }
                 }
                 if (self.animation == Player.AnimationIndex.RocketJump && self.allowRoll == 0)
@@ -452,7 +448,7 @@ namespace TheEscort
                     e.SpeCharge = 0;
                     e.SpeBuildup = 0;
                     e.SpeSpeedin = 200 + 80 * e.SpeGear;  // Made the math simple
-                    e.SpeNitros = e.SpeGear * 2;
+                    e.SpeNitrosX = e.SpeGear * 2;
                     //e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                     e.SpeExtraSpe = e.SpeSpeedin;
                     if (self.room != null)
@@ -469,12 +465,40 @@ namespace TheEscort
 
         public static void Esclass_SS_MovementUpdate(Player self, ref Escort e)
         {
+            // // Nitros boost
+            // if (!e.SpeOldSpeed && e.SpeDashNCrash && e.SpeNitrosX > 0)
+            // {
+            //     self.bodyChunks[0].vel.x += (float)(self.input[0].x * e.SpeNitrosX);
+            //     self.bodyChunks[1].vel.x += (float)(self.input[0].x * e.SpeNitrosX);
+            // }
+
+
             // Nitros boost
-            if (!e.SpeOldSpeed && e.SpeDashNCrash && e.SpeNitros > 0)
+            if (!e.SpeOldSpeed && e.SpeDashNCrash && e.SpeNitrosX > 0)
             {
-                self.bodyChunks[0].vel.x += (float)(self.input[0].x * e.SpeNitros);
-                self.bodyChunks[1].vel.x += (float)(self.input[0].x * e.SpeNitros);
+                if (self.bodyMode == Player.BodyModeIndex.Stand ||
+                self.bodyMode == Player.BodyModeIndex.Crawl)
+                {
+                    self.bodyChunks[0].vel.x += self.input[0].x * e.SpeNitrosX * .85f;
+                    self.bodyChunks[1].vel.x += self.input[0].x * e.SpeNitrosX * .85f;
+                }
+                if (self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.CorridorClimb || self.bodyMode == Player.BodyModeIndex.Swimming)
+                {
+                    self.bodyChunks[0].vel.x += self.input[0].x * e.SpeNitrosX * .7f;
+                    self.bodyChunks[1].vel.x += self.input[0].x * e.SpeNitrosX * .7f;
+                    self.bodyChunks[0].vel.y += self.input[0].y * e.SpeNitrosY * .7f;
+                    self.bodyChunks[1].vel.y += self.input[0].y * e.SpeNitrosY * .7f;
+                }
             }
+
+            // Slide up walls!
+            // if (self.bodyMode == Player.BodyModeIndex.WallClimb && e.SpeResimo > 0 && e.SpeMomentumJump is Vector2 momentum)
+            // {
+            //     Ebug(self, $"{momentum}|{e.SpeResimo}");
+            //     if (e.SpeResimo > 4) e.SpeResimo = 4;
+            //     self.bodyChunks[0].vel.y += momentum.y * ((10 + e.SpeGear) / 6f);
+            //     self.bodyChunks[1].vel.y += momentum.y * ((10 + e.SpeGear) / 6f);
+            // }
         }
 
 
@@ -520,6 +544,14 @@ namespace TheEscort
                     self.jumpBoost += 4f * n;
                 }
                 */
+                e.SpeResimo = 40;
+                Vector2 velocity = self.mainBodyChunk.vel;
+                if (self.bodyMode != Player.BodyModeIndex.ZeroG && self.bodyMode != Player.BodyModeIndex.CorridorClimb && self.bodyMode != Player.BodyModeIndex.Swimming && self.bodyMode != Player.BodyModeIndex.ClimbingOnBeam)
+                {
+                    // velocity.x *= .25f;
+                    // velocity.y *= 3f;
+                }
+                e.SpeMomentumJump = velocity.normalized;
 
                 self.jumpBoost += self.animation switch
                 {

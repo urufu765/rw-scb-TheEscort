@@ -759,7 +759,7 @@ public class EscortRoomScript
 
                     if (ac.abstractAI?.RealAI is not null)
                     {
-                        ac.abstractAI.RealAI.SetDestination(MakeWorldCoordinate(new(60, 62), 746));
+                        ac.abstractAI.RealAI.SetDestination(MakeWorldCoordinate(new(60, 62), Playr.room.abstractRoom.index));
                     }
                     //ac.abstractAI?.SetDestination(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));
                     //ac.abstractAI?.MigrateTo(RWCustom.Custom.MakeWorldCoordinate(new(60, 62), 746));

@@ -21,8 +21,8 @@ namespace TheEscort
         Gilded = -6,
         Conqueror = -7,
         Unstable = -8,
-        Unknown = -9,
-        DreamerEscapist = -10,
+        Escapist = -9,
+        Unknown = -10,
         Gallant = -11,
         Feral = -12,
         Test = -99

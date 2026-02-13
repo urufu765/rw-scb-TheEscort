@@ -38,8 +38,6 @@ partial class Plugin : BaseUnityPlugin
             !BodySlam.TryGet(self, out float[] bodySlam) ||
             !TrampOhLean.TryGet(self, out float bounce) ||
             !SlideLaunchMod.TryGet(self, out float[] slideMod) ||
-            !brawlerSlideLaunchFac.TryGet(self, out float bSlideFac) ||
-            !brawlerDKHypeDmg.TryGet(self, out float bDKHDmg) ||
             !deflectorSlideLaunchMod.TryGet(self, out float dSlideMod) ||
             !deflectorSlideDmg.TryGet(self, out float dSlideDmg) ||
             !deflectorSlideLaunchFac.TryGet(self, out float dSlideFac) ||
@@ -219,7 +217,7 @@ partial class Plugin : BaseUnityPlugin
                         direction = self.flipDirection;
                         if (e.Brawler)
                         {
-                            self.mainBodyChunk.vel.x *= bSlideFac;
+                            self.mainBodyChunk.vel.x *= .25f;
                         }
                         if (e.Deflector)
                         {
@@ -275,7 +273,7 @@ partial class Plugin : BaseUnityPlugin
                         creature.LoseAllGrasps();
                         if (e.battleHype && self.aerobicLevel > ins.hypeRequirement)
                         {
-                            normSlamDamage = bodySlam[2] * (e.Brawler ? bDKHDmg : 1.6f);
+                            normSlamDamage = bodySlam[2] * (e.Brawler ? 2f : 1.6f);
                         }
                         if (e.Deflector)
                         {
@@ -487,7 +485,7 @@ partial class Plugin : BaseUnityPlugin
         Ebug(self, "ThrownSpear Triggered!");
         float thrust = 7f;
         bool onPole = self.bodyMode == Player.BodyModeIndex.ClimbingOnBeam || self.bodyMode == Player.BodyModeIndex.ClimbIntoShortCut;
-        bool doNotYeet = onPole || !ins.Esconfig_Spears(self) || e.RailDouble is DoubleUp.Spear;
+        bool doNotYeet = onPole || !ins.Esconfig_Spears(self);
         try
         {
             if (self.slugcatStats.throwingSkill == 0 && !e.Speedster)
@@ -577,7 +575,7 @@ partial class Plugin : BaseUnityPlugin
                     thrust = 5f;
                 }
             }
-            else
+            else if (!e.Railgunner)
             {
                 spear.spearDamageBonus *= 1.25f;
             }
@@ -1078,24 +1076,35 @@ partial class Plugin : BaseUnityPlugin
             c.EmitDelegate(
                 (float original, Spear self, SharedPhysics.CollisionResult result) =>
                 {
-                    if (self.thrownBy is Player player && result.obj is Creature creature && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
+                    if (self.thrownBy is Player player && Eshelp_IsNull(player.slugcatStats.name, false) && eCon.TryGetValue(player, out Escort e))
                     {
-                        if (e.Deflector)
+                        if (result.obj is Creature creature)
                         {
-                            original *= DF_Damage.DamageMultiplier(player, ref e);
-                            Ebug(player, $"Death upon thee! Sponsored by Spear. Damage: {original}", ignoreRepetition: true);
-                        }
+                            if (e.Deflector)
+                            {
+                                original *= DF_Damage.DamageMultiplier(player, ref e);
+                                Ebug(player, $"Death upon thee! Sponsored by Spear. Damage: {original}", ignoreRepetition: true);
+                            }
 
-                        if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
-                        {
-                            original *= 2;
-                            e.NEsResetCooldown = true;
-                            Ebug(player, $"Reset from spear! Damage: {original}", ignoreRepetition: true);
-                        }
+                            if (e.NewEscapist && e.NEsVulnerable.Contains(creature))
+                            {
+                                original *= 2;
+                                e.NEsResetCooldown = true;
+                                Ebug(player, $"Reset from spear! Damage: {original}", ignoreRepetition: true);
+                            }
 
-                        if (e.Railgunner)
+                            if (e.Railgunner)
+                            {
+                                RG_Shocker.ApplyShockingStuff(player, creature, self, result, DoubleUp.Spear, self.room, ref e);
+                            }
+                        }
+                        if (result.obj is not null)
                         {
-                            RG_Shocker.ApplyShockingStuff(player, creature, self, result, DoubleUp.Spear, self.room, ref e);
+                            if (e.Brawler && e.BrawPFrame > 0)
+                            {
+                                Ebug(player, $"Brawler hit a thing! {result.obj}");
+                                e.BrawExpPFrame = 100;
+                            }
                         }
                     }
                     return original;
@@ -1168,7 +1177,7 @@ partial class Plugin : BaseUnityPlugin
             if (e.Railgunner)
             {
                 RG_Shocker.ApplyShockingStuff(p, c, self, result, DoubleUp.Singularity, self.room, ref e);
-                if (self.activateSingularity && self.moveUp == 0)
+                if (self.activateSingularity && self.moveUp == 0 && e.RailLastDoubleuarity.Any(a => a == self))
                 {
                     self.counter = 100;
                 }
@@ -1191,7 +1200,7 @@ partial class Plugin : BaseUnityPlugin
         orig(self, chunk, direction, speed, firstContact);
         if (self.ignited && self.thrownBy is Player p && Eshelp_IsNull(p.slugcatStats?.name, false) && eCon.TryGetValue(p, out Escort e) && e.Railgunner)
         {
-            if (self.activateSingularity && self.moveUp == 0)
+            if (self.activateSingularity && self.moveUp == 0 && e.RailLastDoubleuarity.Any(a => a == self))
             {
                 self.counter = 100;
             }
