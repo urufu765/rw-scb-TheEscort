@@ -441,7 +441,7 @@ partial class Plugin : BaseUnityPlugin
         On.Player.GrabUpdate += Escort_GrabbyUpdate;
         On.Player.BiteEdibleObject += Escort_Eated;
         On.Player.CanIPickThisUp += Escort_SpearGet;
-        On.Player.TerrainImpact += Esclass_SS_Bonk;
+        On.Player.TerrainImpact += Escort_TerrainImpact;
         On.Player.IsCreatureLegalToHoldWithoutStun += BL_Melee.CreatureLegality;
         On.Player.Stun += RG_Fx.Spasm;
         On.Player.GetHeldItemDirection += RG_Gfx.PointWeaponAt;

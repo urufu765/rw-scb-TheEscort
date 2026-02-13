@@ -5,6 +5,12 @@ using UnityEngine;
 
 namespace TheEscort
 {
+    public enum SpeedVersion
+    {
+        Restless,
+        Vroom,
+        Nitros
+    }
     public partial class Escort
     {
         public bool Speedster;
@@ -34,8 +40,9 @@ namespace TheEscort
         /// Speedster residual momentum counter
         /// </summary>
         public int SpeResimo;
+        public SpeedVersion SpeVersion;
 
-        public void EscortSS(bool useOld = false, int maxGear = 4)
+        public void EscortSS(bool useOld = false, int maxGear = 4, SpeedVersion speedVersion = SpeedVersion.Nitros)
         {
             this.Speedster = false;
             this.SpeedsterColor = new Color(0.03f, 0.57f, 0.59f);
@@ -58,6 +65,7 @@ namespace TheEscort
             this.SpeNitrosY = 0;
             this.SpeResimo = 0;
             this.SpeMomentumJump = null;
+            this.SpeVersion = speedVersion;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)

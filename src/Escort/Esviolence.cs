@@ -13,6 +13,7 @@ using static TheEscort.Eshelp;
 using TheEscort.Railgunner;
 using TheEscort.Brawler;
 using TheEscort.Deflector;
+using TheEscort.Speedster.Old;
 
 namespace TheEscort;
 
@@ -86,7 +87,18 @@ partial class Plugin : BaseUnityPlugin
             {
                 self.aerobicLevel -= 0.01f;
             }
-            if (e.Speedster) Esclass_SS_Collision(self, creature, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+            {
+                case SpeedVersion.Nitros:
+                    break;
+                case SpeedVersion.Vroom:
+                    RacingSpeedster.Collision(self, creature, ref e);
+                    break;
+                case SpeedVersion.Restless:
+                    OldSpeedster.Collision(self, creature, ref e);
+                    break;
+            }
+
             if (e.Gilded) Esclass_GD_Collision(self, creature, ref e);
             if (e.Unstable) Esclass_US_Collision(self, creature, ref e);
 

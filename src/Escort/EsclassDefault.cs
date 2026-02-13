@@ -17,6 +17,7 @@ using TheEscort.Brawler;
 using TheEscort.Deflector;
 using TheEscort.Patches;
 using TheEscort.VengefulLizards;
+using TheEscort.Speedster.Old;
 
 namespace TheEscort
 {
@@ -86,7 +87,17 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Tick(self, ref e);
             if (e.NewEscapist) Esclass_NE_Tick(self, ref e);
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
-            if (e.Speedster) Esclass_SS_Tick(self, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.Tick(self, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        OldSpeedster.Tick(self, ref e);
+                        break;
+                }
             if (e.Gilded) Esclass_GD_Tick(self, ref e);
             if (e.Barbarian) Esclass_BB_Tick(self, ref e);
             if (e.Unstable) Esclass_US_Tick(self, ref e);
@@ -325,7 +336,17 @@ namespace TheEscort
             if (e.Escapist) Esclass_EC_Update(self, ref e);
             if (e.NewEscapist) Esclass_NE_Update(self, ref e);
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
-            if (e.Speedster) Esclass_SS_Update(self, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.Update(self, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        OldSpeedster.Update(self, ref e);
+                        break;
+                }
             if (e.Gilded) Esclass_GD_Update(self, ref e);
             if (e.Barbarian) Esclass_BB_Update(self, ref e);
             if (e.Unstable) Esclass_US_Update(self, ref e);
@@ -1004,7 +1025,17 @@ namespace TheEscort
                     e.easyKick = false;
                 }
             }
-            if (e.Speedster) Esclass_SS_UpdateAnimation(self, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.UpdateAnimation(self, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        OldSpeedster.UpdateAnimation(self, ref e);
+                        break;
+                }
 
 
             if (e.slideFromSpear && self.animation != Player.AnimationIndex.BellySlide)
@@ -1214,7 +1245,17 @@ namespace TheEscort
             }
 
             if (e.Railgunner) RG_Player.UpdateBodyMode(self, ref e);
-            if (e.Speedster) Esclass_SS_UpdateBodyMode(self, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.UpdateBodyMode(self, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        OldSpeedster.UpdateBodyMode(self, ref e);
+                        break;
+                }
         }
         #endregion
 
@@ -1380,7 +1421,17 @@ namespace TheEscort
                 }
                 self.animation = Player.AnimationIndex.Flip;
             }
-            if (e.Speedster) Esclass_SS_Jump(self, ref e);
+            if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.Jump(self, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        RacingSpeedster.Jump(self, ref e);
+                        break;
+                }
             if (e.Gilded) Esclass_GD_Jump(self, ref e);
         }
 
@@ -2326,7 +2377,16 @@ namespace TheEscort
 
                                 // Other builds
                                 if (escort.Deflector) DF_Damage.WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
-                                if (escort.Speedster) Esclass_SS_WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
+                                if (escort.Speedster) switch (escort.SpeVersion)
+                                {
+                                    case SpeedVersion.Nitros:
+                                        break;
+                                    case SpeedVersion.Vroom:
+                                        RacingSpeedster.WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
+                                        break;
+                                    case SpeedVersion.Restless:
+                                        break;
+                                }
                                 escort.shelterSaveComplete++;
                             }
 

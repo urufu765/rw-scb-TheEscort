@@ -12,6 +12,7 @@ using SlugBase.Features;
 using RWCustom;
 using SlugBase;
 using TheEscort.Railgunner;
+using TheEscort.Speedster.Old;
 
 namespace TheEscort
 {
@@ -438,7 +439,17 @@ namespace TheEscort
                     }
                 }
                 if (e.Railgunner) RG_Gfx.DrawThings(self, s, rCam, t, camP, ref e);
-                if (e.Speedster) Esclass_SS_DrawSprites(self, s, rCam, t, camP, ref e);
+                if (e.Speedster) switch (e.SpeVersion)
+                {
+                    case SpeedVersion.Nitros:
+                        break;
+                    case SpeedVersion.Vroom:
+                        RacingSpeedster.DrawSprites(self, s, rCam, t, camP, ref e);
+                        break;
+                    case SpeedVersion.Restless:
+                        OldSpeedster.DrawSprites(self, s, rCam, t, camP, ref e);
+                        break;
+                }
                 if (e.Gilded) Esclass_GD_DrawPipSprites(self, s, rCam, t, camP, ref e);
                 //e.Escat_Draw_Ring_Trackers(t);
             }

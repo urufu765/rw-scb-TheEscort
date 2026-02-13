@@ -112,6 +112,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * XSpeedster rolls and flip animations get faster the faster they move
       * XSpeedster boost applies to corridors
       * XSpeedster can just ignore rot if running in boost mode
+  * **(0.4-dev.23)** Split the old versions of Speedster (not functional), prepped for Speedster refresh
   * **(0.4-dev.22)**
     * Railgunner death explosion deals proper lethal damage
     * Railgunner misfire is less punishing and has a lesser chance of occuring

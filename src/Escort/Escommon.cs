@@ -8,6 +8,7 @@ using RWCustom;
 using System;
 using System.Collections.Generic;
 using TheEscort.Railgunner;
+using TheEscort.Speedster.Old;
 using TheEscort.VengefulLizards;
 using UnityEngine;
 using static TheEscort.Eshelp;
@@ -43,7 +44,16 @@ partial class Plugin : BaseUnityPlugin
             return;
         }
         if (e.Unstable) Esclass_US_MovementUpdate(self, ref e);
-        if (e.Speedster) Esclass_SS_MovementUpdate(self, ref e);
+        if (e.Speedster) switch (e.SpeVersion)
+        {
+            case SpeedVersion.Nitros:
+                break;
+            case SpeedVersion.Vroom:
+                RacingSpeedster.MovementUpdate(self, ref e);
+                break;
+            case SpeedVersion.Restless:
+                break;
+        }
         if (!ins.Esconfig_WallJumps(self))
         {
             return;
@@ -559,4 +569,29 @@ partial class Plugin : BaseUnityPlugin
         }
         return true;
     }
+
+    public static void Escort_TerrainImpact(On.Player.orig_TerrainImpact orig, Player self, int chunk, IntVector2 direction, float speed, bool firstContact)
+    {
+        orig(self, chunk, direction, speed, firstContact);
+        if (Eshelp_IsNull(self.slugcatStats?.name))
+        {
+            return;
+        }
+        if (!eCon.TryGetValue(self, out Escort e))
+        {
+            return;
+        }
+        if (e.Speedster) switch (e.SpeVersion)
+        {
+            case SpeedVersion.Nitros:
+                break;
+            case SpeedVersion.Vroom:
+                RacingSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                break;
+            case SpeedVersion.Restless:
+                OldSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                break;
+        }
+    }
+
 }
