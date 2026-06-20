@@ -1909,7 +1909,7 @@ namespace TheEscort
                 if (type != null)
                 {
                     Ebug(player, "Escort gets hurt by: " + type.value, LogLevel.DEBUG);
-                    if (type == Creature.DamageType.Bite)
+                if (type == Creature.DamageType.Bite)
                     {
                         Ebug(player, "Escort is getting BIT?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature creature)

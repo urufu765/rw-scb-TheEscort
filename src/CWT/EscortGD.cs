@@ -16,7 +16,8 @@ namespace TheEscort
         Gate,
         Shelter,
         Oracle,
-        VoidSwim
+        VoidSwim,
+        Wait
     }
     public partial class Escort
     {
@@ -85,6 +86,11 @@ namespace TheEscort
         public const int GildUseCraftFirespear = 15;
         public const int GildUseCraftSingularity = 10;
 
+        /// <summary>
+        /// Time of player not pressing anything to pause charging
+        /// </summary>
+        public const int GildTickOfNoInputTilWait = 1200;
+
         public void EscortGD(Player self)
         {
             Gilded = false;
@@ -131,14 +137,15 @@ namespace TheEscort
             float percent = (float)GildPower / GildPowerMax;
             return (GildRechargeMode, percent) switch
             {
-                (Charger.VoidSwim, _) => 0f,
+                (Charger.Wait,        _) => 0f,
+                (Charger.VoidSwim,    _) => 0f,
                 (Charger.Oracle, < 0.3f) => Custom.LerpMap(percent, 0, 0.3f, 2f, 1),
-                (Charger.Oracle, _) => Custom.LerpMap(percent, 0.3f, 0.9f, 1f, 0),
+                (Charger.Oracle,      _) => Custom.LerpMap(percent, 0.3f, 0.9f, 1f, 0),
                 (Charger.Shelter, > 0.75f) => 0f,
-                (Charger.Shelter, _) => 0.1f,
-                (Charger.Gate, > 0.9f) => 0f,
-                (Charger.Gate, _) => Custom.LerpMap(percent, 0, 0.7f, 5f, 1),
-                (Charger.ZeroG, _) => Custom.LerpMap(percent, 0, 0.8f, 2f, 0.25f),
+                (Charger.Shelter,     _) => 0.1f,
+                (Charger.Gate,   > 0.9f) => 0f,
+                (Charger.Gate,        _) => Custom.LerpMap(percent, 0, 0.7f, 5f, 1),
+                (Charger.ZeroG,       _) => Custom.LerpMap(percent, 0, 0.8f, 2f, 0.25f),
                 (Charger.Ground, < 0.3f) => 2f,
                 _ => 1f
             };

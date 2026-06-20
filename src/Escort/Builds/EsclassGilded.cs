@@ -128,6 +128,7 @@ namespace TheEscort
                     e.GildOverpowered = true;
                 }
             }
+            
         }
 
         public static void Esclass_GD_Update(Player self, ref Escort e)
@@ -333,6 +334,12 @@ namespace TheEscort
             }
             #endregion
 
+            // Recharge type thing
+            if (self.touchedNoInputCounter > Escort.GildTickOfNoInputTilWait)
+            {
+                e.GildRechargeMode = Charger.Wait;
+                goto goToTheEndOfThisBit;  // Skips all other checks
+            }
 
             // Do expensive checks
             if (self.room?.abstractRoom?.name is not null && (e.GildExpensiveCheck || self.room.abstractRoom.name != e.GildLastRoomChecked))
@@ -349,7 +356,7 @@ namespace TheEscort
                 }
             }
 
-            // Recharge type thing
+            // Do cheap checks
             e.GildRechargeMode = Charger.Normal;
             if (self.bodyChunks[0].contactPoint.y == -1 || self.bodyChunks[1].contactPoint.y == -1) e.GildRechargeMode = Charger.Ground;
             if (self.bodyMode == Player.BodyModeIndex.ZeroG) e.GildRechargeMode = Charger.ZeroG;
@@ -372,6 +379,7 @@ namespace TheEscort
                     e.GildRechargeMode = Charger.VoidSwim;
                 }
             }
+            goToTheEndOfThisBit:;
         }
 
 
