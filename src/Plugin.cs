@@ -500,6 +500,7 @@ partial class Plugin : BaseUnityPlugin
         On.SlugcatStats.HiddenOrUnplayableSlugcat += Socks_hideTheSocks;
         On.SlugcatStats.SlugcatUnlocked += Escort_Playable;
         On.SlugcatStats.SlugcatFoodMeter += Escort_differentBuildsFoodz;
+        On.SlugcatStats.SlugcatToTimeline += Escort_timelineMyEscort;
 
         //On.Player.Update += Estest_1_Update;
         //On.Player.GrabUpdate += Estest_3_GrabUpdate;
@@ -524,6 +525,7 @@ partial class Plugin : BaseUnityPlugin
         // On.Menu.SlideShow.ctor += EscortEndingStuff.Escort_Meow;
 
         On.PlayerSessionRecord.AddKill += DF_Damage.DamageIncrease;
+
 
         // Debugging
         // On.DebugMouse.Update += DebugMouse_Update;
@@ -2653,6 +2655,27 @@ partial class Plugin : BaseUnityPlugin
             Ebug(err, "L_TIME>Something happened while reducing voidmelt effect!");
         }
         return theOriginal;
+    }
+
+    public SlugcatStats.Timeline Escort_timelineMyEscort(On.SlugcatStats.orig_SlugcatToTimeline orig, SlugcatStats.Name slugcat)
+    {
+        try
+        {
+            if (slugcat is null)
+            {
+                Ebug("L_TLME>Couldn't get timeline of slugcat!");
+                return orig(slugcat);
+            }
+            if (slugcat == EscortMe)
+            {
+                return EscortMeTime;
+            }
+        } 
+        catch (Exception err)
+        {
+            Ebug(err, "Oh noes! Unexpected erroring from timelineMyEscort!");
+        }
+        return orig(slugcat);
     }
 
     /// <summary>

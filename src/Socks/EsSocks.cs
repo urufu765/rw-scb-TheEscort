@@ -1,6 +1,7 @@
 using BepInEx;
 using IL.MoreSlugcats;
 using System;
+using TheEscort.Patches;
 using UnityEngine;
 using static TheEscort.Eshelp;
 
@@ -33,6 +34,10 @@ namespace TheEscort
                 {
                     return UnplayableSocks;
                 }
+                // if (EPatchMeadow.IsOnline() && i == EscortMe)
+                // {
+                //     return true;
+                // }
             }
             catch (Exception err)
             {
