@@ -129,15 +129,17 @@ public static class RacingSpeedster
             if (e.SpeBuildup > 239 && e.SpeCharge < e.SpeMaxGear)
             {
                 Ebug(self, "Charge! " + e.SpeCharge + " => " + (e.SpeCharge + 1));
-                if (self.room != null)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        self.room.AddObject(new Spark(self.bodyChunks[1].pos + new Vector2(-10 * Mathf.Sign(self.bodyChunks[1].vel.x), -5), new Vector2(-2f * self.bodyChunks[0].vel.x, Mathf.Lerp(0f, 10f, UnityEngine.Random.value)), e.SpeColor, null, 20, 40));
-                    }
-                    self.room.PlaySound(SoundID.Weapon_Skid, e.SFXChunk, false, 0.74f, 0.5f + 0.15f * e.SpeCharge);
-                    self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Cap_Bump_Vengeance, e.SFXChunk, false, 0.32f, 6f + 0.5f * e.SpeCharge);
-                }
+                SS_Fx.Gfx_Sparkle_Boom(self.room, self, e.SpeColor);
+                SS_Fx.Sfx_Sparkle_Click(self.room, e.SFXChunk, e.SpeCharge);
+                // if (self.room != null)
+                // {
+                //     for (int i = 0; i < 10; i++)
+                //     {
+                //         self.room.AddObject(new Spark(self.bodyChunks[1].pos + new Vector2(-10 * Mathf.Sign(self.bodyChunks[1].vel.x), -5), new Vector2(-2f * self.bodyChunks[0].vel.x, Mathf.Lerp(0f, 10f, UnityEngine.Random.value)), e.SpeColor, null, 20, 40));
+                //     }
+                //     self.room.PlaySound(SoundID.Weapon_Skid, e.SFXChunk, false, 0.74f, 0.5f + 0.15f * e.SpeCharge);
+                //     self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Cap_Bump_Vengeance, e.SFXChunk, false, 0.32f, 6f + 0.5f * e.SpeCharge);
+                // }
                 e.SpeCharge++;
                 e.SpeBuildup = 0f;
             }
@@ -257,14 +259,16 @@ public static class RacingSpeedster
                 e.SpeNitrosX = e.SpeGear * 2;
                 //e.SpeSpeedin = 200 + 60 * (int)Math.Pow(2, e.SpeGear);
                 e.SpeExtraSpe = e.SpeSpeedin;
-                if (self.room != null)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        self.room.AddObject(new Spark(self.bodyChunks[1].pos + new Vector2(-10 * Mathf.Sign(self.bodyChunks[1].vel.x), 0), new Vector2(-2f * self.bodyChunks[0].vel.x, Mathf.Lerp(0f, 10f, UnityEngine.Random.value)), e.SpeColor, null, 20, 40));
-                    }
-                    self.room.PlaySound(SoundID.Firecracker_Bang, e.SFXChunk, false, 0.5f, 1.5f + 0.2f * e.SpeGear);
-                }
+                SS_Fx.Gfx_Sparkle_Boom(self.room, self, e.SpeColor, 0);
+                SS_Fx.Sfx_Click_Bang(self.room, e.SFXChunk, e.SpeGear);
+                // if (self.room != null)
+                // {
+                //     for (int i = 0; i < 10; i++)
+                //     {
+                //         self.room.AddObject(new Spark(self.bodyChunks[1].pos + new Vector2(-10 * Mathf.Sign(self.bodyChunks[1].vel.x), 0), new Vector2(-2f * self.bodyChunks[0].vel.x, Mathf.Lerp(0f, 10f, UnityEngine.Random.value)), e.SpeColor, null, 20, 40));
+                //     }
+                //     self.room.PlaySound(SoundID.Firecracker_Bang, e.SFXChunk, false, 0.5f, 1.5f + 0.2f * e.SpeGear);
+                // }
             }
         }
     }
@@ -354,11 +358,12 @@ public static class RacingSpeedster
                         )
                     )
                 ), slamStun);
-            if (self.room != null)
-            {
-                self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
-                self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
-            }
+            SS_Fx.Sfx_Whamo(self.room, e.SFXChunk);
+            // if (self.room != null)
+            // {
+            //     self.room.PlaySound(SoundID.Slugcat_Terrain_Impact_Hard, e.SFXChunk, false, 2.3f, 1.2f);
+            //     self.room.PlaySound(Escort_SFX_Impact, e.SFXChunk);
+            // }
             float velocityX = self.bodyChunks[0].vel.x * ins.DKMultiplier * (creature.TotalMass * (checkSlide ? 0.35f : 0.5f));
             float velocityY = self.bodyChunks[0].vel.y * ins.DKMultiplier * (creature.TotalMass * (self.bodyChunks[0].vel.y > 0 ? 1.25f : 0.5f));
             if (e.isChunko)

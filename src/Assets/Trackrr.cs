@@ -9,10 +9,6 @@ namespace TheEscort;
 /// </summary>
 public abstract class Trackrr<T>
 {
-    private T _tracked;
-    private T _pretrack;
-    private T _max;
-    private T _limit;
     public readonly int playerNumber;
     public readonly int trackerNumber;
     public readonly string trackerName;
@@ -25,51 +21,26 @@ public abstract class Trackrr<T>
 
     public virtual T Value
     {
-        get
-        {
-            return _tracked;
-        }
-        set
-        {
-            _tracked = value;
-        }
+        get;
+        set;
     }
 
     public virtual T Max
     {
-        get
-        {
-            return _max;
-        }
-        set
-        {
-            _max = value;
-        }
+        get;
+        set;
     }
 
     public virtual T Limit
     {
-        get
-        {
-            return _limit;
-        }
-        set
-        {
-            _limit = value;
-        }
+        get;
+        set;
     }
 
     public virtual T PreValue
     {
-        get
-        {
-            return _pretrack;
-        }
-
-        set
-        {
-            _pretrack = value;
-        }
+        get;
+        set;
     }
 
     public abstract void DrawTracker(float timeStacker);
@@ -580,6 +551,129 @@ public static class ETrackrr
                 spriteNumber = escort.SpeDashNCrash ? 1 : 0;
             }
         }
+    }
+
+    public class SpeedwaySpeedsterTraction : Trackrr<float>
+    {
+        private readonly Escort e;
+        private float oldValue;
+        private float transitioning;
+        private float preTransitioning;
+        private Color normalColor;
+        private Color blinkColor;
+        public SpeedwaySpeedsterTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "speedwaySpeedster")
+        {
+            this.e = escort;
+            this.normalColor = this.trackerColor = new Color(0.76f, 0.78f, 0f);
+            this.blinkColor = this.effectColor = new Color(1f, 0.9f, 0.3f);
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            float transite = Mathf.Lerp(preTransitioning, transitioning, timeStacker);
+            if (e.SpeDashNCrash)
+            {
+                Max = e.SpeTimeLimit;
+                Value = Mathf.Lerp(PreValue, e.SpeSpeedin, timeStacker);
+                Limit = Mathf.Lerp(0, e.SpeLastBonusTime, transite);
+                force = true;
+            }
+            else if (e.SpeCharge > 0)
+            {
+                Max = e.SpeTimeLimit;
+                Value = e.SpeTimeLimit;
+                Limit = e.SpeTimeLimit;
+                force = false;
+            }
+            else
+            {
+                Max = Escort.SpeSpeedwayReady;
+                Value = Mathf.Lerp(PreValue, e.SpeBuildup, timeStacker);
+                Limit = 0;
+                force = true;
+            }
+            trackerColor = Color.Lerp(normalColor, Color.white, transite);
+            effectColor = Color.Lerp(blinkColor, Color.white, transite);
+        }
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+            preTransitioning = transitioning;
+            if (transitioning > 0) transitioning -= .1f;
+            if (e.SpeDashNCrash && oldValue < e.SpeSpeedin) transitioning = 1;
+            oldValue = e.SpeSpeedin;
+        }
+    }
+
+    public class SpeedwayExtraTrackerTraction : Trackrr<float>
+    {
+        private readonly Escort e;
+        private readonly Color defaultColor;
+        private readonly Color flashColor;
+        private float preTransitioning;
+        private float transitioning;
+        private int lastGear;
+        public SpeedwayExtraTrackerTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "speedwayExtras")
+        {
+            this.e = escort;
+            defaultColor = new Color(.52f, .48f, 0f);
+            flashColor = new Color(.76f, .78f, 0f);
+        }
+
+        public override void DrawTracker(float timeStacker)
+        {
+            if (e.SpeBuildup < Value) PreValue = 0;
+            Max = Escort.SpeSpeedwayExtra + (Escort.SpeSpeedwayExtraDifficulty * e.SpeGear);
+            Value = Mathf.Lerp(PreValue, e.SpeBuildup, timeStacker);
+            Limit = e.SpeGear;
+            if (e.SpeDashNCrash)
+            {
+                float transite = Mathf.Lerp(preTransitioning, transitioning, timeStacker);
+                trackerColor = Color.Lerp(defaultColor, flashColor, transite);
+                effectColor = Color.Lerp(defaultColor, flashColor, transite);
+            }
+            else if (e.karmaTen)
+            {
+                trackerColor = Color.black;
+                effectColor = defaultColor;
+            }
+            else
+            {
+                trackerColor = effectColor = Color.black;
+            }
+        }
+        public override void UpdateTracker()
+        {
+            base.UpdateTracker();
+            preTransitioning = transitioning;
+            if (transitioning > 0) transitioning -= .025f;
+            if (lastGear < e.SpeGear) transitioning = 1;
+            lastGear = e.SpeGear;
+        }
+    }
+
+    /// <summary>
+    /// Tracker for X-Y nitros values of Turbo Speedster
+    /// </summary>
+    public class TurbochargeTraction : Trackrr<float>
+    {
+        private readonly Escort escort;
+        private float preLimit;
+
+        public TurbochargeTraction(int playerNumber, int trackerNumber, Escort escort) : base(playerNumber, trackerNumber, "turboSpeedster")
+        {
+            this.escort = escort;
+            trackerColor = new Color(.79f, .78f, 0f);
+            effectColor = new Color(.98f, .56f, 0f);
+        }
+    }
+
+    /// <summary>
+    /// Tracker for roll/slide duration of Turbo Speedster
+    /// </summary>
+    public class TurboblastTraciton : Trackrr<float>
+    {
+        
     }
 
     /// <summary>

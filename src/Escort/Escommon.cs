@@ -45,15 +45,15 @@ partial class Plugin : BaseUnityPlugin
         }
         if (e.Unstable) Esclass_US_MovementUpdate(self, ref e);
         if (e.Speedster) switch (e.SpeVersion)
-        {
-            case SpeedVersion.Nitros:
-                break;
-            case SpeedVersion.Vroom:
-                RacingSpeedster.MovementUpdate(self, ref e);
-                break;
-            case SpeedVersion.Restless:
-                break;
-        }
+            {
+                case SpeedVersion.Speedway:
+                    break;
+                case SpeedVersion.Vroom:
+                    RacingSpeedster.MovementUpdate(self, ref e);
+                    break;
+                case SpeedVersion.Restless:
+                    break;
+            }
         if (!ins.Esconfig_WallJumps(self))
         {
             return;
@@ -582,16 +582,16 @@ partial class Plugin : BaseUnityPlugin
             return;
         }
         if (e.Speedster) switch (e.SpeVersion)
-        {
-            case SpeedVersion.Nitros:
-                break;
-            case SpeedVersion.Vroom:
-                RacingSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
-                break;
-            case SpeedVersion.Restless:
-                OldSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
-                break;
-        }
+            {
+                case SpeedVersion.Speedway:
+                    break;
+                case SpeedVersion.Vroom:
+                    RacingSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                    break;
+                case SpeedVersion.Restless:
+                    OldSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                    break;
+            }
     }
 
 }

@@ -79,6 +79,7 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
     * Deflector parries death! (but disabled in meadow for now)
     * Make an option to allow vengeance lizards to appear in other campaigns specifically for Escort
     * Brawler remove melee priority
+    * Brawler change iframe mechanics where every attack allows up to 20 frames of explosion protection, with the duration pausing while iframes activate
     * Deflector longer parry duration for karma 10 skill
     * Add "Still Here Or" to play after spending 5 cycles in the Gutters
     * Railgunner penetration deals regular violence to deal correct damage
@@ -94,6 +95,9 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
         * Current karma
         * Dynamic difficulty/regions explored
         * Karma protection
+    * Vengeful 2.1 (actual)
+      * Spawn based on cycle timer, spawn chance highly dependent on max karma
+      * Spawn 
     * Gilded power unrestrained by karma cap if not host of meadow (copy value from host rather than get stuck with karma 1)... same goes with other builds I guess
     * Make each sfx and vfx for each build have a hollow version and send sfx/vfx requests online to basically play those sfx/vfx even if the client player copy is not ready for it.
     * Railgunner tap/hold map to show a small ray-traced version of the room using the laser
@@ -112,6 +116,10 @@ Development starts here. Goal? To have a complete enough slugcat that can be use
       * XSpeedster rolls and flip animations get faster the faster they move
       * XSpeedster boost applies to corridors
       * XSpeedster can just ignore rot if running in boost mode
+      * Code for disabling escort check so every slugcat can use Escort skills
+      * Code for making Speedster do the sonic spindash
+      * Make the code window accept multiple code, divided by spaces or commas
+  * **(0.4-dev.26)** New Speedster!
   * **(0.4-dev.25)** Re-added decal UW shelter
   * **(0.4-dev.24)** Gilded's power recharge pauses when no input has been pressed for 30 seconds
   * **(0.4-dev.23)** Split the old versions of Speedster (not functional), prepped for Speedster refresh

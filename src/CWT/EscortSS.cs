@@ -9,7 +9,8 @@ namespace TheEscort
     {
         Restless,
         Vroom,
-        Nitros
+        Speedway,
+        Turbocharged
     }
     public partial class Escort
     {
@@ -41,8 +42,30 @@ namespace TheEscort
         /// </summary>
         public int SpeResimo;
         public SpeedVersion SpeVersion;
+        /// <summary>
+        /// For keeping track of how long Speedster is boosting through corridor or sliding
+        /// </summary>
+        public int SpeBoosterTunneling;
+        /// <summary>
+        /// Max time for Speedster to be boostin
+        /// </summary>
+        public int SpeTimeLimit
+        {
+            get
+            {
+                if (karmaTen) return (int)(field * 1.34) * 40;
+                return field * 40;
+            }
+            set;
+        }
+        public int SpeLastBonusTime;
+        public bool SpeNitrosBoost;
+        public const float SpeSpeedwayReady = 300;
+        public const float SpeSpeedwayExtra = 200;
+        public const float SpeSpeedwayExtraDifficulty = 10;
+        public const float SpeNitrosMax = 40;
 
-        public void EscortSS(bool useOld = false, int maxGear = 4, SpeedVersion speedVersion = SpeedVersion.Nitros)
+        public void EscortSS(int maxGear = 4, SpeedVersion speedVersion = SpeedVersion.Turbocharged)
         {
             this.Speedster = false;
             this.SpeedsterColor = new Color(0.03f, 0.57f, 0.59f);
@@ -59,13 +82,15 @@ namespace TheEscort
             this.SpeGear = 0;
             this.SpeCharge = 0;
             this.SpeGain = -1f;
-            this.SpeOldSpeed = useOld;
+            this.SpeOldSpeed = speedVersion == SpeedVersion.Restless;
             this.SpeMaxGear = maxGear;
             this.SpeNitrosX = 0;
             this.SpeNitrosY = 0;
             this.SpeResimo = 0;
             this.SpeMomentumJump = null;
             this.SpeVersion = speedVersion;
+            this.SpeBoosterTunneling = 0;
+            this.SpeTimeLimit = 15;
         }
 
         public void Escat_addTrail(RoomCamera rCam, RoomCamera.SpriteLeaser s, int life, int trailCount = 10)
@@ -78,14 +103,48 @@ namespace TheEscort
                     trail.Kill();
                 }
             }
-            if (this.SpeOldSpeed)
+            switch (this.SpeVersion)
             {
-                this.SpeTrail.Enqueue(new SpeedTrail(rCam, s, this.SpeSecretSpeed ? Color.white : this.hypeColor, this.SpeSecretSpeed ? this.hypeColor : Color.black, life));
+                case SpeedVersion.Restless:
+                    this.SpeTrail.Enqueue(new SpeedTrail(rCam, s, this.SpeSecretSpeed ? Color.white : this.hypeColor, this.SpeSecretSpeed ? this.hypeColor : Color.black, life));
+                    break;
+                case SpeedVersion.Vroom:
+                    this.SpeTrail.Enqueue(new SpeedTrail(rCam, s, Color.Lerp(this.hypeColor, Color.white, this.SpeGear * 0.33f), Color.Lerp(Color.black, this.hypeColor, this.SpeGear * 0.33f), life));
+                    break;
+                case SpeedVersion.Speedway:
+                    Color colur;
+                    if (this.SpeBoosterTunneling > 0)
+                    {
+                        colur = Color.Lerp(this.SpeColor, Color.white, .5f);
+                    }
+                    else
+                    {
+                        colur = Color.Lerp(this.hypeColor, Color.black, Mathf.InverseLerp(0, this.SpeTimeLimit, this.SpeSpeedin));
+                    }
+                    this.SpeTrail.Enqueue(new SpeedTrail(rCam, s, colur, colur, life));
+                    break;
             }
-            else
+        }
+
+        public bool Escat_Nitros_X()
+        {
+            SpeNitrosBoost = true;
+            if (SpeNitrosX > 0)
             {
-                this.SpeTrail.Enqueue(new SpeedTrail(rCam, s, Color.Lerp(this.hypeColor, Color.white, this.SpeGear * 0.33f), Color.Lerp(Color.black, this.hypeColor, this.SpeGear * 0.33f), life));
+                SpeNitrosX--;
+                return true;
             }
+            return false;
+        }
+        public bool Escat_Nitros_Y()
+        {
+            SpeNitrosBoost = true;
+            if (SpeNitrosY > 0)
+            {
+                SpeNitrosY--;
+                return true;
+            }
+            return false;
         }
 
 

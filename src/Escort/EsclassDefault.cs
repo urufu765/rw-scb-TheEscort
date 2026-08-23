@@ -18,6 +18,7 @@ using TheEscort.Deflector;
 using TheEscort.Patches;
 using TheEscort.VengefulLizards;
 using TheEscort.Speedster.Old;
+using TheEscort.Speedster;
 
 namespace TheEscort
 {
@@ -89,7 +90,8 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Tick(self, ref e);
             if (e.Speedster) switch (e.SpeVersion)
                 {
-                    case SpeedVersion.Nitros:
+                    case SpeedVersion.Speedway:
+                        Speedway_Player.Tick(self, ref e);
                         break;
                     case SpeedVersion.Vroom:
                         RacingSpeedster.Tick(self, ref e);
@@ -338,7 +340,8 @@ namespace TheEscort
             if (e.Railgunner) Esclass_RG_Update(self, ref e);
             if (e.Speedster) switch (e.SpeVersion)
                 {
-                    case SpeedVersion.Nitros:
+                    case SpeedVersion.Speedway:
+                        Speedway_Player.Update(self, ref e);
                         break;
                     case SpeedVersion.Vroom:
                         RacingSpeedster.Update(self, ref e);
@@ -1027,7 +1030,8 @@ namespace TheEscort
             }
             if (e.Speedster) switch (e.SpeVersion)
                 {
-                    case SpeedVersion.Nitros:
+                    case SpeedVersion.Speedway:
+                        Speedway_AnimStuff.UpdateAnimation(self, ref e);
                         break;
                     case SpeedVersion.Vroom:
                         RacingSpeedster.UpdateAnimation(self, ref e);
@@ -1247,7 +1251,8 @@ namespace TheEscort
             if (e.Railgunner) RG_Player.UpdateBodyMode(self, ref e);
             if (e.Speedster) switch (e.SpeVersion)
                 {
-                    case SpeedVersion.Nitros:
+                    case SpeedVersion.Speedway:
+                        SS_BodyStuff.UpdateBodyMode(self, ref e);
                         break;
                     case SpeedVersion.Vroom:
                         RacingSpeedster.UpdateBodyMode(self, ref e);
@@ -1423,7 +1428,7 @@ namespace TheEscort
             }
             if (e.Speedster) switch (e.SpeVersion)
                 {
-                    case SpeedVersion.Nitros:
+                    case SpeedVersion.Speedway:
                         break;
                     case SpeedVersion.Vroom:
                         RacingSpeedster.Jump(self, ref e);
@@ -1909,7 +1914,7 @@ namespace TheEscort
                 if (type != null)
                 {
                     Ebug(player, "Escort gets hurt by: " + type.value, LogLevel.DEBUG);
-                if (type == Creature.DamageType.Bite)
+                    if (type == Creature.DamageType.Bite)
                     {
                         Ebug(player, "Escort is getting BIT?!", LogLevel.DEBUG);
                         if (source != null && source.owner is Creature creature)
@@ -2378,15 +2383,15 @@ namespace TheEscort
                                 // Other builds
                                 if (escort.Deflector) DF_Damage.WinLoseSave(self, playerNumber, notDead || RWCustom.Custom.rainWorld.options.jollyDifficulty == Options.JollyDifficulty.EASY, ref escort);
                                 if (escort.Speedster) switch (escort.SpeVersion)
-                                {
-                                    case SpeedVersion.Nitros:
-                                        break;
-                                    case SpeedVersion.Vroom:
-                                        RacingSpeedster.WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
-                                        break;
-                                    case SpeedVersion.Restless:
-                                        break;
-                                }
+                                    {
+                                        case SpeedVersion.Speedway:
+                                            break;
+                                        case SpeedVersion.Vroom:
+                                            RacingSpeedster.WinLoseSave(self, playerNumber, isWinner && notDead, ref escort);
+                                            break;
+                                        case SpeedVersion.Restless:
+                                            break;
+                                    }
                                 escort.shelterSaveComplete++;
                             }
 

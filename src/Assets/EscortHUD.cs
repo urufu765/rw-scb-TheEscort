@@ -135,6 +135,8 @@ public static class EscortHUD
                     "railgunnerUse" => new RailRing(self, traction, location, foodMeterAnchor),
                     "speedster" => new SpeedRing(self, traction, location, foodMeterAnchor),
                     "speedsterOld" => new OldSpeedRing(self, traction, location, foodMeterAnchor),
+                    "speedwaySpeedster" => new SpeedwayProgression(self, traction, location, foodMeterAnchor, true),
+                    "speedwayExtras" => new SpeedwayExtras(self, traction, location, foodMeterAnchor),
                     "gilded" => new GildSprite(self, traction, location, foodMeterAnchor),
                     _ => new GenericRing(self, traction, location, foodMeterAnchor)
                 }
@@ -668,6 +670,128 @@ public static class EscortHUD
         }
     }
 
+    public class SpeedwayProgression : OldSpeedRing
+    {
+        public SpeedwayProgression(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor, bool staticFlash = true) : base(hud, tracked, offset, foodmeterAnchor, staticFlash)
+        {
+        }
+
+        public override void Draw(float timeStacker)
+        {
+            base.Draw(timeStacker);
+            progressSprite.alpha = progressSprite2.alpha = Mathf.InverseLerp(0f, tracked.Max, tracked.Value - tracked.Limit);
+        }
+
+        public override void Update()
+        {
+            staticFlash = tracked.force;
+            base.Update();
+        }
+    }
+
+    public class SpeedwayExtras : RingMeter
+    {
+        private readonly FLabel gear;
+        private readonly FLabel gearBacking;
+        private readonly FSprite glow;
+        private readonly FSprite progressSprite;
+        private readonly float gearGlowAlpha;
+        private readonly float gearBackingAlpha;
+
+        public SpeedwayExtras(HUD.HUD hud, Trackrr<float> tracked, Vector2 offset, bool foodmeterAnchor) : base(hud, tracked, offset, foodmeterAnchor)
+        {
+            this.progressSprite = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y,
+                scale = 2.4f + 1f * tracked.trackerNumber,
+                shader = hud.rainWorld.Shaders["HoldButtonCircle"]
+            };
+            gear = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + tracked.Limit)
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                color = tracked.trackerColor
+            };
+            gearBackingAlpha = .7f;
+            gearBacking = new FLabel(RWCustom.Custom.GetDisplayFont(), "x" + 1 + tracked.Limit)
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                alpha = gearBackingAlpha,
+                color = Color.black
+            };
+            gearGlowAlpha = .3f;
+            this.glow = new FSprite("Futile_White")
+            {
+                x = pos.x,
+                y = pos.y + 40,
+                scaleX = 6,
+                scaleY = 1,
+                alpha = gearGlowAlpha,
+                color = tracked.trackerColor,
+                shader = hud.rainWorld.Shaders["FlatLight"]
+            };
+
+            hud.fContainers[1].AddChild(progressSprite);
+            hud.fContainers[1].AddChild(glow);
+            hud.fContainers[1].AddChild(gearBacking);
+            hud.fContainers[1].AddChild(gear);
+        }
+
+        public override void Draw(float t)
+        {
+            base.Draw(t);
+            progressSprite.x = DrawPos(t).x;
+            progressSprite.y = DrawPos(t).y;
+            progressSprite.alpha = tracked.trackerColor == Color.black ? 0 : Mathf.InverseLerp(0f, tracked.Max, tracked.Value);
+            progressSprite.color = tracked.trackerColor;
+
+            gear.text = gearBacking.text = tracked.Limit.ToString();
+            gear.x = glow.x = DrawPos(t).x;
+            gear.y = glow.y = DrawPos(t).y + 40;
+            gear.color = tracked.effectColor;
+            gear.alpha = tracked.effectColor == Color.black ? 0 : 1;
+            gearBacking.x = DrawPos(t).x + 2;
+            gearBacking.y = DrawPos(t).y + 38;
+            gearBacking.alpha = tracked.effectColor == Color.black ? 0 : gearBackingAlpha;
+            glow.color = tracked.trackerColor;
+            glow.alpha = tracked.effectColor == Color.black ? 0 : gearGlowAlpha;
+        }
+    }
+
+
+    public class TurboblastSpeedster : OldSpeedRing
+    {
+        /** Layering (top to bottom):
+        * prog1(a/b) (reaches up to 1/4)
+            * Marks 0%~33.3% power
+        * prog2(a/b) (reaches up to 2/4)
+            * Marks 0%~66.7% power
+        * prog3(a/b) (reaches up to 3/4)
+            * Marks 0%~100% power
+        * progBacking(a/b) (always slightly more than 3/4)
+        * indiRing(a/b) (starts at slightly above 3/4, ends slightly before 7/8)
+            * bright green if in contact with creature, dark yellow if not
+        * indiText (says "+bst" in that 1/8 space)
+            * also follows colour with ring
+        * backing(a/b) (full black ring)
+        */
+    }
+    public class TurbochargeSpeedster : GenericRing
+    {
+        /** Layering (top to bottom):
+        * txtY (says "y" slightly before 1/12)
+        * txtX (says "x" slightly after 7/12)
+        * mask (always 1/12)
+        * progY(a/b) (2/12~4/12)
+        * progX(a/b) (5/12~7/12)
+        * progBacking(a/b) (always 8/12)
+        * txtTurbo (says "turbo" centered between 8/12 and 10/12)
+        * txtTurboBacking (same as above but for drop shadow purposes)
+        */
+    }
+
     public class GildSprite : GenericRing
     {
         private readonly FSprite[] sprites;
@@ -737,7 +861,7 @@ public static class EscortHUD
         private readonly FLabel damage;
         private readonly FLabel damageBacking;
         private readonly FSprite glow;
-        private readonly String formatting;
+        private readonly string formatting;
 
         public DmgText(HUD.HUD hud, Trackrr<float> trackrr, Vector2 offset, bool foodmeterAnchor) : base(hud, trackrr, offset, foodmeterAnchor)
         {

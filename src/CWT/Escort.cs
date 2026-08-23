@@ -604,17 +604,22 @@ namespace TheEscort
             if (Speedster)
             {
                 hypeSprite = "escort_hud_speedster";
-                if (!SpeOldSpeed)
+                switch (SpeVersion)
                 {
-                    for (int i = 1; i <= this.SpeMaxGear; i++)
-                    {
-                        floatTrackers.Add(new ETrackrr.SpeedsterTraction(n, i, this, i));
-                    }
-                }
-                else
-                {
-                    floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 1, this));
-                    floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
+                    case SpeedVersion.Restless:
+                        floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 1, this));
+                        floatTrackers.Add(new ETrackrr.SpeedsterOldTraction(n, 2, this, true));
+                        break;
+                    case SpeedVersion.Vroom:
+                        for (int i = 1; i <= this.SpeMaxGear; i++)
+                        {
+                            floatTrackers.Add(new ETrackrr.SpeedsterTraction(n, i, this, i));
+                        }
+                        break;
+                    case SpeedVersion.Speedway:
+                        floatTrackers.Add(new ETrackrr.SpeedwaySpeedsterTraction(n, 1, this));
+                        floatTrackers.Add(new ETrackrr.SpeedwayExtraTrackerTraction(n, 2, this));
+                        break;
                 }
             }
             if (Gilded)
