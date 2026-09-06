@@ -23,4 +23,8 @@ public static class SS_Passerby
     - walljumping
     - touching creature
     */
+
+    public static void Bonk(Player self, int chunk, IntVector2 direction, float speed, bool firstContact, ref Escort e)
+    {
+    }
 }

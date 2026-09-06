@@ -8,6 +8,7 @@ using RWCustom;
 using System;
 using System.Collections.Generic;
 using TheEscort.Railgunner;
+using TheEscort.Speedster;
 using TheEscort.Speedster.Old;
 using TheEscort.VengefulLizards;
 using UnityEngine;
@@ -582,16 +583,17 @@ partial class Plugin : BaseUnityPlugin
             return;
         }
         if (e.Speedster) switch (e.SpeVersion)
-            {
-                case SpeedVersion.Speedway:
-                    break;
-                case SpeedVersion.Vroom:
-                    RacingSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
-                    break;
-                case SpeedVersion.Restless:
-                    OldSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
-                    break;
-            }
+        {
+            case SpeedVersion.Speedway:
+                SS_Passerby.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                break;
+            case SpeedVersion.Vroom:
+                RacingSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                break;
+            case SpeedVersion.Restless:
+                OldSpeedster.Bonk(self, chunk, direction, speed, firstContact, ref e);
+                break;
+        }
     }
 
 }
